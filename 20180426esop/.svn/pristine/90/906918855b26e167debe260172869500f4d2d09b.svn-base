@@ -1,0 +1,134 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/7/7.
+ */
+//走访集团信息录入提交接口入参
+public class ReturnVisitDto {
+    String return_info_id = "" ;//回访信息编号
+    String service_no = "" ;//回访工号
+    String unit_id = "" ;//集团编号
+    String unit_name = "" ;//集团名称
+    String return_date = "" ;//回访日期
+    String return_type = "" ;//回访形式 为现场拜访 参数传1
+    String return_address = "" ;//回访地址
+    String contact_phone = "" ;//联系人电话
+    String contact_person = "" ;//联系人名称
+    String duty = "" ;//职务
+    String guest_sat = "" ;//客户满意度
+    String service_name = "" ;//客户经理名称
+    String interview_type  = "" ;//拜访类型
+    String return_rmk = "";//备注
+
+    public String getReturn_info_id() {
+        return return_info_id;
+    }
+
+    public void setReturn_info_id(String return_info_id) {
+        this.return_info_id = return_info_id;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getReturn_date() {
+        return return_date;
+    }
+
+    public void setReturn_date(String return_date) {
+        this.return_date = return_date;
+    }
+
+    public String getReturn_type() {
+        return return_type;
+    }
+
+    public void setReturn_type(String return_type) {
+        this.return_type = return_type;
+    }
+
+    public String getReturn_address() {
+        return return_address;
+    }
+
+    public void setReturn_address(String return_address) {
+        this.return_address = return_address;
+    }
+
+    public String getContact_phone() {
+        return contact_phone;
+    }
+
+    public void setContact_phone(String contact_phone) {
+        this.contact_phone = contact_phone;
+    }
+
+    public String getContact_person() {
+        return contact_person;
+    }
+
+    public void setContact_person(String contact_person) {
+        this.contact_person = contact_person;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getGuest_sat() {
+        return guest_sat;
+    }
+
+    public void setGuest_sat(String guest_sat) {
+        this.guest_sat = guest_sat;
+    }
+
+    public String getService_name() {
+        return service_name;
+    }
+
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
+    }
+
+    public String getInterview_type() {
+        return interview_type;
+    }
+
+    public void setInterview_type(String interview_type) {
+        this.interview_type = interview_type;
+    }
+
+    public String getReturn_rmk() {
+        return return_rmk;
+    }
+
+    public void setReturn_rmk(String return_rmk) {
+        this.return_rmk = return_rmk;
+    }
+}

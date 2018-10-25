@@ -1,0 +1,233 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/6.
+ */
+//客户表实体
+public class CustMsgDto {
+    String id_no = "";//成员编号
+    String cust_id = "";//客户id
+    /*  String name = "";//姓名*/
+    String contract_no = "";
+    String ids = "";//
+    String phone_no = "";//电话号码
+    String sm_code = "";
+    String service_type = "";
+    String attr_code = "";
+    String user_passwd = "";
+    String open_time = "";
+    String limit_owe = "";
+    String belong_code = "";
+    String credit_code = "";
+    String credit_value = "";
+    String run_code = "";//
+    String run_time = "";
+    String bill_date = "";
+    String bill_type = "";
+    String encrypt_prepay = "";
+    String cmd_right = "";
+    String last_bill_type = "";
+    String bak_field = "";
+    String group_id = "";
+    String stop_attr = "";
+
+    public String getId_no() {
+        return id_no;
+    }
+
+    public void setId_no(String id_no) {
+        this.id_no = id_no;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+  /*  public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }*/
+
+    public String getContract_no() {
+        return contract_no;
+    }
+
+    public void setContract_no(String contract_no) {
+        this.contract_no = contract_no;
+    }
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getSm_code() {
+        return sm_code;
+    }
+
+    public void setSm_code(String sm_code) {
+        this.sm_code = sm_code;
+    }
+
+    public String getService_type() {
+        return service_type;
+    }
+
+    public void setService_type(String service_type) {
+        this.service_type = service_type;
+    }
+
+    public String getAttr_code() {
+        return attr_code;
+    }
+
+    public void setAttr_code(String attr_code) {
+        this.attr_code = attr_code;
+    }
+
+    public String getUser_passwd() {
+        return user_passwd;
+    }
+
+    public void setUser_passwd(String user_passwd) {
+        this.user_passwd = user_passwd;
+    }
+
+    public String getOpen_time() {
+        return open_time;
+    }
+
+    public void setOpen_time(String open_time) {
+        this.open_time = open_time;
+    }
+
+    public String getLimit_owe() {
+        return limit_owe;
+    }
+
+    public void setLimit_owe(String limit_owe) {
+        this.limit_owe = limit_owe;
+    }
+
+    public String getBelong_code() {
+        return belong_code;
+    }
+
+    public void setBelong_code(String belong_code) {
+        this.belong_code = belong_code;
+    }
+
+    public String getCredit_code() {
+        return credit_code;
+    }
+
+    public void setCredit_code(String credit_code) {
+        this.credit_code = credit_code;
+    }
+
+    public String getCredit_value() {
+        return credit_value;
+    }
+
+    public void setCredit_value(String credit_value) {
+        this.credit_value = credit_value;
+    }
+
+    public String getRun_code() {
+        return run_code;
+    }
+
+    public void setRun_code(String run_code) {
+        this.run_code = run_code;
+    }
+
+    public String getRun_time() {
+        return run_time;
+    }
+
+    public void setRun_time(String run_time) {
+        this.run_time = run_time;
+    }
+
+    public String getBill_date() {
+        return bill_date;
+    }
+
+    public void setBill_date(String bill_date) {
+        this.bill_date = bill_date;
+    }
+
+    public String getBill_type() {
+        return bill_type;
+    }
+
+    public void setBill_type(String bill_type) {
+        this.bill_type = bill_type;
+    }
+
+    public String getEncrypt_prepay() {
+        return encrypt_prepay;
+    }
+
+    public void setEncrypt_prepay(String encrypt_prepay) {
+        this.encrypt_prepay = encrypt_prepay;
+    }
+
+    public String getCmd_right() {
+        return cmd_right;
+    }
+
+    public void setCmd_right(String cmd_right) {
+        this.cmd_right = cmd_right;
+    }
+
+    public String getLast_bill_type() {
+        return last_bill_type;
+    }
+
+    public void setLast_bill_type(String last_bill_type) {
+        this.last_bill_type = last_bill_type;
+    }
+
+    public String getBak_field() {
+        return bak_field;
+    }
+
+    public void setBak_field(String bak_field) {
+        this.bak_field = bak_field;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getStop_attr() {
+        return stop_attr;
+    }
+
+    public void setStop_attr(String stop_attr) {
+        this.stop_attr = stop_attr;
+    }
+}

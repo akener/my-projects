@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="caseRecordServiceRepository">
+
+    <!-- 查询地市下所有区县 -->
+    <select id="qryContractByGroupId" parameterType="com.esop.workOrderInfo.dto.CountyInfoDto" resultType="com.esop.workOrderInfo.dto.CountyInfoDto">
+        select group_id,trim(name) as name,tree_str,boss_org_code from dGrpGroups where (active_flag='Y' or active_flag is null) and parent_group_id=#{group_id}  order by tree_str
+    </select>
+
+    <!-- 查询地市或者区县下的合同 -->
+    <select id="showAllContractMsgInfo" parameterType="com.esop.workOrderInfo.dto.CountyContractDto" resultType="com.esop.workOrderInfo.dto.CountyContractDto">
+        select t.CONTRACT_ID,
+        t.UNIT_ID,
+        t.CONTRACT_NO,
+        t.CONTRACT_NAME,
+        t.DEAL_TIME,
+        t.COMPLETE_TIME,
+        t.CONTRACT_FILE,
+        to_char(t.CREATE_DATE, 'yyyy-mm-dd hh24:mi:ss')as CREATE_DATE,
+        b.login_name,
+        d.group_name,
+        t.CONTRACT_LOAN,
+        t.RENEW_SIGN,
+        DECODE(TRIM(t.CHARGE_FLAG),
+        '0',
+        '待修改',
+        '1',
+        '支撑人员审批中',
+        '2',
+        '领导审批中',
+        '3',
+        '关闭',
+        '4',
+        '终止',
+        '5',
+        '已归档',
+        '6',
+        '已续签') CHARGE_FLAG,
+        t.GOODS_NO,
+        t.GOODS_NOT,
+        t.DEPT_NO,
+        t.DEPT_NOT,
+        DECODE(TRIM(t.STOP_NOT),
+        '1',
+        '产品到期',
+        '2',
+        '双方协商一致'
+        ) STOP_NOT
+        from dgrpcontractinfo t, ep_sys_loginmsg_info b, ep_sys_group_info d
+        where 1 = 1
+        and t.create_login = b.login_no(+)
+        and t.org_code = d.group_id(+)
+        and t.org_code in
+        (select group_id from ep_sys_group_rel where parent_group_id = #{group_id})
+
+        <if test="contract_no != null and contract_no != ''">
+            and t.contract_no =#{contract_no}
+        </if>
+       <if test="sTime != null and sTime != ''">
+            and to_char(t.create_date,'yyyy-mm-dd') >= #{sTime}
+        </if>
+        <if test="vTime != null and vTime != ''">
+            and to_char(t.create_date,'yyyy-mm-dd') &lt;= #{vTime}
+
+        </if>
+
+    </select>
+
+    <!-- 查询历史合同 -->
+    <select id="showHisInfoByContractId" parameterType="com.esop.workOrderInfo.dto.CountyContractDto" resultType="com.esop.workOrderInfo.dto.CountyContractDto">
+           select t.CONTRACT_ID,
+            t.UNIT_ID,
+            t.CONTRACT_NO,
+            t.CONTRACT_NAME,
+            t.DEAL_TIME,
+            t.COMPLETE_TIME,
+            t.CONTRACT_FILE,
+            to_char(t.CREATE_DATE, 'yyyy-mm-dd hh24:mi:ss')as CREATE_DATE,
+            b.login_name,
+            d.group_name,
+            t.NOTE,
+            t.CONTRACT_LOAN,
+            t.RENEW_SIGN,
+            DECODE(TRIM(t.CHARGE_FLAG),
+            '0',
+            '待修改',
+            '1',
+            '支撑人员审批中',
+            '2',
+            '领导审批中',
+            '3',
+            '关闭',
+            '4',
+            '终止',
+            '5',
+            '已归档',
+            '6',
+            '已续签') CHARGE_FLAG,
+            t.GOODS_NO,
+            t.GOODS_NOT,
+            t.DEPT_NO,
+            t.DEPT_NOT,
+            DECODE(TRIM(t.STOP_NOT),
+            '1',
+            '产品到期',
+            '2',
+            '双方协商一致'
+            ) STOP_NOT,
+            t.OPR_NO,
+            t.OPR_SEQ,
+            to_char(t.OPR_TIME, 'yyyy-mm-dd hh24:mi:ss') as OPR_TIME,
+            t.OPR_CODE,
+            t.OPR_STATUS
+       from dgrpcontractinfohis t, ep_sys_loginmsg_info b, ep_sys_group_info d
+      where 1 = 1
+        and t.create_login = b.login_no(+)
+        and t.org_code = d.group_id(+)
+        and t.contract_id = #{contract_id}
+      order by t.OPR_TIME desc
+
+    </select>
+
+    <!-- 查询管理办法：查询区县 -->
+    <select id="qryGroupInfoByParentGroupId" parameterType="com.esop.workOrderInfo.dto.GroupMsgDto" resultType="com.esop.workOrderInfo.dto.GroupMsgDto">
+      select a.group_id,
+       a.group_name,
+       b.denorm_level,
+       b.parent_group_id,
+      (decode(a.root_distance, '3', '1', a.has_child)) as have_child
+      from ep_sys_group_info a, ep_sys_group_rel b
+      where a.group_id = b.group_id
+       and b.denorm_level = 1
+       and parent_group_id = #{parent_group_id}
+      order by a.group_id
+    </select>
+
+    <!-- 查询创建工号 -->
+    <select id="qryLoginNoInfoByGroupId" parameterType="com.esop.workOrderInfo.dto.LoginInfoDto" resultType="com.esop.workOrderInfo.dto.LoginInfoDto">
+       select login_no,login_name from ep_sys_loginmsg_info where group_id = #{group_id}
+    </select>
+
+
+    <!-- 查询管理办法 -->
+    <select id="qryMethodInfo" parameterType="com.esop.workOrderInfo.dto.selMethodDto" resultType="com.esop.workOrderInfo.dto.selMethodDto">
+        select (l.LOGIN_NO ||'-->'|| l.LOGIN_NAME)as createName,
+        m.TITLE,
+        ((substr(m.CONTENT_DETAIL, 0, 20))||'...') as CONTENT_DETAIL,
+        to_char(m.PUB_DATE, 'yyyy-MM-dd') as PUB_DATE,
+        m.CODE,
+        DECODE(TRIM(m.PUB_TYPE),
+        '0',
+        '管理办法',
+        '1',
+        '资费文件') PUB_TYPE
+        from EP_SYS_MANIDEA_INFO m, EP_SYS_LOGINMSG_INFO l, ep_sys_group_rel c
+        where m.PUB_CREATENO = l.LOGIN_NO
+        and l.group_id = c.group_id
+        and c.parent_group_id = #{parent_group_id}
+        <if test="title != null and title != ''">
+            and m.title like '%' || #{title} || '%'
+        </if>
+        <if test="content_detail != null and content_detail != ''">
+            and m.content_detail like '%' ||#{content_detail} || '%'
+        </if>
+        <if test="sTime != null and sTime != ''">
+            and to_char(m.pub_date,'yyyy-mm-dd') >=  #{vTime}
+        </if>
+        <if test="vTime != null and vTime != ''">
+            and to_char(m.pub_date,'yyyy-mm-dd') &lt;= #{vTime}
+        </if>
+        <if test="pub_type != null and pub_type != ''">
+            and m.pub_type =  #{pub_type}
+        </if>
+        <if test="pub_createno != null and pub_createno != ''">
+            and m.pub_createno = #{pub_createno}
+        </if>
+    </select>
+
+    <!-- 查看单条数据 -->
+    <select id="qryMRByCode" parameterType="com.esop.workOrderInfo.dto.selMethodDto" resultType="com.esop.workOrderInfo.dto.selMethodDto">
+       select (l.LOGIN_NO ||'-->'|| l.LOGIN_NAME)as createName,m.TITLE,m.CONTENT,m.CONTENT_DETAIL,to_char(m.PUB_DATE,'YYYY-MM-DD')as PUB_DATE
+       from EP_SYS_MANIDEA_INFO m,EP_SYS_LOGINMSG_INFO l
+      where trim(m.PUB_CREATENO) = trim(l.login_no) and m.CODE=#{code}
+
+    </select>
+
+    <!-- 修改时前查单条数据 -->
+    <select id="qryMethodRecordByCode" parameterType="com.esop.workOrderInfo.dto.selMethodDto" resultType="com.esop.workOrderInfo.dto.selMethodDto">
+        select CODE,TITLE,CONTENT,CONTENT_DETAIL,to_char(PUB_DATE,'YYYY-MM-DD')as PUB_DATE,PUB_TYPE
+        from EP_SYS_MANIDEA_INFO where CODE=#{code}
+    </select>
+
+    <select id="updateMethodByCodeId" parameterType="com.esop.workOrderInfo.dto.selMethodDto" resultType="int">
+        update EP_SYS_MANIDEA_INFO set title=#{title},content=#{content},content_detail=#{content_detail},pub_type=#{pub_type} where code=#{code}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,116 @@
+package com.esop.common.jaxb;
+
+import java.io.File;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamWriter;
+
+/**
+ * Created by wangbl on 2017/3/9.
+ */
+public class JAXBExample {
+
+    public  void objectToXML() {
+
+        Message message =new Message();
+        IBody body = new IBody();
+        Header header = new Header();
+        /*
+        FileInfo f = new FileInfo();
+        f.setPath("OA123456");
+        f.setName("OA附件信息.doc");
+        List list =new ArrayList();
+        list.add(f);
+        FileInfo fi = new FileInfo();
+        fi.setPath("OB123456");
+        fi.setName("OB附件信息.doc");
+        list.add(fi);
+
+        FileInfos fileInfos = new FileInfos();
+        fileInfos.setFileInfos(list);
+
+        //body.setFileInfos(list);
+        body.setFileInfos(fileInfos);
+         */
+        //body.setProductName("小区宽带");
+        body.setMain_depart("集客部");
+        body.setApply_person("张三");
+        body.setApply_date("2017-03-15");
+        body.setFile_no("00000001");
+        body.setFile_title("发展云企信业务产品方案");
+        body.setProd_plan("1234567890.doc");
+        body.setProd_plan_name("发展云企信业务产品方案文档.doc");
+        body.setProd_id("PD_002");
+        body.setLink_id("L_003");
+        body.setColusion_opinion("0");
+        body.setReview_opinion("同意");
+        body.setReview_file_id("987654321.doc");
+        body.setReview_file_name("发展云企信业务产品方案审批单信息.doc");
+        message.setIBody(body);
+        message.setHeader(header);
+
+        MsgHeader msgHeader =new MsgHeader();
+        //body.setMsgHeader(msgHeader);
+
+
+
+        try {
+            //File file = new File("/Volumes/data/file.xml");
+            JAXBContext jaxbContext = JAXBContext.newInstance(Message.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+            // output pretty printed
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+            //jaxbMarshaller.marshal(message, file);
+            jaxbMarshaller.marshal(message, System.out);
+            JAXBExample jaxbExample =new JAXBExample();
+
+            System.out.println(jaxbExample.asString(jaxbContext,message));
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
+    public String asString(JAXBContext pContext,
+                           Object pObject)
+            throws
+            JAXBException {
+
+        java.io.StringWriter sw = new StringWriter();
+
+        Marshaller marshaller = pContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshaller.marshal(pObject, sw);
+
+        return sw.toString();
+    }
+
+    public  void XMLToObject() {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Message.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Message xmlns=\"http://nm.cmcc.com/PCMP/ESOPSrv/ESOPMethod/ESOP000001/\"><Header><test>12345</test><AppID>PCMP</AppID><Provide_AppID>ESOP</Provide_AppID></Header><Body><MsgHeader><SOURCE_SYSTEM_ID></SOURCE_SYSTEM_ID><SOURCE_SYSTEM_NAME></SOURCE_SYSTEM_NAME><SUBMIT_DATE></SUBMIT_DATE><PAGE_SIZE></PAGE_SIZE><CURRENT_PAGE>中文</CURRENT_PAGE><TOTAL_RECORD></TOTAL_RECORD></MsgHeader><FileInfos><FileInfo><path>OA123456</path><name>OA附件信息.doc</name></FileInfo><FileInfo><path>OB123456</path><name>OB附件信息.doc</name></FileInfo></FileInfos><RETURN_CODE>000000</RETURN_CODE><RETURN_CODE>000000</RETURN_CODE><RETURN_MSG>操作成功！</RETURN_MSG><prepay_fee>0.00</prepay_fee><s_RetCode>0000</s_RetCode><s_RetMsg>成功</s_RetMsg><s_SysDate>20170625220328</s_SysDate></Body></Message>";
+            StringReader reader = new StringReader(xml);
+            Message message = (Message) jaxbUnmarshaller.unmarshal(reader);
+            System.out.println(message.getIBody().getMsgHeader().getCURRENT_PAGE());
+            System.out.println(message.getIBody().getRETURN_MSG());
+            System.out.println(((FileInfos)message.getIBody().getFileInfos()).getFileInfos().get(1).getName());
+
+        }catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
+    /*public static void main(String[] args) {
+
+        JAXBExample jaxbExample = new JAXBExample();
+        //jaxbExample.objectToXML();
+        jaxbExample.XMLToObject();
+        //jaxbExample.XMLToObject();
+    }*/
+}

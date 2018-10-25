@@ -1,0 +1,322 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.BankTradeLockDto;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimQueryService;
+import com.esop.cqDevelopment.capitalManage.service.GetGroupAttachInfoService;
+import com.esop.cqDevelopment.refund.controller.CallBossServiceUtils.CallBossServiceUtils;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@EnableTransactionManagement
+@RestController
+public class MoneyClaim {
+    private static Logger logger =  LoggerFactory.getLogger(MoneyClaim.class);
+
+    @Autowired
+    CapitalClaimQueryService capitalClaimQueryService;
+    @Autowired
+    CallBossServiceUtilsCapitalClaim callBossServiceUtilsCapitalClaim;
+    @Autowired
+    CallBossServiceUtils callBossServiceUtils;
+    @Autowired
+    GetGroupAttachInfoService getGroupAttachInfoService;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+
+
+    //资金申请填写
+    @Transactional
+    @RequestMapping(value="/cqCapitalClaimApply")
+    public String putCapitalApplyInfo(CapitalClaimQueryDto parameter, WorkFlowFirstDto workFlowFirstDto, HttpServletRequest request, boolean flag){
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        String gongdan_bianhao = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(date);
+        String ms=gongdan_bianhao.substring(7,15);
+        parameter.setGongdan_bianhao(gongdan_bianhao);
+        parameter.setShenqingren(workFlowFirstDto.getApplicantNo());
+        parameter.setWeiyibiaoshima(parameter.getRuzhang_zuzhi()+parameter.getDaozhang_riqi()+ms);
+        parameter.setIs_pl("0");
+        workFlowFirstDto.setTaskOrderId(gongdan_bianhao);
+        try {
+            int result1 = capitalClaimQueryService.putCapitalClaimApplySvc(parameter);
+
+            int result2 = capitalClaimQueryService.putWorkFlowFirstSvc(workFlowFirstDto);
+            result1 = result1 + result2 - 1;
+            if (result1 == 1) {
+                BankTradeLockDto bankTradeLockDto = new BankTradeLockDto();
+                bankTradeLockDto.setBANKFORMNUM(parameter.getJiaoyi_liushui());
+                bankTradeLockDto.setOPTYPE("1");//1锁定 0解锁
+                String bakResult = callBossServiceUtilsCapitalClaim.bankTradeLockBoss(bankTradeLockDto);
+
+                JSONObject object = new JSONObject(bakResult);
+                res_code = object.getString("res_code");
+                res_desc = object.getString("res_desc");
+                if ("0".equals(res_code)) {
+                    retrun_msg = "1|操作成功！";
+                } else if ("104".equals(res_code)) {
+                    retrun_msg = "999|同一笔流水,请别多次申请！";
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                } else {
+                    retrun_msg = res_code + "|" + res_desc;
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            } else {
+                retrun_msg = "998|数据库执行出错，请联系系统管理员！";
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            retrun_msg = "997|系统错误，请联系系统管理员！";
+        }
+        return retrun_msg;
+    }
+    //资金批量申请填写
+    @Transactional
+    @RequestMapping(value="/cqCapitalClaimApply2")
+    public String putCapitalApplyInfo2(String biaoShima){
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+        try{
+
+            String [] biaoShiMa2=biaoShima.split("@@");
+            for (int i=0;i<biaoShiMa2.length;i++){
+                String [] biaoShiMa3=biaoShiMa2[i].split("##");
+                String daozhang_riqi=biaoShiMa3[0];
+                String danwei_zhanghao=biaoShiMa3[1];
+                String danwei_huming=biaoShiMa3[2];
+                String daozhang_jine=biaoShiMa3[3];
+                String zhai_yao=biaoShiMa3[4];
+                String laikuan_zhanghao=biaoShiMa3[5];
+                String leikuan_kehu=biaoShiMa3[6];
+                String jiaoyi_liushui=biaoShiMa3[7];
+
+                String applicantNo=biaoShiMa3[8];
+                String nextDealPerson=biaoShiMa3[9];
+                String nodeId=biaoShiMa3[10];
+                String dealTime=biaoShiMa3[11];
+                String jituan_bianhao=biaoShiMa3[12];
+                String jituan_mingcheng=biaoShiMa3[13];
+                String ruzhang_zuzhi=biaoShiMa3[14];
+                String fengongs=biaoShiMa3[15];
+                Calendar cal = Calendar.getInstance();
+                Date date = cal.getTime();
+                CapitalClaimQueryDto parameter=new CapitalClaimQueryDto();
+                String now=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+                String gongdan_bianhao = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(date);
+                String ms=gongdan_bianhao.substring(7,15);
+                String weiyibiaoshima=ruzhang_zuzhi+daozhang_riqi+ms;
+                parameter.setGongdan_bianhao(gongdan_bianhao);
+                parameter.setDaozhang_riqi(daozhang_riqi);
+                parameter.setDaozhang_zhanghao(danwei_zhanghao);
+                parameter.setDaozhang_huming(danwei_huming);
+                parameter.setDaozhang_jine(daozhang_jine);
+                parameter.setZhai_yao(zhai_yao);
+                parameter.setLaikuan_zhanghao(laikuan_zhanghao);
+                parameter.setLeikuan_kehu(leikuan_kehu);
+                parameter.setJiaoyi_liushui(jiaoyi_liushui);
+                parameter.setJituan_bianhao(jituan_bianhao);
+                parameter.setJituan_mingcheng(jituan_mingcheng);
+                parameter.setRuzhang_zuzhi(ruzhang_zuzhi);
+                parameter.setShenqing_riqi(now);
+                parameter.setFabu_riqi(now);
+                parameter.setGuanlian_laikuan_huming(leikuan_kehu);
+                parameter.setGuanlian_laikuan_zhanghao(laikuan_zhanghao);
+                parameter.setWeiyibiaoshima(weiyibiaoshima);
+                parameter.setShenqingren(applicantNo);
+                parameter.setZhangwuyuan(nextDealPerson);
+                parameter.setIs_pl("1");
+                parameter.setFengongs(fengongs);
+
+                WorkFlowFirstDto workFlowFirstDto=new WorkFlowFirstDto();
+                workFlowFirstDto.setTaskOrderId(gongdan_bianhao);
+                workFlowFirstDto.setApplicantNo(applicantNo);
+                workFlowFirstDto.setNextDealPerson(nextDealPerson);
+                workFlowFirstDto.setNodeId(nodeId);
+                workFlowFirstDto.setDealTime(dealTime);
+
+                int result1 = capitalClaimQueryService.putCapitalClaimApplySvc2(parameter);
+                int result2 = capitalClaimQueryService.putWorkFlowFirstSvc(workFlowFirstDto);
+
+                result1 = result1 + result2 - 1;
+                if (result1 == 1) {
+                    BankTradeLockDto bankTradeLockDto = new BankTradeLockDto();
+                    bankTradeLockDto.setBANKFORMNUM(parameter.getJiaoyi_liushui());
+                    bankTradeLockDto.setOPTYPE("1");//1锁定 0解锁
+                    String bakResult =  callBossServiceUtilsCapitalClaim.bankTradeLockBoss(bankTradeLockDto);
+
+                    JSONObject object = new JSONObject(bakResult);
+                    res_code = object.getString("res_code");
+                    res_desc = object.getString("res_desc");
+                    if ("0".equals(res_code)) {
+                        retrun_msg = "1|操作成功";
+                    } else if ("104".equals(res_code)) {
+                        retrun_msg="999|同一笔流水,请别多次申请！";
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
+                    }else{
+                        retrun_msg = res_code+"|"+res_desc;
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    }
+                }else {
+                    retrun_msg = "998|数据库执行出错，请联系系统管理员！";
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            }
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            retrun_msg = "997|系统错误，请联系系统管理员！";
+        }
+        return retrun_msg;
+    }
+
+
+
+    //审批信息填写
+    @Transactional
+    @RequestMapping(value="/capitalApprove2")
+    public String putCapitalApproveInfo(WorkFlowFirstDto parameter, HttpServletRequest request, boolean flag) {
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+
+        if (parameter.getNodeId().equals("10") || parameter.getNodeId().equals("11")) {
+            capitalClaimQueryService.putWorkFlowFirstSvc(parameter);
+        }
+        if (parameter.getNodeId().equals("1")) {
+            try {
+                Date date1 = new Date();
+                Long l = date1.getTime();
+                Date date2 = new Date(l);
+                SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                parameter.setDealTime(sdf3.format(date2));
+                parameter.setApplicantNo(request.getParameter("zhangwuyuan"));
+                parameter.setNextDealPerson("CRM");
+                int result2 = capitalClaimQueryService.putWorkFlowFirstSvc2(parameter);
+
+                Long l2 = date1.getTime() + 5000;
+                Date date3 = new Date(l2);
+                parameter.setNodeId("3");
+                parameter.setApproveOpinion("");
+                parameter.setApplicantNo("CRM");
+                parameter.setNextDealPerson("");
+                parameter.setDealTime(sdf3.format(date3));
+
+                int result1 = capitalClaimQueryService.putWorkFlowFirstSvc2(parameter);
+
+                result1 = result1 + result2 - 1;
+                if (result1 == 1) {
+                    Date date = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+                    String ORDERID = request.getParameter("taskOrderId");
+                    String BANKFORMNUM = request.getParameter("jiaoyi_liushui");
+                    String AREAID = request.getParameter("fengongsi");
+                    String GROUPID = request.getParameter("jituan_bianhao");
+                    String GROUPNAME = request.getParameter("jituan_mingcheng");
+                    String GRPCUSTMGR = request.getParameter("kehujingli");
+                    String APPLYOPERID = request.getParameter("shenqingren");
+                    String ACCOUNTCLERK = request.getParameter("zhangwuyuan");
+                    String STATUSDATE = sdf.format(date);
+                    String NOTE = request.getParameter("bei_zhu");
+                    String ENTERORG = request.getParameter("ruzhang_zuzhi");
+                    String CLAIMOID = request.getParameter("weiyibiaoshima");
+                    String CONFIRMBANKACCTID = request.getParameter("check_code");
+                    Map<String, Object> mapInfo = new HashMap<String, Object>();
+                    mapInfo.put("ORDERID", ORDERID);
+                    mapInfo.put("BANKFORMNUM", BANKFORMNUM);
+                    mapInfo.put("AREAID", AREAID);
+                    mapInfo.put("GROUPID", GROUPID);
+                    mapInfo.put("GROUPNAME", GROUPNAME);
+                    mapInfo.put("GRPCUSTMGR", GRPCUSTMGR);
+                    mapInfo.put("APPLYOPERID", APPLYOPERID);
+                    mapInfo.put("ACCOUNTCLERK", ACCOUNTCLERK);
+                    mapInfo.put("STATUSDATE", STATUSDATE);
+                    mapInfo.put("NOTE", NOTE);
+                    mapInfo.put("ENTERORG", ENTERORG);
+                    mapInfo.put("CLAIMOID", CLAIMOID);
+                    mapInfo.put("CONFIRMBANKACCTID", CONFIRMBANKACCTID);
+
+                    String bankDealDetailInfo = callBossServiceUtils.putMoneyToBoss(mapInfo);
+                    com.alibaba.fastjson.JSONObject obj = com.alibaba.fastjson.JSONObject.parseObject(bankDealDetailInfo);//获取jsonobject对象
+                    String resultJson = obj.getString("result");
+                    res_code = (String) obj.get("res_code");
+                    res_desc = (String) obj.get("res_desc");//返回信息
+                    if (res_code.equals("0")) {
+                        retrun_msg = "1|操作成功!";
+                    } else if (res_code.equals("113")) {//认领时入账集团编码和银行交易明细的不一致返回的res_code
+                        retrun_msg = "113|入账集团单位和子账号绑定的集团单位不一致，请核实后处理！";
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                   } else {
+                        retrun_msg = res_code + "|" + res_desc;
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    }
+                } else {
+                    retrun_msg = "999|数据库执行出错，请联系系统管理员！";
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                e.printStackTrace();
+                retrun_msg = "999|系统错误，请联系系统管理员！";
+            }
+        }
+        //如果作废 则解锁流水
+        if (parameter.getNodeId().equals("2")) {
+            try {
+                int result3 = capitalClaimQueryService.putWorkFlowFirstSvc(parameter);
+                if (result3 == 1) {
+                    BankTradeLockDto bankTradeLockDto = new BankTradeLockDto();
+                    bankTradeLockDto.setBANKFORMNUM(parameter.getJiaoyi_liushui());
+                    bankTradeLockDto.setOPTYPE("0");//1锁定 0解锁
+
+                    String bakResult = callBossServiceUtilsCapitalClaim.bankTradeLockBoss(bankTradeLockDto);
+                    JSONObject object = new JSONObject(bakResult);
+                    res_code = object.getString("res_code");
+                    res_desc = object.getString("res_desc");
+                    if ("0".equals(res_code)) {
+                        retrun_msg = "1|操作成功";
+                    } else {
+                        retrun_msg = res_code + "|" + res_desc;
+                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                    }
+                } else{
+                    retrun_msg = "999|数据库执行出错，请联系系统管理员！";
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            }catch (Exception e){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                e.printStackTrace();
+                retrun_msg = "999|系统错误，请联系系统管理员！";
+            }
+        }
+        return retrun_msg;
+    }
+}
+

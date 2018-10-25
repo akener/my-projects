@@ -1,0 +1,21 @@
+package com.esop.base.service;
+
+import com.esop.base.dto.ServiceNoInfoDto;
+import com.esop.common.dataBase.SqlE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by wangbl on 2017/7/28.
+ */
+@Repository
+public class ServiceNoInfoService {
+    @Autowired
+    SqlE sqlE;
+    //客户经理信息查询
+    public List selectServieNoInfo(ServiceNoInfoDto parameter){
+        return sqlE.selectM("selectServieNoInfo",parameter);
+    }
+}

@@ -1,0 +1,146 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<%@ include file="../../pub/tableList.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+            //IncomeListQuery();
+        });
+
+        function capitalApply(id,name) {
+
+            $.ajax({
+                type: "get",
+                url: "getAccountPbDataNum",
+                cache: false,
+                data:{jituan_zhanghao:id},
+                success: function (result) {
+                    if(result == 0){
+                        window.returnValue = id + "#" + name;
+                        window.close();
+                    }else {
+                        alert("请联系集客部 曾祥君(13983236000),该账户需要做特殊处理！");
+                    }
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+
+        function IncomeListQuery() {
+            var city_data = "";
+            var jituan_zhanghao = $("#jituan_zhanghao").val();
+            if(jituan_zhanghao == null || jituan_zhanghao == ""){
+                alert("集团账号不能为空！");
+                return false;
+            }
+
+            $.ajax({
+                type: "get",
+                url: "getGroupAccountInfo",
+                cache: false,
+                data:{jituan_zhanghao:jituan_zhanghao},
+                success: function (result) {
+                    if(result.code == 0){
+                        data = result.data;
+
+                        if(data == Array){
+                            for(var i=0;i<data.length;i++){
+                                city_data += "<tr>";
+                                //city_data += "<td nowrap='nowrap'><a class='btn-icon icon-derive mgl-10 replace-derive' style='cursor:pointer' onclick='capitalApply(" + field.biaoshima + ")' titile='发起申请'></a></td>";
+                                city_data += "<td nowrap='nowrap'><button class='btn btn-default' onclick='capitalApply(" + data[i].GROUPACCTID + ",\"" + data[i].GROUPACCTNAME + "\")'>选择</button></td>";
+                                city_data += "<td nowrap='nowrap'>" + data[i].GROUPACCTID + "</td>";
+                                city_data += "<td nowrap='nowrap'>" + data[i].GROUPACCTNAME + "</td>";
+                                city_data += "</tr>";
+                            }
+                        }else {
+                            city_data += "<tr>";
+                            //city_data += "<td nowrap='nowrap'><a class='btn-icon icon-derive mgl-10 replace-derive' style='cursor:pointer' onclick='capitalApply(" + field.biaoshima + ")' titile='发起申请'></a></td>";
+                            city_data += "<td nowrap='nowrap'><button class='btn btn-default' onclick='capitalApply(" + data.GROUPACCTID + ",\"" + data.GROUPACCTNAME + "\")'>选择</button></td>";
+                            city_data += "<td nowrap='nowrap'>" + data.GROUPACCTID + "</td>";
+                            city_data += "<td nowrap='nowrap'>" + data.GROUPACCTNAME + "</td>";
+                            city_data += "</tr>";
+                        }
+                        $("#list_info").empty();
+                        $("#list_info").append(city_data);
+                    }
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团账号选择</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团账号：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="jituan_zhanghao" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <%--<th>集团账号名称：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="zhanghao_mingchen" value="" class="input-sty04 form-ipt">
+                            </td>--%>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="IncomeListQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                    <table class="cost-table" id="example" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center" nowrap='nowrap'>操作</th>
+                            <th class="text-center" nowrap='nowrap'>集团账号</th>
+                            <th class="text-center" nowrap='nowrap'>集团账号名称</th>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

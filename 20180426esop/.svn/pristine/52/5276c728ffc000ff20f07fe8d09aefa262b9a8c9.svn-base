@@ -1,0 +1,71 @@
+package com.esop.menus.controller;
+
+
+import com.alibaba.fastjson.JSONArray;
+import com.esop.menus.dto.MenusShowDto;
+import com.esop.menus.dto.MenusShowDtoEntity;
+import com.esop.menus.dto.MenusShowDtoLoginpdomlist;
+import com.esop.menus.dto.MenusShowDtoRetrun;
+import com.esop.menus.service.MenusShowService;
+
+import org.apache.log4j.Logger;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/6/11.
+ */
+@RestController
+public class MenusShowRC {
+    @Autowired
+    MenusShowService menusShowService;
+    private static Logger logger = Logger.getLogger(MenusShowRC.class);
+    @RequestMapping(value="/menusShow")
+    public MenusShowDtoRetrun getMenusShow(MenusShowDto parameter, HttpServletRequest request, boolean flag){
+        List<MenusShowDto> list;
+        list = menusShowService.getMenusShowList(parameter);
+        logger.info("getFUNCTION_CODE+++++++"+list.get(0).getFunction_code());
+
+        MenusShowDto menusShowDto = new MenusShowDto();
+        MenusShowDtoLoginpdomlist menusShowDtoLoginpdomlist=new MenusShowDtoLoginpdomlist();
+        //menusShowDtoLoginpdomlist.setLOGINPDOMLIST(menusShowDto);
+
+        menusShowDtoLoginpdomlist.setLoginpdomlist(list);
+
+        MenusShowDtoEntity menusShowDtoEntity=new MenusShowDtoEntity();
+        menusShowDtoEntity.setEntity(menusShowDtoLoginpdomlist);
+        MenusShowDtoRetrun menusShowDtoRetrun=new MenusShowDtoRetrun();
+        menusShowDtoRetrun.setData(menusShowDtoEntity);
+        menusShowDtoRetrun.setCode("0000000");
+        menusShowDtoRetrun.setMessage("Rest Request Success");
+        menusShowDtoRetrun.setPromptMsg("User Operate Success");
+
+        return menusShowDtoRetrun;
+    }
+    @RequestMapping(value="/menusShowFirst")
+    public MenusShowDtoRetrun getMenusFirstShow(MenusShowDto parameter, HttpServletRequest request, boolean flag){
+        List<MenusShowDto> list;
+        list = menusShowService.getMenusShowFirstList(parameter);
+
+        MenusShowDtoLoginpdomlist menusShowDtoLoginpdomlist=new MenusShowDtoLoginpdomlist();
+
+        menusShowDtoLoginpdomlist.setLoginpdomlist(list);
+
+        MenusShowDtoEntity menusShowDtoEntity=new MenusShowDtoEntity();
+        menusShowDtoEntity.setEntity(menusShowDtoLoginpdomlist);
+        MenusShowDtoRetrun menusShowDtoRetrun=new MenusShowDtoRetrun();
+        menusShowDtoRetrun.setData(menusShowDtoEntity);
+        menusShowDtoRetrun.setCode("0000000");
+        menusShowDtoRetrun.setMessage("Rest Request Success");
+        menusShowDtoRetrun.setPromptMsg("User Operate Success");
+
+        return menusShowDtoRetrun;
+    }
+}

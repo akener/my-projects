@@ -1,0 +1,136 @@
+package com.esop.alertClassified.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class BusiOppAlertDto {
+
+    String busiopp_code = "";
+    String busiopp_name = "";
+    String remind_content = "";
+    String remind_date = "";
+    String end_date = "";
+    String service_no = "";
+    String service_name = "";
+    String phone_no = "";
+    String curr_deal_no = "";
+    String curr_deal_name = "";
+    String curr_deal_phone = "";
+    String curr_deal_link = "";
+    String status = "";
+
+    String landing_no = "";
+
+    public String getBusiopp_code() {
+        return busiopp_code;
+    }
+
+    public void setBusiopp_code(String busiopp_code) {
+        this.busiopp_code = busiopp_code;
+    }
+
+    public String getBusiopp_name() {
+        return busiopp_name;
+    }
+
+    public void setBusiopp_name(String busiopp_name) {
+        this.busiopp_name = busiopp_name;
+    }
+
+    public String getRemind_content() {
+        return remind_content;
+    }
+
+    public void setRemind_content(String remind_content) {
+        this.remind_content = remind_content;
+    }
+
+    public String getRemind_date() {
+        return remind_date;
+    }
+
+    public void setRemind_date(String remind_date) {
+        this.remind_date = remind_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getService_name() {
+        return service_name;
+    }
+
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getCurr_deal_no() {
+        return curr_deal_no;
+    }
+
+    public void setCurr_deal_no(String curr_deal_no) {
+        this.curr_deal_no = curr_deal_no;
+    }
+
+    public String getCurr_deal_name() {
+        return curr_deal_name;
+    }
+
+    public void setCurr_deal_name(String curr_deal_name) {
+        this.curr_deal_name = curr_deal_name;
+    }
+
+    public String getCurr_deal_phone() {
+        return curr_deal_phone;
+    }
+
+    public void setCurr_deal_phone(String curr_deal_phone) {
+        this.curr_deal_phone = curr_deal_phone;
+    }
+
+    public String getCurr_deal_link() {
+        return curr_deal_link;
+    }
+
+    public void setCurr_deal_link(String curr_deal_link) {
+        this.curr_deal_link = curr_deal_link;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

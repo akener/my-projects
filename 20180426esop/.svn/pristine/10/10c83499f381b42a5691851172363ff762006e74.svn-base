@@ -1,0 +1,232 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lilei
+  Date: 2017/6/16
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  地市管理员处理客户经理回退工单
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+
+
+
+    <link rel="icon" href="./favicon.ico">
+
+
+</head>
+
+<!--<hr />-->
+<body>
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">没有可以回退的工单</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">地市回退工单到上一级操作成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="backOK" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">地市回退工单到上一级操作失败</label>
+            </div>
+            <div class="modal-footer">
+                <button  id="backFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault12" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice12">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo12">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">地市管理员处理客户经理回退工单</h3>
+    </div>
+
+</div>
+<div>
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="text-center">工单编号</th>
+                <th class="text-center">批次号</th>
+                <th class="text-center">地市编码</th>
+                <th class="text-center">地市名称</th>
+                <th class="text-center">集团编码</th>
+                <th class="text-center">集团名称</th>
+                <th class="text-center">智能V网成员数</th>
+                <th class="text-center">4G渗透率</th>
+                <th class="text-center">员工数</th>
+                <th class="text-center">移动用户数</th>
+                <th class="text-center">客户经理工号</th>
+                <th class="text-center">客户经理姓名</th>
+            </tr>
+        </thead>
+    </table>
+    <div style="padding-left: 45%">
+        <button id="btnId"style="width:80px;height:30px;color: #3b7286">回退上级</button>
+    </div>
+</div>
+
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var arr=new Array();
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+
+    $(document).ready(function() {
+
+
+                editor = new $.fn.DataTable.Editor({});
+
+                //工单数据
+                table = $('#example').DataTable({
+                    dom: "Bfrtip",
+                    bLengthChange: true,
+                    "bFilter": false,
+                    "pageLength": 2,//设置每页显示多少条记录
+                    "language": {
+                        "url": "/esop/static/data/Chinese.json"
+                    }, //多语言配置
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/qryCustReturnCaseInfo",
+                        type: "POST",
+                        data: {"status": "05", "group_id": group_id}
+                    },
+                    columns: [
+                        {data: "local_number"},
+                        {data: "batch_no"},
+                        {data: "region_id"},
+                        {data: "region_name"},
+                        {data: "unit_id"},
+                        {data: "unit_name"},
+                        {data: "intelligent_number"},
+                        {data: "permeability"},
+                        {data: "employee_number"},
+                        {data: "user_number"},
+                        {data: "login_no"},
+                        {data: "manager_name"}
+
+                    ],
+                    select: true,
+                    buttons: [],
+
+                });
+
+    } );
+
+
+
+
+
+    $("#btnId").click(function(){
+        var dataTable = $('#example').DataTable();
+        var info = dataTable.page.info();
+        var dataRows = info.recordsTotal;
+        if(dataRows=="0"){
+            $("#fault").modal('show');
+            return;
+        }
+
+        $.ajax({
+            type:"GET",
+            url:"/RegionBackCaseRecordToPro",
+            data:{"status":"05","group_id":group_id}
+            }).then(function(data){
+                if(data == 1){
+                    $("#fault1").modal('show');
+
+                }else{
+                    $("#fault2").modal('show');
+                    return;
+                }
+
+        });
+    });
+    $("#backOK").click(function () {
+
+        document.location.reload();
+    });
+    $("#backfail").click(function () {
+
+        document.location.reload();
+    });
+</script>
+</html>

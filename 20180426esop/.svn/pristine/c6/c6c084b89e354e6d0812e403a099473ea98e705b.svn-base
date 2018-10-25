@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.service.BankDealDetail_AnnulSvr">
+
+    <!--新增入账反撤申请信息-->
+    <select id="insertAnnulInfo" parameterType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" resultType="int">
+        insert into ep_cap_annul_info (
+        taskOrderId,renling_shenqingdan,applicant,apply_date,out_group,out_grp_no,
+        out_linkman,out_link_phone,out_link_type,out_balance,out_usable_balance,annul_balance,
+        annul_explain,apply_order_status,file,account,userid,arrive_account,arrive_account_name,arrive_date,
+        arrival_amount,billing_date,account_clerk,abstracts,bankformnum,weiyibiaoshima
+        ) values (
+        #{taskOrderId},#{renling_shenqingdan},#{applicant},#{apply_date},#{out_group},#{out_grp_no},#{out_linkman},
+        #{out_link_phone},#{out_link_type},#{out_balance},#{out_usable_balance},#{annul_balance},#{annul_explain},
+        #{apply_order_status},#{file},#{account},#{userid},#{arrive_account},#{arrive_account_name},#{arrive_date},#{arrival_amount},
+        #{billing_date},#{account_clerk},#{abstracts},#{bankformnum},#{weiyibiaoshima}
+        )
+    </select>
+    <!--保存反撤申请单流程发起信息-->
+    <select id="insertWorkFlowInfos" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto" resultType="int">
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{taskOrderId},
+        #{applicantNo},
+        #{nextDealPerson},
+        #{nodeId},
+        #{dealTime},
+        #{approveOpinion},
+        #{memo}
+        )
+    </select>
+    <!--反撤申请列表查询-->
+    <select id="selectAnnulListInfo" parameterType="String" resultType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo">
+        select taskOrderId,applicant,apply_date,out_group,out_grp_no,out_linkman,out_link_phone,
+        out_link_type,out_balance,out_usable_balance,annul_balance,annul_explain,
+        bill,file,account,userid,arrive_account,arrive_account_name,
+        arrive_date,arrival_amount,billing_date,account_clerk,abstracts,t2.login_name,
+        CASE
+        WHEN  apply_order_status='1' THEN '未处理'
+        WHEN  apply_order_status='2' THEN '已处理'
+        WHEN  apply_order_status='3' THEN '作废' END  as apply_order_status
+        from ep_cap_annul_info t1,
+        bs_systemuser_info t2
+        where t1.applicant = t2.staff_code
+        <if test="applicant != ''">
+            and applicant = #{applicant}
+        </if>
+        <if test="apply_order_status !=''">
+            and apply_order_status = #{apply_order_status}
+        </if>
+        <if test="out_group !=''">
+            and out_group = #{out_group}
+        </if>
+        <if test="out_grp_no !=''">
+            and out_grp_no = #{out_grp_no}
+        </if>
+        <if test="start_date != ''">
+            and  apply_date  >= #{start_date}
+        </if>
+        <if test="end_date != ''">
+            and  apply_date  &lt;= #{end_date}
+        </if>
+        ORDER  by apply_date DESC
+    </select>
+    <!--反撤申请表详情页面信息查询-->
+    <select id="getAnnulInfoByTaskOrderId" parameterType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" resultType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo">
+        SELECT
+            a.taskOrderId,
+            a.applicant,
+            a.apply_date,
+            a.out_group,
+            a.out_grp_no,
+            a.out_linkman,
+            a.out_link_phone,
+            a.out_link_type,
+            a.out_balance,
+            a.out_usable_balance,
+            a.annul_balance,
+            a.annul_explain,
+            a.apply_order_status,
+            a.file,
+            a.account,
+            a.userid,
+            a.arrive_account,
+            a.arrive_account_name,
+            a.arrive_date,
+            a.arrival_amount,
+            a.billing_date,
+            d.login_name as account_clerk,
+            a.abstracts,
+            a.bankformnum,
+            f.source_file_name AS fileName,
+            c.login_name
+        FROM
+            ep_cap_annul_info a
+        LEFT JOIN tf_attach_file_info f ON a.file = f.attach_file_id
+        LEFT JOIN  bs_systemuser_info d ON a.account_clerk=d.staff_code,
+         bs_systemuser_info c
+        WHERE
+            c.staff_code = a.applicant
+        and a.taskOrderId=#{taskOrderId}
+    </select>
+
+    <!--查询nodeId-->
+    <select id="getWorkFlowNodeIdByTaskOrderId" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto"  resultType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto">
+        SELECT
+        nodeId
+        FROM
+        ep_work_flow_info b
+        WHERE
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        SELECT
+        max(
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        FROM
+        ep_work_flow_info b
+        WHERE
+        b.taskOrderId = #{taskOrderId} )
+        and b.taskOrderId = #{taskOrderId}
+    </select>
+    <!--更改申请单状态-->
+    <select id="updateAnnulOrderStatus" parameterType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" resultType="int">
+        UPDATE   ep_cap_annul_info SET apply_order_status=#{apply_order_status} where taskOrderId= #{taskOrderId};
+    </select>
+    <!--入账反撤审批信息查询-->
+    <select id="getAnnulApproveQuery" parameterType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" resultType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" >
+        select
+        a.taskOrderId,
+        a.applicant,
+        a.apply_date,
+        a.out_group,
+        a.out_grp_no,
+        a.out_linkman,
+        a.out_link_phone,
+        a.out_link_type,
+        a.out_balance,
+        a.out_usable_balance,
+        a.annul_balance,
+        a.annul_explain,
+        a.account,
+        a.userid,
+        a.arrive_account,
+        a.arrive_account_name,
+        a.arrive_date,
+        a.arrival_amount,
+        a.billing_date,
+        a.account_clerk,
+        a.abstracts,
+        a.bankformnum,
+        c.login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        d.link_name,
+        b.nodeId,
+        f.source_file_name AS fileName,
+        t5.business_center,
+        t5.center_code,
+        t2.fen_gongs,
+        t2.group_pay_code,
+        t3.group_pay_name
+        from
+        ep_cap_annul_info a
+        left join tf_attach_file_info f on a.file = f.attach_file_id
+        left join ep_work_flow_info b on a.taskOrderId = b.taskOrderId
+        left join bs_systemuser_info c on a.applicant = c.staff_code
+        left join bs_staff_info t1 on t1.staff_id = c.staff_id
+        left join se_orgid_rel t2 on t2.fen_gongs = substring(t1.org_id, 1, 8)
+        left join se_group_business_code t3 on t3.group_pay_code = t2.group_pay_code
+        left join se_business_center_staff_rel t4 on t4.staff_code = a.applicant
+        left join se_business_center t5 on t5.center_code = t4.center_code
+        left join ep_work_flow_dict d on b.nodeId = d.link_id
+        where
+        b.dealTime = (
+        select
+        max(e.dealTime)
+        from
+        ep_work_flow_info e
+        where
+        e.taskOrderId = a.taskOrderId
+        )
+        <if test="taskOrderId != '' and taskOrderId !=null and taskOrderId !='null' ">
+            and a.taskOrderId = #{taskOrderId}
+        </if>
+        <if test="startTime != '' and startTime !=null and startTime !='null'">
+            and date_format(a.apply_date,'%Y-%m-%d')  >= #{startTime}
+        </if>
+        <if test="endTime != '' and endTime !=null and endTime !='null'">
+            and date_format(a.apply_date,'%Y-%m-%d')  &lt;= #{endTime}
+        </if>
+        <if test="applicant != '' and applicant !=null and applicant !='null'">
+            and a.applicant = #{applicant}
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson !=null and nextDealPerson  !='null'">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="login_no2 !='' and login_no2 !=null and login_no2 !='null'">
+            and #{login_no2}=(select nextDealPerson from ep_work_flow_info f where nodeId='13' and f.taskOrderId = a.taskOrderId)
+        </if>
+        <if test="root_org_id !='' and root_org_id !=null and root_org_id !='null'">
+            and t2.fen_gongs  = #{root_org_id}
+        </if>
+        <if test="businessCenter !='' and businessCenter !=null and businessCenter !='null'">
+            and t5.center_code = #{businessCenter}
+        </if>
+        <if test="annul_balance_yuan !='' and annul_balance_yuan !=null and annul_balance_yuan !='null'">
+            and a.annul_balance=#{annul_balance_yuan}
+        </if>
+        <if test="file !='' and file !=null and file !='null'">
+            and a.applicant=#{file}
+        </if>
+        <if test="nodeId !='' and nodeId !=null and nodeId !='null'">
+            and b.nodeId=#{nodeId}
+        </if>
+        order by a.apply_date desc
+    </select>
+
+    <!--入账反撤待审批列表信息查询-->
+    <select id="getAnnulDoApproveQuery" parameterType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" resultType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" >
+        select
+        a.taskOrderId,
+        c.login_name as applicant,
+        a.apply_date,
+        a.out_group,
+        a.out_grp_no,
+        a.out_linkman,
+        a.out_link_phone,
+        a.out_link_type,
+        a.out_balance,
+        a.out_usable_balance,
+        a.annul_balance,
+        a.annul_explain
+        from
+        ep_cap_annul_info a,
+        ep_work_flow_info b,
+        bs_systemuser_info c
+        where
+        a.taskOrderId = b.taskOrderId
+        and
+        a.applicant=c.staff_code
+        and
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        select
+        max(
+        str_to_date(
+        e.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        from
+        ep_work_flow_info e
+        where
+        e.taskOrderId = a.taskOrderId
+        )
+        <if test="out_grp_no != ''">
+            and a.out_grp_no = #{out_grp_no}
+        </if>
+        <if test="startTime != ''">
+            and date_format(a.apply_date,'%Y-%m-%d') >= #{startTime}
+        </if>
+        <if test="endTime != ''">
+            and date_format(a.apply_date,'%Y-%m-%d') &lt;= #{endTime}
+        </if>
+        <if test="applicant != ''">
+            and a.applicant = #{applicant}
+        </if>
+        <if test="nextDealPerson != ''">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        order by a.apply_date desc
+    </select>
+
+    <!--过滤正在审批中的入账反撤信息-->
+    <select id="filterOnApproveAnnulInfo" parameterType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" resultType="com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo" >
+        select
+        GROUP_CONCAT(t1.bankformnum SEPARATOR ',') as bankformnum
+        from
+        ep_cap_annul_info t1,
+        ep_work_flow_info t2
+        where
+        t1.taskOrderId = t2.taskOrderId
+        and t2.nodeId = '13';
+    </select>
+
+</mapper>

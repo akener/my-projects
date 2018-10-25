@@ -1,0 +1,95 @@
+package test;
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+import javax.xml.rpc.ParameterMode;
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.apache.axis.encoding.XMLType;
+import org.apache.axis.message.MessageElement;
+import org.apache.axis.types.Schema;
+/**
+ * Created by wangbl on 2017/3/17.
+ */
+public class TestAxis {
+    public static void userAdd() {
+        try {
+            Service service = new Service();
+            Call call = (Call) service.createCall();
+            call.setTargetEndpointAddress(new URL("http://10.117.70.45:8083/admincenter/service/ApplicationAccountWSService"));
+            call.setOperationName(new QName("userAdd","http://service.application.module.iam.boco.com"));
+            call.addParameter("in", XMLType.XSD_STRING, ParameterMode.IN);
+            call.setEncodingStyle("UTF-8");
+            call.setReturnType(XMLType.XSD_SCHEMA);
+
+            String beanXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><request><head><appId>8aeeef423a3f8ffc013a495fdfcd015f</appId><appName>ESOP</appName><requestTime>2017-07-10 16:17:03</requestTime><accId>aavg38</accId><clientIP>10.110.26.23</clientIP><sign>数字签名</sign></head><body><method>userAdd</method><page><totalrow>1</totalrow><pagesize>0</pagesize><currentpage>1</currentpage></page><values><object><parameter><appField>phone</appField><fieldValue>13466866081</fieldValue></parameter><parameter><appField>status</appField><fieldValue>1</fieldValue></parameter><parameter><appField>reloginflag</appField><fieldValue>Y</fieldValue></parameter><parameter><appField>allowend</appField><fieldValue>20500630</fieldValue></parameter><parameter><appField>userid</appField><fieldValue>aavg90</fieldValue></parameter><parameter><appField>rolecode</appField><fieldValue>02</fieldValue></parameter><parameter><appField>allowbegin</appField><fieldValue>20160630</fieldValue></parameter><parameter><appField>passWord</appField><fieldValue>abc123</fieldValue></parameter><parameter><appField>ipbindflag</appField><fieldValue>N</fieldValue></parameter><parameter><appField>bindip</appField><fieldValue>10.110.26.23</fieldValue></parameter><parameter><appField>groupId</appField><fieldValue>10031</fieldValue></parameter><parameter><appField>username</appField><fieldValue>test</fieldValue></parameter><parameter><appField>userpassword</appField><fieldValue>abc123</fieldValue></parameter><parameter><appField>email</appField><fieldValue>www.sitech.com</fieldValue></parameter><parameter><appField>regioncode</appField><fieldValue>01</fieldValue></parameter></object></values></body></request>";
+            System.out.println("客户端发送："+beanXml);
+            Object o = call.invoke(new Object[] { beanXml });
+            Schema schema = (Schema) o;
+            MessageElement[] messageElements = schema.get_any();
+            StringBuffer str = new StringBuffer("");
+            for (MessageElement m : messageElements) {
+                str.append(m.toString());
+            }
+            System.out.println("客户端接受："+str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] params) {
+        try {
+
+            TestAxis.userAdd();
+            /*String endpoint =
+                    "http://localhost:8082/esop/ESOPSrv";
+
+            Service service = new Service();
+            Call call    = (Call) service.createCall();
+
+            call.setTargetEndpointAddress( new java.net.URL(endpoint) );
+            //call.setOperationName("getVersion");
+            //Call e = new Call(args[0]);
+            call.addParameter("str", //参数名
+                    org.apache.axis.encoding.XMLType.XSD_STRING,//参数类型:String
+                    javax.xml.rpc.ParameterMode.IN);
+            //String str="test axisqwertt";
+            String str= "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+                    +"<Message xmlns=\"http://nm.cmcc.com/PCMP/ESOPSrv/ESOPMethod/ESOP000001/\">"
+                    +"    <Header>"
+                    +"        <AppID>PCMP</AppID>   <!-- 消费方应用标识 -->"
+                    +"               <Provide_AppID>ESOP</Provide_AppID>   <!-- 提供方应用标识 -->"
+                    +"    </Header>"
+                    +"    <Body>"
+                    +"        <prod_id>PD_002</prod_id>  <!-- 产品id,不可为空 -->"
+                    +"        <link_id>L_004</link_id>   <!-- 环节id,不可为空,且值必须是L_003 -->"
+                    +"        <main_depart>集客部</main_depart>  <!-- 主办部门 -->"
+                    +"        <apply_person>张三</apply_person>  <!-- 申请人 -->"
+                    +"        <apply_date>2017-03-15</apply_date>  <!-- 申请日期 -->"
+                    +"        <file_no>00000001</file_no>  <!-- 文件编号 -->"
+                    +"        <file_title>发展云企信业务SI申请</file_title>      <!-- 文件标题 -->"
+                    +"        <ass_points>89</ass_points> "
+                    +"        <review_file_id>9876543210.doc</review_file_id>  <!-- 审批单上传存放文件名称 -->"
+                    +"        <review_file_name>发展云企信业务产品方案审批单信息.doc</review_file_name>  <!-- 审批单上传真实文件名称 -->"
+                    +"        <si_material>1234567890.doc</si_material>       <!-- SI申请材料存放文件名称 -->"
+                    +"        <si_material_name>SI申请材料文档.doc</si_material_name>  <!-- SI申请材料真实文件名称 -->"
+                    +"        <colusion_opinion>0</colusion_opinion>  <!-- 结论意见 -->"
+                    +"    </Body>"
+                    +"</Message>";
+            String result = (String)call.invoke( "ESOPMethod", (new Object[]{str}));
+
+            System.out.println("结果："+result);*/
+            //String ret = (String) call.invoke( new Object[] { "Hello!" } );
+            //String ret = (String) call.invoke("hello-world", "helloWorld", null);
+
+            //System.out.println("Got '" + ret + "'");
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+    }
+}

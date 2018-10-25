@@ -1,0 +1,40 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+public class OrgAndCenterDto {
+    private String group_pay_code;//分公司编码
+    private String group_pay_name;//分公司名称
+    private String center_code;//行业中心编码
+    private String business_center;//行业中心
+
+    public String getGroup_pay_code() {
+        return group_pay_code;
+    }
+
+    public void setGroup_pay_code(String group_pay_code) {
+        this.group_pay_code = group_pay_code;
+    }
+
+    public String getGroup_pay_name() {
+        return group_pay_name;
+    }
+
+    public void setGroup_pay_name(String group_pay_name) {
+        this.group_pay_name = group_pay_name;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+}

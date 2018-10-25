@@ -1,0 +1,246 @@
+function chooseStep() {
+    if($("#stepId").val()=="2"){
+        $("#advice").html("是否受理：");
+        $("#advice2").html("业务受理意见");
+        $("#idea5").empty();
+        $("#idea5").append("<option value=''>-请选择-</option>"+"<option value='1'>是 </option>"+"<option value='0'>否</option>")
+    }
+}
+
+function getRemark5() {
+    $(".ASSIGNEE").empty();
+    getNextStep();
+    idea=$("#idea5 option:selected").val();
+    if($("#stepId").val()=="2" ){
+        $("#next_deal").css("display","none");
+    }
+    if(idea=="0"){
+        $("#next_deal").css("display","");
+    }
+    if(idea=="1"){
+        idea="同意";
+    }else{
+        idea="退回";
+    }
+    $("#remark5").val(idea);
+
+}
+function getNextStep(){
+    b=$("#stepId").val();
+    var t={};
+
+    key="isPass_"+b;
+    value=$("#idea5 option:selected").val();
+    t[key]=value;
+
+    key1="procId";
+    value1=$("#procId").val();
+    t[key1]=value1;
+
+    key2="procNameEn";
+    value2=$("#procNameEn").val();
+    t[key2]=value2;
+
+    key3="stepId";
+    value3=$("#stepId").val();
+    t[key3]=value3;
+
+    key4="bizRecordId";
+    value4=$("#bizRecordId").val();
+    t[key4]=value4;
+
+    key5="procInstId";
+    value5=$("#procInstId").val();
+    t[key5]=value5;
+
+    key6="regionId";
+    value6=$("#regionId").val();
+    t[key6]=value6;
+    console.log(value+"=="+value1+"=="+value2+"=="+value3+"=="+value4+"=="+value5+"=="+value6)
+
+    $.ajax({
+        type: 'POST',
+        url: '/orderflow/getNextSteps',
+        data:t,
+        success: loadNexttStepsHandler
+    });
+
+}
+
+function loadNexttStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    var stepList = data.stepList[0];
+    $("#next_deal5").val(stepList.ctProcStepRel.stepName);
+    //  alert(stepList.ctProcStepRel.stepName);
+    // $('#next_stepName').text(stepList.ctProcStepRel.stepName);
+
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+        $(".ASSIGNEE").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+    }
+    var changeId="ASSIGNEE_"+stepList.ctProcStepRel.stepId;
+    $(".ASSIGNEE").attr("id",changeId);
+}
+
+
+
+
+function  dealTask2(){
+    var idea5 = $("#idea5").val();
+    var remark5 = $("#remark5").val();
+
+    if(idea5==null||$.trim(idea5)==''){
+        alert('请输入审核意见或受理意见！');
+        $("#idea5").focus();
+        return;
+    }
+    if(remark5==null||$.trim(remark5)==''){
+        alert('请输入备注！');
+        $("#remark5").focus();
+        return;
+    }
+    //退回要改变订单的字段
+    if ($("#idea5 ").val() == "0") {
+        // updateOrderState();
+    }
+    //受理时，要改变的字段
+    if ($("#idea5 ").val() == "1" && $("#stepId").val() == "1") {
+        // updateInstState2();
+    }
+
+    var t = {};
+
+    key = "procInstId";
+    value = $("#procInstId").val();
+    t[key] = value;
+
+    key1 = "taskInstId";
+    value1 = $("#taskInstId").val();
+    t[key1] = value1;
+
+    key2 = "taskId";
+    value2 = $("#taskId").val();
+    t[key2] = value2;
+
+    key3 = "stepId";
+    value3 = $("#stepId").val();
+    t[key3] = value3;
+
+    key4 = "procId";
+    value4 = $("#procId").val();
+    t[key4] = value4;
+
+    key5 = "dealOpinion";
+    value5 = $("#idea5 option:selected").text().trim();
+    t[key5] = value5;
+
+    key6 = "remark5";
+    value6 = $("#remark5").val();
+    t[key6] = value6;
+
+    key6 = "isPass_" + $("#stepId").val();
+    value6 = $("#idea5 option:selected").val();
+    t[key6] = value6;
+
+
+    key7 = "ASSIGNEE_" + $(".ASSIGNEE").attr("id");
+    value7 = $(".ASSIGNEE").val();
+    t[key7] = value7;
+    //订单受理需要信息
+    key8= "contract_id";
+    value8 = $("#contract_id").val();
+    t[key8] = value8;
+
+    key9 = "request_num";
+    value9 = $("#request_num").val();
+    t[key9] = value9;
+
+
+    if ($("#idea5 ").val() == "1" && $("#stepId").val() == "2"){
+        $.ajax({
+            url:"saveOpenGroupProdNew",
+            type:"POST",
+            data:t,
+            success: function (result) {
+                if(result=="1"){
+                    alert("集团产品开户成功！");
+                    open(location, '_self').close();
+                }else
+                    alert("集团产品开户失败！");
+            }
+        });
+    }else{
+        $.ajax({
+            url: "/orderflow/submitTask",
+            type: "post",
+            "data": t,
+            success: function (data) {
+                if(data=="0"){
+                    alert("流程处理成功！！");
+                    open(location, '_self').close();
+                }
+                else
+                    alert("流程处理失败！！");
+            }
+        });
+    }
+}
+function updateInstState2() {
+    $.ajax({
+        url: "/updateInstState",
+        type: "post",
+        "data": {
+            "request_num": request_num,
+            "source_id": source_id,
+            "audit_no": loginCode,
+            "oper_no": loginCode,
+            // "notes": $("#remark5").val(),
+        }
+    });
+}
+
+function overOrder() {
+    if ($("#idea5 ").val() == "1" && $("#stepId").val() == "2"){
+        $.ajax({
+            type: "post",
+            url: "/saveOpenGroupProdNew",
+            data: {
+                "request_num":$("#request_num").val(),
+                "contract_id":$("#contract_id").val(),
+            },
+            success: function (result) {
+                console.log(result);
+                if(result=="1")
+                    alert("集团产品开户成功！");
+                open(location, '_self').close();
+            }
+        })
+     }
+    else{
+        alert("流程处理成功！！");
+        open(location, '_self').close();
+    }
+}
+
+function updateOrderState() {
+
+    $.ajax({
+        url: "/updateModifyState",
+        type: "post",
+        "data": {
+            "request_num": request_num,
+            "source_id": source_id,
+            "modify_no": $(".ASSIGNEE").val(),
+            "audit_no": loginCode,
+            "oper_no": loginCode,
+            // "notes": $("#remark5").val(),
+        },
+        success: function (result) {
+
+        },
+
+    });
+
+}
+
+

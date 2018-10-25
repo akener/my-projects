@@ -1,0 +1,224 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>客户经理监控单</title>
+
+</head>
+<body>
+
+<div style="height: 50%">
+    <table class="table table-bordered" id="order" style="margin-top: 30px;">
+        <thead>
+        <tr bgcolor="#C7EDCC" id="thRegion">
+            <th class="col-lg-1">客户经理</th>
+            <th class="col-lg-1">工号</th>
+            <th class="col-lg-1">4G套餐变更办理量</th>
+            <th class="col-lg-1">4G套餐变更完成率</th>
+            <th class="col-lg-1">4G终端销售量</th>
+            <th class="col-lg-1">4G终端销售完成率</th>
+            <th class="col-lg-1">开户量</th>
+            <th class="col-lg-1">开户完成率</th>
+            <th class="col-lg-1">4G上网客户数</th>
+            <th class="col-lg-1">4G上网客户完成率</th>
+            <th class="col-lg-1">宽带发展量</th>
+            <th class="col-lg-1">宽带完成率</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+<div id="selfId" style="display: none">
+    <div>
+        <h4>客户经理任务量</h4>
+    </div>
+    <table class="table table-bordered" id="ownerInfo" style="margin-top: 30px;">
+        <thead>
+        <tr bgcolor="#C7EDCC">
+            <th class="col-lg-1">客户经理</th>
+            <th class="col-lg-1">工号</th>
+            <th class="col-lg-1">4G套餐变更量</th>
+            <th class="col-lg-1">4G终端销售量</th>
+            <th class="col-lg-1">开户量</th>
+            <th class="col-lg-1">4G上网客户数</th>
+            <th class="col-lg-1">宽带发展量</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div style="height: 50%">
+    <table class="table table-bordered" id="extra" style="margin-top: 60px;">
+        <thead>
+        <tr bgcolor="#C7EDCC" >
+            <th class="col-lg-1">客户经理</th>
+            <th class="col-lg-1">工号</th>
+            <th class="col-lg-1">现场办公次数</th>
+            <th class="col-lg-1">现场办公完成率</th>
+            <th class="col-lg-1">签约(家)</th>
+            <th class="col-lg-1">签约完成率</th>
+            <th class="col-lg-1">欠费回收</th>
+            <th class="col-lg-1">欠费回收完成率</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+</div>
+
+
+<div style="text-align: center">
+    <input id="group_id" name="group_id" type="hidden" value="${group_id}"><!-- 当前区县编码 -->
+    <input type="hidden" id="role_code" value="${role_code}"> <!--角色编码-->
+    <input type="hidden" id="login_no" value="${login_no}">
+</div>
+
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var extraTable;
+
+    window.onload=function () {
+        //客户经理现场办公,签约,欠费回收
+        extraTable = $('#extra').DataTable({
+            dom: "Bfrtip",
+            bLengthChange: true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax: {
+                url: "/getMngExtra",
+                type: "POST",
+                data: {
+                    "group_id":$("#group_id").val(),
+                    "role_code":$("#role_code").val(),
+                    "service_no":$("#login_no").val()
+
+                }
+            },
+            columns: [
+                {data: "name"},
+                {data: "service_no"},
+                {data: "workCount"},
+                {data: "workPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }},
+                {data: "sign"},
+                {data: "signPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }},
+                {data: "recover"},
+                {data: "recoverPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }}
+            ],
+            select: true,
+            buttons: []
+        });
+        var roleFlag=$("#role_code").val();
+        if(roleFlag=='07'){
+            $("#selfId").show();
+            extraTable = $('#ownerInfo').DataTable({
+                dom: "Bfrtip",
+                bLengthChange: true,
+                "bFilter": false,
+                "pageLength": 3,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    url: "/getCustSerfOrderInfo",
+                    type: "POST",
+                    data: {
+                        "service_no":$("#login_no").val()
+                    }
+                },
+                columns: [
+                    {data: "region_name"},
+                    {data: "region_no"},
+                    {data: "pack"},
+                    {data: "termi"},
+                    {data: "open_amout"},
+                    {data: "cust"},
+                    {data: "broad"}
+
+                ],
+                select: true,
+                buttons: []
+            });
+        }
+    }
+
+    var orderTable;
+    $(document).ready(function () {
+        //查询客户经理任务完成量
+        orderTable = $('#order').DataTable({
+            dom: "Bfrtip",
+            bLengthChange: true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax: {
+                url: "/getMngWorkCnt",
+                type: "POST",
+                data: {
+                    "group_id":$("#group_id").val(),
+                    "role_code":$("#role_code").val(),
+                    "service_no":$("#login_no").val()
+                }
+            },
+            columns: [
+                {data: "manager_name"},
+                {data: "manager_no"},
+                {data: "change_amount"},
+                {data: "packPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }},
+                {data: "termi_amount"},
+                {data: "termiPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }},
+                {data: "open_amount"},
+                {data: "openPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }},
+                {data: "web_amount"},
+                {data: "custPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }},
+                {data: "broad_dep_amount"},
+                {data: "broadPercent","fnCreatedCell":function (td) {
+                    $(td).text($(td).text()+"%");
+                }}
+            ],
+            select: true,
+            buttons: []
+        });
+
+
+    })
+
+</script>
+</html>

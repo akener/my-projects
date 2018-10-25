@@ -1,0 +1,19 @@
+/**
+ * BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpService.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
+package com.esop.bwossrv.controller;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public interface BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpService extends javax.xml.rpc.Service {
+    public String getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPortAddress();
+
+    public BwosWebSrvPortType getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPort() throws javax.xml.rpc.ServiceException;
+
+    public BwosWebSrvPortType getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
+}

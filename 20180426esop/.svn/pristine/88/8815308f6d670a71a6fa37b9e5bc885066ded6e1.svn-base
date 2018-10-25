@@ -1,0 +1,198 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.GetBossToken;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.HttpMsgSend;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.PropertiesUtil;
+import com.esop.cqDevelopment.elecPack.dto.AcountManageDto;
+import com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.OrTemplateAttrDto;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.apache.axis.utils.StringUtils;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * Created by MaiBenBen on 2017/12/6.
+ */
+@Repository
+public class AcountManageService {
+    private  String url="http://10.191.143.60:7301/openapi/httpService/UserOrderService";
+    public static Logger logger = Logger.getLogger(AcountManageService.class);
+    @Autowired
+    PropertiesUtil propUtil;
+
+    @Autowired
+    OrRequestDetailInfoService service; //订单主表
+    @Autowired
+    OrRequestinstInfoService service1;//订单详情
+    @Autowired
+    OrTemplateAttrService templateService;//末班
+    @Autowired
+    SeElecPackRecordTracService recordtraceservie;
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    @Autowired
+    SqlE sqlE;
+
+
+
+    /**
+     *
+     * @param acountManageDto
+     * @return 查詢賬號管理界面
+     */
+    public Result finpageAcountMage(AcountManageDto acountManageDto){
+        Result result=  sqlE.selectPage("selectacountManageInfo",acountManageDto);
+        return  result;
+    }
+
+
+
+    //订单发起
+    public List<AcountManageDto>  findDetaile(AcountManageDto acountManageDto){
+        //查询账户信息
+        List<AcountManageDto>  acountManageDt= sqlE.selectM("selectacountManageInfo",acountManageDto);
+        return  acountManageDt;
+    }
+
+    //擦寻订单相详情
+    public  AcountManageDto  findDetailes(AcountManageDto  acountManageDto){
+        //查询账户信息
+        AcountManageDto acountManageDt= sqlSessionTemplate.selectOne("selectacountManageInfo",acountManageDto);
+        return  acountManageDt;
+    }
+
+    //修改更新訂
+
+    public void updatorderinfo(AcountManageDto acountManageDto){
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+
+        dto1.setRequest_num(acountManageDto.getBak1()); //訂單編號
+        sqlSessionTemplate.update("updateQueryOneRequest",dto1);
+    }
+
+
+    //修改更新和访问 接口
+    public void updatorderderInrtface(AcountManageDto acountManageDto){
+        if( acountManageDto.getState()!=null && acountManageDto.getState().equals("2") &&!acountManageDto.getChose().equals("0")){
+            AcountManageDto  agedto=new AcountManageDto();
+            agedto.setId(acountManageDto.getId());
+            AcountManageDto acountManageDt= sqlSessionTemplate.selectOne("selectacountManageInfo",agedto);
+
+            JSONObject jsonObject = new JSONObject();
+             jsonObject.put("REGION", "230");//地市
+             jsonObject.put("GROUPACCTID", acountManageDt.getAccount_code());//集团账户编码
+             jsonObject.put("PAYCYCLE", acountManageDt.getPay_cycle());//集团缴费期
+             jsonObject.put("GROUPCUSTID",acountManageDt.getGrp_subsid() );//集团客户编码*//*
+             String token = propUtil.getBossToken(); //获取bosstoken
+             logger.info(jsonObject);
+             String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss") , "UserOrderService",token,"setGroupAcctPaycycle");
+             logger.info(reqIp);
+             String result=  new HttpMsgSend().sendHttpMsg(reqIp,jsonObject.toString());
+             logger.info(result);
+             try{
+                if(!StringUtils.isEmpty(result)){
+                    JSONObject json = new JSONObject(result);
+                    String  resuil=json.getString("res_code");
+                    recordtraceservie.insertRecord(jsonObject.toString(),result,new Date(),resuil,"缴费周期设置","true");
+                 }
+             }catch (Exception e){
+                    logger.info(e);
+
+             }
+
+
+        }
+        //查询账户信息
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+
+        dto1.setRequest_num(acountManageDto.getBak1()); //訂單編號
+        sqlSessionTemplate.update("updateQueryOneRequest",dto1);
+    }
+
+
+
+
+    //保存订单信息
+    public  String  SaveOderinfor( AcountManageDto acountManageDto){
+
+        AcountManageDto acounts= new AcountManageDto();
+        acounts.setId(acountManageDto.getId());
+        //查询账户信息
+        AcountManageDto  acount=sqlSessionTemplate.selectOne("selectacountManageInfo",acounts);
+        Integer template_id=10002;//模板ID
+        String request_num=new Date().getTime()+"";
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        //写数据到订单附表
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            if (temp.getAttr_code().equals("region")){
+                dto.setAttr_value("CQ.CQ");//地市
+            }
+            if (temp.getAttr_code().equals("group_acct_id")){
+                dto.setAttr_value(acount.getAccount_code());//集团账户编码
+            }
+            if (temp.getAttr_code().equals("pay_cycle")){
+                dto.setAttr_value(acount.getPay_cycle());//缴费周期
+            }
+            if (temp.getAttr_code().equals("grp_subsid")){
+                dto.setAttr_value(acount.getGrp_subsid());//集团产品用户编码(crm产品编码）
+            }
+
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setRequest_num(request_num);//订单号
+            service.InsertOrRequestDetailInfoDto(dto);//保存订单详情
+        }
+        //保存到订单
+
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        Date now=new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String now1=sdf.format(now);
+        dto1.setAudit_date(now1);
+        dto1.setCreate_date(now1);
+        dto1.setInvali_date(now1);
+        dto1.setEff_date(now1);
+        dto1.setRequest_num(request_num);//订单号
+        dto1.setRequest_template_id(template_id);//订单模板id
+        dto1.setOp_code("10002");//业务类型
+        dto1.setOrder_title(acountManageDto.getBak1());//工单标题
+        dto1.setUnion_name("重庆华为");//集团名称
+        dto1.setCreate_no("123545");//操作工号
+        dto1.setCreate_name("王三"); //操作工号姓名
+        dto1.setDepert_id("设计部");//订单发起归属部门
+        dto1.setSource_id(String.valueOf(acount.getId())); //业务id
+        dto1.setNotes(acountManageDto.getBak2());  //備註
+        dto1.setState("0");//状态id
+        dto1.setUnion_name(acount.getAccount_name());//集团账户名称
+        dto1.setUnion_code(acount.getAccount_code());//集团账户编码
+        int i= service1.insertOrRequestinstInfoDto(dto1);
+        acount.setBak1("1");
+        //更新状态
+        acount.setPay_cycle(acountManageDto.getPay_cycle());//缴费周期
+        sqlSessionTemplate.update("updateaccountinfo",acount);
+        return request_num;
+
+    }
+
+
+
+
+}

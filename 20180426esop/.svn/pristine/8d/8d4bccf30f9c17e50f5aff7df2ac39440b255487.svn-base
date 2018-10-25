@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <select id="getProductDict" parameterType="com.esop.productInfo.dto.ProductDictDto"
+            resultType="com.esop.productInfo.dto.ProductDictDto">
+        select first_type,first_name,secondary_type,secondary_name,prod_id,prod_name,del_flag from ep_prd_product_dict
+        where del_flag=1
+        <if test="first_type != ''">
+            and first_type=#{first_type}
+        </if>
+        <if test="secondary_type != ''">
+            and secondary_type=#{secondary_type}
+        </if>
+        <if test="prod_id != ''">
+            and prod_id=#{prod_id}
+        </if>
+        order by first_type,secondary_type
+    </select>
+    <select id="getProductDictAll" parameterType="com.esop.productInfo.dto.ProductDictDto"
+            resultType="com.esop.productInfo.dto.ProductDictDto">
+        select first_type,first_name,secondary_type,secondary_name,prod_id,prod_name,del_flag from ep_prd_product_dict
+        where 1=1
+        <if test="first_type != ''">
+            and first_type=#{first_type}
+        </if>
+        <if test="secondary_type != ''">
+            and secondary_type=#{secondary_type}
+        </if>
+        <if test="prod_id != ''">
+            and prod_id=#{prod_id}
+        </if>
+        order by first_type,secondary_type
+    </select>
+    <select id="deleteProductDict" parameterType="com.esop.productInfo.dto.ProductDictDto" resultType="int">
+        delete ep_prd_product_dict  where prod_id=#{prod_id} and del_flag=0
+    </select>
+    <select id="insertProductDict" parameterType="com.esop.productInfo.dto.ProductDictDto" resultType="int">
+        insert into ep_prd_product_dict(first_type,first_name,secondary_type,secondary_name,prod_id,prod_name,del_flag)
+         values (#{first_type},#{first_name},#{secondary_type},#{secondary_name},#{prod_id},#{prod_name},#{del_flag})
+    </select>
+    <select id="updateProductDict" parameterType="com.esop.productInfo.dto.ProductDictDto" resultType="int">
+        update ep_prd_product_dict set first_type=#{first_type},first_name=#{first_name},
+        secondary_type=#{secondary_type},secondary_name=#{secondary_name},del_flag=#{del_flag},
+        prod_name=#{prod_name}  where prod_id=#{prod_id}
+    </select>
+    <select id="updateProductDictDelFlag" parameterType="com.esop.productInfo.dto.ProductDictDto" resultType="int">
+        update ep_prd_product_dict set del_flag=1 where prod_id=#{prod_id}
+    </select>
+    <select id="getMaxProdId" parameterType="com.esop.productInfo.dto.ProductDictDto"
+            resultType="com.esop.productInfo.dto.ProductDictDto">
+        select max(prod_id) prod_id from ep_prd_product_dict
+    </select>
+    <!--获取最大批次号-->
+    <select id="getMaxBatchId" parameterType="com.esop.productInfo.dto.StateInfoDto"
+            resultType="int">
+        select decode(max(batch_id),null,0,max(batch_id))+1 batch_id from ep_prd_state_info where prod_id=#{prod_id}
+    </select>
+    <!--通过产品编码查询对应的已流转完成的环节-->
+    <select id="getLinkIdsByProdId" parameterType="com.esop.productInfo.dto.StateInfoDto"
+            resultType="com.esop.productInfo.dto.StateInfoDto">
+        select b.link_id,b.batch_id
+        from ep_prd_state_info a,ep_prd_programreview_info b where a.batch_id=b.batch_id --and a.link_id &lt;30
+        and a.prod_id=b.prod_id and a.prod_id=#{prod_id} order by link_id
+    </select>
+    <!--通过产品编码查询当前流转到的环节-->
+    <select id="getLinkIdingByProdId" parameterType="com.esop.productInfo.dto.StateInfoDto"
+            resultType="int">
+        select decode(max(b.link_id),null,1,max(b.link_id)) link_id from ep_prd_state_info a,ep_prd_pdlink_dict b
+        where (a.link_id+1)>= b.choose_link_id
+        and a.prod_id=#{prod_id}
+    </select>
+    <select id="insertStateInfo" parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="int">
+        insert into ep_prd_state_info(batch_id,prod_id,link_id)
+        values (#{batch_id},#{prod_id},#{link_id})
+    </select>
+    <!--查询产品一体化审批环节信息-->
+    <select id="selectProgramReviewInfo"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="com.esop.productInfo.dto.InterfaceParameterDto" >
+        select a.batch_id,a.prod_id,b.prod_name,a.link_id,main_depart,apply_person,apply_date,file_no,
+        file_title,colusion_opinion,review_opinion,review_file_id,prod_plan,ass_points,
+        si_material,project_basis,cons_situation,operation_support,accept_report,file_added,online_document,work_log,
+        prod_ass,summary_meeting,offline_document,contract_type,contract_id,contract_name,contract_amount,
+        contract_term,supplier_name,legal_rep,tax_num,contract_person,contract_phone,account_name,account_no,
+        contract_rel,frame_no,frame_name,frame_date,upper_amount,sign_amount,current_amount,fram_contract_term,
+        purchase_name,draft_person,draft_part,sign_date,commit_term,settle_name,settle_date,
+        settle_cycle,supplier_id,unit_account,price,tax,this_price,this_tax,project_name,approved_results,
+        annex,note,
+        create_login,create_date from  ep_prd_programreview_info a,ep_prd_product_dict b
+        where a.prod_id=#{prod_id} and a.link_id=#{link_id} and a.batch_id=#{batch_id} and a.prod_id=b.prod_id and b.del_flag=1
+    </select>
+    <select id="updateProgramReviewInfoAnnexAndnote"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="com.esop.productInfo.dto.InterfaceParameterDto" >
+        update ep_prd_programreview_info set
+        annex=#{annex},note=#{note},
+        <if test="cons_situation != ''">
+           cons_situation=#{cons_situation},
+        </if>
+        update_date=sysdate
+        where batch_id=#{batch_id} and prod_id=#{prod_id} and link_id=#{link_id}
+    </select>
+    <select id="selectStateInfoLinkId"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="int" >
+        select decode(link_id,null,0,link_id) link_id from ep_prd_state_info  where batch_id=#{batch_id} and prod_id=#{prod_id}
+    </select>
+    <select id="selectProductComplaints" parameterType="com.esop.productInfo.dto.ProductComplaintsDto" resultType="com.esop.productInfo.dto.ProductComplaintsDto" >
+    select order_no,comp_phone,grp_meb_type,group_name,accept_time,buss_content from ep_complaint a,ep_prd_productComplaints_rela b
+    where a.BUSS_TYPE=b.complaint and b.prod_id=#{prod_id}
+    </select>
+    <select id="selectRemindInfo" parameterType="com.esop.productInfo.dto.ProductRemindInfoDto" resultType="com.esop.productInfo.dto.ProductRemindInfoDto" >
+        select remind_id,remind_type,prod_name,remind_note,remind_date from ep_prd_remind_info
+        where handle_flag=0
+    </select>
+    <select id="updateRemindInfoById" parameterType="com.esop.productInfo.dto.ProductRemindInfoDto" resultType="int" >
+        update ep_prd_remind_info set handle_note=#{handle_note},handle_flag=1,handle_date=sysdate
+        where remind_id=#{remind_id}
+    </select>
+    <select id="updateRemindInfo" parameterType="com.esop.productInfo.dto.ProductRemindInfoDto" resultType="int" >
+        update ep_prd_remind_info set handle_flag=1,handle_date=sysdate
+        where prod_id=#{prod_id} and remind_type=#{remind_type}
+    </select>
+    <select id="isProductManager" parameterType="com.esop.productInfo.dto.ProductRemindInfoDto" resultType="int" >
+        select count(*) from ep_sys_loginmsg_new t
+        where t.role_code = '02' and t.group_id = '10014' and login_no=#{landing_no}
+    </select>
+</mapper>

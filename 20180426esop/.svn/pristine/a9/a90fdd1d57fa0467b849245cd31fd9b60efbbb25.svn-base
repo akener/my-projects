@@ -1,0 +1,150 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/public_include.jsp"%>
+    <title>成员订单详情</title>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团单位名称：</th>
+                            <td style="color:#1792CD;" id="jtName"></td>
+                            <th>集团编码：</th>
+                            <td style="color:#1792CD;" id="jtCode"></td>
+                            <th>合同编号：</th>
+                            <td style="color:#1792CD;" id="htNo"></td>
+                        </tr>
+                        <tr>
+                            <th>产品名称：</th>
+                            <td style="color:#1792CD;" id="proName"></td>
+                            <th>成员姓名：</th>
+                            <td style="color:#1792CD;" id="cyName"></td>
+                            <th>成员号码：</th>
+                            <td style="color:#1792CD;" id="cyNo"></td>
+                        </tr>
+                        <tr>
+                            <th>订单标题：</th>
+                            <td style="color:#1792CD;" id="orderTitle"></td>
+                            <th>订单类型：</th>
+                            <td style="color:#1792CD;" colspan="3" id="orderType"></td>
+                        </tr>
+                        <tr>
+                            <th>订单说明：</th>
+                            <td style="color:#1792CD;" colspan="5" id="orderDesc"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单流程处理轨迹</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" width="100%;">
+                        <tbody id="trancesTb">
+                        <tr>
+                            <th>任务编号</th>
+                            <th>任务名称</th>
+                            <th>处理人</th>
+                            <th>处理时间</th>
+                            <th>处理意见</th>
+                            <th>处理备注</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--审核受理-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>审核意见</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>审核意见：</th>
+                            <td colspan="3">
+                                <select class="select-style-1" onchange="getRemark5()" id="idea5">
+                                    <option value="">
+                                        -请选择-
+                                    </option>
+                                    <option value="1">同意</option>
+                                    <option value="0">退回</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注：</th>
+                            <td colspan="3">
+                                <textarea rows="3" class="ui-text form-ctrl" style="width:60%;" id="remark5"></textarea>
+                            </td>
+                        </tr>
+                        <tr class="tr-data-cc" id="next_deal">
+                            <th>下一环节：</th>
+                            <td>
+                                <input type="text" class="input-sty04 form-ipt" id="next_deal5" readonly="readonly">
+                            </td>
+                            <th>下一环节处理人：</th>
+                            <td>
+                                <select class="ASSIGNEE">
+                                    <option selected="selected" value="">请选择</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="dealTask();" id="dealTaskId">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="procInstId" type="hidden" value="${proc_inst_id}"/>
+<input id="taskInstId" type="hidden" value="${task_inst_id}"/>
+<input id="taskId" type="hidden" value="${task_id}"/>
+<input id="stepId" type="hidden" value="${step_id}"/>
+<input id="procId" type="hidden" value="${proc_id}"/>
+<input id="procNameEn" type="hidden" value="${proc_name_en}"/>
+<input id="bizRecordId" type="hidden" value="${biz_record_id}"/>
+<input id="regionId" type="hidden" value="CQ.CQ"/>
+<input id="proId" type="hidden" value="">
+<input id="memId" type="hidden" value="">
+<input id="memStatus" type="hidden" value="">
+<input id="request_num" type="hidden" value="${request_num}">
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/orderDetail.js"></script>
+</body>
+</html>

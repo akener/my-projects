@@ -1,0 +1,37 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Created by MaiBenBen on 2017/12/13.
+ */
+@Repository
+public class SeContractInfoService {
+
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+
+    //查询订单代办
+    public Result finpageAcountMage(SeContractInfoDto seContractInfoDto){
+        Result result=  sqlE.selectPage("SeContractInfoDto",seContractInfoDto);
+        return  result;
+    }
+
+    //查询当前选择代办记录
+    public SeContractInfoDto selectOne(SeContractInfoDto seContractInfoDto){
+        SeContractInfoDto seContra= sqlSessionTemplate.selectOne("SeContractInfoDto",seContractInfoDto);
+        return  seContra;
+    }
+
+    public SeContractInfoDto getProcInstId(SeContractInfoDto seContractInfoDto) {
+        seContractInfoDto = sqlSessionTemplate.selectOne("getProcInstId", seContractInfoDto);
+        return seContractInfoDto;
+    }
+}

@@ -1,0 +1,372 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>绩效情况</title>
+</head>
+<body class="bg-ff">
+<input type="hidden" id="org_code" value="${group_id}">
+<!-- 提示信息 -->
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="main pd-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box overh">
+            <div id = "selectDiv" class="form-inline">
+                <select id="region_code" class="form-control" onchange="getTown()">
+                    <option value = "">全省</option>
+                    <option value = "10031">哈尔滨</option>
+                    <option value = "10032">齐齐哈尔</option>
+                    <option value = "10033">牡丹江</option>
+                    <option value = "10034">佳木斯</option>
+                    <option value = "10035">双鸭山</option>
+                    <option value = "10036">七台河</option>
+                    <option value = "10037">鸡西</option>
+                    <option value = "10038">鹤岗</option>
+                    <option value = "10039">伊春</option>
+                    <option value = "10040">黑河</option>
+                    <option value = "10041">绥化</option>
+                    <option value = "10042">大兴安岭</option>
+                    <option value = "10043">大庆</option>
+                </select>
+                <select id="town_code" class="form-control" onchange="getExamineName()"></select>
+                <select id="examine_name" class="form-control"></select>
+                <button id="selBtn" class="btn btn-info" onclick="selectBtn()">查询</button>
+            </div>
+            <div id="tableDiv" class="hidden mgl-10 mgr-10">
+                <div class="row col-12 bg-white">
+                    <div class="market-name-box pdlr-10 clearfix">
+                        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+                    </div>
+                </div>
+                <div  class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <div class="active-cost-box" >
+                            <%--<div  class="hidden">--%>
+                                <table id="retentionRate" class="cost-table" cellspacing="0"  width="100%">
+                                    <thead>
+                                        <tr>
+                                           <%-- <th class="text-center">地市</th>
+                                            <th class="text-center">区县</th>--%>
+                                            <th class="text-center">员工编号</th>
+                                            <th class="text-center">员工姓名</th>
+                                            <th class="text-center">分数</th>
+                                            <th class="text-center">等级</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <%--<tr class="text-center">
+                                            &lt;%&ndash;<th class="text-center">地市</th>
+                                            <th class="text-center">区县</th>&ndash;%&gt;
+                                            <th class="text-center">员工编号</th>
+                                            <th class="text-center">员工姓名</th>
+                                            <th class="text-center">分数</th>
+                                            <th class="text-center">等级</th>
+                                        </tr>--%>
+                                    </tfoot>
+                                </table>
+                            <%--</div>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var chart = null;
+    var series = [];
+    var levelCountSum = 0;
+    var seriesData = [];
+    var data1 = [];
+    var region_code = "";
+    var town_code = "";
+    var group_id = "";
+    var group_level = "";
+    var parent_group_id = "";
+    $(function(){
+        group_id = $("#org_code").val();
+        $.ajax({
+            url: '/selectGroupLevel',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'group_id': $("#org_code").val(),
+            },
+            success: function (data) { // 接口调用成功回调函数
+                group_level = data[0].denorm_level;
+                if(group_level=="0"){
+                    $("#town_code").hide();
+                    getTown();
+                    getExamineName();
+                }else if(group_level=="1"){
+                    $("#region_code").find("option[value='" + group_id + "']").attr("selected", true);
+                    $("#region_code").attr("disabled","disabled");
+                    getTown();
+                }else if(group_level=="2"){
+                    $("#modal_text").text("没有权限");
+                    $("#modalInfo").modal('show');
+                    $("#selBtn").hide();
+                    $("#region_code").hide();
+                    $("#town_code").hide();
+                    $("#examine_name").hide();
+                    return false;
+                }
+                //requestData();
+            }
+        });
+    })
+
+    function init_region() {
+        var region_code_region = group_id;
+        $("#region_code").find("option[value='" + region_code_region + "']").attr("selected", true);
+        $("#region_code").attr("disabled","disabled");
+        getTown();
+    }
+    function selectBtn(){
+        if($("#examine_name").val()==""||$("#examine_name").val()==null){
+            return false;
+        }
+        if(group_level==0){
+            requestData();
+        }else if(group_level==1){
+            getTable();
+        }
+    }
+
+
+    function requestData() {
+        chart = null;
+        series = [];
+        levelCountSum = 0;
+        seriesData = [];
+        data1 = [];
+        $("#container").empty();
+        town_code = $("#town_code").val();
+        if(town_code==null){
+            town_code = "";
+        }
+        $.ajax({
+            url: '/getEmployeeLevelDistribution',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'region_code': $("#region_code").val(),// 请求参数
+                'examine_name' : $("#examine_name").val()
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                if($("#container").length==0){
+                    $("#selectDiv").after("<div id='container' style='min-width:400px;height:400px'>");
+                }
+                if($("#tableDiv").attr("class")!="hidden"){
+                    $("#tableDiv").addClass("hidden");
+                }
+                if(data.length==0){
+                    $("#container").append("<h3 align='center'>数据为空</h3>");
+                    return false;
+                }
+                for (var i = 0; i < data.length; i++) {
+                    var employee_level = data[i].employee_level;
+                    var levelCount = parseInt(data[i].levelCount);
+                    if(employee_level=="A"||employee_level=="B"||employee_level=="C"||employee_level=="D"||employee_level=="E"){
+                        levelCountSum = levelCountSum + levelCount;
+                    }
+                }
+
+                for (var i = 0; i < data.length; i++) {
+                    var employee_level = data[i].employee_level;
+                    var levelCount = parseInt(data[i].levelCount);
+                    var levelCountPercent = 0;
+                    if(employee_level=="A"||employee_level=="B"||employee_level=="C"||employee_level=="D"||employee_level=="E"){
+                        //levelCountPercent = parseFloat(parseFloat((levelCount*100)/levelCountSum).toFixed(2));
+                        data1.push("等级"+employee_level);
+                        data1.push(levelCount);
+                        seriesData.push(data1);
+                        data1 = [];
+                    }
+                }
+                var seriesObj = {};
+                seriesObj.type = 'pie';
+                seriesObj.name = '绩效分布情况';
+                seriesObj.data = seriesData;
+                series.push(seriesObj);
+                seriesObj = {};
+                getChart();
+                chart = null;
+                series = [];
+                levelCountSum = 0;
+                seriesData = [];
+                data1 = [];
+            }
+        });
+    }
+
+    function getChart(){
+        chart = new Highcharts.Chart('container', {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: '绩效分布情况'
+            },
+            credits: {
+                enabled:false
+            },
+            tooltip: {
+                headerFormat: '{series.name}<br>',
+                pointFormat: '{point.name}: <b>{point.y}人</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: series
+        });
+    }
+    //获取考核名称
+    function getExamineName(){
+        $("#examine_name").empty();
+        var req_town_code = $("#town_code").val();
+        if(req_town_code==null){
+            req_town_code = "";
+        }
+        $.ajax({
+            url: '/getExamineName',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'town_code': req_town_code,// 请求参数
+                'region_code': $("#region_code").val()// 请求参数
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                $("#examine_name").empty();
+                if(data.length==0){
+                    $("#modal_text").text("无考核信息");
+                    $("#modalInfo").modal('show');
+                }
+                for(var i=0;i<data.length;i++){
+                    var examine_name = data[i].examine_name;
+                    var option ="";
+                    option +="<option value = '"+examine_name+"'>"+examine_name+"</option>"
+                    $("#examine_name").append(option);
+                }
+               /* if(group_level==0){
+                    requestData();
+
+                }else if(group_level==1){
+                    getTable();
+                }*/
+            }
+        });
+    }
+    //获取区县
+    function getTown() {
+        $("#town_code").empty();
+        if ($("#region_code").val() != "") {
+            $.ajax({
+                type: "get",
+                url: "/cityCodeListShow",
+                data: {
+                    'region_code': $("#region_code").val()
+                },
+                cache: false,
+                success: function (result) {
+                    /*if(group_level==0){*/
+                        city_data = "<option value=''>全市</option>";
+                        $.each(result, function (i, field) {
+                            city_data += "<option value='" + field.group_id + "' ";
+                            city_data += ">" + field.group_name + "</option>";
+                        });
+                    /*}else {
+                        city_data = "";
+                        $.each(result, function (i, field) {
+                            city_data += "<option value='" + field.group_id + "' ";
+                            city_data += ">" + field.group_name + "</option>";
+                        });
+                    }*/
+
+                    $("#town_code").empty();
+                    $("#town_code").append(city_data);
+                    getExamineName();
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        } else {
+            $("#town_code").empty();
+        }
+    }
+    function getTable() {
+        $("#container").remove();
+        $("#tableDiv").removeClass("hidden");
+        table = $('#retentionRate').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            destroy: true,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/performanceDetailsBy",
+                type:"POST",
+                data:{
+                    'region_code': $("#region_code").val(),
+                    "town_code" : $("#town_code").val(),
+                    "examine_name" : $("#examine_name").val()
+                }
+            },
+            columns: [
+                /*{ data: "region_name" },
+                { data: "town_name" },*/
+                { data: "emp_code" },
+                { data: "employee_name" },
+                { data: "employee_grade" },
+                { data: "employee_level" }
+            ],
+            select: true,
+            buttons: [
+                /*{ extend: "create", editor: editor},
+                 { extend: "edit",   editor: editor},
+                 { extend: "remove", editor: editor}*/
+            ]
+        } );
+        /*editor.on('submitSuccess',function ( e, type ) {
+         alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+         } );*/
+    }
+</script>
+</html>

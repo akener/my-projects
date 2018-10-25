@@ -1,0 +1,136 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<%--<%@ include file="../../pub/tableList.jsp"%>--%>
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        function capitalApply(balance,nowbalance) {
+            window.returnValue = balance + "#" + nowbalance;
+            window.close();
+        }
+
+        function capitalListQuery() {
+            table1 = $('#capitalListInfo').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                //"ordering":true,
+                "scrollX": true,
+                "bRetrieve": true,
+                "pageLength": 1,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    url:"/getGroupCapitalInfoFromBoss",
+                    type:"POST",
+                    data:{
+                        GROUPID:$("#GROUPID").val()
+                    }
+                },
+                columns: [
+                    { data: "grpfundacctid",
+                        "width": "8%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<button type='button' style='width: 85px' onclick=capitalApply('"+row.balance+"','"+row.nowbalance+"')>选择</button>";
+                        }
+                    },
+                    { data:"grpfundacctid"},
+                    { data: "grpcustid"},
+                    { data: "grpcustname"},
+                    { data: "bankacctid"},
+                    { data: "bankname"},
+                    { data: "ownerorgid"},
+                    { data: "status"},
+                    { data: "balance"},
+                    { data: "nowbalance"},
+                    { data: "holdbalance"},
+                    { data: "freezefee"}
+                ],
+                select: true,
+                buttons: [
+                ]
+            })
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团选择</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编号：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="GROUPID" value="2300000079101" class="input-sty04 form-ipt">
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalListQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团资金账户列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                    <table class="cost-table" id="capitalListInfo" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">操作</th>
+                            <th class="text-center">集团资金账户号</th>
+                            <th class="text-center">集团客户编号</th>
+                            <th class="text-center">集团客户名称</th>
+                            <th class="text-center">绑定银行账号</th>
+                            <th class="text-center">开户行</th>
+                            <th class="text-center">归属分公司</th>
+                            <th class="text-center">账号状态</th>
+                            <th class="text-center">资金账户余额</th>
+                            <th class="text-center">资金账户可用余额</th>
+                            <th class="text-center">占用资金</th>
+                            <th class="text-center">冻结资金</th>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

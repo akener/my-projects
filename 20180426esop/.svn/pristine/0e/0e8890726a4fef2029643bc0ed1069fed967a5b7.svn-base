@@ -1,0 +1,198 @@
+package com.esop.capAdjustApply.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/11/2.
+ */
+    //集团资金办理有价卡业务出库跟踪表(清单报表）
+public class EpCapCardTrackRpt extends BaseDto {
+    private  int id ;
+    private String ltd;  // 分公司
+    private String industry_center; //行业中心
+    private String business_acceptor;//业务受理人员
+    private String business_accept_time;//业务受理时间
+    private String busi_type;//业务类型
+    private Double actual_use_amt; //实际使用金额(元)
+    private String work_order_handleStatus; //工单处理状态
+    private String group_code;// 集团编号
+    private String group_name; //集团名称
+    private String apply_num; //申请单号
+    private String work_order_status; //工单状态
+    private String applicant; //申请人
+    private String apply_date; //申请日期
+    private Double apply_amt; //申请金额(元)
+    private String shipping_status; //是否出库
+
+    public EpCapCardTrackRpt() {
+    }
+
+    public EpCapCardTrackRpt(int id, String ltd, String industry_center, String business_acceptor, String business_accept_time, String busi_type, Double actual_use_amt, String work_order_handleStatus, String group_code, String group_name, String apply_num, String work_order_status, String applicant, String apply_date, Double apply_amt, String shipping_status) {
+        this.id = id;
+        this.ltd = ltd;
+        this.industry_center = industry_center;
+        this.business_acceptor = business_acceptor;
+        this.business_accept_time = business_accept_time;
+        this.busi_type = busi_type;
+        this.actual_use_amt = actual_use_amt;
+        this.work_order_handleStatus = work_order_handleStatus;
+        this.group_code = group_code;
+        this.group_name = group_name;
+        this.apply_num = apply_num;
+        this.work_order_status = work_order_status;
+        this.applicant = applicant;
+        this.apply_date = apply_date;
+        this.apply_amt = apply_amt;
+        this.shipping_status = shipping_status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getLtd() {
+        return ltd;
+    }
+
+    public void setLtd(String ltd) {
+        this.ltd = ltd;
+    }
+
+    public String getIndustry_center() {
+        return industry_center;
+    }
+
+    public void setIndustry_center(String industry_center) {
+        this.industry_center = industry_center;
+    }
+
+    public String getBusiness_acceptor() {
+        return business_acceptor;
+    }
+
+    public void setBusiness_acceptor(String business_acceptor) {
+        this.business_acceptor = business_acceptor;
+    }
+
+    public String getBusiness_accept_time() {
+        return business_accept_time;
+    }
+
+    public void setBusiness_accept_time(String business_accept_time) {
+        this.business_accept_time = business_accept_time;
+    }
+
+    public String getBusi_type() {
+        return busi_type;
+    }
+
+    public void setBusi_type(String busi_type) {
+        this.busi_type = busi_type;
+    }
+
+    public Double getActual_use_amt() {
+        return actual_use_amt;
+    }
+
+    public void setActual_use_amt(Double actual_use_amt) {
+        this.actual_use_amt = actual_use_amt;
+    }
+
+    public String getWork_order_handleStatus() {
+        return work_order_handleStatus;
+    }
+
+    public void setWork_order_handleStatus(String work_order_handleStatus) {
+        this.work_order_handleStatus = work_order_handleStatus;
+    }
+
+    public String getGroup_code() {
+        return group_code;
+    }
+
+    public void setGroup_code(String group_code) {
+        this.group_code = group_code;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getApply_num() {
+        return apply_num;
+    }
+
+    public void setApply_num(String apply_num) {
+        this.apply_num = apply_num;
+    }
+
+    public String getWork_order_status() {
+        return work_order_status;
+    }
+
+    public void setWork_order_status(String work_order_status) {
+        this.work_order_status = work_order_status;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public Double getApply_amt() {
+        return apply_amt;
+    }
+
+    public void setApply_amt(Double apply_amt) {
+        this.apply_amt = apply_amt;
+    }
+
+    public String getShipping_status() {
+        return shipping_status;
+    }
+
+    public void setShipping_status(String shipping_status) {
+        this.shipping_status = shipping_status;
+    }
+
+    @Override
+    public String toString() {
+        return "EpCapCardTrackRpt{" +
+                "id=" + id +
+                ", ltd='" + ltd + '\'' +
+                ", industry_center='" + industry_center + '\'' +
+                ", business_acceptor='" + business_acceptor + '\'' +
+                ", business_accept_time='" + business_accept_time + '\'' +
+                ", busi_type='" + busi_type + '\'' +
+                ", actual_use_amt=" + actual_use_amt +
+                ", work_order_handleStatus='" + work_order_handleStatus + '\'' +
+                ", group_code='" + group_code + '\'' +
+                ", group_name='" + group_name + '\'' +
+                ", apply_num='" + apply_num + '\'' +
+                ", work_order_status='" + work_order_status + '\'' +
+                ", applicant='" + applicant + '\'' +
+                ", apply_date='" + apply_date + '\'' +
+                ", apply_amt=" + apply_amt +
+                ", shipping_status='" + shipping_status + '\'' +
+                '}';
+    }
+}

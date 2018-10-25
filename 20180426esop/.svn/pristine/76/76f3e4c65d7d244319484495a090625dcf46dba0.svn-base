@@ -1,0 +1,342 @@
+
+package com.esop.alertClassified.controller;
+
+
+import com.esop.alertClassified.dto.AccountAlertServiceCallingDto;
+import com.esop.alertClassified.dto.AccountAlertRetrunDto;
+import com.esop.common.jaxb.CallXmlService;
+import com.esop.common.jaxb.JsonToXml;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+
+@RestController
+public class AccountAlertServiceCalling {
+    @Autowired
+    CallXmlService callXmlService;
+
+    /*@Autowired
+    private static Logger logger = Logger.getLogger(AccountAlertServiceCalling.class);
+    //获取billing接口数据 话费余额
+    @RequestMapping(value="/accountAlertSCalling_hf")
+    public String getAccountAlertSC_hf(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        CallXmlService callXmlTest = new CallXmlService();
+        String phone_no = parameter.getPhone_no();
+        String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><PHONE_NO>"+phone_no+"</PHONE_NO></ROOT>";
+        String resulXml = callXmlTest.WebserviceCall("bs_GetOweWS_XML",xmlParamter);
+        //logger.info("resulXml=返回xml报文"+resulXml);
+
+
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(resulXml);
+        //logger.info("resulJson=返回json报文"+resulJson);
+        return resulJson;
+    }
+
+    //获取billing接口数据 欠费预警
+    @RequestMapping(value="/accountAlertSCalling_qf")
+    public String getAccountAlertSC_qf(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        CallXmlService callXmlTest = new CallXmlService();
+        //String login_no = parameter.getLanding_no();
+        String service_no = parameter.getService_no();
+        String opr_code = parameter.getS_inOprCode();
+        String thres_value = parameter.getAlert_value();//欠费预警阈值
+        //String thres_value = parameter.getD_inThresValue();
+       *//* String s_inOprCode = parameter.getS_inOprCode();
+        String d_inThresValue = parameter.getD_inThresValue();*//*
+//        String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><service_no>" + login_no + "</service_no>"
+//                + "<s_inServiceNo>" + s_inOprCode + "</s_inServiceNo>" + "<d_inThresValue>" + d_inThresValue + "</d_inThresValue>" + "</ROOT>";
+        String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><SERVICENO>" + service_no + "</SERVICENO><OPRCODE>"+opr_code+"</OPRCODE><THRESVALUE>"+thres_value+"</THRESVALUE></ROOT>";
+
+        String resulXml = callXmlTest.WebserviceCall("sGetGrpOweESOP_XML",xmlParamter);
+        resulXml = resulXml.replaceAll("type=\"string\"","");
+        //logger.info("resulXml=返回xml报文"+resulXml);
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(resulXml);
+        //logger.info("resulJson=返回json报文"+resulJson);
+        return resulJson;
+    }
+
+    //获取billing接口数据 流量预警
+    @RequestMapping(value="/accountAlertSCalling_ll")
+    public String getAccountAlertSC_ll(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        CallXmlService callXmlTest = new CallXmlService();
+        String login_no = parameter.getLanding_no();
+        *//*String s_inOprCode = parameter.getS_inOprCode();
+        String d_inThresValue = parameter.getD_inThresValue();*//*
+        String password = parameter.getPassword();
+        String op_code = parameter.getOp_code();
+        String phone_no = parameter.getPhone_no();
+        String total_date = parameter.getTotal_date();
+        String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><LOGINNO>"+login_no+"</LOGINNO><PASSWORD>"+password+"</PASSWORD><OPCODE>"+op_code+"</OPCODE><PHONENO>"+phone_no+"</PHONENO><TOTALDATE>"+total_date+"</TOTALDATE></ROOT>";
+        String resulXml = callXmlTest.WebserviceCall("s5186FavMsgWS_XML",xmlParamter);
+        //logger.info("resulXml=返回xml报文"+resulXml);
+
+        System.out.println("-------"+resulXml);
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(resulXml);
+        //logger.info("resulJson=返回json报文"+resulJson);
+        return resulJson;
+    }
+
+    @Autowired
+    com.esop.alertClassified.service.AccountAlertServiceCallingService accountAlertServiceCallingService;
+    //获取客户经理下重要成员信息
+    @RequestMapping(value="/importMemberBI")
+    public AccountAlertRetrunDto getImportMemberBI(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+        List list = accountAlertServiceCallingService.importMemberBIList(parameter);
+
+        AccountAlertRetrunDto accountAlertRetrunDto = new AccountAlertRetrunDto();
+        accountAlertRetrunDto.setData(list);
+        accountAlertRetrunDto.setCode("0000000");
+        accountAlertRetrunDto.setMessage("Rest Request Success");
+
+        return accountAlertRetrunDto;
+    }*/
+    @Autowired
+    private static Logger logger = Logger.getLogger(AccountAlertServiceCalling.class);
+    //获取billing接口数据 话费余额
+    @RequestMapping(value="/accountAlertSCalling_hf")
+    public String getAccountAlertSC_hf(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        int pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+        int pageRecords = Integer.parseInt(request.getParameter("pageRecords"));
+        parameter.getPage().setPageNumber(pageNumber);
+        parameter.getPage().setPageRecords(pageRecords);
+        parameter.getPage().setOrder_column(request.getParameter("order_column"));
+
+        //CallXmlService callXmlTest = new CallXmlService();
+        //String phone_no = parameter.getPhone_no();
+        //String service_no = "aaaaaa";
+        //大于阈值不管，小于阈值返回
+        //String service_no = request.getParameter("landing_no");
+        //parameter.setLanding_no(service_no);
+        StringBuffer rexml = new StringBuffer("<?xml version=\"1.0\" encoding=\"GBK\"?><ROOT>");
+        /*try{*/
+        Result rs = accountAlertServiceCallingService.flowWarning(parameter);
+        List<AccountAlertServiceCallingDto> ls = rs.getData();
+        System.out.print("--------------"+ls.size()+"---------------");
+        if(ls.size()==0){
+            rexml.append("<InfoList></InfoList>");
+        }else {
+            for (AccountAlertServiceCallingDto parameter1 : ls) {
+                String req_phone_no = parameter1.getPhone_no().trim();
+                String xmlParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><PHONE_NO>"+req_phone_no+"</PHONE_NO></ROOT>";
+                String serviceXml = callXmlService.WebserviceCall("bs_GetOweWS_XML", xmlParamter);
+                String user_name = "<user_name>" + parameter1.getUser_name() + "</user_name>";
+                String xmlPhone_no = "<phone_no>"+req_phone_no+"</phone_no>";
+                String s_SysDate = "";
+                String prepay_fee = "";
+                System.out.print("--------------1---------------");
+                if(serviceXml.substring(serviceXml.indexOf("<RETURN_CODE>")+13, serviceXml.lastIndexOf("</RETURN_CODE>")).equals("000000")){
+                    System.out.print("--------------2---------------");
+                    AccountAlertServiceCallingDto accountAlertServiceCallingDto = new AccountAlertServiceCallingDto();
+                    accountAlertServiceCallingDto.setPhone_no(req_phone_no);
+                    List<AccountAlertServiceCallingDto> lsp = accountAlertServiceCallingService.selectImportMemberThresholdValue(accountAlertServiceCallingDto);
+                    System.out.print("--------------lsp"+lsp.size()+"---------------");
+                    float i_prepay_fee = Float.parseFloat(serviceXml.substring(serviceXml.indexOf("<prepay_fee>")+12, serviceXml.lastIndexOf("</prepay_fee>")));
+                    for (AccountAlertServiceCallingDto accountAlertServiceCallingDto1:lsp) {
+                        float phone_blc = Float.parseFloat(accountAlertServiceCallingDto1.getPhone_blc());
+                        if(phone_blc>i_prepay_fee){
+                            s_SysDate = serviceXml.substring(serviceXml.indexOf("<s_SysDate>"), serviceXml.lastIndexOf("</s_SysDate>")) + "</s_SysDate>";
+                            prepay_fee = serviceXml.substring(serviceXml.indexOf("<prepay_fee>"), serviceXml.lastIndexOf("</prepay_fee>")) + "</prepay_fee>";
+                            rexml.append("<InfoList>");
+                            rexml.append(user_name);
+                            rexml.append(xmlPhone_no);
+                            rexml.append(s_SysDate);
+                            rexml.append(prepay_fee);
+                            rexml.append("</InfoList>");
+                        }
+                    }
+                }
+            }
+        }
+        if(rexml.indexOf("<InfoList>")==-1){
+            rexml.append("<InfoList></InfoList>");
+        }
+        int total = (rs.getRecordsTotal()%10>0)?((rs.getRecordsTotal()/10)+1):(rs.getRecordsTotal()/10);
+        rexml.append("<Total>"+total+"</Total>");
+        rexml.append("<RETURN_CODE>000000</RETURN_CODE><RETURN_MSG>成功</RETURN_MSG>");
+       /* }catch(Exception e){
+            rexml.append("<RETURN_CODE>111111</RETURN_CODE><RETURN_MSG>失败</RETURN_MSG>");
+        }*/
+        rexml.append("</ROOT>");
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(rexml.toString());
+        return resulJson;
+    }
+
+    //获取billing接口数据 欠费预警
+    @RequestMapping(value="/accountAlertSCalling_qf")
+    public String getAccountAlertSC_qf(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+        //CallXmlService callXmlTest = new CallXmlService();
+        String service_no = request.getParameter("landing_no");
+        parameter.setLogin_no(service_no);
+        String opr_code = request.getParameter("opr_code");
+        String alert_value = "";
+        String xmlParamter = "";
+        String resulJson = "";
+        System.out.println("--------:"+opr_code);
+        if(opr_code.equals("05")){
+            List<AccountAlertServiceCallingDto> ls = accountAlertServiceCallingService.selectThresholdValue_qf(parameter);
+            if(ls.size()!=0){
+                System.out.println("--------欠费预警:"+ls.size());
+                for (AccountAlertServiceCallingDto acco:ls) {
+                    alert_value = acco.getAlert_value();//欠费预警阈值                            alvg1R
+                    xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><SERVICENO>"+service_no+"</SERVICENO><OPRCODE>"+opr_code+"</OPRCODE><THRESVALUE>"+alert_value+"</THRESVALUE></ROOT>";
+                    String resulXml = callXmlService.WebserviceCall("sGetGrpOweESOP_XML",xmlParamter);
+                    resulXml = resulXml.replaceAll("type=\"string\"","");
+                    JsonToXml jsonToXml = new JsonToXml();
+                    resulJson = jsonToXml.xml2json(resulXml);
+                }
+            }
+        }else{
+            xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><SERVICENO>"+service_no+"</SERVICENO><OPRCODE>"+opr_code+"</OPRCODE><THRESVALUE></THRESVALUE></ROOT>";
+            String resulXml = callXmlService.WebserviceCall("sGetGrpOweESOP_XML",xmlParamter);
+            resulXml = resulXml.replaceAll("type=\"string\"","");
+            JsonToXml jsonToXml = new JsonToXml();
+            resulJson = jsonToXml.xml2json(resulXml);
+        }
+        return resulJson;
+    }
+
+    //获取billing接口数据 流量预警
+    @RequestMapping(value="/accountAlertSCalling_ll")
+    public String getAccountAlertSC_ll(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        int pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+        int pageRecords = Integer.parseInt(request.getParameter("pageRecords"));
+        parameter.getPage().setPageNumber(pageNumber);
+        parameter.getPage().setPageRecords(pageRecords);
+        parameter.getPage().setOrder_column(request.getParameter("order_column"));
+
+        //CallXmlService callXmlTest = new CallXmlService();
+        String landing_no = request.getParameter("landing_no");
+        String password = request.getParameter("password");
+        String op_code = "1272";//request.getParameter("op_code");
+        //String service_no = "aavg62";
+        parameter.setLanding_no(landing_no);
+        //获取当前时间
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String currentTime = sdf.format(date);
+        StringBuffer rexml = new StringBuffer("<?xml version=\"1.0\" encoding=\"GBK\"?><ROOT>");
+        Result rs = accountAlertServiceCallingService.flowWarning(parameter);
+        List<AccountAlertServiceCallingDto> ls =rs.getData();
+        System.out.println("--------流量预警:"+ls.size());
+        if(ls.size()==0){
+            rexml.append("<InfoList></InfoList>");
+        }else {
+            for (AccountAlertServiceCallingDto parameter1 : ls) {
+                String req_phone_no = parameter1.getPhone_no().trim();
+                String user_name = "<user_name>" +parameter1.getUser_name()+ "</user_name>";
+                String xmlPhone_no = "<phone_no>" +req_phone_no+ "</phone_no>";
+                String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT>"
+                        +"<LOGINNO>"+landing_no+"</LOGINNO>"
+                        +"<PASSWORD>"+password+"</PASSWORD>"
+                        +"<OPCODE>"+op_code+"</OPCODE>"
+                        +"<PHONENO>"+req_phone_no+"</PHONENO>"
+                        +"<TOTALDATE>"+currentTime+"</TOTALDATE></ROOT>";
+                String serviceXml = callXmlService.WebserviceCall("s5186FavMsgWS_XML", xmlParamter);
+                try{
+                    System.out.println("qqqqqqqq"+serviceXml.substring(serviceXml.indexOf("<RETURN_CODE>")+13, serviceXml.lastIndexOf("</RETURN_CODE>")));
+
+                    if(serviceXml.substring(serviceXml.indexOf("<RETURN_CODE>")+13, serviceXml.lastIndexOf("</RETURN_CODE>")).equals("000000")){
+                        System.out.println("--------流量预警接口调用:"+ls.size());
+
+                        float total_gprs = Float.parseFloat(serviceXml.substring(serviceXml.indexOf("<TOTALGPRS>")+11, serviceXml.lastIndexOf("MB</TOTALGPRS>")));
+                        float fav_gprs = Float.parseFloat(serviceXml.substring(serviceXml.indexOf("<FAVGPRS>")+9, serviceXml.lastIndexOf("MB</FAVGPRS>")));
+                        float gprs = total_gprs - fav_gprs;
+                        AccountAlertServiceCallingDto accountAlertServiceCallingDto = new AccountAlertServiceCallingDto();
+                        accountAlertServiceCallingDto.setPhone_no(req_phone_no);
+                        List<AccountAlertServiceCallingDto> lsp = accountAlertServiceCallingService.selectImportMemberThresholdValue(accountAlertServiceCallingDto);
+                        System.out.println(lsp.size()+":-------流量预警");
+                        for (AccountAlertServiceCallingDto aascd:lsp) {
+                            float rateflow_blc = Float.parseFloat(aascd.getRateflow_blc());
+                            if(rateflow_blc>gprs){
+                                String gprsStr = "<GPRS>"+gprs+"MB</GPRS>";
+                                rexml.append("<InfoList>");
+                                rexml.append(user_name);
+                                rexml.append(xmlPhone_no);
+                                rexml.append(gprsStr);
+                                rexml.append("</InfoList>");
+                            }
+                        }
+                    }
+                }catch (Exception e){
+
+                }
+            }
+        }
+        if(rexml.indexOf("<InfoList>")==-1){
+            rexml.append("<InfoList></InfoList>");
+        }
+        int total = (rs.getRecordsTotal()%10>0)?((rs.getRecordsTotal()/10)+1):(rs.getRecordsTotal()/10);
+        rexml.append("<Total>"+total+"</Total>");
+        rexml.append("<RETURN_CODE>000000</RETURN_CODE><RETURN_MSG>成功</RETURN_MSG>");
+        rexml.append("</ROOT>");
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(rexml.toString());
+        return resulJson;
+    }
+
+    @Autowired
+    com.esop.alertClassified.service.AccountAlertServiceCallingService accountAlertServiceCallingService;
+    //获取客户经理下重要成员信息
+    @RequestMapping(value="/importMemberBI")
+    public AccountAlertRetrunDto getImportMemberBI(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+        List list = accountAlertServiceCallingService.importMemberBIList(parameter);
+
+        AccountAlertRetrunDto accountAlertRetrunDto = new AccountAlertRetrunDto();
+        accountAlertRetrunDto.setData(list);
+        accountAlertRetrunDto.setCode("0000000");
+        accountAlertRetrunDto.setMessage("Rest Request Success");
+
+        return accountAlertRetrunDto;
+    }
+
+    @RequestMapping(value="/accountAlertSCalling_cs")
+    public String getAccountAlertSC_cs(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+        AccountAlertServiceCallingDto accountAlertServiceCallingDto = new AccountAlertServiceCallingDto();
+        accountAlertServiceCallingDto.setPhone_no("13936001914");
+        List<AccountAlertServiceCallingDto> lsp = accountAlertServiceCallingService.selectImportMemberThresholdValue(accountAlertServiceCallingDto);
+
+        return "000";
+    }
+
+    //台账预警
+    @RequestMapping(value = "/accountAlertSCalling_tz")
+    public String getaccountAlertSC_tz (AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        String xmlParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><SERVICE_NO>"+parameter.getLanding_no()+"</SERVICE_NO></ROOT>";
+        String resulXml = callXmlService.WebserviceCall("sGrpLogBookWS_XML",xmlParamter);
+
+        resulXml = resulXml.replaceAll("type=\"string\"","");
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(resulXml.toString());
+        return resulJson;
+
+    }
+}
+

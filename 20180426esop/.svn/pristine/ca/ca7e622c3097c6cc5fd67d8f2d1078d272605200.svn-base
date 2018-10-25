@@ -1,0 +1,53 @@
+package com.esop.base.dto;
+
+/**
+ * Created by wangbl on 2017/7/20.
+ */
+//记录日志
+public class LogInfoDto {
+    String op_code = "";
+    String login_no = "";
+    String op_time = "";
+    String ip_addr = "";
+    String login_no_4a = "";
+
+    public String getOp_code() {
+        return op_code;
+    }
+
+    public void setOp_code(String op_code) {
+        this.op_code = op_code;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getIp_addr() {
+        return ip_addr;
+    }
+
+    public void setIp_addr(String ip_addr) {
+        this.ip_addr = ip_addr;
+    }
+
+    public String getLogin_no_4a() {
+        return login_no_4a;
+    }
+
+    public void setLogin_no_4a(String login_no_4a) {
+        this.login_no_4a = login_no_4a;
+    }
+}

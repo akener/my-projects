@@ -1,0 +1,349 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lilei
+  Date: 2017/7/8
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  合同查询
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+
+
+</head>
+
+<body >
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice10">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo10">合同编号不能为非数字</label>
+            </div>
+            <div class="modal-footer">
+                <button id="sendCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="lookHisInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:1000px" role="document">
+        <div class="modal-content" >
+            <div class="modal-header" align="left" style="padding-left: 3px;margin-left: 3px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <div class="title-style04"  style="height: 40px;width: 990px;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+                    <h4 align="left" >◆合同历史查询</h4>
+                </div>
+            </div>
+            <div >
+                <table id="hisExample" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th class="text-center" >操作工号</th>
+                        <th class="text-center">操作时间</th>
+                        <th class="text-center">操作类型</th>
+                        <th class="text-center" >集团编码</th>
+                        <th class="text-center">合同编号</th>
+                        <th class="text-center">合同名称</th>
+                        <th class="text-center">开始时间</th>
+                        <th class="text-center">结束时间</th>
+                        <th class="text-center">合同附件</th>
+                        <th class="text-center">创建时间</th>
+                        <th class="text-center">创建工号</th>
+                        <th class="text-center">工号组织</th>
+                        <th class="text-center">合同金额</th>
+                        <th class="text-center">原合同编号</th>
+                        <th class="text-center">审批状态</th>
+                        <th class="text-center">产品经理审批人</th>
+                        <th class="text-center">产品经理审批意见</th>
+                        <th class="text-center">部门经理审批人</th>
+                        <th class="text-center">部门经理审批意见</th>
+                        <th class="text-center">终止原因</th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div style="padding-left:1px;width: 100%;height:150px;background-color:#ffffff " align="center">
+    <div style="height: 30px;width: 99%;background-color:#c0e9ef;border:1px solid #9ce4ef " >
+        <h4 align="left" style="margin-top: 5px">合同查询</h4>
+    </div>
+    <div style="background-color:#c0e9ef;border:1px solid #9ce4ef;width: 99%;height: 60px">
+        <input type="hidden" name="role_type" id="role_type" <%--value="<%=role_type%>"--%>/>
+        <table width="100%"  cellspacing="0" border="1px"
+               cellpadding="0"  align="center" style="margin-top: 8px;height: 40px;border:1px solid #2A97DC ">
+            <tr>
+                <td width="60px">
+                    地区
+                </td>
+                <td width="200px" bgcolor="#ffffff">
+                    <select id="contractId" style="width: 190px">
+
+                    </select>
+                </td>
+                <td width="80px">
+                    合同编号
+                </td>
+                <td width="250px">
+                    <input type="text" id="contract_no" name="contract_no" style="width: 230px"  />
+                </td>
+                <td width="170px">
+                    合同创建时间范围从
+                </td>
+                <td width="260px">
+                   <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                        <input readonly class="form-control" id="startTime" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                    </div>
+                </td>
+                <td width="60px">
+                    到
+                </td>
+                <td>
+                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                        <input readonly class="form-control" id="overTime" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="operation_button"  style="margin-top: 10px;padding-top:5px;height:40px;width:99%;background-color:#c0e9ef;border:1px solid #2A97DC;">
+        <button  style="width:80px;height:30px;color: #3b7286;" name="Submit" id="qryInfo" >查询</button>
+        <button style="width:80px;height:30px;color: #3b7286;" type="reset"  onclick="pageReset()">重置</button>
+    </div>
+</div>
+<div style="margin-top:10px;width: 100%;height: 25px;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+    <h4 align="left" style="margin-top: 4px">合同列表</h4>
+</div>
+<div id="recId" style="display: none;">
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="text-center" >集团编码</th>
+                <th class="text-center">合同编号</th>
+                <th class="text-center">合同名称</th>
+                <th class="text-center">开始时间</th>
+                <th class="text-center">结束时间</th>
+                <th class="text-center">合同附件</th>
+                <th class="text-center">创建时间</th>
+                <th class="text-center">创建工号</th>
+                <th class="text-center">工号组织</th>
+                <th class="text-center">合同金额</th>
+                <th class="text-center">原合同编号</th>
+                <th class="text-center">审批状态</th>
+                <th class="text-center">产品经理审批人</th>
+                <th class="text-center">产品经理审批意见</th>
+                <th class="text-center">部门经理审批人</th>
+                <th class="text-center">部门经理审批意见</th>
+                <th class="text-center">终止原因</th>
+            </tr>
+        </thead>
+
+    </table>
+</div>
+
+
+
+
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var table1;
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+
+    $(document).ready(function() {
+        //alert(group_id)
+            $.ajax({
+            type:"GET",
+            url:"/selectContractAll",
+            data:{"group_id":group_id}
+        }).then(function(data){
+                $.each(data, function (index, item) {
+
+                   if(item.boss_org_code.length==2){
+                        //alert(item.group_id)
+                        $("#contractId").append("<option value='"+item.group_id+"'>"+'├'+""+item.name+"</option>");
+                    }else{
+                        $("#contractId").append("<option value='"+item.group_id+"'>"+'&nbsp;&nbsp;&nbsp;&nbsp;├'+""+item.group_id+""+item.name+"</option>");
+                    }
+
+                });
+
+        });
+
+
+    } );
+
+
+    //重置
+    function pageReset(){
+        $("input").val("");
+
+    }
+    $("#qryInfo").click(function () {
+        var contractId=$("#contractId").val();
+        var contractNo=$("#contract_no").val();
+        var sTime=$("#startTime").val();
+        var vTime=$("#overTime").val();
+        //alert(contractId+","+contractNo+","+sTime+","+vTime)
+        if (isNaN(contractNo)) {
+            $("#fault").modal('show');
+            pageReset();
+            return ;
+
+        }
+        $("#recId").show();
+
+        editor = new $.fn.DataTable.Editor( {
+         } );
+
+
+        //查询合同数据
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            scrollX: true,
+            "bFilter": false,
+            "pageLength": 5,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy:true,
+            ajax: {
+                url:"/selContractInfoMsg",
+                type:"POST",
+                data:{"contractId":contractId,"contractNo":contractNo,"sTime":sTime,"vTime":vTime}
+            },
+            columns: [
+                {data:"unit_id"},
+                { data:"contract_no",
+                    render:function (data, type, row, meta) {
+                        return "<a href='#' onclick='showHisRecord("+row.contract_id+")'>" + row.contract_no + "</a>"
+                    }
+                },
+                { data:"contract_name"},
+                { data: "deal_time" },
+                { data: "complete_time" },
+                { data: "contract_file" },
+                { data: "create_date" },
+                { data: "login_name" },
+                { data: "group_name" },
+                { data: "contract_loan" },
+                { data: "renew_sign" },
+                { data: "charge_flag" },
+                { data: "goods_no" },
+                { data: "goods_not" },
+                { data: "dept_no" },
+                { data: "dept_not" },
+                { data: "stop_not" }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    });
+
+    //查询历史操作
+    function showHisRecord(contract_id){
+        var con_id=contract_id;
+        $("#lookHisInfo").modal('show');
+
+        editor = new $.fn.DataTable.Editor( {
+        } );
+       //alert(con_id);
+
+        //查询历史合同数据
+        table1 = $('#hisExample').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            scrollX: true,
+            "bFilter": false,
+            "pageLength": 4,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy:true,
+            ajax: {
+                url:"/selHisContractInfo",
+                type:"POST",
+                data:{"contractId":con_id}
+            },
+            columns: [
+                {data:"opr_no"},
+                { data:"opr_time"},
+                { data:"opr_status"},
+                {data:"unit_id"},
+                { data:"contract_no"},
+                { data:"contract_name"},
+                { data: "deal_time" },
+                { data: "complete_time" },
+                { data: "contract_file" },
+                { data: "create_date" },
+                { data: "login_name" },
+                { data: "group_name" },
+                { data: "contract_loan" },
+                { data: "renew_sign" },
+                { data: "charge_flag" },
+                { data: "goods_no" },
+                { data: "goods_not" },
+                { data: "dept_no" },
+                { data: "dept_not" },
+                { data: "stop_not" }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    }
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+
+</script>
+</html>

@@ -1,0 +1,455 @@
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>集团产品变更审核</title>
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <script type="text/javascript" language="javascript" src="view/cqDevelopment/elecPack/groupProdChangewf.js" ></script>
+</head>
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团产品合同信息</span>
+            </div>
+        </div>
+        <form id="groupChangeForm">
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+
+                            <tr>
+                                <th>合同名称：</th>
+                                <td>
+                                    <span id="contract_name"></span>
+                                </td>
+                                <th>合同编码：</th>
+                                <td>
+                                    <span id="contractId"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>甲方：</th>
+                                <td>
+                                    <span id="firstParty"></span>
+                                </td>
+                                <th>乙方：</th>
+                                <td>
+                                    <span id="secondParty"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>甲方负责人：</th>
+                                <td>
+                                    <span id="firstPartyCharge"></span>
+                                </td>
+                                <th>乙方负责人：</th>
+                                <td>
+                                    <span id="secondPartyCharge"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>折扣：</th>
+                                <td>
+                                    <span id="discount"></span>
+                                </td>
+                                <th>总金额：</th>
+                                <td>
+                                    <span id="totalAmount"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>支付周期：</th>
+                                <td>
+                                    <span id="payCycle"></span>
+                                </td>
+                                <th>保证金：</th>
+                                <td>
+                                    <span id="bond"></span>
+                                </td>
+
+                            </tr>
+
+                            <tr style="display: none">
+
+                                <th>渠道编码：</th>
+                                <td>
+                                    <input type="text" id="accessType" name="accessType" value="" class="input-sty04 form-ipt">
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>发票种类：</th>
+                                <td>
+                                    <span id="invoiceType"></span>
+                                </td>
+                                <th>起草时间：</th>
+                                <td>
+                                    <span id="openTime"></span>
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <div class="work-order-box overh">
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团产品变更信息</span>
+                </div>
+            </div>
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <form >
+                            <table id="changeGroupProdInfo" class="table-infor-7 width-th" width="100%">
+                                <tbody>
+                                <tr>
+
+                                </tr>
+                                <tr>
+                                    <th>集团产品用户编码</th>
+                                    <td>
+                                        <select id="grp_subsid" name="grp_subsid">
+                                        </select>
+                                    </td>
+                                    <th>变更产品</th>
+                                    <td>
+                                        <select id="prod_ids" name="prod_ids">
+                                        </select>
+                                    </td>
+                                    <th>生效方式</th>
+                                    <td>
+                                        <select id="effect_type" name="effect_type">
+                                            <option value="2">立即</option>
+                                            <option value="3">次月</option>
+                                            <option value="4">次日</option>
+                                        </select>
+                                    </td>
+                                    <th>操作</th>
+                                    <td>
+                                        <select id="op_type" name="op_type">
+                                            <option value="PCOpRec">开通</option>
+                                            <option value="PCOpDel">关闭</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="work-order-box overh">
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团产品订单信息</span>
+                </div>
+            </div>
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <form id="requestinfoForm">
+                            <table id="requestinfo" class="table-infor-7 width-th" width="100%">
+                                <tbody>
+                                <tr>
+                                    <th>订单标题</th>
+                                    <td>
+                                        <input id="order_title" name="order_title" type="text" class="input-style10 form-ipt">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>订单描述</th>
+                                    <td>
+                                        <textarea name="notes" id="notes" cols="60" rows="5"></textarea>
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%--<div>
+            <div class="row mgt-20">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10" onclick="saveChangeProd()">保存</button>
+
+                </div>
+            </div>
+        </div>--%>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单流程处理轨迹</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" style="background-color:#fff;">
+        <div class="active-cost-box" style="padding-bottom:0;">
+            <table class="cost-table" width="100%;">
+                <tbody id="trancesTb">
+                <tr>
+                    <th>任务编号</th>
+                    <th>任务名称</th>
+                    <th>处理人</th>
+                    <th>处理时间</th>
+                    <th>处理意见</th>
+                    <th>处理备注</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<%--工作流审核 workflow--%>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span id="advice2" class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单审核</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+        <div class="row">
+            <table class="table-infor-7" width="100%">
+                <tbody>
+                <tr>
+                    <th id="advice">审核意见：</th>
+                    <td colspan="3">
+                        <select id="idea5" class="selector_region input-sty04 form-ipt" onchange="getRemark5()">
+                            <option value="">
+                                -请选择-
+                            </option>
+                            <option value="1">
+                                同意
+                            </option>
+                            <option value="0">
+                                退回
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>备注：</th>
+                    <td colspan="3">
+                        <textarea   id="remark5" rows="3"  class="ui-text form-ctrl" style="width:60%;"></textarea>
+                    </td>
+                </tr>
+                <tr class="tr-data-cc" id="next_deal">
+                    <th>下一环节：</th>
+                    <td>
+                        <input id="next_deal5"  type="text" class="input-sty04 form-ipt">
+                    </td>
+                    <th>下一环节处理人：</th>
+                    <td>
+                        <select   CLASS="ASSIGNEE"></select>
+                    </td>
+                </tr>
+
+                <input id="procInstId" type="hidden" value=""/>
+                <input id="taskInstId" type="hidden" value=""/><%--每做一部要变94473765778--%>
+                <input id="taskId" type="hidden" value=""/>
+                <input id="stepId" type="hidden" value=""/>
+                <input id="procId" type="hidden" value=""/>
+                <input id="procNameEn" type="hidden" value=""/>
+                <input id="bizRecordId" type="hidden" value=""/>
+                <input id="regionId" type="hidden" value="CQ.CQ"/>
+
+                <input id="loginCode" type="hidden" value="112900001"/>
+                <input id="loginName" name="" type="hidden" value="思特奇员工">
+
+                </tbody>
+            </table>
+            <div class="row mgt-20">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10" onclick="dealTask2()">提交</button>
+                    <%--<button class="ui-btn mgr-10" onclick="back()">返回</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var rowindex = 1;
+    var request_num;
+    var source_id;
+    var loginCode="112900001";
+    $(document).ready(function() {
+        //流程初始化参数
+        $("#procInstId").val("${proc_inst_id}");
+        $("#taskInstId").val("${task_inst_id}");
+        $("#taskId").val("${task_id}");
+        $("#stepId").val("${step_id}");
+        $("#procId").val("${proc_id}");
+        $("#procNameEn").val("${proc_name_en}");
+        $("#bizRecordId").val("${biz_record_id}");
+
+        request_num="${request_num}";
+        source_id="${biz_record_id}";
+
+        init();
+        selOrderTrances("${proc_inst_id}");//获取流程轨迹
+        chooseStep();//更改受理意见
+    } );
+    /**
+     * 初始化审核数据
+     *
+     * */
+    function init(){
+
+        $.ajax({
+            url:"viewGroupProdChangeInfo",
+            type:"POST",
+            async: false,
+            data:{contractId:"",request_num:request_num},
+            success:function (data) {
+                console.log(data);
+
+                var seNewContractInfo = data.seNewContractInfo;
+                $("#contract_name").text(seNewContractInfo.contract_name);
+                $("#contractId").text(seNewContractInfo.contract_id);
+                $("#firstParty").text(seNewContractInfo.first_party);
+                $("#secondParty").text(seNewContractInfo.second_party);
+                $("#firstPartyCharge").text(seNewContractInfo.first_party_charge);
+                $("#secondPartyCharge").text(seNewContractInfo.second_party_charge);
+                $("#discount").text(seNewContractInfo.discount);
+                $("#totalAmount").text(seNewContractInfo.total_amount);
+                $("#payCycle").text(seNewContractInfo.pay_cycle);
+                $("#bond").text(seNewContractInfo.bond);
+                $("#invoiceType").text(seNewContractInfo.invoice_type);
+                $("#openTime").text(seNewContractInfo.open_time);
+
+                var orRequestinstInfo = data.orRequestinstInfo;
+                $("#requestNum").text(seNewContractInfo.request_num);
+                $("#orderTitle").text(seNewContractInfo.order_title);
+                $("#effDate").text(seNewContractInfo.eff_date);
+                $("#op_type").val(data.op_type);
+                getGrpsubsid(seNewContractInfo.contract_id);//查询集团产品编码用于初始化
+                $("#grp_subsid").val(data.grp_subs_id);
+
+                var seContractChargesInfos = data.seContractChargesInfos;
+//                $("#prod_ids").empty();
+                for(var i=0;i<seContractChargesInfos.length;i++){
+                    var prod_code=seContractChargesInfos[i].product_code;
+                    var content=seContractChargesInfos[i].prod_name;
+                    $("#prod_ids").append("<option value='"+prod_code+"' >"+content+"</option>");
+                }
+                $("#prod_ids").val(data.prod_id);
+                $("#effect_type").val(data.effect_type);
+                $("#order_title").val(data.orRequestinstInfo.order_title);
+                $("#notes").val(data.orRequestinstInfo.notes);
+                $("#order_title").attr("disabled","true");
+                $("#effect_type").attr("disabled","true");
+                $("#prod_ids").attr("disabled","true");
+                $("#op_type").attr("disabled","true");
+                $("#grp_subsid").attr("disabled","true");
+                $("#notes").attr("readonly","true");//                var orRequestDetailInfos = data.orRequestDetailInfos;
+                /* var trStr = " <tr>" +
+                     "                            <td>"+rowindex+"</td>" +
+                     "                            <td><span>"+orRequestDetailInfos[7].attr_value+"</span></td>" +
+                     "                            <td><span>"+orRequestDetailInfos[3].attr_value+"</span></td>" +
+                     "                            <td><span>"+orRequestDetailInfos[4].attr_value+"</span></td>" +
+                     "                            <td><span>"+orRequestDetailInfos[5].attr_value+"</span></td>" +
+                     "                        </tr>"
+                 $("#groupProdInfo").append(trStr);*/
+
+            }
+
+        });
+
+
+    }
+    //获取集团产品用户编码
+    function getGrpsubsid(contract_id){
+        $("#grp_subsid").empty();
+        $("#grp_subsid").append("<option>请选择</option>")
+        $.ajax({
+            url:"getGroupContractInfoSubsid",
+            type:"POST",
+            async: false,
+            data:{contract_id:contract_id},
+            success:function (data) {
+                $.each(data, function (index, item) {
+                    var grp_subsid=data[index].grp_subsid;
+                    var grp_subsname=data[index].grp_subsname;
+                    $("#grp_subsid").append("<option value='"+grp_subsid+"' >"+grp_subsname+"</option>");
+                });
+            },
+            error:function (data) {
+                alert("查询集团产品用户编码失败");
+            }
+        })
+    }
+    /**
+     *保存集团产品变更
+     */
+    function saveChangeProd(){
+//        alert($("#contractId").text());
+        $.ajax({
+            url:"saveChangeGroupProdFinal",
+            type:"POST",
+            data: {
+                contract_id:$("#contractId").text(),
+                request_num:request_num,
+            },
+            success:dealCallBack
+        });
+
+    }
+
+    function dealCallBack(data) {
+        console.log(data);
+        if(data == "1"){
+            alert("集团产品变更成功！");
+            open(location, '_self').close();
+        }else {
+            alert("集团产品变更失败！");
+        }
+    }
+
+    /**
+     * 获取流程轨迹
+     * @param procInstId
+     */
+    function selOrderTrances(procInstId){
+        $.ajax({
+            url: "orderflow/getTrance",
+            type: "post",
+            "data": {
+                "procInstId": procInstId
+            },
+            success: function (result) {
+                $.each(result, function (i, field) {
+                    var trStr = "<tr class='tr-data-cc'><td>" + field.taskInstId +"</td><td>" +field.stepName+"</td><td>" + field.dealName +"</td><td>" + field.dealDateTime +"</td><td>" + field.dealOpinion
+                        +"</td><td>"+field.dealRemarks +"</td></tr>";
+                    $("#trancesTb").append(trStr);
+                })
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+package com.esop.workflow.vo;
+
+/**
+ * 任务实例审批查询VO
+ *
+ * @author daish 2017/12/15
+ */
+public class TaskInstDealVo {
+    private String procInstId;
+    private String procId;
+    private String procNameEn;
+    private String procNameCh;
+    private String taskInstId;
+    private String taskId;
+    private String stepId;
+    private String stepName;
+    private String jspPath;
+    private String nextFlag;
+
+    public String getProcInstId() {
+        return procInstId;
+    }
+
+    public void setProcInstId(String procInstId) {
+        this.procInstId = procInstId;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameEn() {
+        return procNameEn;
+    }
+
+    public void setProcNameEn(String procNameEn) {
+        this.procNameEn = procNameEn;
+    }
+
+    public String getProcNameCh() {
+        return procNameCh;
+    }
+
+    public void setProcNameCh(String procNameCh) {
+        this.procNameCh = procNameCh;
+    }
+
+    public String getTaskInstId() {
+        return taskInstId;
+    }
+
+    public void setTaskInstId(String taskInstId) {
+        this.taskInstId = taskInstId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public String getStepName() {
+        return stepName;
+    }
+
+    public void setStepName(String stepName) {
+        this.stepName = stepName;
+    }
+
+    public String getJspPath() {
+        return jspPath;
+    }
+
+    public void setJspPath(String jspPath) {
+        this.jspPath = jspPath;
+    }
+
+    public String getNextFlag() {
+        return nextFlag;
+    }
+
+    public void setNextFlag(String nextFlag) {
+        this.nextFlag = nextFlag;
+    }
+}

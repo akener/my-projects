@@ -1,0 +1,15 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.OutDTO;
+
+public class QryFundCheckRuleOutDTO extends OutDTO {
+    private String redFlag;//是否在作废/冲红流程途中
+
+    public String getRedFlag() {
+        return redFlag;
+    }
+
+    public void setRedFlag(String redFlag) {
+        this.redFlag = redFlag;
+    }
+}

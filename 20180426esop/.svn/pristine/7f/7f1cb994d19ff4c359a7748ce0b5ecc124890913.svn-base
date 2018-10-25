@@ -1,0 +1,16 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/23.
+ */
+public class NoteListSizeDto {
+    String note_list_size = "";//公告列表大小
+
+    public String getNote_list_size() {
+        return note_list_size;
+    }
+
+    public void setNote_list_size(String note_list_size) {
+        this.note_list_size = note_list_size;
+    }
+}

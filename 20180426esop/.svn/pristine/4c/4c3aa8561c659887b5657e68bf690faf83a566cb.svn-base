@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+</head>
+<body>
+
+<div>
+	<form id="form1" method="POST" enctype="multipart/form-data" action="/">
+		<table>
+			<tr><textarea></textarea></tr>
+			<tr id="fileList"><td><a href="http://192.168.0.44:8082/OA/123456789.docx?oa_file=武汉分公司进销存管理系统.docx">武汉分公司进销存管理系统</a></td>
+				<td><a href="/20170228194654831/工作计划表@wangbl.xlsx">Link text</a></td><td><input type="submit" value="test" /></td></tr>
+		</table>
+	</form>
+</div>
+	<div>
+		<label class="ui_button ui_button_primary" for="xFile">上传文件</label>
+		<form><input type="file" id="xFile" style="position:absolute;clip:rect(0 0 0 0);"></form>
+		<form method="POST" enctype="multipart/form-data" action="/fileUpload">
+			<table>
+				<tr><td>File to upload:</td><td><input type="file" name="file" id="file" value="上传文件"/></td></tr>
+				<tr><td></td><td><input type="submit" value="Upload" /></td><td><input type="button" value="提交"  id="bt1"/></td></tr>
+			</table>
+		</form>
+	</div>
+
+
+
+</body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+	//$("#bt1").click(function (){
+	var related_id;
+	$("#xFile").on("change", function(){
+
+		if($('#xFile')[0].files[0] != undefined)
+		{alert($('#xFile')[0].files[0].name);
+			var fd = new FormData();
+			fd.append("file", $('#xFile')[0].files[0]);
+			fd.append("related_id",related_id);
+			$.ajax({
+				type: "POST",
+				url: "/fileUpload",
+				data: fd,
+				contentType: false,
+				processData: false,
+				cache: false
+			}).then(function (data) {alert("related_id="+data.related_id);related_id=data.related_id;
+				$("#fileList").append("<td><a href='/"+data.pathValue+"/"+$('#xFile')[0].files[0].name+"'>"+$('#xFile')[0].files[0].name+"</a></td>");
+				//alert(data.pathValue);
+			});
+		}
+	});
+</script>
+</html>

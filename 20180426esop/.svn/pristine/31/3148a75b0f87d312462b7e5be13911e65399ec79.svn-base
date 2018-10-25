@@ -1,0 +1,26 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.CapitalInfoQueryDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class CapitalInfoQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getCapitalInfoSvc(CapitalInfoQueryDto parameter){
+        String selectTion = "";
+        selectTion = "selectCapitalInfo";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

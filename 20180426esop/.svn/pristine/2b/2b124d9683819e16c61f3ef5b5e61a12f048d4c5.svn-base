@@ -1,0 +1,466 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv=X-UA-Compatible  content="IE-8">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<%@ include file="../../pub/public_include.jsp"%>
+<%
+    String daozhang_riqi = request.getParameter("daozhang_riqi");
+    String daozhang_zhanghao = request.getParameter("daozhang_zhanghao");
+    String daozhang_huming = request.getParameter("daozhang_huming");
+    String daozhang_jine = request.getParameter("daozhang_jine");
+    String zhai_yao = request.getParameter("zhai_yao");
+    String laikuan_zhanghao = request.getParameter("laikuan_zhanghao");
+    String leikuan_kehu = request.getParameter("leikuan_kehu");
+    String jiaoyi_liushui = request.getParameter("jiaoyi_liushui");
+    String checkcode=request.getParameter("checkcode");
+    String infee_yuan=request.getParameter("infee_yuan");
+%>
+<head>
+    <title>资金认领申请查询</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金认领申请</span>
+            </div>
+        </div>
+        <input type="hidden" value="" id="jiaoyi_liushui">
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>到账日期</th><td><input style="width:200px;" value="" id="daozhang_riqi" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>来款客户</th><td><input style="width:200px;" value="" id="leikuan_kehu" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>来款账号</th><td><input style="width:200px;" value="" id="laikuan_zhanghao" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>到账金额</th><td><input style="width:200px;" value="" id="infee_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>到账户名</th><td><input style="width:200px;" value="" id="daozhang_huming" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>到账账号</th><td><input style="width:200px;" value="" id="daozhang_zhanghao" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>发布日期</th><td><input style="width:200px;" value="" id="fabu_riqi" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>摘要</th><td><input style="width:200px;" value="" id="zhai_yao" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>申请时间</th>
+                            <td>
+                                <input style="width:200px;" value="" id="shenqing_riqi" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                            </td>
+                            <th>集团单位名称</th>
+                            <td>
+                                <input style="width:200px;" value="" id="jituan_mingcheng" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <button type="button" class="ui-btn" onclick="group_choose()">选择</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团编码</th><td><input style="width:200px;" value="" id="jituan_bianhao" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>集团联系人</th>
+                            <td>
+                                <input style="width:200px;" value="" id="jituan_lianxiren" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <button type="button" class="ui-btn" onclick="group_connect_choose()">选择</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>联系人电话</th><td><input style="width:200px;" value="" id="lianxiren_dianhua" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>联系人类型</th><td><input style="width:200px;" value="" id="lianxiren_leixing" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>关联来款户名</th><td><input style="width:200px;" value="" id="guanlian_laikuan_huming" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>关联来款账号</th><td><input style="width:200px;" value="" id="guanlian_laikuan_zhanghao" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>入账组织(行业中心)</th><td><input style="width:200px;" value="" id="ruzhang_zuzhi" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>备注</th><td><input style="width:200px;" value="" id="bei_zhu" type="text" class="input-sty04 form-ipt"/></td>
+                        </tr>
+                        <input  type="hidden" id="center_code" />
+                        <input  type="hidden" id="daozhang_jine" />
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>附件信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table-infor-7" width="100%;">
+                        <tbody>
+                        <tr>
+                            <th>附件：</th>
+                            <td style="border:none">
+                                <form id="uploadFile" action="uploadFile" method="post"  enctype="multipart/form-data">
+                                    <input type="file" class="ui-text" id="file" name="file" style="width: 240px" onchange="uploadFile()"/>
+                                </form>
+                            </td>
+                            <input id="attach_file_id" name="" type="hidden" value="">
+                            <input id="check_code" name="" type="hidden" value="">
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>下一环节</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <input style="width:200px;" type="hidden" id="first_node_id" value="">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <%@ include file="../workFlowQuery.jsp"%>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn btn-default mgr-10" id="back" name="reset1" onclick="goback()">重填</button>
+                            <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="examine()">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no;
+    var root_org_id;
+    $(document).ready(function() {
+        login_no="<%=login_no%>";
+        root_org_id="<%=root_org_id%>";
+        if(root_org_id.length>8){
+            root_org_id=root_org_id.substr(0,8);
+        }
+        init("<%=checkcode%>","<%=daozhang_riqi%>","<%=daozhang_zhanghao%>","<%=daozhang_huming%>","<%=daozhang_jine%>","<%=zhai_yao%>","<%=laikuan_zhanghao%>","<%=leikuan_kehu%>","<%=jiaoyi_liushui%>","<%=infee_yuan%>");
+    });
+    function init(checkcode,daozhang_riqi,daozhang_zhanghao,daozhang_huming,daozhang_jine,zhai_yao,laikuan_zhanghao,leikuan_kehu,jiaoyi_liushui,infee_yuan) {
+        //带入银行交易明细信息
+        var nowDay = getNowFormatTime();
+        $("#infee_yuan").val(infee_yuan);
+        $("#daozhang_riqi").val(daozhang_riqi);
+        $("#leikuan_kehu").val(leikuan_kehu);
+        $("#laikuan_zhanghao").val(laikuan_zhanghao);
+        $("#daozhang_jine").val(daozhang_jine);
+        $("#daozhang_huming").val(daozhang_huming);
+        $("#daozhang_zhanghao").val(daozhang_zhanghao);
+        $("#fabu_riqi").val(nowDay);
+        $("#zhai_yao").val(zhai_yao);
+        $("#shenqing_riqi").val(nowDay);
+        $("#guanlian_laikuan_huming").val(leikuan_kehu);
+        $("#guanlian_laikuan_zhanghao").val(laikuan_zhanghao);
+        $("#jiaoyi_liushui").val(jiaoyi_liushui);
+        $("#check_code").val(checkcode);
+        selectBusinessCenterByLoginNo(login_no);
+    }
+
+
+    function getNextLink(ind_type,node_id) {
+        //带入审批信息
+        $.ajax({
+            type: "POST",
+            url: "workFlowQuery",
+            data:{
+                ind_type:ind_type,
+                node_id:node_id
+            },
+            cache: false,
+            success: function (result) {
+                if(result.length > 0) {
+                    $("#nextLink").html(result[0].node_role_name);
+                    getNextDealPerson(result[0].node_role_id);
+                    $("#first_node_id").val(result[0].node_id);
+                }else{
+                    document.getElementById("appove_show").style.display='none';
+                }
+            },
+            error: function () {
+                alert('请求超时，请重试！');
+            }
+        });
+    }
+    //获取下一环节处理人<本地role_id=22951   UAT= 33104>
+    function getNextDealPerson(role_id) {
+        var hangye_zhongxin = $("#center_code").val();
+        if((role_id!='23064')){
+            hangye_zhongxin = "";
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'qryNextDealPerson',
+            cache: false,
+            data: {
+                role_id:role_id,
+                hangye_zhongxin:hangye_zhongxin
+            },
+            success: function (data) {
+                var type_data="";
+                $.each(data, function (i, field) {
+                    //拼接json数据集字符串
+                    type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                    type_data += ">" + field.login_name + "</option>";
+                });
+                $("#nextStepDealPerson").empty();
+                $("#nextStepDealPerson").append(type_data);
+            },
+            error: function (resp) {
+                bootStrapAlert('获取下一步处理人失败！');
+                return false;
+            }
+        });
+    }
+    function selectBusinessCenterByLoginNo(login_no) {
+        $.ajax({
+            url:"selectBusinessCenterByLoginNo",
+            type:"POST",
+            data:{
+                login_no:login_no
+            },success:function (data) {
+                $("#ruzhang_zuzhi").val(data.business_center);
+                $("#center_code").val(data.center_code);
+                getNextLink("1","0");
+            }
+        })
+    }
+
+    function examine(){
+        $("#qu_reset").attr("disabled",true);
+        $("#qu_reset").text("提交中..");
+
+        var check_code=$("#check_code").val();
+        var zhengming_cailiao=$("#attach_file_id").val();
+        var daozhang_riqi = $("#daozhang_riqi").val();
+        var leikuan_kehu = $("#leikuan_kehu").val();
+        var laikuan_zhanghao = $("#laikuan_zhanghao").val();
+        var daozhang_jine = $("#daozhang_jine").val();
+        var daozhang_huming = $("#daozhang_huming").val();
+        var daozhang_zhanghao = $("#daozhang_zhanghao").val();
+        var fabu_riqi = $("#fabu_riqi").val();
+        var zhai_yao = $("#zhai_yao").val();
+        var shenqing_riqi = $("#shenqing_riqi").val();
+        var jituan_mingcheng = $("#jituan_mingcheng").val();
+        var jituan_bianhao = $("#jituan_bianhao").val();
+        var jituan_lianxiren = $("#jituan_lianxiren").val();
+        var lianxiren_dianhua = $("#lianxiren_dianhua").val();
+        var lianxiren_leixing = $("#lianxiren_leixing").val();
+        var guanlian_laikuan_huming = $("#guanlian_laikuan_huming").val();
+        var guanlian_laikuan_zhanghao = $("#guanlian_laikuan_zhanghao").val();
+        var ruzhang_zuzhi = $("#center_code").val();
+        var bei_zhu = $("#bei_zhu").val();
+        var jiaoyi_liushui = $("#jiaoyi_liushui").val();
+
+        //审批信息
+        var applicantNo = login_no;
+        var nextDealPerson = $("#nextStepDealPerson").val();
+        var nodeId = $("#first_node_id").val();
+        var dealTime = getNowFormatTime();
+        if(nextDealPerson=="" || nextDealPerson==undefined ){
+            alert("请选择下一步处理人后提交！！");
+            $("#qu_reset").attr("disabled",false);
+            $("#qu_reset").text("提交");
+            return;
+        }
+
+      if(jituan_mingcheng==""){
+            alert("请选择集团单位名称！！");
+          $("#qu_reset").attr("disabled",false);
+          $("#qu_reset").text("提交");
+            return;
+        }
+/*        if(jituan_lianxiren==""){
+            alert("请选择集团联系人！！");
+            $("#qu_reset").attr("disabled",false);
+            $("#qu_reset").text("提交");
+            return;
+        }*/
+        if(ruzhang_zuzhi==""){
+            alert("请添加行业中心后认领！！");
+            $("#qu_reset").attr("disabled",false);
+            $("#qu_reset").text("提交");
+            return;
+        }
+        if(zhengming_cailiao==""){
+            alert("请添加附件后认领！！");
+            $("#qu_reset").attr("disabled",false);
+            $("#qu_reset").text("提交");
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "cqCapitalClaimApply",
+            async:false,
+            dataType:"text",
+            data:{
+                zhangwuyuan:nextDealPerson,
+                check_code:check_code,
+                daozhang_riqi:daozhang_riqi,
+                leikuan_kehu:leikuan_kehu,
+                laikuan_zhanghao:laikuan_zhanghao,
+                daozhang_jine:daozhang_jine,
+                daozhang_huming:daozhang_huming,
+                daozhang_zhanghao:daozhang_zhanghao,
+                fabu_riqi:fabu_riqi,
+                zhai_yao:zhai_yao,
+                shenqing_riqi:shenqing_riqi,
+                jituan_mingcheng:jituan_mingcheng,
+                jituan_bianhao:jituan_bianhao,
+                jituan_lianxiren:jituan_lianxiren,
+                lianxiren_dianhua:lianxiren_dianhua,
+                lianxiren_leixing:lianxiren_leixing,
+                guanlian_laikuan_huming:guanlian_laikuan_huming,
+                guanlian_laikuan_zhanghao:guanlian_laikuan_zhanghao,
+                zhengming_cailiao:zhengming_cailiao,
+                ruzhang_zuzhi:ruzhang_zuzhi,
+                bei_zhu:bei_zhu,
+                applicantNo:applicantNo,
+                nextDealPerson:nextDealPerson,
+                nodeId:nodeId,
+                dealTime:dealTime,
+                jiaoyi_liushui:jiaoyi_liushui,
+                fengongs:root_org_id
+    },
+            cache: false,
+            success: function (result) {
+                var return_code = result.split("|")[0];
+                var return_msg = result.split("|")[1];
+                if(return_code==1){
+                    alert(return_msg);
+                    window.close();
+                }else if (return_code==999){
+                    alert(return_msg);
+                    $("#qu_reset").attr("disabled",false);
+                    $("#qu_reset").text("提交");
+                }else{
+                    alert(return_msg);
+                    $("#qu_reset").attr("disabled",false);
+                    $("#qu_reset").text("提交");
+                }
+            },
+            error: function (result) {
+                alert('请求超时，请重试！');
+                $("#qu_reset").attr("disabled",false);
+                $("#qu_reset").text("提交");
+            }
+        });
+    }
+
+    function goback(){
+        $("#approve_detail").modal('hide');
+        location.href="yhjymxcx";
+    }
+
+    var bootStrapAlert = function (msg){
+        $('#alertLabelInfo').html(msg);
+        $('#operationAlertInfo').modal('show');
+    }
+
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+
+    function getNowFormatTime() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+
+        var hours = date.getHours();
+        if((hours >= 1 && hours <= 9)){
+            hours = "0"+hours;
+        }
+        var minutes = date.getMinutes();
+        if((minutes >= 1 && minutes <= 9)){
+            minutes = "0"+minutes;
+        }
+        var seconds = date.getSeconds();
+        if((seconds >= 1 && seconds <= 9)){
+            seconds = "0"+seconds;
+        }
+
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + hours + seperator2 + minutes + seperator2 + seconds;
+        return currentdate;
+
+    }
+
+    function group_choose() {
+        var url="/esop/jtcx";
+        var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+        if(ret!=undefined){
+            var data=ret.split("#");
+            $("#jituan_bianhao").val(data[0]);
+            $("#jituan_mingcheng").val(decodeURI(data[1]));
+        }
+    }
+
+    function group_connect_choose() {
+        var url="/esop/jtlxrcx?jituan_bianhao="+$("#jituan_bianhao").val();
+        var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+        if(ret!=undefined){
+            var data=ret.split("#");
+            $("#jituan_lianxiren").val(data[0]);
+            $("#lianxiren_dianhua").val(data[1]);
+            //$("#lianxiren_leixing").val(data[2]);
+            if(data[2]=="MemberSort0305"){
+                $("#lianxiren_leixing").val("缴费联系人");
+            }
+        }
+    }
+</script>
+</html>

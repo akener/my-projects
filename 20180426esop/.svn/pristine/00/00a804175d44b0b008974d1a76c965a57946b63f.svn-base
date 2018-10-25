@@ -1,0 +1,30 @@
+package com.esop.basicManagement.service;
+
+
+import com.esop.basicManagement.dto.BasicEsopGroupQueryDto;
+import com.esop.common.dataBase.SqlE;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@Repository
+public class BasicEsopGroupQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    //获取树
+    public List getEsopGroupList(BasicEsopGroupQueryDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectEsopGroup";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

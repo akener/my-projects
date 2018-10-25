@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <insert id="insertGrpMemAlertInfo"  parameterType="com.esop.cqDevelopment.dto.GroupMemAlertDto" >
+        insert into se_partial_info (msg_id, warning_type, lossing_risk, ent_level, key_person_num, pname, initiative_conn_count, passiveness_conn_count, business_competitor_num, is_terminal_signing, terminal_signing_time, terminal_brand, use_terminal_time, waring_time, manager, status, cust_id, cust_name, manager_phone, initiative_conn_count_mth, passiveness_conn_count_mth)
+        values
+        (nextval("SEQ_PARTIAL_INFO"),#{warning_type},#{lossing_risk},#{ent_level},#{key_person_num},#{pname},#{initiative_conn_count},#{passiveness_conn_count},#{business_competitor_num},#{is_terminal_signing},#{terminal_signing_time},#{terminal_brand},#{use_terminal_time},#{waring_time},#{manager},#{status},#{cust_id},#{cust_name},#{manager_phone},#{initiative_conn_count_mth},#{passiveness_conn_count_mth})
+    </insert>
+    <select id="selectAlertContactPhoneInfo" parameterType="com.esop.cqDevelopment.dto.GroupMemAlertDto" resultType="com.esop.cqDevelopment.dto.GroupMemAlertDto" >
+        select a.mobile_phone from bs_staff_info a, bs_systemuser_info b where a.staff_id = b.staff_id and b.staff_code = #{manager} and SUBSTR(org_id,1,8) in ('CQ.CQ.C1','CQ.CQ.C2','CQ.CQ.C3','CQ.CQ.F0','CQ.CQ.J3','CQ.CQ.J1')
+    </select>
+    <insert id="insertGrpAlertShortMsgInfo"  parameterType="com.esop.cqDevelopment.dto.GroupMemAlertDto" >
+        insert into ct_short_msg_info(short_msg_id, msg_content, phone_no, create_time, send_time, status, source_type)
+        values
+        (nextval_safe('seq_short_msg_id'), #{short_msg}, #{mobile_phone}, current_timestamp(), current_timestamp(), '0', '0')
+    </insert>
+</mapper>

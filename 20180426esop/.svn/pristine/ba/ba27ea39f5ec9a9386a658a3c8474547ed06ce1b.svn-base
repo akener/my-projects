@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="selectGroupFundEsopServiceRepository">
+    <!--集团资金调账日报表-->
+    <!-- <select id="selectGroupFundReconciliationDailyInfoList" parameterType="com.esop.cqDevelopment.log.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+         select
+         t5.name as org_name,
+         t7.business_center,
+         t1.out_group_name,
+         t1.out_group_no,
+         t1.into_group_name,
+         t1.into_group_no,
+         CONVERT(t1.regulation_money,SIGNED)/100 regulation_money,
+         t1.regulation_apply_no,
+         case t8.nodeId when '3' then 'CRM业务办理成功' end as order_status,
+         t1.dealend_date,
+         t4.staff_name,
+         t2.apply_date
+         from ep_group_money_account_regulation_day t1,
+         ep_cap_adjust_apply_info t2
+         left join bs_systemuser_info t3 on t2.applicant = t3.staff_code
+         left join bs_staff_info t4 on t3.staff_id = t4.staff_id
+         left join se_contract_qddw t5 on substring(t4.org_id,1,8) = t5.id
+         left join se_business_center_staff_rel t6 on t3.staff_code = t6.staff_code
+         left join se_business_center t7 on t6.center_code = t7.center_code
+         inner join ep_work_flow_info t8 on t8.taskOrderId = t2.work_order_flowNo and t8.nodeId = '3'
+         left join se_orgid_rel t9 on t9.fen_gongs = substring(t4.org_id,1,8)
+         where t1.regulation_apply_no = t2.work_order_flowNo
+         <if test="org_id != null and org_id != ''">
+             and t9.group_pay_code = #{org_id}
+         </if>
+         <if test="center_code != null and center_code != ''">
+             and t6.center_code = #{center_code}
+         </if>
+         <if test="dealend_date_start != null and dealend_date_start != ''">
+             and t1.dealend_date >= #{dealend_date_start}
+         </if>
+         <if test="dealend_date_end != null and dealend_date_end != ''">
+             and t1.dealend_date &lt;= #{dealend_date_end}
+         </if>
+         group by t1.regulation_apply_no,t2.work_order_flowNo
+     </select>-->
+
+    <select id="selectOrgInfos" resultType="com.esop.cqDevelopment.groupFundReport.dto.OrgAndCenterDto">
+        select group_pay_code,group_pay_name from se_group_business_code
+    </select>
+
+    <select id="selectBusinessCenterInfos" parameterType="com.esop.cqDevelopment.groupFundReport.dto.OrgAndCenterDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.OrgAndCenterDto">
+        select center_code,business_center from se_business_center
+        where 1=1
+        <if test="group_pay_code != ''">
+            and center_code like concat(concat('%',#{group_pay_code}),'%')
+        </if>
+
+    </select>
+
+
+    <select id="getGroupBusAcceptAccountCheckInfoList" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupBusAcceptAccountCheckDto" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupBusAcceptAccountCheckDto">
+        select * from (
+        select
+        t5.name org_name,
+        t7.business_center,
+        t1.business_processer,
+        t1.process_date,
+        t1.business_type,
+        (t1.real_use_money+0)/100 real_use_money,
+        t1.group_code,
+        t1.group_name,
+        t1.order_id,
+        t1.insert_date process_date_start
+        from ep_group_business_accept_account_check t1,
+        ep_cap_capitalapply_info t2 left join bs_systemuser_info t3 on t2.shenqingren = t3.staff_code
+        left join bs_staff_info t4 on t3.staff_id = t4.staff_id
+        left join se_contract_qddw t5 on substring(t4.org_id,1,8) = t5.id
+        left join se_business_center_staff_rel t6 on t6.staff_code = t3.staff_code
+        left join se_business_center t7 on t7.center_code = t6.center_code
+        left join se_orgid_rel t8 on t8.fen_gongs = substring(t4.org_id,1,8)
+        where t1.order_id = t2.gongdan_bianhao
+        <if test="org_id != null and org_id != '' ">
+            and t8.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and t7.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != ''">
+            and substr(t1.process_date,1,8) = #{process_date_start}
+        </if>
+        union all
+        select '总计','','','','',cast(coalesce(sum((t1.real_use_money+0)/100),0)as decimal(18,2)),'','','',''
+        from ep_group_business_accept_account_check t1,
+        ep_cap_capitalapply_info t2 left join bs_systemuser_info t3 on t2.shenqingren = t3.staff_code
+        left join bs_staff_info t4 on t3.staff_id = t4.staff_id
+        left join se_contract_qddw t5 on substring(t4.org_id,1,8) = t5.id
+        left join se_business_center_staff_rel t6 on t6.staff_code = t3.staff_code
+        left join se_business_center t7 on t7.center_code = t6.center_code
+        left join se_orgid_rel t8 on t8.fen_gongs = substring(t4.org_id,1,8)
+        where t1.order_id = t2.gongdan_bianhao
+        <if test="org_id != null and org_id != '' ">
+            and t8.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and t7.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != ''">
+            and substr(t1.process_date,1,8) = #{process_date_start}
+        </if>
+
+        ) a
+    </select>
+
+    <!--通过工号查询分公司，行业中心-->
+    <select id="getOrgAndCenterByLoginNo" parameterType="com.esop.cqDevelopment.groupFundReport.dto.OrgAndCenterDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.OrgAndCenterDto">
+        select ifnull(a2.center_code,'') center_code,ifnull(a2.business_center,'') business_center,
+        ifnull(b2.group_pay_code,'') group_pay_code,ifnull(b2.group_pay_name,'') group_pay_name
+        from bs_systemuser_info t1
+        left join se_business_center_staff_rel a1 on a1.staff_code = t1.staff_code
+        left join se_business_center a2 on a1.center_code = a2.center_code,
+        bs_staff_info t2 left join se_orgid_rel b1 on b1.fen_gongs = substring(t2.org_id,1,8)
+        left join se_group_business_code b2 on  b2.group_pay_code = b1.group_pay_code
+        where t1.staff_id = t2.staff_id
+        and t1.staff_code = #{group_pay_code}
+    </select>
+
+    <!--集团资金调账日报表-->
+    <select id="selectGroupFundReconciliationDailyInfoList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        select * from (
+        select t1.org_name,t1.business_center,t1.out_group_name,t1.out_group_no,t1.into_group_name,t1.into_group_no,t1.regulation_money,t1.regulation_apply_no,
+        t1.order_status,t1.dealend_date,t1.staff_name,t1.apply_date,ifnull(t3.login_name,'') check_code,ifnull(t1.check_date,'') check_date,ifnull(t1.check_status,'') check_status,t1.insert_date
+        from ep_group_money_account_regulation_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' ">
+            and substr(t1.dealend_date,1 ,8)= #{dealend_date_start}
+        </if>
+        union all
+        select '总计','','','','','',cast(coalesce(sum(a1.regulation_money),0)as decimal(18,2)),'','','','','','','','',''
+        from ep_group_money_account_regulation_day_check a1,se_orgid_rel a2
+        where a2.fen_gongs = substring(a1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and a2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and a1.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' ">
+            and substr(a1.dealend_date,1 ,8) = #{dealend_date_start}
+        </if>
+        ) a
+    </select>
+
+    <!--资金使用日报表-->
+    <select id="selectGroupFundUseDetailInfoList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select * from (
+        select t1.org_name,t1.business_center,t1.business_admissible,t1.process_date,t1.business_type,t1.actual_use_amount,t1.deal_status,t1.group_code,t1.group_name,
+        t1.order_id,t1.applicant,t1.apply_time,t1.apply_amount,ifnull(t3.login_name,'') check_code,ifnull(t1.check_date,'') check_date,ifnull(t1.check_status,'') check_status,t1.insert_date
+        from ep_group_money_use_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and SUBSTR(t1.org_id,1,8) = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' ">
+            and substr(t1.process_date,1 ,8) = #{process_date_start}
+        </if>
+        union all
+        select '总计','','','','',cast(coalesce(sum(a1.actual_use_amount),0)as decimal(18,2)),'','','','','','',cast(coalesce(sum(a1.apply_amount),0)as decimal(18,2)),'','','',''
+        from ep_group_money_use_day_check a1,se_orgid_rel a2
+        where a2.fen_gongs = substring(a1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and SUBSTR(a1.org_id,1,8) = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and a1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' ">
+            and substr(a1.process_date,1 ,8) = #{process_date_start}
+        </if>
+        ) a
+    </select>
+
+    <!--资金余额日报明细表-->
+    <!--资金使用汇总报表-->
+    <select id="selectAllGroupFundUseDetailInfoList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select * from (
+        select date_format(SUBSTR(a.process_date,1,8),'%Y-%m-%d') as process_date,substr(a.org_id,1,8) as org_id,a.org_name,a.center_code,a.business_center,cast(coalesce(sum(a.actual_use_amount),0)as decimal(18,2)) as actual_use_amount,case a.check_status when '0' then '未稽核' when '1' then '已稽核' when '2' then '驳回' end as check_status,ifnull(b.login_name,'') as check_code,a.check_date
+        from ep_group_money_use_day_check a LEFT JOIN bs_systemuser_info b on a.check_code=b.staff_code,se_orgid_rel c
+        where c.fen_gongs = substring(a.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and c.group_pay_code= #{org_id}
+        </if>
+        <if test="center_code != null and center_code != ''and center_code != 'null' ">
+            and a.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' and process_date_start != 'null' ">
+            and date_format(a.process_date,'%Y-%m-%d') &gt;= #{process_date_start}
+        </if>
+        <if test="process_date_end != null and process_date_end != '' and process_date_end != 'null' ">
+            and date_format(a.process_date,'%Y-%m-%d')  &lt;= #{process_date_end}
+        </if>
+        GROUP BY SUBSTR(a.process_date,1,8),a.center_code ORDER by process_date DESC
+        ) a
+    </select>
+    <!--资金余额日报表-->
+    <select id="selectGroupFundChangeDailyInfoList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto">
+        select * from (
+        select
+        ifnull(t1.org_name,'') org_name,ifnull(t1.business_center,'') business_center,ifnull(t1.group_code,'') group_code,
+        ifnull(t1.group_name,'') group_name,ifnull(t1.manager,'') manager,ifnull(t1.account_clerk,'') account_clerk,
+        cast(coalesce(t1.yesterday_balance,0)as decimal(18,2)) yesterday_balance,cast(coalesce(t1.yesterday_available_balance,0)as decimal(18,2)) yesterday_available_balance,
+        cast(coalesce(t1.today_claim_amount,0)as decimal(18,2)) today_claim_amount,cast(coalesce(t1.today_deduction_amount,0)as decimal(18,2)) today_deduction_amount,
+        cast(coalesce(t1.today_into_amount,0)as decimal(18,2)) today_into_amount,cast(coalesce(t1.today_out_amount,0)as decimal(18,2)) today_out_amount,
+        cast(coalesce(t1.today_refund_amount,0)as decimal(18,2)) today_refund_amount,cast(coalesce(t1.today_freeze_amount,0)as decimal(18,2)) today_freeze_amount,
+        cast(coalesce(t1.today_occupy_amount,0)as decimal(18,2)) today_occupy_amount,cast(coalesce(t1.today_history_deduction_amount,0)as decimal(18,2)) today_history_deduction_amount,
+        cast(coalesce(t1.today_account_balance,0)as decimal(18,2)) today_account_balance,
+        cast(coalesce(t1.today_account_available_balance,0)as decimal(18,2)) today_account_available_balance,ifnull(t1.last_operat_date,'') last_operat_date,
+        t1.insert_date,t1.id
+        from ep_group_money_balance_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and t2.fen_gongs = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="last_operat_date_start != null and last_operat_date_start != '' ">
+            and substr(t1.insert_date,1,10) = #{last_operat_date_start}
+        </if>
+        union all
+        select '总计','','','','','',
+        cast(coalesce(sum(a1.yesterday_balance),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.yesterday_available_balance),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_claim_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_deduction_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_into_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_out_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_refund_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_freeze_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_occupy_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_history_deduction_amount),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_account_balance),0)as decimal(18,2)),
+        cast(coalesce(sum(a1.today_account_available_balance),0)as decimal(18,2)),'','',''
+        from ep_group_money_balance_day_check a1 ,se_orgid_rel a2
+        where a2.fen_gongs = substring(a1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and a2.fen_gongs = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and a1.center_code = #{center_code}
+        </if>
+        <if test="last_operat_date_start != null and last_operat_date_start != '' ">
+            and substr(a1.insert_date,1,10) = #{last_operat_date_start}
+        </if>
+        union all
+        select '','','','','','','','','','','','','','','','',
+        case audit_status when '0' then '未稽核' when '1' then '已稽核' when '2' then '已驳回' end as check_status,
+        ifnull(e.login_name,'')as check_code,
+        ifnull(e.opt_date,'') as check_date,'',''
+        from ep_cap_processstatus_info e where  e.process_type='5'
+        <if test="center_code != null and center_code != '' ">
+            and e.center_code = #{center_code}
+        </if>
+        <if test="last_operat_date_start != null and last_operat_date_start != '' ">
+            and substr(e.audit_date,1,10) = #{last_operat_date_start}
+        </if>
+        ) a
+    </select>
+
+    <!--资金余额日报汇总表-->
+    <select id="selectGroupFundChangeDailySummaryInfoList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto">
+        select e.audit_date as insert_date,f.name as org_name,e.business_center,
+        substring(e.org_id,1,8) as org_id,
+        substring(e.center_code,1,8) as center_code,
+        cast(coalesce(sum(d.yesterday_balance),0)as decimal(18,2)) as yesterday_balance,
+        cast(coalesce(sum(d.yesterday_available_balance),0)as decimal(18,2)) as yesterday_available_balance,
+        cast(coalesce(sum(d.today_claim_amount),0)as decimal(18,2)) as today_claim_amount,
+        cast(coalesce(sum(d.today_deduction_amount),0)as decimal(18,2)) as today_deduction_amount,
+        cast(coalesce(sum(d.today_into_amount),0)as decimal(18,2)) as today_into_amount,
+        cast(coalesce(sum(d.today_out_amount),0)as decimal(18,2)) as today_out_amount,
+        cast(coalesce(sum(d.today_refund_amount),0)as decimal(18,2)) as today_refund_amount,
+        cast(coalesce(sum(d.today_freeze_amount),0)as decimal(18,2)) as today_freeze_amount,
+        cast(coalesce(sum(d.today_occupy_amount),0)as decimal(18,2)) as today_occupy_amount,
+        cast(coalesce(sum(d.today_history_deduction_amount),0)as decimal(18,2)) as today_history_deduction_amount,
+        cast(coalesce(sum(d.today_account_balance),0)as decimal(18,2)) as today_account_balance,
+        cast(coalesce(sum(d.today_account_available_balance),0)as decimal(18,2))as today_account_available_balance ,
+        ifnull(e.audit_status,'') check_status,
+        ifnull(e.login_name,'') check_code,
+        ifnull(e.opt_date,'')  check_date
+        from ep_cap_processstatus_info e left join (
+        select
+        t1.insert_date,
+        t1.org_name,
+        ifnull(t1.business_center,'') as business_center,
+        substring(t1.org_id,1,8)as org_id,
+        substring(t1.center_code,1,8) as center_code,
+        cast(coalesce(sum(t1.yesterday_balance),0)as decimal(18,2)) as yesterday_balance,
+        cast(coalesce(sum(t1.yesterday_available_balance),0)as decimal(18,2)) as yesterday_available_balance,
+        cast(coalesce(sum(t1.today_claim_amount),0)as decimal(18,2)) as today_claim_amount,
+        cast(coalesce(sum(t1.today_deduction_amount),0)as decimal(18,2)) as today_deduction_amount,
+        cast(coalesce(sum(t1.today_into_amount),0)as decimal(18,2)) as today_into_amount,
+        cast(coalesce(sum(t1.today_out_amount),0)as decimal(18,2)) as today_out_amount,
+        cast(coalesce(sum(t1.today_refund_amount),0)as decimal(18,2)) as today_refund_amount,
+        cast(coalesce(sum(t1.today_freeze_amount),0)as decimal(18,2)) as today_freeze_amount,
+        cast(coalesce(sum(t1.today_occupy_amount),0)as decimal(18,2)) as today_occupy_amount,
+        cast(coalesce(sum(t1.today_history_deduction_amount),0)as decimal(18,2)) as today_history_deduction_amount,
+        cast(coalesce(sum(t1.today_account_balance),0)as decimal(18,2)) as today_account_balance,
+        cast(coalesce(sum(t1.today_account_available_balance),0)as decimal(18,2))as today_account_available_balance ,
+        ifnull(t1.check_status, '') check_status,
+        ifnull(t3.login_name, '') check_code,
+        ifnull(t1.check_date,'') check_date,
+        t2.group_pay_code group_pay_code
+        from
+        ep_group_money_balance_day_check t1
+        left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,
+        se_orgid_rel t2
+        where  t2.fen_gongs = substring(t1.org_id, 1, 8)
+        group by t1.center_code,substr(t1.insert_date,1,10)
+        ) d on d.insert_date=e.audit_date and d.center_code=e.center_code,
+        se_contract_qddw f,
+        se_orgid_rel d3
+        where f.id=e.org_id
+        and  e.org_id = d3.fen_gongs
+        and e.process_type='5'
+
+        <if test="org_id != null and org_id != '' ">
+            and d3.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and e.center_code = #{center_code}
+        </if>
+        <if test="last_operat_date_start != null and last_operat_date_start != '' and last_operat_date_start != 'null' ">
+            and substr(e.audit_date,1,10) >= #{last_operat_date_start}
+        </if>
+        <if test="last_operat_date_end != null and last_operat_date_end != '' and last_operat_date_end != 'null' ">
+            and substr(e.audit_date,1,10) &lt;= #{last_operat_date_end}
+        </if>
+        group by e.audit_date,e.center_code
+        order by e.audit_date desc
+    </select>
+
+    <!--资金余额月报表-->
+    <select id="selectGroupFundChangeMonthInfoList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto">
+        select * from (select
+        t1.org_name,
+        t6.business_center,
+        t1.group_name,
+        t1.group_code,
+        ifnull(t7.today_account_balance,'0.00') as yesterday_balance,
+        cast(
+        coalesce (
+        sum(t1.today_claim_amount),
+        0
+        ) as decimal (18, 2)
+        ) as today_claim_amount,
+        cast(
+        coalesce (
+        sum(t1.today_deduction_amount),
+        0
+        ) as decimal (18, 2)
+        )as today_deduction_amount,
+        cast(
+        coalesce (
+        sum(t1.today_into_amount),
+        0
+        ) as decimal (18, 2)
+        )as today_into_amount,
+        cast(
+        coalesce (sum(t1.today_out_amount), 0) as decimal (18, 2)
+        ) as today_out_amount,
+        cast(
+        coalesce (
+        sum(t1.today_refund_amount),
+        0
+        ) as decimal (18, 2)
+        ) as today_refund_amount,
+        cast(
+        coalesce (
+        sum(
+        t1.today_history_deduction_amount
+        ),
+        0
+        ) as decimal (18, 2)
+        ) as today_history_deduction_amount,
+        ifnull(t4.today_account_balance,'0.00') as today_account_balance
+        from
+        ep_group_money_balance_day_check t1
+        left join ep_cap_processstatus_info e on e.process_type='5' and e.audit_date=t1.insert_date and e.center_code=t1.center_code
+        left join ep_group_money_balance_day_check t4 on t1.group_code = t4.group_code	and substring(t4.insert_date, 1, 10) = #{last_day}
+        left join ep_group_money_balance_day_check t7 on t1.group_code = t7.group_code	and substring(t7.insert_date, 1, 10) = #{last_operat_date_end}
+        left join se_business_center_staff_rel t5 on t1.manager_code = t5.staff_code
+        left join se_business_center t6 on t5.center_code = t6.center_code
+        left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,
+        se_orgid_rel t2
+        where
+        t2.fen_gongs = substring(t1.org_id, 1, 8)
+        and  e.audit_status='1'
+        <if test="org_id != null and org_id != '' ">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="last_operat_date_start != null and last_operat_date_start != '' ">
+            and substr(t1.insert_date,1,7) = #{last_operat_date_start}
+        </if>
+        group by
+        t1.group_code
+        union all
+        select
+        '总计',
+        '',
+        '',
+        '',
+        cast(
+        coalesce (
+        sum(t7.today_account_balance),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(t1.today_claim_amount),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(t1.today_deduction_amount),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(t1.today_into_amount),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (sum(t1.today_out_amount), 0) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(t1.today_refund_amount),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(
+        t1.today_history_deduction_amount
+        ),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(
+        t4.today_account_balance
+        ),
+        0
+        ) as decimal (18, 2)
+        )
+        from
+        ep_group_money_balance_day_check t1
+        left join ep_cap_processstatus_info e on e.process_type='5' and e.audit_date=t1.insert_date and e.center_code=t1.center_code
+        left join ep_group_money_balance_day_check t4 on t1.group_code = t4.group_code	and substring(t4.insert_date, 1, 10) = #{last_day}
+        left join ep_group_money_balance_day_check t7 on t1.group_code = t7.group_code	and substring(t7.insert_date, 1, 10) = #{last_operat_date_end}
+        left join se_business_center_staff_rel t5 on t1.manager_code = t5.staff_code
+        left join se_business_center t6 on t5.center_code = t6.center_code
+        left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,
+        se_orgid_rel t2
+        where
+        t2.fen_gongs = substring(t1.org_id, 1, 8)
+        and  e.audit_status='1'
+        <if test="org_id != null and org_id != '' ">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="last_operat_date_start != null and last_operat_date_start != '' ">
+            and substr(t1.insert_date,1,7) = #{last_operat_date_start}
+        </if>
+        )a
+    </select>
+    <!--资金使用稽核通过/驳回-->
+    <update id="updateFundAccountUseDetailCheck" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        update ep_group_money_use_day_check set check_code = #{check_code},check_status=#{check_status},check_date = now()
+        where order_id = #{order_id}
+    </update>
+
+    <!--资金余额稽核通过/驳回-->
+    <update id="updateFundAccountChangeDailyCheck" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto">
+        update ep_group_money_balance_day_check set check_code = #{check_code},check_status=#{check_status},check_date = now()
+        where id = #{id}
+    </update>
+
+    <!--资金调账稽核通过/驳回-->
+    <update id="updateFundAccountReconciliationDailyCheck" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        update ep_group_money_account_regulation_day_check set check_code = #{check_code},check_status=#{check_status},check_date = now()
+        where regulation_apply_no = #{regulation_apply_no}
+    </update>
+
+    <!--资金使用月报表-->
+    <select id="selectGroupFundUseDetailInfoListMonth" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select t1.org_name,t1.business_center,substr(t1.process_date,1,6) process_date,t1.group_code,t1.group_name,t1.business_type,
+        cast(coalesce(sum(t1.actual_use_amount),0) as decimal(18,2)) actual_use_amount
+        from ep_group_money_use_day_check t1,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        and t1.check_status = '1'
+        <if test="org_id != null and org_id != ''">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != ''">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != ''">
+            and substr(t1.process_date,1,6) = #{process_date_start}
+        </if>
+        group by t1.group_code,t1.business_type
+        union all
+        select '总计','','','','','',cast(coalesce(sum(t1.actual_use_amount),0)as decimal(18,2))
+        from ep_group_money_use_day_check t1,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        and t1.check_status = '1'
+        <if test="org_id != null and org_id != ''">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != ''">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != ''">
+            and substr(t1.process_date,1,6) = #{process_date_start}
+        </if>
+    </select>
+
+    <!--资金调账月报表-->
+    <select id="selectGroupFundReconciliationDailyInfoListMonth" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        select a.org_name,a.business_center,substr(a.dealend_date,1,6) dealend_date,a.out_group_no,a.out_group_name,
+        cast(coalesce(sum(a.rm),0) as decimal(18,2)) regulation_money_positive,cast(coalesce(sum(a.dm),0) as decimal(18,2)) regulation_money_negative from (
+        select t1.org_id,t1.org_name,t1.center_code,t1.business_center,t1.dealend_date,t1.out_group_no,t1.out_group_name,t1.regulation_money rm,'' dm
+        from ep_group_money_account_regulation_day_check t1
+        where t1.out_group_no != null or t1.out_group_no != ''
+        and t1.check_status = '1'
+        group by t1.out_group_no
+        union all
+        select t2.org_id,t2.org_name,t2.center_code,t2.business_center,t2.dealend_date,t2.into_group_no,t2.into_group_name,'',t2.regulation_money
+        from ep_group_money_account_regulation_day_check t2
+        where t2.into_group_no != null or t2.into_group_no != ''
+        and t2.check_status = '1'
+        group by t2.into_group_no
+        ) a,se_orgid_rel b
+        where b.fen_gongs = substr(a.org_id,1,8)
+        <if test="org_id != null and org_id != ''">
+            and b.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != ''">
+            and a.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != ''">
+            and substr(a.dealend_date,1,6) = #{dealend_date_start}
+        </if>
+        group by a.out_group_no
+        union all
+        select '总计','','','','',cast(coalesce(sum(a.rm),0) as decimal(18,2)),cast(coalesce(sum(a.dm),0) as decimal(18,2))
+        from (
+        select t1.org_id,t1.org_name,t1.center_code,t1.business_center,t1.dealend_date,t1.out_group_no,t1.out_group_name,t1.regulation_money rm,'' dm
+        from ep_group_money_account_regulation_day_check t1
+        where t1.out_group_no != null or t1.out_group_no != ''
+        and t1.check_status = '1'
+        group by t1.out_group_no
+        union all
+        select t2.org_id,t2.org_name,t2.center_code,t2.business_center,t2.dealend_date,t2.into_group_no,t2.into_group_name,'',t2.regulation_money
+        from ep_group_money_account_regulation_day_check t2
+        where t2.into_group_no != null or t2.into_group_no != ''
+        and t2.check_status = '1'
+        group by t2.into_group_no
+        ) a,se_orgid_rel b
+        where b.fen_gongs = substr(a.org_id,1,8)
+        <if test="org_id != null and org_id != ''">
+            and b.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != ''">
+            and a.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != ''">
+            and substr(a.dealend_date,1,6) = #{dealend_date_start}
+        </if>
+    </select>
+
+    <!--资金报表稽核-->
+    <update id="updateFundReportCheck" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReportCheckDto">
+        update ep_cap_processstatus_info set audit_status = #{audit_status},opt_date=now(),login_no=#{login_no},login_name=#{login_name}
+        where process_type = #{process_type} and org_id = #{org_id} and center_code = #{center_code} and audit_date = #{audit_date}
+    </update>
+
+    <!--资金使用日报表（新）-->
+    <select id="selectGroupFundUseDetailInfoListNext" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select * from (
+        select t1.org_name,t1.business_center,t1.business_admissible,date_format(t1.process_date,'%Y-%m-%d %H:%i') process_date,t1.business_type,t1.actual_use_amount,t1.deal_status,t1.group_code,t1.group_name,
+        t1.order_id,t1.applicant,t1.apply_time,t1.apply_amount,t1.insert_date
+        from ep_group_money_use_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and substr(t1.org_id,1,8) = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' and process_date_start != 'null' ">
+            and date_format(t1.process_date, '%Y-%m-%d') = #{process_date_start}
+        </if>
+        union all
+        select '总计','','','','',cast(coalesce(sum(a1.actual_use_amount),0)as decimal(18,2)),'','','','','','',cast(coalesce(sum(a1.apply_amount),0)as decimal(18,2)),''
+        from ep_group_money_use_day_check a1,se_orgid_rel a2
+        where a2.fen_gongs = substring(a1.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and substr(a1.org_id,1,8) = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and a1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' and process_date_start != 'null' ">
+            and date_format(a1.process_date, '%Y-%m-%d') = #{process_date_start}
+        </if>
+        union all
+        select '','','','','','','','','','',case audit_status when '0' then '未稽核' when '1' then '已稽核' when '2' then '已驳回' end,login_name,opt_date,''
+        from ep_cap_processstatus_info where process_type = '3'
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and org_id = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' and process_date_start != 'null' ">
+            and audit_date = #{process_date_start}
+        </if>
+        ) a
+    </select>
+
+    <!--资金使用汇总（新）-->
+    <select id="selectAllGroupFundUseDetailInfoListNext" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select * from (
+            select
+            q1.audit_date process_date,q1.org_id,q3.name org_name,q1.center_code,q1.business_center,cast(coalesce(sum(q2.actual_use_amount),0)as decimal(18,2)) as actual_use_amount,
+            case q1.audit_status when '0' then '未稽核' when '1' then '已稽核' when '2' then '驳回' end as check_status,ifnull(q1.login_name,'') as check_code,q1.opt_date check_date
+            from ep_cap_processstatus_info q1 left join (
+                    select a.process_date,substr(a.org_id,1,8) as org_id,a.org_name,a.center_code,a.business_center,cast(coalesce(sum(a.actual_use_amount),0)as decimal(18,2)) as actual_use_amount,a.insert_date
+                    from ep_group_money_use_day_check a left join bs_systemuser_info b on a.check_code=b.staff_code
+
+                    group by a.process_date,a.center_code order by process_date desc
+
+            ) q2 on q1.audit_date = date_format(q2.process_date,'%Y-%m-%d') and q1.center_code = q2.center_code left join se_orgid_rel q4 on q1.org_id = q4.fen_gongs,se_contract_qddw q3
+            where q1.process_type = '3' and q1.org_id = q3.id
+            <if test="org_id != null and org_id != '' and org_id != 'null' ">
+                and q4.group_pay_code = #{org_id}
+            </if>
+            <if test="center_code != null and center_code != ''and center_code != 'null' ">
+                and q1.center_code = #{center_code}
+            </if>
+            <if test="process_date_start != null and process_date_start != '' and process_date_start != 'null' ">
+                and q1.audit_date &gt;= #{process_date_start}
+            </if>
+            <if test="process_date_end != null and process_date_end != '' and process_date_end != 'null' ">
+                and q1.audit_date &lt;= #{process_date_end}
+            </if>
+            group by q1.center_code,q1.audit_date
+        ) t
+    </select>
+
+    <!--资金使用月报表（新）-->
+    <select id="selectGroupFundUseDetailInfoListMonthNext" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select t1.org_name,t1.business_center,substr(t1.process_date,1,6) process_date,t1.group_code,t1.group_name,t1.business_type,
+        cast(coalesce(sum(t1.actual_use_amount),0) as decimal(18,2)) actual_use_amount
+        from ep_group_money_use_day_check t1 left join ep_cap_processstatus_info t3
+        on t3.process_type = '3' and t1.insert_date = t3.audit_date and t1.center_code = t3.center_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        and t3.audit_status = '1'
+        <if test="org_id != null and org_id != '' and center_code != 'null'">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null'">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' and center_code != 'null'">
+            and date_format(t1.process_date, '%Y-%m') = #{process_date_start}
+        </if>
+        group by t1.group_code,t1.business_type
+        union all
+        select '总计','','','','','',cast(coalesce(sum(t1.actual_use_amount),0)as decimal(18,2))
+        from ep_group_money_use_day_check t1 left join ep_cap_processstatus_info t3
+        on t3.process_type = '3' and t1.insert_date = t3.audit_date and t1.center_code = t3.center_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        and t3.audit_status = '1'
+        <if test="org_id != null and org_id != '' and center_code != 'null'">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null'">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="process_date_start != null and process_date_start != '' and center_code != 'null'">
+            and date_format(t1.process_date, '%Y-%m') = #{process_date_start}
+        </if>
+    </select>
+
+    <!--资金调账日报表（新）-->
+    <select id="selectGroupFundReconciliationDailyInfoListNext" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        select * from (
+        select t1.org_name,t1.business_center,t1.out_group_name,t1.out_group_no,t1.into_group_name,t1.into_group_no,t1.regulation_money,t1.regulation_apply_no,
+        t1.order_status,date_format(t1.dealend_date,'%Y-%m-%d %H:%i') dealend_date,t1.staff_name,date_format(t1.apply_date,'%Y-%m-%d %H:%i') apply_date,t1.insert_date
+        from ep_group_money_account_regulation_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and t2.fen_gongs = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' and dealend_date_start != 'null' ">
+            and date_format(t1.dealend_date, '%Y-%m-%d')= #{dealend_date_start}
+        </if>
+        union all
+        select '总计','','','','','',cast(coalesce(sum(a1.regulation_money),0)as decimal(18,2)),'','','','','',''
+        from ep_group_money_account_regulation_day_check a1,se_orgid_rel a2
+        where a2.fen_gongs = substring(a1.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and a2.fen_gongs = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and a1.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' and dealend_date_start != 'null' ">
+            and date_format(a1.dealend_date, '%Y-%m-%d') = #{dealend_date_start}
+        </if>
+        union all
+        select '','','','','','','','','',case audit_status when '0' then '未稽核' when '1' then '已稽核' when '2' then '已驳回' end,login_name,opt_date,''
+        from ep_cap_processstatus_info where process_type = '4'
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and org_id = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' and dealend_date_start != 'null' ">
+            and audit_date = #{dealend_date_start}
+        </if>
+        ) a
+    </select>
+
+    <!--资金调账月报表（新）-->
+    <select id="selectGroupFundReconciliationDailyInfoListMonthNext" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        select a.org_name,a.business_center,substr(a.dealend_date,1,6) dealend_date,a.out_group_no,a.out_group_name,
+        cast(coalesce(sum(a.rm),0) as decimal(18,2)) regulation_money_positive,cast(coalesce(sum(a.dm),0) as decimal(18,2)) regulation_money_negative from (
+        select t1.org_id,t1.org_name,t1.center_code,t1.business_center,t1.dealend_date,t1.out_group_no,t1.out_group_name,t1.regulation_money rm,'' dm
+        from ep_group_money_account_regulation_day_check t1 left join ep_cap_processstatus_info t2 on t2.process_type = '4' and t1.insert_date = t2.audit_date and t1.center_code = t2.center_code
+        where t1.out_group_no != null or t1.out_group_no != ''
+        and t2.audit_status = '1'
+        group by t1.out_group_no
+        union all
+        select t2.org_id,t2.org_name,t2.center_code,t2.business_center,t2.dealend_date,t2.into_group_no,t2.into_group_name,'',t2.regulation_money
+        from ep_group_money_account_regulation_day_check t2 left join ep_cap_processstatus_info t3 on t3.process_type = '4' and t2.insert_date = t3.audit_date and t2.center_code = t3.center_code
+        where t2.into_group_no != null or t2.into_group_no != ''
+        and t3.audit_status = '1'
+        group by t2.into_group_no
+        ) a,se_orgid_rel b
+        where b.fen_gongs = substr(a.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null'">
+            and b.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null'">
+            and a.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' and dealend_date_start != 'null'">
+            and date_format(a.dealend_date, '%Y-%m') = #{dealend_date_start}
+        </if>
+        group by a.out_group_no
+        union all
+        select '总计','','','','',cast(coalesce(sum(a.rm),0) as decimal(18,2)),cast(coalesce(sum(a.dm),0) as decimal(18,2))
+        from (
+        select t1.org_id,t1.org_name,t1.center_code,t1.business_center,t1.dealend_date,t1.out_group_no,t1.out_group_name,t1.regulation_money rm,'' dm
+        from ep_group_money_account_regulation_day_check t1 left join ep_cap_processstatus_info t2 on t2.process_type = '4' and t1.insert_date = t2.audit_date and t1.center_code = t2.center_code
+        where t1.out_group_no != null or t1.out_group_no != ''
+        and t2.audit_status = '1'
+        group by t1.out_group_no
+        union all
+        select t2.org_id,t2.org_name,t2.center_code,t2.business_center,t2.dealend_date,t2.into_group_no,t2.into_group_name,'',t2.regulation_money
+        from ep_group_money_account_regulation_day_check t2 left join ep_cap_processstatus_info t3 on t3.process_type = '4' and t2.insert_date = t3.audit_date and t2.center_code = t3.center_code
+        where t2.into_group_no != null or t2.into_group_no != ''
+        and t3.audit_status = '1'
+        group by t2.into_group_no
+        ) a,se_orgid_rel b
+        where b.fen_gongs = substr(a.org_id,1,8)
+        <if test="org_id != null and org_id != '' and org_id != 'null'">
+            and b.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null'">
+            and a.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' and dealend_date_start != 'null'">
+            and date_format(a.dealend_date, '%Y-%m') = #{dealend_date_start}
+        </if>
+    </select>
+
+    <!--资金调账汇总报表（新）-->
+    <select id="selectGroupFundAccountAdjustmentSummaryListNext" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        <!--select
+        q1.audit_date insert_date,q1.org_id,q3.name org_name,q1.center_code,q1.business_center,cast(coalesce(sum(q2.regulation_money),0)as decimal(18,2)) regulation_money,q1.audit_status check_status,q1.login_name check_code,q1.opt_date check_date
+        from ep_cap_processstatus_info q1 left join
+        (select substr(t1.dealend_date,1,8) dealend_date,t1.insert_date,t2.group_pay_code,t1.org_id,t1.org_name,t1.center_code,t1.business_center,cast(coalesce(sum(t1.regulation_money),0)as decimal(18,2)) regulation_money
+            from ep_group_money_account_regulation_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+            where t2.fen_gongs = substring(t1.org_id,1,8)
+            and t1.regulation_money &lt; 0
+
+            group by t1.center_code,substr(t1.dealend_date,1,8)
+            order by insert_date ) q2 on q1.audit_date = q2.insert_date and q1.center_code = q2.center_code,se_contract_qddw q3
+        where q1.process_type = '4' and q1.org_id = q3.id
+        <if test="org_id != null and org_id != '' ">
+            and q1.org_id = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and q1.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' ">
+            and q1.audit_date >= #{dealend_date_start}
+        </if>
+        <if test="dealend_date_end != null and dealend_date_end != '' ">
+            and q1.audit_date &lt;= #{dealend_date_end}
+        </if>
+        group by q1.center_code,q1.audit_date-->
+
+        select q1.audit_date dealend_date,q1.org_id group_pay_code,q3.name org_name, q1.center_code,q1.business_center,ifnull(q2.regulation_money,0.00) regulation_money,
+        q1.audit_status check_status,q1.login_name check_code,q1.opt_date check_date
+        from ep_cap_processstatus_info q1 left join
+        (select t1.org_id,t1.org_name,t1.center_code,t1.business_center,t1.dealend_date,t1.insert_date,sum(t1.regulation_money) regulation_money
+        from ep_group_money_account_regulation_day_check t1
+        where t1.regulation_money &lt; 0
+        group by t1.center_code,t1.insert_date) q2 on q1.audit_date =  date_format(q2.dealend_date, '%Y-%m-%d') and q1.center_code = q2.center_code left join se_orgid_rel q4 on q1.org_id = q4.fen_gongs,se_contract_qddw q3
+        where q1.org_id = q3.id
+        and q1.process_type = '4'
+        <if test="org_id != null and org_id != '' and org_id != 'null' ">
+            and q4.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and q1.center_code = #{center_code}
+        </if>
+        <if test="dealend_date_start != null and dealend_date_start != '' and dealend_date_start != 'null'  ">
+            and q1.audit_date >= #{dealend_date_start}
+        </if>
+        <if test="dealend_date_end != null and dealend_date_end != '' and dealend_date_end != 'null'  ">
+            and q1.audit_date &lt;= #{dealend_date_end}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,45 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.InDTO;
+
+/**
+ * 冲红：预打发票申请查询界面展示内容InDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class QryInvAppForRedInDTO extends InDTO {
+    private String applicationNo;// 申请单编号
+    private String invoiceType; //发票类型（1-增值税电子发票、2-增值税专用发票）
+    private String invoiceMode;//发票模式（1-实收、2-月结）
+    private String printMode;//打印方式（1-一般、2-合打、3-分打）
+
+    public String getPrintMode() {
+        return printMode;
+    }
+    public void setPrintMode(String printMode) {
+        this.printMode = printMode;
+    }
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceMode() {
+        return invoiceMode;
+    }
+
+    public void setInvoiceMode(String invoiceMode) {
+        this.invoiceMode = invoiceMode;
+    }
+}

@@ -1,0 +1,43 @@
+package com.esop.busiAnalysis.dto;
+
+/**
+ * Created by Administrator on 2017/6/22.
+ */
+public class EpTotalContributionParamDto {
+    String region_code = "";//地市编码
+    String  town_code="";//区县编码
+    String  manager_no = "";//客户经理编码
+    String eff_date = "";//查询日期
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

@@ -1,0 +1,274 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/6/21
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>--%>
+<head>
+    <link rel="icon" href="./favicon.ico">
+    <title>工单池</title>
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<div class="modal fade" id="claim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">认领工单</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">确认认领该条工单吗？</label>
+            </div>
+            <div class="modal-footer">
+                <button id="yes" name="yes" class="btn btn-info">是</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">工单认领失败，请检查</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">工单认领</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择工单状态</label>
+                            <div class="col-sm-2">
+                                <select class="input-md form-control" id="record_status">
+                                    <option value="">--请选择--</option>
+                                    <option value="06">工单主动放弃，进入工单池</option>
+                                    <option value="08">工单被动放弃，进入工单池</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="submit" class="btn btn-info pull-right" id="query">查询</button>
+                                <%--<button type="submit" class="btn btn-info pull-right" id="test">测试</button>--%>
+                                <input id="id" name="id" type="hidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th class="text-center">工单状态</th>
+        <th class="text-center">潜在集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">集团地址</th>
+        <th class="text-center">地市派单截止日期</th>
+        <th class="text-center">省派单截止日期</th>
+        <th class="text-center">工单放弃原因</th>
+        <th class="text-center">操作</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        <th class="text-center">工单状态</th>
+        <th class="text-center">潜在集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">集团地址</th>
+        <th class="text-center">地市派单截止日期</th>
+        <th class="text-center">省派单截止日期</th>
+        <th class="text-center">工单放弃原因</th>
+        <th class="text-center">操作</th>
+    </tr>
+    </tfoot>
+</table>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var arr=new Array();
+    $(document).ready(function() {
+        editor = new $.fn.DataTable.Editor( {
+        } );
+
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 15,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"getAllSignRecordForPool",
+                type:"POST",
+                data:{
+                    service_no:service_no
+                }
+            },
+            columns: [
+                { data: "status_name" },
+                { data: "cust_id" },
+                { data: "cust_name" },
+                { data: "cust_addr" },
+                { data: "region_end_date" },
+                { data: "province_end_date" },
+                { data: "giveup_reason" },
+                {
+                    data: "id",
+                    "width": "8%",
+                    render: function ( data, type, row, meta ) {
+                        return   data ='<input type="button" name="check" value="工单认领" onclick="claim('+row.id+')"/>';
+                    }
+                }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    } );
+
+    $("#query").click(function () {
+
+        var record_status = $("#record_status").val();
+        table = $('#example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            ajax: {
+                url:"getAllSignRecordForPool",
+                type:"POST",
+                data:{
+                    record_status:record_status,
+                    service_no:service_no
+                }
+            },
+            columns: [
+                { data: "status_name" },
+                { data: "cust_id" },
+                { data: "cust_name" },
+                { data: "cust_addr" },
+                { data: "region_end_date" },
+                { data: "province_end_date" },
+                { data: "giveup_reason" },
+                {
+                    data: "id",
+                    "width": "8%",
+                    render: function ( data, type, row, meta ) {
+                        return   data ='<input type="button" name="check" value="工单认领" onclick="claim('+row.id+')"/>';
+                    }
+                }
+            ],
+        } );
+    });
+
+    function claim(id){
+        $("#id").val(id);
+        $("#claim").modal('show');
+    }
+
+    $("#yes").click(function () {
+        //alert(id);
+        var id = $("#id").val();
+        $.ajax({
+            type:"GET",
+            url:"claimSignRecordByService",
+            data:{
+                id:id,
+                service_no:service_no,
+                service_name:service_name
+            }
+        }).then(function(data){
+            if(data==1){
+                location.href="srp";
+            }else{
+                $("#fault5").modal('show');
+            }
+        });
+    })
+
+</script>
+</html>

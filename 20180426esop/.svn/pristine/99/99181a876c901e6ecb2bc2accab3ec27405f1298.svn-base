@@ -1,0 +1,179 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.StringUtils;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import com.esop.cqDevelopment.elecPack.service.UnionMemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangxy on 2017/12/9.
+ */
+@RestController
+public class GroupMemberRC {
+    @Autowired
+    UnionMemberService unionMemberService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result=new Result();
+
+    /**
+     * 本地营销变更查看详情
+     * @param parameter
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="selActivitiesDetail")
+    public OrderDto selActivitiesDetail(OrderDto parameter, HttpServletRequest request){
+        return unionMemberService.selActivitiesDetail(parameter.getReqNum());
+    }
+
+
+    /**
+     * 查询商机号
+     * @param parameter
+     * @param request
+     * @return
+     */
+    @RequestMapping(value="selOpporNo")
+    public Result selOpporNo(SeOpporInfo parameter, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        parameter.setOperate_type("勘察");
+        Result result = unionMemberService.selSeOpporNo(parameter);
+        return result;
+    }
+
+    /**
+     * 根据商机号查询合同信息字段信息
+     * @param param
+     * @return map
+     */
+    @RequestMapping(value="/getContractCloumByOpporNo")
+    public Map getContractCloumByOpporNo(SeOpporUserBusinessInfo param,HttpServletRequest request){
+        Map result = new HashMap();
+        SeNewContractInfoDto dto = new SeNewContractInfoDto();
+        dto = unionMemberService.getContractCloumByOpporNo(param);
+        result.put("code",'0');
+        result.put("message","查询成功");
+        result.put("reData",dto);
+        return result;
+    }
+
+
+    /**
+     * 根据条件查询集团成员列表
+     * @param param
+     * @return map
+     */
+    @RequestMapping(value="/getMemberInfoList")
+    public Result getMemberInfoList(GroupInfoDto param,HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+        result = unionMemberService.getMemberList(param);
+        return result;
+    }
+
+    /**
+     * 根据集团编号查询产品列表
+     * @return
+     */
+    @RequestMapping(value="selProd")
+    public List selProdList(GroupInfoDto parameter, HttpServletRequest request){
+        List list = unionMemberService.selProdList(parameter);
+        return  list;
+    }
+
+
+    /**
+     * 更新成员号码
+     * @return
+     */
+    @RequestMapping(value="/updateMemberTel")
+    public Map updateMemberTel(MemberInfoDto param){
+        Map map  = new HashMap();
+
+        if(StringUtils.isEmpty(param.getMemberNewTel())){
+            map.put("status",1) ;
+            map.put("msg","更新成员号码失败！");
+            return map;
+        }
+        try {
+            boolean flag = unionMemberService.updateMemberTel(param);
+            if(flag){
+                map.put("status",0) ;
+                map.put("msg","更新成员号码成功！");
+            }else{
+                map.put("status",1) ;
+                map.put("msg","更新成员号码失败！");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            map.put("status",1) ;
+            map.put("msg","更新成员号码失败！");
+        }
+        return map;
+    }
+
+    /**
+     * 删除集团成员
+     * @param param
+     * @return
+     */
+    @RequestMapping(value="/deleteMemberInfo")
+    public Map deleteMemberInfo(UnionMemberInfo param){
+        Map map  = new HashMap();
+        try {
+            boolean flag = unionMemberService.deleteMemberInfo(param);
+            if(flag){
+                map.put("status",0) ;
+                map.put("msg","删除成员号码成功！");
+            }else{
+                map.put("status",1) ;
+                map.put("msg","删除成员号码失败！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("status",1) ;
+            map.put("msg","删除成员号码失败！");
+        }
+        return map;
+    }
+
+    /**
+     * 添加集团成员
+     * @param param
+     * @return
+     */
+    @RequestMapping(value="/addMemberInfo")
+    public Map addMemberInfo(UnionMemberInfo param){
+        Map map  = new HashMap();
+        try {
+            boolean flag = unionMemberService.addMemberInfo(param);
+            if(flag){
+                map.put("status",0) ;
+                map.put("msg","添加成员号码成功！");
+            }else{
+                map.put("status",1) ;
+                map.put("msg","添加成员号码失败！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("status",1) ;
+            map.put("msg","添加成员号码失败！");
+        }
+        return map;
+    }
+}

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="thisLedgerInfo"  parameterType="com.esop.ledger.dto.LedgerInfoDto" resultType="com.esop.ledger.dto.LedgerInfoDto" >
+        select group_id,group_name,ledger_date,status_name,status,
+        submit_info,examine_info,reason,
+        decode(status,0,'&lt;a class="badge bg-red" onclick="examineLedgerInfo('''||ledger_id||''','''||leaf||''')" &gt;生成&lt;/a&gt;',
+        decode(status,2,'&lt;a class="badge bg-red" onclick="examineLedgerInfo('''||ledger_id||''','''||leaf||''')" &gt;生成&lt;/a&gt;',null)) as opt
+        from h_ledger_info a,h_ledger_status_code b
+        where group_id=#{group_id} and ledger_date=#{ledger_date} and a.status=b.status_code
+    </select>
+    <!--子集节点台账信息-->
+    <select id="subsetLedgerInfo"  parameterType="com.esop.ledger.dto.LedgerInfoDto" resultType="com.esop.ledger.dto.LedgerInfoDto" >
+        select a.group_id,group_name,ledger_date,status_name,status,
+        submit_info,examine_info,reason,
+        decode(status,3,'&lt;a class="badge bg-red" onclick="seeLedgerInfo('||ledger_id||')" &gt;查看&lt;/a&gt;&lt;a class="badge bg-red" onclick="excelLedgerInfo('''||ledger_date||''','''||group_name||''','''||ledger_id||''')" &gt;导出&lt;/a&gt;&lt;a class="badge bg-red" onclick="refuse('||ledger_id||')" &gt;拒绝&lt;/a&gt;',
+        decode(status,2,'&lt;a class="badge bg-red" onclick="seeLedgerInfo('||ledger_id||')" &gt;查看&lt;/a&gt;&lt;a class="badge bg-red" onclick="excelLedgerInfo('''||ledger_date||''','''||group_name||''','''||ledger_id||''')" &gt;导出&lt;/a&gt;&lt;a class="badge bg-red" onclick="refuse('||ledger_id||')" &gt;拒绝&lt;/a&gt;',
+        decode(status,4,'&lt;a class="badge bg-red" onclick="seeLedgerInfo('||ledger_id||')" &gt;查看&lt;/a&gt;&lt;a class="badge bg-red" onclick="excelLedgerInfo('''||ledger_date||''','''||group_name||''','''||ledger_id||''')" &gt;导出&lt;/a&gt;',
+        null))) as opt
+        from h_ledger_info a,sys_group_info b,h_ledger_status_code c
+        where a.group_id=b.group_id and b.parent_group_id=#{group_id} and b.denorm_level &lt;= 1
+        and a.status=c.status_code and ledger_date=#{ledger_date}
+        <if test="group_name != ''">
+            and group_name like '%'||#{group_name}||'%'
+        </if>
+    </select>
+    <!--拒绝台账信息-->
+    <select id="refuseLedgerInfo"  parameterType="com.esop.ledger.dto.LedgerInfoDto" resultType="com.esop.ledger.dto.LedgerInfoDto" >
+        update h_ledger_info set status=4,
+        examine_info=(select to_char(sysdate,'YYYY-MM-DD hh24:mi:ss')||' '||login_name||'('||contact_phone||')' from OP_LOGINMSG_DICT where login_no =#{submit_login})
+         where  ledger_id=#{ledger_id}
+    </select>
+    <!--生成台账信息,即审批通过-->
+    <select id="examineLedgerInfo"  parameterType="com.esop.ledger.dto.LedgerInfoDto" resultType="com.esop.ledger.dto.LedgerInfoDto" >
+        update h_ledger_info set status=3,
+        examine_info=(select to_char(sysdate,'YYYY-MM-DD hh24:mi:ss')||' '||login_name||'('||contact_phone||')' from OP_LOGINMSG_DICT where login_no =#{submit_login})
+        where  ledger_id=#{ledger_id}
+    </select>
+    <!--汇总台账明细信息前,需要先做删除操作-->
+    <select id="delLedgerDetailsInfo"  parameterType="com.esop.ledger.dto.LedgerInfoDto" resultType="com.esop.ledger.dto.LedgerInfoDto" >
+        delete h_ledger_details_info where  ledger_id=#{ledger_id}
+    </select>
+    <!--汇总台账明细信息,父级节点生成台账操作-->
+    <select id="sumLedgerDetailsInfo"  parameterType="com.esop.ledger.dto.LedgerInfoDto" resultType="com.esop.ledger.dto.LedgerInfoDto" >
+        insert into h_ledger_details_info(
+        ledger_id,detail_id,
+        presource_code,presource_name,resource_code,resource_name,
+        last_balance,input_godown,return_godown,higher_allocation,return_higher,allocation_lower,lower_return,
+        wait_in,wait_out,allocation_passing,return_passing,sales,discount_sales,give,
+        sales_difference,discount_difference,general_difference,give_difference,
+        new_gotone,old_gotone,new_easyown,old_easyown,new_mzone,old_mzone,bad_replace,
+        subtotal,now_balance,service_use,day_return,month_return,new_other,old_other,
+        new_difference,old_difference,
+        create_login,create_date)
+        select #{ledger_id},s_h_ledger_details_info.nextval as detail_id,
+        presource_code,presource_name,resource_code,resource_name,
+        last_balance,input_godown,return_godown,higher_allocation,return_higher,allocation_lower,lower_return,
+        wait_in,wait_out,allocation_passing,return_passing,sales,discount_sales,give,
+        sales_difference,discount_difference,general_difference,give_difference,
+        new_gotone,old_gotone,new_easyown,old_easyown,new_mzone,old_mzone,bad_replace,
+        subtotal,now_balance,service_use,day_return,month_return,new_other,old_other,
+        new_difference,old_difference,
+        #{create_login},sysdate
+        from (
+        select presource_code,presource_name,resource_code,resource_name,
+        sum(last_balance) last_balance,
+        sum(input_godown) input_godown,sum(return_godown) return_godown,sum(higher_allocation) higher_allocation,
+        sum(return_higher) return_higher,sum(allocation_lower) allocation_lower,sum(lower_return) lower_return,
+        sum(wait_in) wait_in,sum(wait_out) wait_out,sum(allocation_passing) allocation_passing,
+        sum(return_passing) return_passing,sum(sales) sales,sum(discount_sales) discount_sales,
+        sum(give) give,sum(sales_difference) sales_difference,sum(discount_difference) discount_difference,
+        sum(general_difference) general_difference,sum(give_difference) give_difference,sum(new_gotone) new_gotone,
+        sum(old_gotone) old_gotone,sum(new_easyown) new_easyown,sum(old_easyown) old_easyown,sum(new_mzone) new_mzone,
+        sum(old_mzone) old_mzone,sum(bad_replace) bad_replace,sum(subtotal) subtotal,sum(now_balance) now_balance,
+        sum(service_use) service_use,sum(day_return) day_return,sum(month_return) month_return,sum(new_other) new_other,
+        sum(old_other) old_other,sum(new_difference) new_difference,sum(old_difference) old_difference
+        from h_ledger_info a,sys_group_info b,h_ledger_details_info c
+        where a.group_id=b.group_id and b.parent_group_id=#{group_id} and b.denorm_level &lt;= 1
+        and a.ledger_id=c.ledger_id and ledger_date=#{ledger_date}
+        group by presource_code,presource_name,resource_code,resource_name)
+    </select>
+</mapper>

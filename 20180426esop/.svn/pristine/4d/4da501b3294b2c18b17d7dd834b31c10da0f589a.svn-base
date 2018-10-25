@@ -1,0 +1,46 @@
+package com.esop.busiAnalysis.service;
+
+import com.esop.busiAnalysis.dto.EpGroupIncomeDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.service.InformationIncomeService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/12.
+ */
+@Repository
+public class EpGroupIncomeService {
+    @Autowired
+    private static Logger logger = Logger.getLogger(InformationIncomeService.class);
+    @Autowired
+    SqlE sqlE;
+    //重点集团客户前10名
+    public Result getImpGroupIncomeTop10(EpGroupIncomeDto parameter){
+        System.out.println("成功");
+        Result result = sqlE.selectPage("selectImpGroupIncomeTop10",parameter);
+        System.out.println("result="+result);
+        return result;
+    }
+
+    //查询区县
+    public List getTownName(EpGroupIncomeDto parameter){
+        System.out.println("成功");
+        List list = sqlE.selectM("selectTownName",parameter);
+        System.out.println(list.size());
+        System.out.println("查询城市区县"+list);
+        return list;
+    }
+    //查询新签约集团数据
+    public Result getNewGroupTop10(EpGroupIncomeDto parameter){
+        System.out.println("成功");
+        Result result = sqlE.selectPage("selectNewGroupIncomeTop10",parameter);
+        System.out.println("result="+result);
+        return result;
+    }
+
+}

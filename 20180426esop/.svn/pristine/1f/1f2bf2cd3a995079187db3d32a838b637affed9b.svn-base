@@ -1,0 +1,56 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.AmountPaymentDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by liuxiao on 2017/6/19.
+ */
+@Repository
+public class AmountPaymentService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(AmountPaymentService.class);
+    //查询量酬情况排名
+    public Result getAmountPaymentList(AmountPaymentDto amountPaymentDto){
+        Result result = sqlE.selectPage("selectAmountPaymentList",amountPaymentDto);
+        return result;
+    }
+    //量酬成本展示
+    public Result getAmountPaymentCost(AmountPaymentDto amountPaymentDto){
+        Result result = sqlE.selectPage("selectAmountPaymentCost",amountPaymentDto);
+        return result;
+    }
+    //录入全年量酬成本上限
+    public int addAmountPayment(AmountPaymentDto amountPaymentDto){
+        return sqlE.insertM("insertAmountPayment",amountPaymentDto);
+    }
+    //查询全年量酬成本上限
+    public Result getAllAmountPayment(AmountPaymentDto amountPaymentDto){
+        Result result = sqlE.selectPage("selectAllAmountPayment",amountPaymentDto);
+        return result;
+    }
+    //查询增加和修改的量酬成本上限是否重复
+    public int selectCount(AmountPaymentDto amountPaymentDto){
+        int total = 0;
+        List list = sqlE.selectM("selectAmountPaymentCostCount",amountPaymentDto);
+        if(list!=null){
+            total = (Integer) list.get(0);
+        }
+        return total;
+    }
+    //修改全年量酬成本上限
+    public int updateAmountCost(AmountPaymentDto amountPaymentDto){
+        int num = 0;
+        num = sqlE.updateM("updateAmountCost",amountPaymentDto);
+        return num;
+    }
+}

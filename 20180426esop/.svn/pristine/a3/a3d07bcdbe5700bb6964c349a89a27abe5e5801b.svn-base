@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.AssigneeMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.vo.Assignee">
+    <result column="staff_code" jdbcType="VARCHAR" property="assignee" />
+    <result column="login_name" jdbcType="VARCHAR" property="assigneeName" />
+  </resultMap>
+  <select id="selectProcStarter" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select a.start_login_no as staff_code, b.login_name
+    from ct_proc_inst_info a, bs_systemuser_info b
+    where a.start_login_no = b.staff_code and a.proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByRole" parameterType="com.esop.workflow.vo.Assignee" resultMap="BaseResultMap">
+    select distinct b.staff_code, b.login_name
+    from bs_staff_info a, bs_systemuser_info b, bs_staff_role_rel c, ct_proc_step_role_rel d
+    <if test="regionId != null and regionId != ''">
+      ,bs_orgnization_rel e
+    </if>
+    where a.staff_id = b.staff_id and b.system_user_id = c.system_user_id and c.role_id = d.role_code
+    and d.proc_id = #{procId,jdbcType=VARCHAR} and d.step_id = #{stepId,jdbcType=VARCHAR}
+    <choose>
+      <when test="regionId != null and regionId != ''">
+        <choose>
+          <when test="regionId == 'CQ.CQ.C1' and regionId == 'CQ.CQ.YU'">
+            and a.org_id = e.org_id and e.parent_org_id in ('CQ.CQ.C1', 'CQ.CQ.YU')
+          </when>
+          <when test="regionId == 'CQ.CQ.C2' and regionId == 'CQ.CQ.BX'">
+            and a.org_id = e.org_id and e.parent_org_id in ('CQ.CQ.C2', 'CQ.CQ.BX')
+          </when>
+          <otherwise>
+            and a.org_id = e.org_id and e.parent_org_id = #{regionId,jdbcType=VARCHAR}
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        and a.org_id is not null
+      </otherwise>
+    </choose>
+  </select>
+  <select id="selectByDeptAndRole" parameterType="com.esop.workflow.vo.Assignee" resultMap="BaseResultMap">
+    select distinct b.staff_code, b.login_name
+    from bs_staff_info a, bs_systemuser_info b, bs_staff_role_rel c, ct_proc_step_role_rel d
+    where a.staff_id = b.staff_id and b.system_user_id = c.system_user_id
+    <if test="deptId != null and deptId != ''">
+      and a.org_id = #{deptId,jdbcType=VARCHAR}
+    </if>
+    and c.role_id = d.role_code and d.proc_id = #{procId,jdbcType=VARCHAR} and d.step_id = #{stepId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectForNetOpt" parameterType="com.esop.workflow.vo.Assignee" resultMap="BaseResultMap">
+    select distinct b.staff_code, b.login_name
+    from bs_staff_info a, bs_systemuser_info b, bs_staff_role_rel c, ct_proc_step_role_rel d
+    <if test="regionId != null and regionId != ''">
+      ,bs_orgnization_rel e
+    </if>
+    where a.staff_id = b.staff_id and b.system_user_id = c.system_user_id and c.role_id = d.role_code
+    and d.proc_id = #{procId,jdbcType=VARCHAR} and d.step_id = #{stepId,jdbcType=VARCHAR}
+    <choose>
+      <when test="regionId != null and regionId != ''">
+        <choose>
+          <when test="regionId == 'CQ.CQ' and regionId == 'CQ.CQ.C4'">
+            and a.org_id = e.org_id and e.parent_org_id in ('CQ.CQ.C1','CQ.CQ.C2','CQ.CQ.C3','CQ.CQ.C5','CQ.CQ.BX','CQ.CQ.YU')
+          </when>
+          <otherwise>
+            and a.org_id = e.org_id and e.parent_org_id = #{regionId,jdbcType=VARCHAR}
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        and a.org_id is not null
+      </otherwise>
+    </choose>
+  </select>
+</mapper>

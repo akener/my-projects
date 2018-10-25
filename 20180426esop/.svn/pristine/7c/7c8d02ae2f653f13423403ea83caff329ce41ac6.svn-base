@@ -1,0 +1,496 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <title>资金批量认领申请</title>
+    <meta charset="utf-8">
+    <script type="text/javascript" language="javascript" class="init">
+        var login_no="";
+        var root_org_id="";
+        $(document).ready(function () {
+            login_no  ="<%=login_no%>";
+            root_org_id="<%=root_org_id%>";
+            if(root_org_id.length>8){
+                root_org_id=root_org_id.substr(0,8);
+            }
+            selectBusinessCenterByLoginNo();
+            nowDate();
+        });
+        function capitalBatchClaim(msg) {
+            Modal.confirm(
+                {
+                    msg: "是否确认"+msg+"？"
+                })
+                .on( function commit(e) {
+                    if(e){
+                        //获取选中的值
+                        var checkedInfo = new Array();
+                        checkedInfo = $('input[name="Fruit"]:checked');
+                        var biaoShiMa = "";
+                        for(var i=0;i<checkedInfo.length;i++){
+                            if(i!=0){
+                                biaoShiMa += "@@";
+                            }
+                            biaoShiMa += checkedInfo[i].value;
+                        }
+                        if(biaoShiMa==''){
+                            alert("请选择要批量认领的！");
+                            return;
+                        }
+                        if($("#center_code").val()==''){
+                            alert("请添加行业中心后认领！");
+                            return;
+                        }
+                        if($("#nextStepDealPerson").val()=='' || $("#nextStepDealPerson").val()==undefined){
+                            alert("请选择下一步处理人后提交！");
+                            return;
+                        }
+
+                        $("#button2").attr("disabled",true);
+                        $("#button2").text("批量认领中...");
+                        $.ajax({
+                            url:"/cqCapitalClaimApply2",
+                            type:"post",
+                            dataType:"text",
+                            data:{
+                                biaoShima:biaoShiMa
+                            },success:function (result) {
+                                var return_code = result.split("|")[0];
+                                var return_msg = result.split("|")[1];
+                                if(return_code == 1){
+                                    alert(return_msg);
+                                   IncomeListQuery();
+                                    $("#button2").attr("disabled",false);
+                                    $("#button2").text("批量认领");
+                                }else if (return_code==999){
+                                    alert(return_msg);
+                                    IncomeListQuery();
+                                    $("#button2").attr("disabled",false);
+                                    $("#button2").text("提交");
+                                }else{
+                                    alert(return_msg);
+                                    $("#button2").attr("disabled",false);
+                                    $("#button2").text("批量认领");
+                                }
+                            },error:function (result) {
+                                alert("系统出错，请联系管理员！");
+                                $("#button2").attr("disabled",false);
+                                $("#button2").text("批量认领");
+                            }
+                        })
+                    }
+                });
+        }
+        /**
+         * Created by yanhao on 2017/12/8.
+         */
+        function getNextLink(ind_type,node_id) {
+            //带入审批信息
+            $.ajax({
+                type: "POST",
+                url: "workFlowQuery",
+                data:{
+                    ind_type:ind_type,
+                    node_id:node_id
+                },
+                cache: false,
+                success: function (result) {
+                    if(result.length > 0) {
+                        $("#nextLink").html(result[0].node_role_name);
+                        getNextDealPerson(result[0].node_role_id);
+                        $("#first_node_id").val(result[0].node_id);
+                    }else{
+                        document.getElementById("appove_show").style.display='none';
+                    }
+                },
+                error: function () {
+                    alert('请求超时，请重试！');
+                }
+            });
+        }
+        //获取下一环节处理人
+        function getNextDealPerson(role_id) {
+            var hangye_zhongxin = $("#center_code").val();
+            if((role_id!='23064')){
+                hangye_zhongxin = "";
+            }
+            $.ajax({
+                type: 'POST',
+                url: 'qryNextDealPerson',
+                cache: false,
+                data: {
+                    role_id:role_id,
+                    hangye_zhongxin:hangye_zhongxin
+                },
+                success: function (data) {
+                    var type_data="";
+                    $.each(data, function (i, field) {
+                        //拼接json数据集字符串
+                        type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                        type_data += ">" + field.login_name + "</option>";
+                    });
+                    $("#nextStepDealPerson").empty();
+                    $("#nextStepDealPerson").append(type_data);
+                },
+                error: function (resp) {
+                    alert('获取下一步处理人失败！');
+                    return false;
+                }
+            });
+        }
+        function selectBusinessCenterByLoginNo() {
+            $.ajax({
+                url:"/selectBusinessCenterByLoginNo",
+                type:"post",
+                data:{
+                    login_no:login_no
+                },success:function (data) {
+                    $("#ruzhang_zuzhi").val(data.business_center);
+                    $("#center_code").val(data.center_code);
+                    getNextLink("3","0");
+                }
+            })
+        }
+        function getNowFormatTime() {
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+
+            var hours = date.getHours();
+            if((hours >= 1 && hours <= 9)){
+                hours = "0"+hours;
+            }
+            var minutes = date.getMinutes();
+            if((minutes >= 1 && minutes <= 9)){
+                minutes = "0"+minutes;
+            }
+            var seconds = date.getSeconds();
+            if((seconds >= 1 && seconds <= 9)){
+                seconds = "0"+seconds;
+            }
+
+            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+                + " " + hours + seperator2 + minutes + seperator2 + seconds;
+            return currentdate;
+
+        }
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+            return currentdate;
+        }
+
+        var bootStrapAlert = function (msg){
+            $('#alertLabelInfo').html(msg);
+            $('#operationAlertInfo').modal('show');
+        }
+        function goback () {
+            $("#operationAlertInfo").modal('hide');
+            location.href="zjplrlsq";
+        }
+        function IncomeListQuery() {
+            var startDate=$("#STARTTRADEDATE").val();
+            var endDate=$("#ENDTRADEDATE").val();
+            if(startDate =='' || endDate==''){
+                alert("请选择起始交易日期和终止交易日期！");
+                return;
+            }
+            table = $('#example').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                "bSort":false,
+                ajax: {
+                    url:"/getRelBankInfoFromBoss",
+                    type:"POST",
+                    data:{
+                        OPERTYPE:"2",
+                        ISQRYCOUNT:"2",
+                        STARTTRADEDATE:$("#STARTTRADEDATE").val(),
+                        ENDTRADEDATE:$("#ENDTRADEDATE").val(),
+                        AREAID:root_org_id,
+                        QRYTYPE:"1",
+                        CUSTMGR:login_no,
+                        CLAIMOID:$("#CLAIMOID").val(),
+                        FEE:$("#FEE").val()==""?"":Math.round(Number($("#FEE").val())*100),
+                        GRPCUSTID:$("#GRPCUSTID").val(),
+                        STARTAPPLYDATE:$("#STARTAPPLYDATE").val(),
+                        ENDAPPLYDATE:$("#ENDAPPLYDATE").val()
+                    }
+                },
+                columns: [
+                    { data: "claimoid",
+                        "width": "15%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<input name='Fruit' type='checkbox' value='" + row.transdate+'##'+row.bankacctid+'##'+row.bankacctname+'##'+row.infee+'##'+row.summary +'##'+ row.fromacctid+'##'+row.fromacctname+'##'+row.bankformnum+'##'+login_no+'##'+$("#nextStepDealPerson").val()+'##'+$("#first_node_id").val()+'##'+getNowFormatTime()+'##'+row.groupid+'##'+row.groupname+'##'+$("#center_code").val()+'##'+root_org_id+"' /></td>";
+                        }
+                    },
+                    { data: "esoporderid"},
+                    { data: "transdate"},
+                    { data: "bankacctid"},
+                    { data: "bankacctname"},
+                    { data: "infee_yuan"},
+                    { data: "summary"},
+                    { data: "fromacctid"},
+                    { data: "fromacctname"},
+                    { data: "areaid_zhongwen"},
+                    { data: "enterorg_zhongwen"},
+                    { data: "chargetype"},
+                    { data: "checkcode"},
+                    { data: "checknum"},
+                    { data: "bankorgid"},
+                    { data: "status"},
+                    { data: "claimoid"},
+                    { data: "groupid"},
+                    { data: "groupname"},
+                    { data: "applyopid_zhongwen"},
+                    { data: "groupmgr_zhongwen"},
+                    { data: "applydate"},
+                    { data: "accountclerk_zhongwen"},
+                    { data: "note"},
+                    { data: "statusdate"},
+                    { data: "usage"}
+                ],
+                select: true,
+                buttons: [
+                ]
+            });
+        }
+        function nowDate() {
+            var now=getNowFormatDate();
+            $("#STARTTRADEDATE").val(now);
+            $("#ENDTRADEDATE").val(now);
+        }
+        //checkbox 全选/取消全选
+        var isCheckAll = false;
+        function swapCheck() {
+            if (isCheckAll) {
+                $("input[type='checkbox']").each(function() {
+                    this.checked = false;
+                });
+                isCheckAll = false;
+            } else {
+                $("input[type='checkbox']").each(function() {
+                    this.checked = true;
+                });
+                isCheckAll = true;
+            }
+        }
+    </script>
+
+</head>
+
+<%--<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>--%>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金批量认领</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>起始交易日期【必】：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="STARTTRADEDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true" value="">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'STARTTRADEDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止交易日期【必】：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="ENDTRADEDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true" value="">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'ENDTRADEDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>状态：</th>
+                            <td nowrap='nowrap'>
+                                <select id="QRYTYPE" class="selector_region input-sty04 form-ipt">
+                                    <option value="1">已归集</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>稽核标识码：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="CLAIMOID" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>金额：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="FEE" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>入账集团单位：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="GRPCUSTID" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>起始申请时间：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="STARTAPPLYDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'STARTAPPLYDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止申请时间：</th>
+                            <td 终止申请时间='nowrap'>
+                                <input type=text id="ENDAPPLYDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'ENDAPPLYDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="IncomeListQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>银行交易明细</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="table table-bordered" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'><input type="checkbox" onclick="swapCheck()" /></th>
+                                <th class="text-center" nowrap='nowrap'>认领工单号</th>
+                                <th class="text-center" nowrap='nowrap'>交易时间</th>
+                                <th class="text-center" nowrap='nowrap'>到账账号</th>
+                                <th class="text-center" nowrap='nowrap'>到账户名</th>
+                                <th class="text-center" nowrap='nowrap'>金额</th>
+                                <th class="text-center" nowrap='nowrap'>摘要</th>
+                                <th class="text-center" nowrap='nowrap'>对方账号</th>
+                                <th class="text-center" nowrap='nowrap'>对方户名</th>
+                                <th class="text-center" nowrap='nowrap'>分公司</th>
+                                <th class="text-center" nowrap='nowrap'>入账组织</th>
+                                <th class="text-center" nowrap='nowrap'>缴款方式</th>
+                                <th class="text-center" nowrap='nowrap'>稽核标识码</th>
+                                <th class="text-center" nowrap='nowrap'>支票号</th>
+                                <th class="text-center" nowrap='nowrap'>银行网点编号</th>
+                                <th class="text-center" nowrap='nowrap'>处理状态</th>
+                                <th class="text-center" nowrap='nowrap'>唯一标识码</th>
+                                <th class="text-center" nowrap='nowrap'>入账集团编码</th>
+                                <th class="text-center" nowrap='nowrap'>入账集团名称</th>
+                                <th class="text-center" nowrap='nowrap'>申请人</th>
+                                <th class="text-center" nowrap='nowrap'>客户经理</th>
+                                <th class="text-center" nowrap='nowrap'>申请时间</th>
+                                <th class="text-center" nowrap='nowrap'>账务员</th>
+                                <th class="text-center" nowrap='nowrap'>入账备注</th>
+                                <th class="text-center" nowrap='nowrap'>处理时间</th>
+                                <th class="text-center" nowrap='nowrap'>用途</th>
+                            </tr>
+                            </thead>
+                            <tfoot id="list_info">
+                            </tfoot>
+                        </table>
+                    </div>
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <%@ include file="../workFlowQuery.jsp"%>
+                        </tbody>
+                    </table>
+                    <input style="width:200px;" type="hidden" id="first_node_id" value="13">
+                    <input style="width:200px;" type="hidden" id="ruzhang_zuzhi" value="">
+                    <input style="width:200px;" type="hidden" id="center_code" value="">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10"  id="button2" onclick="capitalBatchClaim('批量认领')">批量认领</button>
+                        </div>
+                    </div>
+                    <%@ include file="../bootStrapConfirm.jsp"%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

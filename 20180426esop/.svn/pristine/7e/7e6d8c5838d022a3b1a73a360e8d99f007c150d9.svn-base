@@ -1,0 +1,509 @@
+package com.esop.workOrderInfo.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.*;
+import com.esop.workOrderInfo.service.ProvinceOrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @Description:
+ * @Date: Created by yuansp on 2017/6/2.
+ */
+@RestController
+public class ProvinceOrderController {
+
+    private static Logger log = LoggerFactory.getLogger(ProvinceOrderController.class);
+    ProvinceOrderDto provinceOrderDto = new ProvinceOrderDto();
+    MsgDto msgDto = new MsgDto();
+    @Autowired
+    ProvinceOrderService provinceOrderService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    @RequestMapping(value = "/transToCounty")   //下发到区县,下发到地市
+    public  String transToCounty(HttpServletRequest request){
+        String[] regions = (request.getParameter("Region[]")).split(",");
+        log.info("len-->" + String.valueOf(regions.length));
+        String[] regionNo = (request.getParameter("RegionNo[]")).split(",");
+        String[] packs = (request.getParameter("Pack[]")).split(",");
+        String[] termis = (request.getParameter("Termi[]")).split(",");
+        String[] opens = (request.getParameter("Open[]")).split(",");
+        String[] custs = (request.getParameter("Cust[]")).split(",");
+        String[] broads = (request.getParameter("Broad[]")).split(",");
+        /*String[] works = (request.getParameter("Work[]")).split(",");
+        String[] signs = (request.getParameter("Sign[]")).split(",");
+        String[] monies = (request.getParameter("Money[]")).split(",");
+        String[] starts = (request.getParameter("Start[]")).split(",");
+        String[] ends = (request.getParameter("End[]")).split(",");*/
+        String op_note = request.getParameter("op_note");
+        String op_login = request.getParameter("op_login");
+        String op_code = request.getParameter("op_code");
+        String status_code = request.getParameter("status_code");
+        Map<String,Object> map = new HashMap<>();
+        for(int i=0;i<regions.length;i++){
+            Date date = new Date();
+            SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+            provinceOrderDto.setOrder_no(op_login + sf.format(date));//工单编号: 工号 + 日期
+            provinceOrderDto.setOp_note(op_note);
+            provinceOrderDto.setOp_login(op_login);
+            provinceOrderDto.setBroad(broads[i]);
+            provinceOrderDto.setPack(packs[i]);
+            provinceOrderDto.setCust(custs[i]);
+            /*provinceOrderDto.setMoney_recovery(monies[i]);
+            provinceOrderDto.setWorkcount(works[i]);
+            provinceOrderDto.setOn_sing(signs[i]);*/
+            provinceOrderDto.setOpen_amout(opens[i]);
+            sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            provinceOrderDto.setOp_time(sf.format(date));
+            provinceOrderDto.setStatus_code(status_code);
+            provinceOrderDto.setRegion_name(regions[i]);
+            provinceOrderDto.setTermi(termis[i]);
+            provinceOrderDto.setRegion_no(regionNo[i]);
+            provinceOrderDto.setOp_code(op_code);
+            try{
+                provinceOrderService.insert(provinceOrderDto);
+            }catch (Exception e){
+                String eString = e.toString();
+                eString = eString.replaceAll("\"","'");
+                eString = eString.replaceAll("\r|\n|\t","");
+                String inParam = provinceOrderDto.toString();
+                String msg = "\"入工单正表失败--> " + eString + "  入参:"+ inParam + "\"";
+                map.put("info",msg);
+                log.info(msg);
+                return JSONObject.toJSONString(map);
+            }
+        }
+        map.put("info","下发成功!");
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping(value = "/transToManager")   //下发到客户经理
+    public  String transToManager(HttpServletRequest request){
+        String[] regions = (request.getParameter("Region[]")).split(",");
+        log.info("len-->" + String.valueOf(regions.length));
+        String[] regionNo = (request.getParameter("RegionNo[]")).split(",");
+        String[] packs = (request.getParameter("Pack[]")).split(",");
+        String[] termis = (request.getParameter("Termi[]")).split(",");
+        String[] opens = (request.getParameter("Open[]")).split(",");
+        String[] custs = (request.getParameter("Cust[]")).split(",");
+        String[] broads = (request.getParameter("Broad[]")).split(",");
+        /*String[] works = (request.getParameter("Work[]")).split(",");
+        String[] signs = (request.getParameter("Sign[]")).split(",");
+        String[] monies = (request.getParameter("Money[]")).split(",");
+        String[] starts = (request.getParameter("Start[]")).split(",");
+        String[] ends = (request.getParameter("End[]")).split(",");*/
+        String op_note = request.getParameter("op_note");
+        String op_login = request.getParameter("op_login");
+        String op_code = request.getParameter("op_code");
+        String status_code = request.getParameter("status_code");
+        Map<String,Object> map = new HashMap<>();
+        for(int i=0;i<regions.length;i++){
+            Date date = new Date();
+            SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd");
+            provinceOrderDto.setOrder_no(op_login + sf.format(date));//工单编号: 工号 + 日期
+            provinceOrderDto.setOp_note(op_note);
+            provinceOrderDto.setOp_login(op_login);
+            provinceOrderDto.setBroad(broads[i]);
+            provinceOrderDto.setPack(packs[i]);
+            provinceOrderDto.setCust(custs[i]);
+            /*provinceOrderDto.setMoney_recovery(monies[i]);
+            provinceOrderDto.setOn_sing(signs[i]);
+            provinceOrderDto.setWorkcount(works[i]);*/
+            provinceOrderDto.setOpen_amout(opens[i]);
+            sf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            provinceOrderDto.setOp_time(sf.format(date));
+            provinceOrderDto.setStatus_code(status_code);
+            provinceOrderDto.setRegion_name(regions[i]);
+            provinceOrderDto.setTermi(termis[i]);
+            provinceOrderDto.setRegion_no(regionNo[i]);
+            provinceOrderDto.setOp_code(op_code);
+            try{
+                 provinceOrderService.insert(provinceOrderDto);
+            }catch (Exception e){
+                String eString = e.toString();
+                eString = eString.replaceAll("\"","'");
+                eString = eString.replaceAll("\r|\n|\t","");
+                String inParam = provinceOrderDto.toString();
+                String msg = "\"入工单正表失败--> " + eString + "  入参:"+ inParam + "\"";
+                map.put("info",msg);
+                log.info(msg);
+                return JSONObject.toJSONString(map);
+            }
+            try{
+                msgDto.setLogin_no(op_login);
+                msgDto.setSend_time(sf.parse(sf.format(date.getTime()+300000)));//延迟5分钟下发
+                msgDto.setService_no(regionNo[i]);
+                map.put("sms_release","");
+                map.put("tmpMsg","您本月的工单已到达,请及时处理!");
+                msgDto.setParameter(JSONObject.toJSONString(map));
+                provinceOrderService.sendMsgToMng(msgDto);
+                map.clear();
+            }catch (Exception e){
+                String eString = e.toString();
+                eString = eString.replaceAll("\"","'");
+                eString = eString.replaceAll("\r|\n|\t","");
+                String inParam = msgDto.toString();
+                String msg = "\"发短信失败--> " + eString + "  入参:"+ inParam + "\"";
+                map.put("info",msg);
+                log.info(msg);
+                return JSONObject.toJSONString(map);
+            }
+        }
+        map.put("info","下发成功!");
+        return JSONObject.toJSONString(map);
+    }
+
+    @RequestMapping(value = "/qryRegionWork") //查询地市下面的区县
+    public String getRegionName(HttpServletRequest request){
+        String group_id = request.getParameter("group_id");
+        List<ProvinceOrderDto> regionName = provinceOrderService.getRegionName(group_id);
+        Map<String,Object> map = new HashMap<>();
+        map.put("region",regionName);
+        String json =  JSONObject.toJSONString(map);
+        log.info(json);
+        return json;
+    }
+
+    @RequestMapping(value = "/regionOrder") //查询本地市,区县的任务量
+    public String getRegionOrder(HttpServletRequest request){
+        log.info("in...regionOrder");
+        String region_no = request.getParameter("region_no");
+        String status_code = request.getParameter("status_code");
+        provinceOrderDto.setRegion_no(region_no);
+        provinceOrderDto.setStatus_code(status_code);
+        List regionOrder = provinceOrderService.getRegionOrder(provinceOrderDto);
+        String order = "[";
+        for(int i=0;i<regionOrder.size();i++){
+            order += "\"" + regionOrder.get(i);
+            if(i < regionOrder.size()-1){
+                order += "\",";
+            }
+        }
+        order += "\"]";
+        return "{ \"info\": "+ order +" }";
+    }
+
+
+    @RequestMapping(value = "/getLocalManager")  //查询客户经理
+    public Result getOrder(ProvinceOrderDto parameter, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        Result result = provinceOrderService.getManager(parameter);
+        return result;
+    }
+
+    @RequestMapping(value = "/getMngRefInfo") //查询客户经理参考信息
+    public String getMngRefInfo(ManagerRefInfoDto managerRefInfoDto){
+        List<ManagerRefInfoDto> refInfo = provinceOrderService.getMngRefInfo(managerRefInfoDto);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",refInfo);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+
+    @RequestMapping(value = "/checkRegion") //校验省工单是否下发
+    public String checkRegion(){
+        List<ProvinceOrderDto> chkRegion = provinceOrderService.checkRegion();
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",chkRegion);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+
+    @RequestMapping(value = "/getMngWorkCnt") //客户经理任务监控
+    public Result getMngWorkCnt(ProvinceOrderDto param,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+        Result result = null;
+
+        String role_code=request.getParameter("role_code");//根据角色区分是区县管理员还是客户经理进入模块
+        if("01".equals(role_code)){//区县管理员
+            result = provinceOrderService.getMngWorkCnt(param);
+        }
+        if("07".equals(role_code)){//客户经理
+            result = provinceOrderService.mngGetSelfWork(param);
+        }
+        List<MngMonitorDto> mngWorkCnt = result.getData();
+        MngMonitorDto mngMonitorDto = null;
+        for(int i=0;i<mngWorkCnt.size();i++){
+            mngMonitorDto = mngWorkCnt.get(i);
+            int pack = mngMonitorDto.getPack();
+            int change_amount = mngMonitorDto.getChange_amount();
+            int termi = mngMonitorDto.getTermi();
+            int termi_amount = mngMonitorDto.getTermi_amount();
+            int open_amout = mngMonitorDto.getOpen_amout();
+            int open_amount = mngMonitorDto.getOpen_amount();
+            int cust = mngMonitorDto.getCust();
+            int web_amount = mngMonitorDto.getWeb_amount();
+            int broad = mngMonitorDto.getBroad();
+            int broad_dep_amount = mngMonitorDto.getBroad_dep_amount();
+            mngMonitorDto.setPackPercent(Math.round((float)change_amount*100/(float)pack));
+            mngMonitorDto.setTermiPercent(Math.round((float)termi_amount*100/(float)termi));
+            mngMonitorDto.setOpenPercent(Math.round((float)open_amount*100/(float)open_amout));
+            mngMonitorDto.setCustPercent(Math.round((float)web_amount*100/(float)cust));
+            mngMonitorDto.setBroadPercent(Math.round((float)broad_dep_amount*100/(float)broad));
+        }
+
+        return result;
+
+    }
+
+
+    @RequestMapping(value = "/getMngExtra") //客户经理现场办公,签约,欠费回收
+    public Result getMngExtra(ProvinceOrderDto param,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+        String role_code=request.getParameter("role_code");//根据角色区分是区县管理员还是客户经理进入模块
+        Result result = null;
+
+        if("01".equals(role_code)){//区县管理员
+            result = provinceOrderService.getMng(param);
+        }
+        if("07".equals(role_code)){//客户经理
+            result = provinceOrderService.mngGetSelfInfo(param);
+        }
+        List<MngMonitorExtraDto> mngWorkExtra = result.getData();
+        MngMonitorExtraDto mngMonitorExtraDto = null;
+        for(int i=0;i<mngWorkExtra.size();i++){
+            mngMonitorExtraDto = mngWorkExtra.get(i);
+            MngMonitorExtraDto mngExtra = (provinceOrderService.getMngExtra(mngMonitorExtraDto)).get(0);//客户经理完成量
+            MngMonitorExtraDto mngExtraTotal = (provinceOrderService.getMngExtraTotal(mngMonitorExtraDto)).get(0);//客户经理任务量
+
+            int workCount = mngExtra.getWorkCount();
+            int workTotal = mngExtraTotal.getWorkTotal();
+            int sign = mngExtra.getSign();
+            int signTotal = mngExtraTotal.getSignTotal();
+            int recover = mngExtra.getRecover();
+            int recoverTotal = mngExtraTotal.getRecoverTotal();
+
+            mngMonitorExtraDto.setWorkCount(workCount);
+            mngMonitorExtraDto.setWorkTotal(workTotal);
+            mngMonitorExtraDto.setWorkPercent(Math.round((float)workCount*100/(float)workTotal));
+            mngMonitorExtraDto.setSign(sign);
+            mngMonitorExtraDto.setSignTotal(signTotal);
+            mngMonitorExtraDto.setSignPercent(Math.round((float)sign*100/(float)signTotal));
+            mngMonitorExtraDto.setRecover(recover);
+            mngMonitorExtraDto.setRecoverTotal(recoverTotal);
+            mngMonitorExtraDto.setRecoverPercent(Math.round((float)recover*100/(float)recoverTotal));
+        }
+        return result;
+    }
+
+
+    @RequestMapping(value = "/getCountyWork") //区县任务监控
+    public Result getCountyWork(ProvinceOrderDto param,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = provinceOrderService.getCountyWork(param);
+        return result;
+    }
+
+
+    @RequestMapping(value = "/getCountyExtra") //区县现场办公,签约,欠费回收
+    public Result getCountyExtra(ProvinceOrderDto param,HttpServletRequest request) {
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+        long time = System.currentTimeMillis();
+        Result result = caculateExtra(param);
+        time = System.currentTimeMillis() - time;
+        log.info("用时:" +time + "ms");
+
+        return result;
+    }
+
+    public Result caculateExtra(ProvinceOrderDto param){
+        Result result = provinceOrderService.getAllCounty(param);//获取地市下所有的区县
+        List<CountyMonitorExtraDto> county = result.getData();
+        for(int i=0;i<county.size();i++){
+            //遍历统计单个区县的
+            log.info("i-->"+i);
+            CountyMonitorExtraDto countyExtra = county.get(i);
+            String group_id = countyExtra.getGroup_id();
+            log.info(group_id);
+            long time1 = System.currentTimeMillis();
+            List<CountyMonitorExtraDto> mngWorkExtraTotal = provinceOrderService.countyGetMngExtraTotal(new ProvinceOrderDto(group_id));//查询当前区县下的所有客户经理任务量
+            log.info("查询用时:" +(System.currentTimeMillis() - time1) + "ms");
+            log.info(mngWorkExtraTotal.toString());
+            CountyMonitorExtraDto countyMonitorExtraTotal = null;
+            int countyWorkCount = 0;
+            int countyRecover = 0;
+            int countySign = 0;  //区县完成的总量
+            int countyWorkTotal = 0;
+            int countyRecoverTotal = 0;
+            int countySignTotal = 0;  //区县总任务量
+
+            for(int j=0;j<mngWorkExtraTotal.size();j++){
+                countyMonitorExtraTotal = mngWorkExtraTotal.get(j);
+
+                int workCount = countyMonitorExtraTotal.getWorkCount();
+                int recover = countyMonitorExtraTotal.getRecover();
+                int sign = countyMonitorExtraTotal.getSign();
+                countyWorkCount += workCount;
+                countyRecover += recover;
+                countySign += sign;
+
+                int workTotal = countyMonitorExtraTotal.getWorkTotal();
+                int signTotal = countyMonitorExtraTotal.getSignTotal();
+                int recoverTotal = countyMonitorExtraTotal.getRecoverTotal();
+                countyWorkTotal += workTotal;
+                countyRecoverTotal += recoverTotal;
+                countySignTotal += signTotal;
+            }
+            countyExtra.setWorkCount(countyWorkCount);
+            countyExtra.setRecover(countyRecover);
+            countyExtra.setSign(countySign);
+            countyExtra.setWorkTotal(countyWorkTotal);
+            countyExtra.setRecoverTotal(countyRecoverTotal);
+            countyExtra.setSignTotal(countySignTotal);
+            countyExtra.setWorkPercent(Math.round((float)countyWorkCount*100/((float)countyWorkTotal)));///(float)mngWorkExtraTotal.size()
+            countyExtra.setRecoverPercent(Math.round((float)countyRecover*100/((float)countyRecoverTotal)));
+            countyExtra.setSignPercent(Math.round((float)countySign*100/((float)countySignTotal)));
+
+            time1 = System.currentTimeMillis() - time1;
+            log.info("单个用时:" +time1 + "ms");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/getRegionWorkCnt") //地市任务监控
+    public Result getRegionWorkCnt(ProvinceOrderDto param,HttpServletRequest request) {
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = provinceOrderService.getRegions(param);
+        List<RegionMonitorDto> regions = result.getData();//13个地市及地市对应任务量
+        RegionMonitorDto regionMonitorDto = null;
+        for(int i=0;i<regions.size();i++){//遍历统计单个地市
+            regionMonitorDto = regions.get(i);
+            //获取地市下所有区县完成情况
+            List<CountyMonitorDto> list = provinceOrderService.caculateCtyWork(new ProvinceOrderDto(regionMonitorDto.getGroup_id()));
+            //遍历累加得到地市完成值
+            CountyMonitorDto countyMonitorDto = null;
+            int pack = 0;//4G套餐变更量
+            int termi = 0;//4G终端销售量
+            int open = 0;//开户量
+            int cust = 0;//4G上网客户数
+            int broad = 0;//宽带发展量
+            for(int j=0;j<list.size();j++){
+                countyMonitorDto = list.get(j);
+                int change_amount = countyMonitorDto.getChange_amount();
+                int termi_amount = countyMonitorDto.getTermi_amount();
+                int open_amount = countyMonitorDto.getOpen_amount();
+                int web_amount = countyMonitorDto.getWeb_amount();
+                int broad_dep_amount = countyMonitorDto.getBroad_dep_amount();
+                pack += change_amount;
+                termi += termi_amount;
+                open += open_amount;
+                cust += web_amount;
+                broad += broad_dep_amount;
+            }
+
+            //set完成量，计算完成率
+            regionMonitorDto.setChange_amount(pack);
+            regionMonitorDto.setTermi_amount(termi);
+            regionMonitorDto.setOpen_amount(open);
+            regionMonitorDto.setWeb_amount(cust);
+            regionMonitorDto.setBroad_dep_amount(broad);
+
+            int packTotal = regionMonitorDto.getPack();
+            int termiTotal = regionMonitorDto.getTermi();
+            int openTotal = regionMonitorDto.getOpen_amout();
+            int custTotal = regionMonitorDto.getCust();
+            int broadTotal = regionMonitorDto.getBroad();
+
+            regionMonitorDto.setPackPercent(Math.round((float)pack*100/(float)packTotal));
+            regionMonitorDto.setTermiPercent(Math.round((float)termi*100/(float)termiTotal));
+            regionMonitorDto.setOpenPercent(Math.round((float)open*100/(float)openTotal));
+            regionMonitorDto.setCustPercent(Math.round((float)cust*100/(float)custTotal));
+            regionMonitorDto.setBroadPercent(Math.round((float)broad*100/(float)broadTotal));
+
+        }
+
+        return result;
+    }
+
+    @RequestMapping(value = "/getRegionExtra") //地市三大工单监控
+    public Result getRegionExtra(ProvinceOrderDto param,HttpServletRequest request) {
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = provinceOrderService.getRegionExtra(param);
+        List<RegionMonitorExtraDto> regionExtra = result.getData();
+        for(int i=0;i<regionExtra.size();i++){
+            //遍历取出完成量和总量计算完成率
+            RegionMonitorExtraDto regionMonitorExtraDto = regionExtra.get(i);
+            int work = regionMonitorExtraDto.getWork();
+            int workTotal = regionMonitorExtraDto.getWorkTotal();
+            regionMonitorExtraDto.setWorkPercent(Math.round((float)work*100/(float)workTotal));
+
+            int sign = regionMonitorExtraDto.getSign();
+            int signTotal = regionMonitorExtraDto.getSignTotal();
+            regionMonitorExtraDto.setSignPercent(Math.round((float)sign*100/(float)signTotal));
+
+            int recover = regionMonitorExtraDto.getRecover();
+            int recoverTotal = regionMonitorExtraDto.getRecoverTotal();
+            regionMonitorExtraDto.setRecoverPercent(Math.round((float)recover*100/(float)recoverTotal));
+        }
+
+        return result;
+
+    }
+
+    @RequestMapping(value = "/getCountyOutDateCnt") //地市督办单(所有下属区县中心逾期未完成量)
+    public Result getCountyOutDateCnt(ProvinceOrderDto param,HttpServletRequest request) {
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = provinceOrderService.getCountyOutDateCnt(param);
+
+        return result;
+
+    }
+
+    @RequestMapping(value = "/getCustSerfOrderInfo") //地市督办单(所有下属区县中心逾期未完成量)
+    public Result showGetCustSerfOrderInfo(CustSerfOrderDto in,HttpServletRequest request) {
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setRegion_no(request.getParameter("service_no"));
+        Result result = provinceOrderService.getSerfOrderNumberInfo(in);
+
+        return result;
+
+    }
+
+}

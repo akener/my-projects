@@ -1,0 +1,179 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/21.
+ */
+//合同待审批列表接口出参
+public class CnttExamineListDto {
+    String contract_id = "";//合同序列
+    String unit_id = "";//集团id
+    String contract_no = "";//合同编号
+    String contract_name = "";//合同名称
+    String deal_time = "";//开始时间
+    String complete_time = "";//结束时间
+    String contract_file = "";//合同附件
+    String create_date = "";//创建时间
+    String login_name = "";//客户经理名 //创建工号
+    String group_name = "";//地名  //工号组织
+    String note = "";//合同描述
+    String contract_loan = "";//合同金额
+    String renew_sign = "";//合同续签号
+   String charge_flag = "";//审批状态
+    String goods_no = "";//产品经理审批人
+   String goods_not = "";//产品经理部通过原因
+   String dept_no = "";//部门经理审批人
+   String dept_not = "";//部门经理审批不同过原因
+    String stop_not = "";//终止原因
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getContract_no() {
+        return contract_no;
+    }
+
+    public void setContract_no(String contract_no) {
+        this.contract_no = contract_no;
+    }
+
+    public String getContract_name() {
+        return contract_name;
+    }
+
+    public void setContract_name(String contract_name) {
+        this.contract_name = contract_name;
+    }
+
+    public String getDeal_time() {
+        return deal_time;
+    }
+
+    public void setDeal_time(String deal_time) {
+        this.deal_time = deal_time;
+    }
+
+    public String getComplete_time() {
+        return complete_time;
+    }
+
+    public void setComplete_time(String complete_time) {
+        this.complete_time = complete_time;
+    }
+
+    public String getContract_file() {
+        return contract_file;
+    }
+
+    public void setContract_file(String contract_file) {
+        this.contract_file = contract_file;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getContract_loan() {
+        return contract_loan;
+    }
+
+    public void setContract_loan(String contract_loan) {
+        this.contract_loan = contract_loan;
+    }
+
+    public String getRenew_sign() {
+        return renew_sign;
+    }
+
+    public void setRenew_sign(String renew_sign) {
+        this.renew_sign = renew_sign;
+    }
+
+    public String getCharge_flag() {
+        return charge_flag;
+    }
+
+    public void setCharge_flag(String charge_flag) {
+        this.charge_flag = charge_flag;
+    }
+
+    public String getGoods_no() {
+        return goods_no;
+    }
+
+    public void setGoods_no(String goods_no) {
+        this.goods_no = goods_no;
+    }
+
+    public String getGoods_not() {
+        return goods_not;
+    }
+
+    public void setGoods_not(String goods_not) {
+        this.goods_not = goods_not;
+    }
+
+    public String getDept_no() {
+        return dept_no;
+    }
+
+    public void setDept_no(String dept_no) {
+        this.dept_no = dept_no;
+    }
+
+    public String getDept_not() {
+        return dept_not;
+    }
+
+    public void setDept_not(String dept_not) {
+        this.dept_not = dept_not;
+    }
+
+    public String getStop_not() {
+        return stop_not;
+    }
+
+    public void setStop_not(String stop_not) {
+        this.stop_not = stop_not;
+    }
+}

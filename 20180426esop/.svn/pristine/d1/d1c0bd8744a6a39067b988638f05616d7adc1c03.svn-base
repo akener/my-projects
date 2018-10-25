@@ -1,0 +1,116 @@
+package com.esop.cqDevelopment.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+/**
+ * 调用BOSS RESTful服务客户端
+ *
+ * @author daish 2017/12/4
+ */
+@RestController
+@RequestMapping(value = "boss")
+public class CQBOSSRESTFulClient {
+    private static final Logger logger = LogManager.getLogger(CQBOSSRESTFulClient.class);
+
+    @Value("${boss_rest_obtain_token_url}")
+    private String obtainTokenUrl;
+    @Value("${boss_rest_obtain_token_grant_type}")
+    private String grantType;
+    @Value("${boss_rest_obtain_token_client_id}")
+    private String clientId;
+    @Value("${boss_rest_obtain_token_client_secret}")
+    private String clientSecret;
+    @Value("${boss_rest_obtain_url}")
+    private String bossRestURI;
+
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+        return builder.build();
+    }
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * restful调用客户端
+     *
+     * @param url
+     * @param contentType
+     * @param requestParam
+     * @param connectTimeout
+     * @param readTimeOut
+     * @return
+     */
+    public String invoking(String url, String contentType, String requestParam, int connectTimeout, int readTimeOut) {
+        ResponseEntity<String> responseEntity0 = null;
+        HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(connectTimeout);
+        requestFactory.setReadTimeout(readTimeOut);
+        RestTemplate restTemplate = new RestTemplate(requestFactory);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", contentType);//解决请求乱码问题
+        headers.set("Accept", "text/xml;charset=UTF-8");
+        headers.set("User-Agent", "Apache-HttpClient/4.1.1 (java 1.5)");
+        String body = null;
+        try {
+            responseEntity0 = restTemplate.postForEntity(url, new HttpEntity<>(requestParam, headers), String.class);
+//            logger.info("响应标头：responseEntity0.getHeaders=" + responseEntity0.getHeaders());
+            body = responseEntity0.getBody();
+//            logger.info("响应字符串：responseEntity0.getBody()=" + responseEntity0.getBody());
+        } catch (Exception e) {
+            logger.error(" error happened in postRest(),", e);
+        }
+        return body;
+    }
+
+    /**
+     * 获取token
+     *
+     * @return
+     */
+    @RequestMapping(value = "/obtainToken", method = RequestMethod.POST)
+    public String obtainToken() {
+        String result = invoking(obtainTokenUrl, "application/x-www-form-urlencoded;charset=GBK", "grant_type=" + grantType + "&client_id=" + clientId + "&client_secret=" + clientSecret, 10000, 30000);
+        JSONObject jsonObject = JSONObject.parseObject(result);
+        return jsonObject.getString("access_token");
+    }
+
+    /**
+     * 使用RestTemplate发送HTTP POST请求
+     *
+     * @param url            请求地址
+     * @param method         请求方法
+     * @param param          请求参数
+     * @param connectTimeout 连接超时时间
+     * @param readTimeOut    socket超时时间
+     * @return String 返回报文
+     */
+    @RequestMapping(value = "/postRest", method = RequestMethod.POST)
+    public String postRest(String url, String method, String param, Integer connectTimeout, Integer readTimeOut) {
+        String token = obtainToken();
+        long startTime = System.currentTimeMillis();    //获取开始时间
+        url = bossRestURI + url + "?access_token=" + token + "&method=" + method + "&format=json";
+        logger.info("CRM接口调用URL：" + url);
+        logger.info("入参：" + param);
+        String invoking = invoking(url, "text/xml;charset=GBK", param, connectTimeout, readTimeOut);
+        logger.info("出参：" + invoking);
+        long endTime = System.currentTimeMillis();    //获取结束时间
+        logger.info("执行时间：" + (endTime - startTime) + "ms");
+
+        return invoking;
+    }
+}

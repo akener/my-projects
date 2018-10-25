@@ -1,0 +1,80 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class WorkFlowQueryDto {
+
+    String ind_type = "";
+    String ind_name = "";
+    String node_id = "";
+    String node_info = "";
+    String node_role_id = "";
+    String node_role_name = "";
+    String opr_login = "";
+    String opr_time = "";
+
+    public String getInd_type() {
+        return ind_type;
+    }
+
+    public void setInd_type(String ind_type) {
+        this.ind_type = ind_type;
+    }
+
+    public String getInd_name() {
+        return ind_name;
+    }
+
+    public void setInd_name(String ind_name) {
+        this.ind_name = ind_name;
+    }
+
+    public String getNode_id() {
+        return node_id;
+    }
+
+    public void setNode_id(String node_id) {
+        this.node_id = node_id;
+    }
+
+    public String getNode_info() {
+        return node_info;
+    }
+
+    public void setNode_info(String node_info) {
+        this.node_info = node_info;
+    }
+
+    public String getNode_role_id() {
+        return node_role_id;
+    }
+
+    public void setNode_role_id(String node_role_id) {
+        this.node_role_id = node_role_id;
+    }
+
+    public String getNode_role_name() {
+        return node_role_name;
+    }
+
+    public void setNode_role_name(String node_role_name) {
+        this.node_role_name = node_role_name;
+    }
+
+    public String getOpr_login() {
+        return opr_login;
+    }
+
+    public void setOpr_login(String opr_login) {
+        this.opr_login = opr_login;
+    }
+
+    public String getOpr_time() {
+        return opr_time;
+    }
+
+    public void setOpr_time(String opr_time) {
+        this.opr_time = opr_time;
+    }
+}

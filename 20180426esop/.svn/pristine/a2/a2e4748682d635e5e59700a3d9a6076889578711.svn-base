@@ -1,0 +1,25 @@
+package com.esop.busiAnalysis.dto;
+
+/**
+ * Created by Administrator on 2017/7/5.
+ */
+public class CaseNameListDto {
+    String excellent_case_name = "";
+    String excellent_no = "";
+
+    public String getExcellent_case_name() {
+        return excellent_case_name;
+    }
+
+    public void setExcellent_case_name(String excellent_case_name) {
+        this.excellent_case_name = excellent_case_name;
+    }
+
+    public String getExcellent_no() {
+        return excellent_no;
+    }
+
+    public void setExcellent_no(String excellent_no) {
+        this.excellent_no = excellent_no;
+    }
+}

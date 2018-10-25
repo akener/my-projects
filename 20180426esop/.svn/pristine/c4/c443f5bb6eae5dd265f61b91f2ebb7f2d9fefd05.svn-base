@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>长流程业务</title>
+    <script src="jquery.js"></script>
+    <script src="hello.js"></script>
+</head>
+
+<body>
+<div class="box-body">
+    <table class="table table-bordered" id="businessList">
+        <tr>
+            <th style="width: 40%">商机编码</th>
+            <th style="width: 20%">商机名称</th>
+            </tr>
+            </table>
+            </div>
+            </body>
+            <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            type: "post",
+            url: 'http://localhost:8082/esop/sMktChanceQryL',
+            async: false
+        }).then(function (data) {
+            alert("成功！")
+            alert(data);
+            var result=data.ROOT.OUT_DATA.USERINFO;//商机名称vChanceName,商机编码vChanceNo
+            $.each(result, function (index, item) {
+                $("#businessList").append("<tr id='ledtr'><td align=\"center\">"
+                    + (index + 1) + ".</td><td align='right'>" + item.vChanceNo + "</td><td>" + item.vChanceName  + "</td></tr>");
+            });
+        });
+    });
+</script>
+</html>

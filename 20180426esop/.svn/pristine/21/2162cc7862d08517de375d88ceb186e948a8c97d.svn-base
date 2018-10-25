@@ -1,0 +1,332 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class CapitalClaimQueryDto {
+    String shenqingren="";
+    String danwei_zhanghao = "";
+    String danwei_huming = "";
+    String daozhang_riqi = "";
+    String daozhang_zhanghao = "";
+    String daozhang_huming = "";
+    String jin_e = "";
+    String yinhang_zizhanghu = "";
+    String zhai_yao = "";
+    String zhuang_tai = "";
+    String shenpiren = "";
+    String caozuo_shijian = "";
+    String gongdan_bianhao = "";
+    String jiaoyi_liushui = "";
+    String weiyibiaoshima="";
+    String check_code="";
+    String is_pl="";
+
+    public String getIs_pl() {
+        return is_pl;
+    }
+
+    public void setIs_pl(String is_pl) {
+        this.is_pl = is_pl;
+    }
+
+    public String getCheck_code() {
+        return check_code;
+    }
+
+    public void setCheck_code(String check_code) {
+        this.check_code = check_code;
+    }
+
+    public String getShenqingren() {
+        return shenqingren;
+    }
+
+    public void setShenqingren(String shenqingren) {
+        this.shenqingren = shenqingren;
+    }
+
+    public String getWeiyibiaoshima() {
+        return weiyibiaoshima;
+    }
+
+    public void setWeiyibiaoshima(String weiyibiaoshima) {
+        this.weiyibiaoshima = weiyibiaoshima;
+    }
+
+    public String getDanwei_zhanghao() {
+        return danwei_zhanghao;
+    }
+
+    public void setDanwei_zhanghao(String danwei_zhanghao) {
+        this.danwei_zhanghao = danwei_zhanghao;
+    }
+
+    public String getDanwei_huming() {
+        return danwei_huming;
+    }
+
+    public void setDanwei_huming(String danwei_huming) {
+        this.danwei_huming = danwei_huming;
+    }
+
+    public String getDaozhang_riqi() {
+        return daozhang_riqi;
+    }
+
+    public void setDaozhang_riqi(String daozhang_riqi) {
+        this.daozhang_riqi = daozhang_riqi;
+    }
+
+    public String getDaozhang_zhanghao() {
+        return daozhang_zhanghao;
+    }
+
+    public void setDaozhang_zhanghao(String daozhang_zhanghao) {
+        this.daozhang_zhanghao = daozhang_zhanghao;
+    }
+
+    public String getDaozhang_huming() {
+        return daozhang_huming;
+    }
+
+    public void setDaozhang_huming(String daozhang_huming) {
+        this.daozhang_huming = daozhang_huming;
+    }
+
+    public String getJin_e() {
+        return jin_e;
+    }
+
+    public void setJin_e(String jin_e) {
+        this.jin_e = jin_e;
+    }
+
+    public String getYinhang_zizhanghu() {
+        return yinhang_zizhanghu;
+    }
+
+    public void setYinhang_zizhanghu(String yinhang_zizhanghu) {
+        this.yinhang_zizhanghu = yinhang_zizhanghu;
+    }
+
+    public String getZhai_yao() {
+        return zhai_yao;
+    }
+
+    public void setZhai_yao(String zhai_yao) {
+        this.zhai_yao = zhai_yao;
+    }
+
+    public String getZhuang_tai() {
+        return zhuang_tai;
+    }
+
+    public void setZhuang_tai(String zhuang_tai) {
+        this.zhuang_tai = zhuang_tai;
+    }
+
+    public String getJiaoyi_liushui() {
+        return jiaoyi_liushui;
+    }
+
+    public void setJiaoyi_liushui(String jiaoyi_liushui) {
+        this.jiaoyi_liushui = jiaoyi_liushui;
+    }
+
+    String leikuan_kehu = "";
+    String laikuan_zhanghao = "";
+    String daozhang_jine = "";
+    String fabu_riqi = "";
+    String shenqing_riqi = "";
+    String jituan_mingcheng = "";
+    String jituan_bianhao = "";
+    String jituan_lianxiren = "";
+    String lianxiren_dianhua = "";
+    String lianxiren_leixing = "";
+    String zhangwuyuan = "";
+    String guanlian_shijian = "";
+    String guanlian_laikuan_huming = "";
+    String guanlian_laikuan_zhanghao = "";
+    String zhengming_cailiao = "";
+    String shang_chuan = "";
+    String ruzhang_zuzhi = "";
+    String bei_zhu = "";
+    String fengongs="";
+
+    public String getFengongs() {
+        return fengongs;
+    }
+
+    public void setFengongs(String fengongs) {
+        this.fengongs = fengongs;
+    }
+
+    public String getLeikuan_kehu() {
+        return leikuan_kehu;
+    }
+
+    public void setLeikuan_kehu(String leikuan_kehu) {
+        this.leikuan_kehu = leikuan_kehu;
+    }
+
+    public String getLaikuan_zhanghao() {
+        return laikuan_zhanghao;
+    }
+
+    public void setLaikuan_zhanghao(String laikuan_zhanghao) {
+        this.laikuan_zhanghao = laikuan_zhanghao;
+    }
+
+    public String getDaozhang_jine() {
+        return daozhang_jine;
+    }
+
+    public void setDaozhang_jine(String daozhang_jine) {
+        this.daozhang_jine = daozhang_jine;
+    }
+
+    public String getFabu_riqi() {
+        return fabu_riqi;
+    }
+
+    public void setFabu_riqi(String fabu_riqi) {
+        this.fabu_riqi = fabu_riqi;
+    }
+
+    public String getShenqing_riqi() {
+        return shenqing_riqi;
+    }
+
+    public void setShenqing_riqi(String shenqing_riqi) {
+        this.shenqing_riqi = shenqing_riqi;
+    }
+
+    public String getJituan_mingcheng() {
+        return jituan_mingcheng;
+    }
+
+    public void setJituan_mingcheng(String jituan_mingcheng) {
+        this.jituan_mingcheng = jituan_mingcheng;
+    }
+
+    public String getJituan_bianhao() {
+        return jituan_bianhao;
+    }
+
+    public void setJituan_bianhao(String jituan_bianhao) {
+        this.jituan_bianhao = jituan_bianhao;
+    }
+
+    public String getJituan_lianxiren() {
+        return jituan_lianxiren;
+    }
+
+    public void setJituan_lianxiren(String jituan_lianxiren) {
+        this.jituan_lianxiren = jituan_lianxiren;
+    }
+
+    public String getLianxiren_dianhua() {
+        return lianxiren_dianhua;
+    }
+
+    public void setLianxiren_dianhua(String lianxiren_dianhua) {
+        this.lianxiren_dianhua = lianxiren_dianhua;
+    }
+
+    public String getLianxiren_leixing() {
+        return lianxiren_leixing;
+    }
+
+    public void setLianxiren_leixing(String lianxiren_leixing) {
+        this.lianxiren_leixing = lianxiren_leixing;
+    }
+
+    public String getZhangwuyuan() {
+        return zhangwuyuan;
+    }
+
+    public void setZhangwuyuan(String zhangwuyuan) {
+        this.zhangwuyuan = zhangwuyuan;
+    }
+
+    public String getGuanlian_shijian() {
+        return guanlian_shijian;
+    }
+
+    public void setGuanlian_shijian(String guanlian_shijian) {
+        this.guanlian_shijian = guanlian_shijian;
+    }
+
+    public String getGuanlian_laikuan_huming() {
+        return guanlian_laikuan_huming;
+    }
+
+    public void setGuanlian_laikuan_huming(String guanlian_laikuan_huming) {
+        this.guanlian_laikuan_huming = guanlian_laikuan_huming;
+    }
+
+    public String getGuanlian_laikuan_zhanghao() {
+        return guanlian_laikuan_zhanghao;
+    }
+
+    public void setGuanlian_laikuan_zhanghao(String guanlian_laikuan_zhanghao) {
+        this.guanlian_laikuan_zhanghao = guanlian_laikuan_zhanghao;
+    }
+
+    public String getZhengming_cailiao() {
+        return zhengming_cailiao;
+    }
+
+    public void setZhengming_cailiao(String zhengming_cailiao) {
+        this.zhengming_cailiao = zhengming_cailiao;
+    }
+
+    public String getShang_chuan() {
+        return shang_chuan;
+    }
+
+    public void setShang_chuan(String shang_chuan) {
+        this.shang_chuan = shang_chuan;
+    }
+
+    public String getRuzhang_zuzhi() {
+        return ruzhang_zuzhi;
+    }
+
+    public void setRuzhang_zuzhi(String ruzhang_zuzhi) {
+        this.ruzhang_zuzhi = ruzhang_zuzhi;
+    }
+
+    public String getBei_zhu() {
+        return bei_zhu;
+    }
+
+    public void setBei_zhu(String bei_zhu) {
+        this.bei_zhu = bei_zhu;
+    }
+
+    public String getShenpiren() {
+        return shenpiren;
+    }
+
+    public void setShenpiren(String shenpiren) {
+        this.shenpiren = shenpiren;
+    }
+
+    public String getCaozuo_shijian() {
+        return caozuo_shijian;
+    }
+
+    public void setCaozuo_shijian(String caozuo_shijian) {
+        this.caozuo_shijian = caozuo_shijian;
+    }
+
+    public String getGongdan_bianhao() {
+        return gongdan_bianhao;
+    }
+
+    public void setGongdan_bianhao(String gongdan_bianhao) {
+        this.gongdan_bianhao = gongdan_bianhao;
+    }
+}

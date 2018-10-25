@@ -1,0 +1,54 @@
+package com.esop.busiAnalysis.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.busiAnalysis.dto.ComplaintsDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by zuoyue on 2017/6/2.
+ */
+@Repository
+public class ComplaintsService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(ComplaintsService.class);
+    /*重点成员投诉明细*/
+    public Result getComplaints(ComplaintsDto parameter){
+        System.out.println("成功");
+        Result result=sqlE.selectPage("selectMemberComplaintsInfo",parameter);
+        System.out.println("重点成员投诉明细"+result);
+        return result;
+    }
+    /*重点产品投诉明细*/
+    public Result getProductComplaintInfo(ComplaintsDto parameter){
+        System.out.println("成功");
+        Result result=sqlE.selectPage("selectProductComplaintsInfo",parameter);
+        System.out.println("重点产品投诉明细"+result);
+        return result;
+    }
+    /*重点产品投诉情况*/
+    public List getImpProductComplaints(ComplaintsDto parameter){
+        System.out.println("成功");
+        List list = sqlE.selectM("qryProductComplaints",parameter);
+        System.out.println(list.size());
+        System.out.println("重点产品投诉情况"+list);
+        return list;
+    }
+    /*重要人员投诉情况*/
+    public List getImpMemberComplaints(ComplaintsDto parameter){
+        System.out.println("成功");
+        List list = sqlE.selectM("selectImpMemberComplaints",parameter);
+        System.out.println(list.size());
+        System.out.println("重点产品投诉情况"+list);
+        return list;
+    }
+    /*ab类集团重要成员投诉信息app端接口*/
+    public List<ComplaintsDto> qryImpMemComplaints(ComplaintsDto param){
+        return sqlE.selectM("qryMemberComplaint",param);
+    }
+}

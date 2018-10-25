@@ -1,0 +1,352 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>长期未认领金额转营业外收入</title>
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+</head>
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>长期未认领金额转营业外收入</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>起始交易日期【必】：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="STARTTRADEDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true" value="">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'STARTTRADEDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止交易日期【必】：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="ENDTRADEDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true" value="">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'ENDTRADEDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>状态：</th>
+                            <td nowrap='nowrap'>
+                                <select id="QRYTYPE"  class="selector_region input-sty04 form-ipt">
+                                    <option value="1">已归集</option>
+                                    <option value="2">未归集(集团单位子帐号)</option>
+                                    <option value="7">未归集(分公司子帐号)</option>
+                                    <option value="8">未归集(市公司子帐号)</option>
+                                    <option value="5">已核销</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>稽核标识码：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="CLAIMOID" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>金额：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="FEE" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>入账集团单位：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="GRPCUSTID" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>起始申请时间：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="STARTAPPLYDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'STARTAPPLYDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止申请日期：</th>
+                            <td 终止申请时间='nowrap'>
+                                <input type=text id="ENDAPPLYDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'ENDAPPLYDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="IncomeListQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>银行交易明细</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                    <table class="cost-table" id="example" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th class="text-center" nowrap='nowrap'><input type="checkbox" onclick="swapCheck()" /></th>
+                            <th class="text-center" nowrap='nowrap'>认领工单号</th>
+                            <th class="text-center" nowrap='nowrap'>交易时间</th>
+                            <th class="text-center" nowrap='nowrap'>到账账号</th>
+                            <th class="text-center" nowrap='nowrap'>到账户名</th>
+                            <th class="text-center" nowrap='nowrap'>金额</th>
+                            <th class="text-center" nowrap='nowrap'>摘要</th>
+                            <th class="text-center" nowrap='nowrap'>对方账号</th>
+                            <th class="text-center" nowrap='nowrap'>对方户名</th>
+                            <th class="text-center" nowrap='nowrap'>分公司</th>
+                            <th class="text-center" nowrap='nowrap'>入账组织</th>
+                            <th class="text-center" nowrap='nowrap'>缴款方式</th>
+                            <th class="text-center" nowrap='nowrap'>稽核标识码</th>
+                            <th class="text-center" nowrap='nowrap'>支票号</th>
+                            <th class="text-center" nowrap='nowrap'>银行网点编号</th>
+                            <th class="text-center" nowrap='nowrap'>处理状态</th>
+                            <th class="text-center" nowrap='nowrap'>唯一标识码</th>
+                            <th class="text-center" nowrap='nowrap'>入账集团编码</th>
+                            <th class="text-center" nowrap='nowrap'>入账集团名称</th>
+                            <th class="text-center" nowrap='nowrap'>申请人</th>
+                            <th class="text-center" nowrap='nowrap'>客户经理</th>
+                            <th class="text-center" nowrap='nowrap'>申请时间</th>
+                            <th class="text-center" nowrap='nowrap'>账务员</th>
+                            <th class="text-center" nowrap='nowrap'>入账备注</th>
+                            <th class="text-center" nowrap='nowrap'>处理时间</th>
+                            <th class="text-center" nowrap='nowrap'>用途</th>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                    </div>
+                    <div class="row mgt-20" id="hexiao">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalBatchClaim('核销')">核销</button>
+                            <button class="ui-btn mgr-10" onclick="capitalBatchClaim('批量核销')">批量核销</button>
+                        </div>
+                    </div>
+                    <div class="row mgt-20" id="cancleHX" style="display: none">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalBatchClaim('撤销核销')">撤销核销</button>
+                            <button class="ui-btn mgr-10" onclick="capitalBatchClaim('批量撤销核销')">批量撤销核销</button>
+                        </div>
+                    </div>
+                    <%@ include file="../bootStrapConfirm.jsp"%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript" class="init">
+    var table = "";
+    var login_no="<%=login_no%>";
+    var root_org_id="<%=root_org_id%>";
+    $(document).ready(function () {
+        if(root_org_id.length>8){
+            root_org_id=root_org_id.substr(0,8);
+        }
+        nowDate();
+    });
+    function capitalBatchClaim(msg) {
+        Modal.confirm(
+            {
+                msg: "是否确认"+msg+"？"
+            })
+            .on( function commit(e) {
+                if(e){
+                    //获取选中的值
+                    var checkedInfo = new Array();
+                    checkedInfo = $('input[name="Fruit"]:checked');
+                    var biaoShiMa = "";
+                    for(var i=0;i<checkedInfo.length;i++){
+                        if(i!=0){
+                            biaoShiMa += "@";
+                        }
+                        biaoShiMa += checkedInfo[i].value;
+                    }
+                    getVerifyFromBoss(biaoShiMa);
+                }
+            });
+    }
+    //获取被选中的option标签
+   /* var optionValue ='';
+    var OPTYPE='1';
+    function func(param) {
+        optionValue =  param;
+        if(optionValue == 5){
+            OPTYPE='0';//0-撤销核销
+            document.getElementById("hexiao").style.display='none';
+            document.getElementById("cancleHX").style.display='block';
+        }else{
+            OPTYPE = '1';//1-核销
+            document.getElementById("cancleHX").style.display='none';
+            document.getElementById("hexiao").style.display='block';
+        }
+    }*/
+    //调用资金核销接口(包括核销和撤销核销操作)
+    function getVerifyFromBoss(biaoShiMa) {
+        $.ajax({
+            type: "post",
+            url: "getVerifyFromBoss",
+            data: {
+                biaoShiMa:biaoShiMa
+            },
+            success: function (result) {
+                if(result==1){
+                    alert("操作成功!!");
+                    IncomeListQuery();
+                }else{
+                    alert("调用接口失败,请联系管理员！");
+                }
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+    var OPTYPE='1';
+    function IncomeListQuery() {
+        if($("#QRYTYPE").val()=="5"){
+            $("#hexiao").css("display","none");
+            $("#cancleHX").css("display","");
+            OPTYPE='0';//0-撤销核销
+        }else{
+            $("#hexiao").css("display","");
+            $("#cancleHX").css("display","none");
+            OPTYPE = '1';//1-核销
+        }
+        if($("#QRYTYPE").val()=="8"){
+            root_org_id="CQ.CQ";
+        }
+        var startDate=$("#STARTTRADEDATE").val();
+        var endDate=$("#ENDTRADEDATE").val();
+        if(startDate =='' || endDate==''){
+            alert("请选择起始交易日期和终止交易日期！");
+            return;
+        }
+        table = $('#example').DataTable({
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            "bSort":false,
+            ajax: {
+                url:"/getRelBankInfoFromBoss",
+                type:"POST",
+                data:{
+                    OPERTYPE:"1",
+                    ISQRYCOUNT:"2",
+                    STARTTRADEDATE:$("#STARTTRADEDATE").val(),
+                    ENDTRADEDATE:$("#ENDTRADEDATE").val(),
+                    AREAID:root_org_id,
+                    QRYTYPE:$("#QRYTYPE").val(),
+                    CLAIMOID:$("#CLAIMOID").val(),
+                    FEE:$("#FEE").val()==""?"":Math.round(Number($("#FEE").val())*100),
+                    GRPCUSTID:$("#GRPCUSTID").val(),
+                    STARTAPPLYDATE:$("#STARTAPPLYDATE").val(),
+                    ENDAPPLYDATE:$("#ENDAPPLYDATE").val()
+                }
+            },
+            columns: [
+                { data: "bankformnum",
+                    "width": "15%",
+                    render: function ( data, type, row, meta ) {
+                        return data= "<input name='Fruit' type='checkbox' value='" + row.bankformnum +"#"+OPTYPE +"' /></td>";
+                    }
+                },
+                { data: "esoporderid"},
+                { data: "transdate"},
+                { data: "bankacctid"},
+                { data: "bankacctname"},
+                { data: "infee_yuan"},
+                { data: "summary"},
+                { data: "fromacctid"},
+                { data: "fromacctname"},
+                { data: "areaid_zhongwen"},
+                { data: "enterorg_zhongwen"},
+                { data: "chargetype"},
+                { data: "checkcode"},
+                { data: "checknum"},
+                { data: "bankorgid"},
+                { data: "status"},
+                { data: "claimoid"},
+                { data: "groupid"},
+                { data: "groupname"},
+                { data: "applyopid_zhongwen"},
+                { data: "groupmgr_zhongwen"},
+                { data: "applydate"},
+                { data: "accountclerk_zhongwen"},
+                { data: "note"},
+                { data: "statusdate"},
+                { data: "usage"}
+            ],
+            select: true,
+            buttons: [
+            ]
+        });
+    }
+
+    function nowDate() {
+        var now=getNowFormatDate();
+        $("#STARTTRADEDATE").val(now);
+        $("#ENDTRADEDATE").val(now);
+    }
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+    //checkbox 全选/取消全选
+    var isCheckAll = false;
+    function swapCheck() {
+        if (isCheckAll) {
+            $("input[type='checkbox']").each(function() {
+                this.checked = false;
+            });
+            isCheckAll = false;
+        } else {
+            $("input[type='checkbox']").each(function() {
+                this.checked = true;
+            });
+            isCheckAll = true;
+        }
+    }
+</script>

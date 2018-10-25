@@ -1,0 +1,413 @@
+// JavaScript Document
+
+//炒店工单录入input框点击、离开效果
+$(function(){
+	var n=$(".tab-infor-6 input").width();
+	$(".tab-infor-6 select").css({width:n+10});
+	$(".tab-infor-6 input,.fk-input-name,.fk-input-main").focus(function(){
+		$(this).val("");
+		$(this).css({backgroundColor:'#fff',borderColor:'#11b3f3'});
+		});
+	$(".tab-infor-6 input,.fk-input-name,.fk-input-main").blur(function(){
+		$(this).css({backgroundColor:'#f2f2f3',borderColor:'#ebebeb',color:'#000'});
+		})
+	});
+//炒店工单录入附件删除效果
+$(function(){
+	$(".append-box span").click(function(){
+		$(this).addClass("on").siblings("span").removeClass("on");				
+		})
+	$(".append-box span button").click(function(){
+		$(this).parent("span").hide();				
+		})
+	});
+//目标客户群平台流转
+$(function(){
+	$(".download-box span").click(function(){
+		$(this).addClass("on").siblings("span").removeClass("on");
+		$(this).children("button").addClass("on1").siblings("span").children("button").removeClass("on1");
+		})
+	})
+//附件选中
+$(function(){
+	$(".adnexal").click(function(){
+		$(this).addClass("on");
+		})
+	})
+//用户信息列表显示
+$(function(){
+	$(".user-list-btn").toggle(function(){
+		$(".user-popup").fadeIn();
+		},function(){
+		$(".user-popup").fadeOut();
+		})
+	
+	})
+// tab 切换	宽度120
+		$(document).on("click",".js_ued_tab .nav-tab li",function(){
+			 $(this).addClass("curr").siblings().removeClass("curr");
+			 var index=$(this).index();
+			 var liW=$(this).width();
+			 $(this).parent().parent().siblings(".tab-2-class-box").hide().eq(index).show();
+			 var nowLeft = index*liW;
+			 $(this).parent().siblings(".tab-arrow").stop(true,false).animate({"left":nowLeft},350);
+			 
+		});
+// tab 切换 宽度160
+$(function(){
+		$(document).on("click",".play-group li",function(){
+			 $(this).addClass("curr").siblings().removeClass("curr");
+			 var index1=$(this).index();
+			 var liW=$(this).width();
+			 var index2=$(this).parent(".play-group").index();
+			 
+			 $(this).parents(".js_ued_tab").siblings(".tab-big-box").children(".tab-center-box").children(".tab-centent").eq(index2).children(".tab-2-class-box").hide().eq(index1).show();
+			 var nowLeft = index1*liW;		
+			 $(this).parent().parent().parent().siblings(".tab-arrow2").animate({"left":nowLeft},350);			 
+		});
+		$(".mobile-box span").hover(function(){
+			$(this).addClass("on");
+		},function(){
+			$(this).removeClass("on");
+			});
+		var MainRs=$(".main-right-s").width();		
+		$(".tab-center-box").css({width:(MainRs*3)+'px'});
+		$(".tab-centent").css({width:MainRs+'px'});
+		$(".tab-big-box").css({width:MainRs+'px'});
+		
+		$(".left-mobile").click(function(){
+			var Xlbig=$(".nav-tab2").offset().left;							
+			if(Xlbig==221){
+				$(".nav-tab2").animate({marginLeft:'0'});
+				$(".tab-center-box").animate({marginLeft:'0'});
+				}else{
+				$(".play-group li:first-child").addClass("curr").siblings("li").removeClass("curr");
+				$(".tab-centent .tab-2-class-box:first").show().siblings().hide();
+				$(".tab-arrow2").animate({"left":0},350);
+				$(".nav-tab2").animate({marginLeft:'+=800px'},500);
+				$(".tab-center-box").animate({marginLeft:'+='+MainRs},500);	
+				}					
+			});	
+		$(".right-mobile").click(function(){
+			var Xrbig=$(".nav-tab2").offset().left;
+			var	Num=$(".nav-tab2 .play-group").length-1;
+			var pixel=221-800*Num;
+			if(Xrbig==pixel){
+				$(".nav-tab2").animate({marginLeft:'0'});
+				$(".tab-center-box").animate({marginLeft:'0'});
+				}else{
+				$(".play-group li:first-child").addClass("curr").siblings("li").removeClass("curr");
+				$(".tab-centent .tab-2-class-box:first").show().siblings().hide();
+				$(".tab-arrow2").animate({"left":0},350);
+				$(".nav-tab2").animate({marginLeft:'-=800px'},500);
+				$(".tab-center-box").animate({marginLeft:'-='+MainRs},500);
+				}
+			});
+})
+//酬金配置首页酬金类型选择
+$(function(){
+	$(".money-type").click(function(){
+		$(this).addClass("on");
+		})
+	})
+$(function(){
+	$(".js-other-project").toggle(function(){
+		$(".js-other-project-box").show();
+		},function(){
+			$(".js-other-project-box").hide();
+		})
+	})
+//yucy_crmpd
+$(function(){
+	//显示选择供应商弹窗
+    $(".y-select-apply").click(function(){
+        $(".submit-window").show();
+        $(".submit-bg").show();
+    })
+    //选择供应商弹窗
+    $(window).resize(function(){
+        var windowW=$(window).width();
+        var windowH=$(window).height();
+        $(".submit-window").css({top:(windowH-$(".submit-window").height())/2,left:(windowW-$(".submit-window").width())/2});   //弹窗居中显示
+        $(".submit-bg").css({height:$("body").height(),width:$("body").width()}); //弹窗背景height设置
+    })
+    $(window).resize();
+    //关闭弹窗
+    $(".submit-close-btn").click(function(){
+        $(this).parent().parent().hide();
+        $(".submit-bg").hide();
+    })
+    //选择合作伙伴全选
+    $(".select-all").click(function(){
+        var isSelect = $(".y-tab-height td input");
+        if($(".y-tab-height td input:checked").length < isSelect.length){
+            isSelect.attr("checked","checked");
+        }else{
+            isSelect.removeAttr("checked");
+        }
+        
+    })
+})
+//拷贝征程弹出框
+$(function(){
+	$(".js-copy-btn").click(function(){
+		$(".shadow").show();
+		$(".determine-copy-box").show();
+		$(".approval-process-box").show();
+		})
+	})
+//拷贝征程弹出框2
+$(function(){
+	$(".js-copy2-btn").click(function(){
+		$(".shadow").show();
+		$(".determine-copy-box").hide();
+		$(".related-policy-choice").show();
+		})
+	})
+$(function(){
+	$(".js-examination-approval").click(function(){
+		$(this).parents(".approval-process-box").hide();
+		$(".approval-process2-box").show();
+		})
+	})
+//制定酬金政策-1 关联政策选择弹出框
+
+	$(".js-related-btn").click(function(){
+		$(".shadow").show();
+		$(".related-policy-choice").show();
+		})
+
+
+	//退出按钮关闭弹出框弹出框
+	$(".js-out-btn").click(function(){
+		$(this).parents(".js-tc-box").hide();
+		$(".shadow").hide();
+		})
+	//关闭按钮关闭弹出框
+	$(".js-shut-down").click(function(){
+		$(this).parents(".js-tc-box").hide();
+		$(".shadow").hide();
+		})
+
+//保存成功弹出框
+$(function(){
+	$(".js-btn-save").click(function(){
+		$(".js-save-box").show();
+		$(".shadow").show();
+		})
+	})
+//制定酬金政策-4 计算表达式计算里计算列表删除
+$(".js-delete-calculate").click(function(){
+	$(this).parents("li").remove();
+	})
+//报表授权弹出框
+$(".js-report").click(function(){
+	$(".shadow").show();
+	$(".report-pop-up").show();
+	})
+$(".information-header").toggle(function(){
+	$(this).children(".information-title").addClass("on");
+	$(this).next(".tab-infor-7").hide();
+	},function(){
+	$(this).children(".information-title").removeClass("on");
+	$(this).next(".tab-infor-7").show();		
+	})
+//确认删除弹出框
+$(".js-btn-delete").click(function(){
+	$(".confirm-deletion-box").show();
+	$(".shadow").show();
+	})
+//操作失败弹出框
+$(".js-btn-operation-failure").click(function(){
+	$(".operation-failure-box").show();
+	$(".shadow").show();
+	})
+//查看信息弹出框
+$(".js-btn-check-information").click(function(){
+	$(".check-information").show();
+	$(".shadow").show();
+	})
+//报表删除
+$(".btn-report-delete").click(function(){
+	$(this).parents(".gridly-each").remove();
+	})
+//修改信息弹出框
+$(".js-btn-modify").click(function(){
+	$(".modify-information").show();
+	$(".shadow").show();
+	})
+$(".input-style03").click(function(){
+	$(this).css({'backgroundColor':'#f0eeee'})
+	})
+//单选框样式交互--橙色
+$(".radio-label1 label").click(function(){
+	$(this).addClass("on").siblings().removeClass("on");
+	})
+//单选框样式交互--橙色
+$(".checkbox-label1 label").click(function(){
+	$(this).addClass("on");
+	})
+//图片放大效果
+$(".common-btn button").click(function(){
+	$(this).next(".img2").fadeIn(1000);
+	})
+$(".img2").click(function(){
+	$(this).fadeOut(1000);
+	})
+//文本多行溢出
+$(function(){
+	for (var i=0; i<$(".figcaption-p").length; i++) {
+		var length2=$(".figcaption-p").eq(i).html();
+		if(length2.length>98) {
+		  $(".figcaption-p").eq(i).html(length2.slice(0,98)+"...");
+		}
+	};
+	$(".oriented-each span").each(function(index, element) {
+        var htmlLength=$(element).html();
+		if(htmlLength.length>14) {
+		  $(element).html(htmlLength.slice(0,14)+"...");
+		}
+    });
+})
+//管信预算 增加一行项目分摊列表
+$(function(){
+	$(".js-add-tr").click(function(){
+		
+		$("#add-tr").append("<tr><td><input type=checkbox /></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>");
+		$("#add-tr").children("tr:odd").addClass("even");
+		})
+	
+
+
+	})
+//快速开店tab切换
+$(function(){
+	$(".set-moner-step2 li").click(function(){
+		var index=$(this).index();
+		$(this).siblings("li").children(".num").removeClass("on");
+		$(this).children(".num").addClass("on");
+		$(this).siblings("li").children(".num-right").removeClass("on");
+		$(this).children(".num-right").addClass("on");
+		$(this).parents(".set-moner-box2").find(".set-moner-table tr td").removeClass("on").removeClass("on2");
+		$(this).parents(".set-moner-box2").find(".set-moner-table tr td").eq(index).addClass("on").addClass("on2");
+		$(this).parents(".set-moner-box2").siblings(".tab-steps-main").hide().eq(index).show();
+		})
+	$(".set-moner-step3 li").click(function(){
+		var index=$(this).index();
+		$(this).siblings("li").children(".num").removeClass("on");
+		$(this).children(".num").addClass("on");
+		$(this).siblings("li").children(".num-right").removeClass("on");
+		$(this).children(".num-right").addClass("on");
+		$(this).parents(".set-moner-box3").find(".set-moner-table tr td").removeClass("on").removeClass("on2");
+		$(this).parents(".set-moner-box3").find(".set-moner-table tr td").eq(index).addClass("on").addClass("on2");
+		$(this).parents(".set-moner-box3").siblings(".tab-steps-main").hide().eq(index).show();
+		})
+	})
+//帖子附件 选择 查看
+$(".attachment-link-each span").click(function(){
+	$(this).siblings().removeClass("on");
+	$(this).addClass("on");
+	})
+//报表收起展开
+$(".tab-2-class-box .js-tab-2").click(function(){
+			$(this).addClass("on").siblings(".js-tab-2").removeClass("on");
+			var n=$(this).index();
+			$(this).parents(".tab-2-class-box").children(".tab-2-class-main").hide().eq(n).show();
+			})
+		$(".tab-2-class .unfold a").toggle(function(){
+			$(this).text('收起 ∧');
+			$(".unfold-box").slideUp();
+			},			
+			function(){
+			$(this).text('展开 ∨');	
+			$(".unfold-box").slideDown();	
+			})
+$(".tab-infor-11 tr:last").css('borderBottom','none');
+//选择指标
+$(".js-choose-indicators").click(function(){
+	$(".js-indicators-box").show();
+	})
+//合同 付款条款
+$(function(){
+	$(".terms-of label").children("img").hide();
+	$(".terms-of label:last").children("img").show();
+	$(".terms-of button").click(function(){
+		$(".terms-of label").children("img").hide();
+		var Num=$(".terms-of label:visible").length+1;
+		$(this).before('<label style="right:10px;">第<font>'+Num+'</font>期<input value="50"/>%<img src="../pub-ui/images/terms-each-delete.png"/></label>');
+		$(this).css('right','15px')
+		$(".terms-of label img").click(function(){
+		$(this).parent("label").remove();
+		$(this).parent("label").prev("label").children("img").show();
+		});
+	});
+	$(".terms-of label img").click(function(){
+		$(this).parent("label").remove();
+		$(this).parent("label").prev("label").children("img").show();
+		});
+	})
+//控制渠道类型选择右边框的高度
+$(".radio-list-box li .radio-each").click(function(){
+	$(this).addClass("on").siblings().removeClass("on");
+	})
+$(function(){
+	$(".js-hierarchy").hide();
+	$(".radio-list-box li:eq(0) .radio-each").click(function(){
+		var n=$(this).index();
+		$(".radio-list-box li:eq(1) .js-hierarchy").eq(n).show().siblings().hide();
+		})
+	$(".radio-list-box li:eq(1) .radio-each").click(function(){
+		var n=$(this).index();
+		$(".radio-list-box li:eq(2) .js-hierarchy").eq(n).show().siblings().hide();
+		})
+	$(".radio-list-box li:eq(2) .radio-each").click(function(){
+		var n=$(this).index();
+		$(".radio-list-box li:eq(3) .js-hierarchy").eq(n).show().siblings().hide();
+		})
+	//获取有右边框的div的最高高度
+	/*var max = Math.max.apply(Math, $(".radio-list-box li .bor-r-s").map( 
+		function(){ 
+		return $(this).height(); 
+		} 
+		)); 
+	$(".radio-list-box li .bor-r-s").height(max); */
+	})
+//遮罩层
+		function masklayer(){
+			$(document.body).append('<div class="shadow" style="display:block"></div><img src="../pub-ui/images/masklayer-icon.gif" class="masklayer">');
+			$(".shadow").delay(2000).hide(0);
+			$(".masklayer").delay(2000).hide(0);
+		}
+$(function(){
+	$(".each-style01 button").hide();
+	$(".each-style01 div").click(function(){
+		$(this).parent(".each-style01").siblings().children("div").removeClass("on");
+		$(this).addClass("on");
+		$(this).parents(".each-style01").siblings().children("button").hide();
+		$(this).children("button").show();
+		})
+	})
+//菜单收起、展示
+$(function(){
+	$(".main-box").css('minHeight',$(".main-left").height()+20+'px');	
+})
+$(".up-main-left").click(function(){
+	if($(this).hasClass("down")){
+		$(this).removeClass("down").animate({'left':'240px'},500);
+		$(".main-left").animate({'width':'210px'},500);
+		$(".main-right").animate({'marginLeft':'230px'},500);	
+	}else{
+		$(this).addClass("down").animate({'left':'30px'},500);
+		$(".main-left").animate({'width':'0'},500);
+		$(".main-right").animate({'marginLeft':'20px'},500);		
+	}
+})
+$(".js-header-down .list-down").on("click",function(){
+	$thispar=$(this).parent(".js-header-down");
+	$thispar.prev(".js-header-up").slideDown();
+	$thispar.slideUp();	
+})
+$(".js-header-up").on("click",function(){
+	$(this).next(".js-header-down").slideDown();
+	$(this).slideUp();	
+})

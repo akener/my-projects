@@ -1,0 +1,144 @@
+package com.esop.invoice.vo;
+
+import com.esop.common.page.BaseDto;
+import com.esop.workflow.vo.TaskInstDealVo;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
+/**
+ * 预打发票审批列表查询VO
+ *
+ * @author daish 2017/12/15
+ */
+public class InvApprListVo  extends BaseDto {
+    private String applicationNo;//申请单编号
+    private String branchName;//组织机构名称
+    private String industryCenterName;//行业中心名称
+    private String groupId;//集团单位编码
+    private String groupName;//集团单位名称
+    private String invoiceType;//发票类型
+    private String invoiceMode;//发票模式
+    private String printMode;//打印方式
+    private String isRed;//是否冲红
+    private String invoiceSumValue;//是否冲红
+    private String applicantName;//申请人姓名
+    private String workstate;//审核状态
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date applicationTime;//申请时间
+    private TaskInstDealVo instDealVo;
+
+
+
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public String getWorkstate() {
+        return workstate;
+    }
+
+    public void setWorkstate(String workstate) {
+        this.workstate = workstate;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getIndustryCenterName() {
+        return industryCenterName;
+    }
+
+    public void setIndustryCenterName(String industryCenterName) {
+        this.industryCenterName = industryCenterName;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceMode() {
+        return invoiceMode;
+    }
+
+    public void setInvoiceMode(String invoiceMode) {
+        this.invoiceMode = invoiceMode;
+    }
+
+    public String getPrintMode() {
+        return printMode;
+    }
+
+    public void setPrintMode(String printMode) {
+        this.printMode = printMode;
+    }
+
+    public String getIsRed() {
+        return isRed;
+    }
+
+    public void setIsRed(String isRed) {
+        this.isRed = isRed;
+    }
+
+    public String getInvoiceSumValue() {
+        return invoiceSumValue;
+    }
+
+    public void setInvoiceSumValue(String invoiceSumValue) {
+        this.invoiceSumValue = invoiceSumValue;
+    }
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public Date getApplicationTime() {
+        return applicationTime;
+    }
+
+    public void setApplicationTime(Date applicationTime) {
+        this.applicationTime = applicationTime;
+    }
+
+    public TaskInstDealVo getInstDealVo() {
+        return instDealVo;
+    }
+
+    public void setInstDealVo(TaskInstDealVo instDealVo) {
+        this.instDealVo = instDealVo;
+    }
+}

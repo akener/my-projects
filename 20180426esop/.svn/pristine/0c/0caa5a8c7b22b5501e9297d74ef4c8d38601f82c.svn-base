@@ -1,0 +1,1058 @@
+package com.esop.cqDevelopment.groupFundReport.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.groupFundReport.dto.*;
+import com.esop.cqDevelopment.groupFundReport.service.GroupFundReportService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@RestController
+public class GroupFundReportCostontroller {
+    @Autowired
+    GroupFundReportService groupFundReportService;
+
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    @Autowired
+    private static Logger logger = Logger.getLogger(GroupFundReportCostontroller.class);
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    //集团资金入账日报表(清单报表)
+    @RequestMapping(value="/groupFundAccountDayReportManage")
+    public Result getLogisticCompanyList(GroupFundAccountDayRptDto parameter, HttpServletRequest request){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = groupFundReportService.getGroupFundAccountDayList(parameter);
+        return result;
+    }
+    //集团资金使用日报表(清单报表)
+    @RequestMapping(value="/groupFundAccountUseDetailReport")
+    public List<GroupFundsUseDetailedRptDto> getFundAccountUseDetailList(GroupFundsUseDetailedRptDto parameter, HttpServletRequest request){
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+//            Calendar calendar = Calendar.getInstance();
+
+            String datestart = parameter.getProcess_date_start();
+//            String dateend = parameter.getProcess_date_end();
+//
+//            Date endDate = df.parse(dateend);
+//            calendar.setTime(endDate);
+//            calendar.add(Calendar.DAY_OF_MONTH,1);
+//            calendar.add(Calendar.MILLISECOND, -1);
+//            endDate = calendar.getTime();
+
+//            parameter.setProcess_date_start(df1.format(df.parse(datestart)));
+//            parameter.setProcess_date_end(df1.format(endDate));
+        }catch (Exception e){
+
+        }
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+//        PageParameter page = dataConversion.setPageValues(request);
+//        page.setRecordsTotal(result.getRecordsTotal());
+//        parameter.setPage(page);
+        List<GroupFundsUseDetailedRptDto> result = groupFundReportService.getFundAccountUseDetailList(parameter);
+//        result.setRecordsTotal(result.getData().size());
+//        try{
+//            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//
+//            for(GroupFundsUseDetailedRptDto dto:result){
+//                dto.setProcess_date(df3.format(df.parse(dto.getProcess_date())));
+//                dto.setCheck_date(df3.format(df2.parse(dto.getCheck_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+        return result;
+    }
+    //集团资金余额日报明细表
+    //集团资金使用汇总报表(清单报表)
+    @RequestMapping(value="/selectAllGroupFundUseDetailInfoList")
+    public List<GroupFundsUseDetailedRptDto> selectAllGroupFundUseDetailInfoList(GroupFundsUseDetailedRptDto parameter, HttpServletRequest request){
+        List<GroupFundsUseDetailedRptDto> result = groupFundReportService.selectAllGroupFundUseDetailInfoList(parameter);
+        return result;
+    }
+    //集团资金余额日报表
+    @RequestMapping(value="/groupFundAccountChangeDailyReport")
+    public List<GroupFundsChangeDailyRptDto> getFundAccountChangeDailyList(GroupFundsChangeDailyRptDto parameter, HttpServletRequest request){
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+//            Calendar calendar = Calendar.getInstance();
+
+            String datestart = parameter.getLast_operat_date_start();
+//            String dateend = parameter.getLast_operat_date_end();
+//
+//            Date endDate = df.parse(dateend);
+//            calendar.setTime(endDate);
+//            calendar.add(Calendar.DAY_OF_MONTH,1);
+//            calendar.add(Calendar.MILLISECOND, -1);
+//            endDate = calendar.getTime();
+
+            //  parameter.setLast_operat_date_start(df1.format(df.parse(datestart)));
+//            parameter.setLast_operat_date_end(df1.format(df.parse(dateend)));
+        }catch (Exception e){
+
+        }
+
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        List<GroupFundsChangeDailyRptDto> result = groupFundReportService.getFundAccountChangeDailyList(parameter);
+        try{
+            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            for(GroupFundsChangeDailyRptDto dto:result){
+                dto.setLast_operat_date(df3.format(df.parse(dto.getLast_operat_date())));
+//                dto.setCheck_date(df3.format(df2.parse(dto.getCheck_date())));
+            }
+        }catch (Exception e){
+
+        }
+        return result;
+    }
+    //集团资金余额日报汇总表
+    @RequestMapping(value="/groupFundAccountChangeDailySummaryReport")
+    public List<GroupFundsChangeDailyRptDto> getFundAccountChangeDailySummaryList(GroupFundsChangeDailyRptDto parameter, HttpServletRequest request){
+        String datestart = parameter.getLast_operat_date_start();
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+//            parameter.setLast_operat_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+        }
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        List<GroupFundsChangeDailyRptDto> result = groupFundReportService.getFundAccountChangeDailySummaryList(parameter);
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            for(GroupFundsChangeDailyRptDto dto:result){//稽核时间
+                String checkDate = dto.getCheck_date();
+                if(checkDate != null && checkDate != "" && !checkDate.equals("") ) {
+                    dto.setCheck_date(df3.format(df.parse(dto.getCheck_date())));
+                }
+            }
+        }catch (Exception e){
+        }
+        return result;
+    }
+    //集团资金余额月报表
+    @RequestMapping(value="/groupFundAccountChangeMonthReport")
+    public List<GroupFundsChangeDailyRptDto> getFundAccountChangeMonthList(GroupFundsChangeDailyRptDto parameter, HttpServletRequest request){
+        String datestart = parameter.getLast_operat_date_start();
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM");
+            DateFormat df1 = new SimpleDateFormat("yyyyMM");
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
+//            parameter.setLast_operat_date_start(df1.format(df.parse(datestart)));
+
+            //每个月的最后一天（本月余额=余额日报表某月最后一天的账户余额）
+            Date date = df.parse(datestart);
+            Calendar cale = Calendar.getInstance();
+            cale.setTime(date);//
+            cale.add(Calendar.MONTH,1);//
+            cale.add(Calendar.DAY_OF_MONTH,-1);//
+            String lastDay = format.format(cale.getTime());
+            logger.info(">>>>lastDay：" + lastDay);
+            parameter.setLast_day(lastDay);//用于获取本月余额
+
+            //上月最后一天
+            cale.setTime(date);
+            cale.add(Calendar.MONTH,0);
+            cale.add(Calendar.DAY_OF_MONTH,-1);
+            String lastMonthDay = format.format(cale.getTime());
+            parameter.setLast_operat_date_end(lastMonthDay);//获取上月余额
+        }catch (Exception e){
+
+        }
+        List<GroupFundsChangeDailyRptDto> result = groupFundReportService.getFundAccountChangeMonthList(parameter);
+        for(GroupFundsChangeDailyRptDto dto:result){
+            dto.setInsert_date(datestart);//账期
+        }
+        return result;
+    }
+
+    //集团资金调账日报表
+    @RequestMapping(value="/groupFundAccountReconciliationDailyReport")
+    public List<GroupFundReconciliationDailyRptDto> getFundAccountReconciliationDailyList(GroupFundReconciliationDailyRptDto parameter, HttpServletRequest request){
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+//            Calendar calendar = Calendar.getInstance();
+
+//            String datestart = parameter.getDealend_date_start();
+//            String dateend = parameter.getDealend_date_end();
+//
+//            Date endDate = df.parse(dateend);
+//            calendar.setTime(endDate);
+//            calendar.add(Calendar.DAY_OF_MONTH,1);
+//            calendar.add(Calendar.MILLISECOND, -1);
+//            endDate = calendar.getTime();
+
+//            parameter.setDealend_date_start(df1.format(df.parse(datestart)));
+//            parameter.setDealend_date_end(df1.format(df.parse(dateend)));
+        }catch (Exception e){
+
+        }
+
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+//        PageParameter page = dataConversion.setPageValues(request);
+//        page.setRecordsTotal(result.getRecordsTotal());
+//        parameter.setPage(page);
+        List<GroupFundReconciliationDailyRptDto> result = groupFundReportService.getFundAccountReconciliationDailyList(parameter);
+//        result.setRecordsTotal(result.getData().size());
+//        try{
+//            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//
+//            for(GroupFundReconciliationDailyRptDto dto:result){
+//                dto.setDealend_date(df3.format(df.parse(dto.getDealend_date())));
+//                dto.setApply_date(df3.format(df2.parse(dto.getApply_date())));
+//                dto.setCheck_date(df3.format(df2.parse(dto.getCheck_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+        return result;
+    }
+
+    //集团历史短款余额变化明细报表(清单报表)
+    @RequestMapping(value="/groupHistoryShortFeeReport")
+    public List<GroupHistoryShortFeeDto> groupHistoryShortFeeReportList(GroupHistoryShortFeeDto parameter, HttpServletRequest request){
+        return groupFundReportService.groupHistoryShortFeeReportList(parameter);
+    }
+    //集团业务申请单统计表(清单报表)
+    @RequestMapping(value="/groupBusApplyCountReport")
+    public List<GroupBusApplyCountDto> groupBusApplyCountReportList(GroupBusApplyCountDto parameter, HttpServletRequest request){
+        logger.info( "request----------------------------------"+request);
+        return  groupFundReportService.groupBusApplyCountReportList(parameter);
+    }
+
+    //集团业务对账单统计表(清单报表)
+    @RequestMapping(value="/getGroupBusAcceptAccountCheckReport")
+    public List<GroupBusAcceptAccountCheckDto> getGroupBusAcceptAccountCheckInfoList(GroupBusAcceptAccountCheckDto parameter, HttpServletRequest request){
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+//            Calendar calendar = Calendar.getInstance();
+
+            String datestart = parameter.getProcess_date_start();
+//            String dateend = parameter.getProcess_date_end();
+//
+//            Date endDate = df.parse(dateend);
+//            calendar.setTime(endDate);
+//            calendar.add(Calendar.DAY_OF_MONTH,1);
+//            calendar.add(Calendar.MILLISECOND, -1);
+//            endDate = calendar.getTime();
+
+            parameter.setProcess_date_start(df1.format(df.parse(datestart)));
+//            parameter.setProcess_date_end(df1.format(df.parse(endDate.toString())));
+        }catch (Exception e){
+
+        }
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+//        PageParameter page = dataConversion.setPageValues(request);
+//        page.setRecordsTotal(result.getRecordsTotal());
+//        parameter.setPage(page);
+        List<GroupBusAcceptAccountCheckDto> list = groupFundReportService.getGroupBusAcceptAccountCheckInfoList(parameter);
+//        result.setRecordsTotal(result.getData().size());
+        try{
+            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+            for(GroupBusAcceptAccountCheckDto dto:list){
+                dto.setProcess_date(df3.format(df.parse(dto.getProcess_date())));
+            }
+        }catch (Exception e){
+
+        }
+        return list;
+    }
+
+    //资金使用稽核
+    @RequestMapping("/updateFundAccountUseDetailCheck")
+    public int updateFundAccountUseDetailCheck(GroupFundsUseDetailedRptDto dto){
+        int result = 999;
+        String[] ids = dto.getOrder_id().split(",");
+        try{
+            for(String id:ids){
+                GroupFundsUseDetailedRptDto param = new GroupFundsUseDetailedRptDto();
+                param.setOrder_id(id);
+                param.setCheck_code(dto.getCheck_code());
+                param.setCheck_status("1");
+                groupFundReportService.updateFundAccountUseDetailCheck(param);
+            }
+            result = 0;
+        }catch (Exception e){
+            result = 999;
+        }
+        return  result;
+    }
+
+   /* //资金余额稽核
+    @RequestMapping("/updateFundAccountChangeDailyCheck")
+    public int updateFundAccountChangeDailyCheck(GroupFundsChangeDailyRptDto dto){
+        int result = 999;
+        String[] ids = dto.getId().split(",");
+        try{
+            for(String id:ids){
+                GroupFundsChangeDailyRptDto param = new GroupFundsChangeDailyRptDto();
+                param.setId(id);
+                param.setCheck_code(dto.getCheck_code());
+                param.setCheck_status("1");
+                groupFundReportService.updateFundAccountChangeDailyCheck(param);
+            }
+            result = 0;
+        }catch (Exception e){
+            result = 999;
+        }
+        return result;
+    }*/
+
+    //资金调账稽核
+    @RequestMapping("/updateFundAccountReconciliationDailyCheck")
+    public int updateFundAccountReconciliationDailyCheck(GroupFundReconciliationDailyRptDto dto){
+
+        int result = 999;
+        String[] ids = dto.getRegulation_apply_no().split(",");
+        try{
+            for(String id:ids){
+                GroupFundReconciliationDailyRptDto param = new GroupFundReconciliationDailyRptDto();
+                param.setRegulation_apply_no(id);
+                param.setCheck_status("1");
+                param.setCheck_code(dto.getCheck_code());
+                groupFundReportService.updateFundAccountReconciliationDailyCheck(param);
+            }
+            result = 0;
+        }catch (Exception e){
+            result = 999;
+        }
+        return result;
+    }
+
+    //资金使用报表数据导出
+    @RequestMapping("/exportGroupFundAccountUseDetailReport")
+    public String exportGroupFundAccountUseDetailReport(GroupFundsUseDetailedRptDto parameter, HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","业务受理员","受理时间","业务类型","实际使用金额(元)","业务工单处理状态","集团编号","集团名称","业务工单编号","申请人","申请时间","申请金额(元)"};
+//        String[] tableHeader = {"","","","","","","","","","","","","","","",""};
+        String[] methods = {"getOrg_name","getBusiness_center","getBusiness_admissible","getProcess_date","getBusiness_type","getActual_use_amount","getDeal_status","getGroup_code","getGroup_name","getOrder_id","getApplicant","getApply_time","getApply_amount"};
+
+//        GroupFundsUseDetailedRptDto headInfo = new GroupFundsUseDetailedRptDto();
+//        headInfo.setGroup_code("资金使用报表");
+//
+//        GroupFundsUseDetailedRptDto qryInfo = new GroupFundsUseDetailedRptDto();
+//        qryInfo.setBusiness_admissible("分公司：");
+//        qryInfo.setProcess_date(parameter.getOrg_name());
+//        qryInfo.setDeal_status("行业中心：");
+//        qryInfo.setGroup_code(parameter.getBusiness_center());
+//        qryInfo.setApplicant("查询日期：");
+//        qryInfo.setApply_time(parameter.getProcess_date_start());
+//
+//        GroupFundsUseDetailedRptDto titleInfo = new GroupFundsUseDetailedRptDto();
+//        titleInfo.setOrg_name("分公司");
+//        titleInfo.setBusiness_center("行业中心");
+//        titleInfo.setBusiness_admissible("业务受理员");
+//        titleInfo.setProcess_date("受理时间");
+//        titleInfo.setBusiness_type("业务类型");
+//        titleInfo.setActual_use_amount("实际使用金额(元)");
+//        titleInfo.setDeal_status("业务工单处理状态");
+//        titleInfo.setGroup_code("集团编号");
+//        titleInfo.setGroup_name("集团名称");
+//        titleInfo.setOrder_id("业务工单编号");
+//        titleInfo.setApplicant("申请人");
+//        titleInfo.setApply_time("申请时间");
+//        titleInfo.setApply_amount("申请金额(元)");
+//        titleInfo.setCheck_status("稽核状态");
+//        titleInfo.setCheck_code("稽核人");
+//        titleInfo.setCheck_date("稽核时间");
+//        List<GroupFundsUseDetailedRptDto> list = new ArrayList<>();
+//        list.add(headInfo);
+//        list.add(qryInfo);
+//        list.add(titleInfo);
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+        try{
+
+
+            String datestart = parameter.getProcess_date_start();
+
+//            parameter.setProcess_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundsUseDetailedRptDto> qrylist = groupFundReportService.getFundAccountUseDetailList(parameter);
+//        try{
+//            DateFormat df0 = new SimpleDateFormat("yyyyMMddHHmmss");
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//
+//            for(GroupFundsUseDetailedRptDto dto:qrylist){
+//                if(dto.getCheck_status().equals("0")){
+//                    dto.setCheck_status("未稽核");
+//                }else if(dto.getCheck_status().equals("1")){
+//                    dto.setCheck_status("已稽核");
+//                }else if(dto.getCheck_status().equals("2")){
+//                    dto.setCheck_status("已驳回");
+//                }
+//                dto.setProcess_date(df3.format(df0.parse(dto.getProcess_date())));
+//                dto.setCheck_date(df3.format(df2.parse(dto.getCheck_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+
+//        GroupFundsUseDetailedRptDto checkInfo = new GroupFundsUseDetailedRptDto();
+//        checkInfo.setOrder_id("制表人：");
+//        checkInfo.setApplicant("系统自动编制");
+//        checkInfo.setApply_time("稽核人：");
+//        checkInfo.setApply_amount(list.get(0).getCheck_code());
+//        qrylist.add(checkInfo);
+
+//        list.addAll(qrylist);
+
+        result.setData(qrylist);
+
+        try{
+            String title = "集团资金使用日报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"时间："+parameter.getProcess_date_start()};
+            String check_code = "";
+            if(qrylist.get(qrylist.size()-1).getApply_time() != null && !qrylist.get(qrylist.size()-1).getApply_time().equals("")&&qrylist.get(qrylist.size()-1).getApplicant().equals("已稽核")){
+                check_code = qrylist.get(qrylist.size()-1).getApply_time();
+            }
+
+            String[] foot = {"制表人：系统自动编制","稽核人："+check_code};
+//            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,qrylist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+
+    //资金使用报表数据导出
+    @RequestMapping("/exportGroupFundAllAccountUseDetailReport")
+    public String exportGroupFundAllAccountUseDetailReport(GroupFundsUseDetailedRptDto parameter, HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"报表日期","分公司","行业中心","实际使用金额(元)","日报稽核状态","稽核人员","稽核时间"};
+        String[] methods = {"getProcess_date","getOrg_name","getBusiness_center","getActual_use_amount","getCheck_status","getCheck_code","getCheck_date"};
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+        try{
+
+            String datestart = parameter.getProcess_date_start();
+            String dateend = parameter.getProcess_date_end();
+
+//            parameter.setProcess_date_start2(datestart);
+//            parameter.setProcess_date_end2(dateend);
+        }catch (Exception e){
+        }
+
+        List<GroupFundsUseDetailedRptDto> qrylist = groupFundReportService.selectAllGroupFundUseDetailInfoList(parameter);
+        for(GroupFundsUseDetailedRptDto dto:qrylist){
+            if(dto.getCheck_status().equals("0")){
+                dto.setCheck_status("未稽核");
+            }else if(dto.getCheck_status().equals("1")){
+                dto.setCheck_status("已稽核");
+            }else if(dto.getCheck_status().equals("2")){
+                dto.setCheck_status("已驳回");
+            }
+        }
+        result.setData(qrylist);
+
+        try{
+            String title = "集团资金使用汇总报表";
+            String[] qryCheckInfo = new String[]{"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"开始时间："+parameter.getProcess_date_start(),"结束时间："+parameter.getProcess_date_end()};
+            String[] foot = {};
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,qrylist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+    //资金余额月报表数据导出
+    @RequestMapping("/exportGroupFundAccountChangeMonthReport")
+    public String exportGroupFundAccountChangeMonthReport(GroupFundsChangeDailyRptDto parameter,HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","集团单位","集团编码","账期","上月余额","本月认款金额","本月业务工单扣减金额","本月调入金额","本月调出金额","本月退款金额","本月历史短款扣减金额","本月余额"};
+        String[] methods = {"getOrg_name","getBusiness_center","getGroup_name","getGroup_code","getInsert_date","getYesterday_balance","getToday_claim_amount","getToday_deduction_amount","getToday_into_amount","getToday_out_amount","getToday_refund_amount","getToday_history_deduction_amount","getToday_account_balance"};
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM");
+            DateFormat df1 = new SimpleDateFormat("yyyyMM");
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            String datestart = parameter.getLast_operat_date_start();
+//            parameter.setLast_operat_date_start(df1.format(df.parse(datestart)));
+
+            //每个月的最后一天（本月余额=余额日报表某月最后一天的账户余额）
+            Date date = df.parse(datestart);
+            Calendar cale = Calendar.getInstance();
+            cale.setTime(date);//
+            cale.add(Calendar.MONTH,1);//
+            cale.add(Calendar.DAY_OF_MONTH,-1);//
+            String lastDay = format.format(cale.getTime());
+            logger.info(">>>>lastDay：" + lastDay);
+            parameter.setLast_day(lastDay);//用于获取本月余额
+
+            //上月最后一天
+            cale.setTime(date);
+            cale.add(Calendar.MONTH,0);
+            cale.add(Calendar.DAY_OF_MONTH,-1);
+            String lastMonthDay = format.format(cale.getTime());
+            parameter.setLast_operat_date_end(lastMonthDay);//获取上月余额
+        }catch (Exception e){
+            logger.info("导出异常>>>>>>>>>>");
+        }
+        List<GroupFundsChangeDailyRptDto> list = groupFundReportService.getFundAccountChangeMonthList(parameter);
+        for(GroupFundsChangeDailyRptDto dto:list){
+            dto.setInsert_date(parameter.getLast_operat_date_start());//账期
+        }
+        try{
+            orderWorkFlowService.getExport(tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+    //资金余额报表数据导出
+    @RequestMapping("/exportGroupFundAccountChangeDailyReport")
+    public String exportGroupFundAccountChangeDailyReport(GroupFundsChangeDailyRptDto parameter,HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","集团单位","集团编号","客户经理","账务员","昨日余额","昨日可用余额","今日认款金额","今日业务工单扣减金额","今日调入金额","今日调出金额","今日退款金额","冻结金额","占用金额","今日历史短款扣减金额","今日账户余额","今日账户可用余额","最后操作时间"};
+        String[] methods = {"getOrg_name","getBusiness_center","getGroup_name","getGroup_code","getManager","getAccount_clerk","getYesterday_balance","getYesterday_available_balance","getToday_claim_amount","getToday_deduction_amount","getToday_into_amount","getToday_out_amount","getToday_refund_amount","getToday_freeze_amount","getToday_occupy_amount","getToday_history_deduction_amount","getToday_account_balance","getToday_account_available_balance","getLast_operat_date"};
+
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+
+//            String datestart = parameter.getLast_operat_date_start();
+//
+//            parameter.setLast_operat_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundsChangeDailyRptDto> list = groupFundReportService.getFundAccountChangeDailyList(parameter);
+        try{
+            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+            for(GroupFundsChangeDailyRptDto dto:list){
+                dto.setLast_operat_date(df3.format(df.parse(dto.getLast_operat_date())));
+//                dto.setCheck_date(df3.format(df2.parse(dto.getCheck_date())));
+            }
+        }catch (Exception e){
+
+        }
+
+        try{
+            String title = "集团资金余额日报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"时间："+parameter.getLast_operat_date_start()};
+            String[] foot = {"制表人：系统自动编制","稽核人："+list.get(list.size()-1).getToday_account_available_balance()};
+//            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+    //资金余额报日报表汇总数据导出
+    @RequestMapping("/exportGroupFundAccountChangeReportMonth")
+    public String exportGroupFundAccountChangeReportMonth(GroupFundsChangeDailyRptDto parameter,HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"报表日期","分公司","行业中心","今日账户余额总额","今日账户可用余额总额","日报稽核状态","稽核人员","操作时间"};
+        String[] methods = {"getInsert_date","getOrg_name","getBusiness_center","getToday_account_balance","getToday_account_available_balance","getCheck_status","getCheck_code","getCheck_date"};
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+            String datestart = parameter.getLast_operat_date_start();
+//            parameter.setLast_operat_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+        List<GroupFundsChangeDailyRptDto> list = groupFundReportService.getFundAccountChangeDailySummaryList(parameter);
+        for(GroupFundsChangeDailyRptDto dto:list){
+//            dto.setInsert_date(parameter.getLast_operat_date_start());//账期
+
+            if(dto.getCheck_status().equals("0")){
+                dto.setCheck_status("未稽核");
+            }else if(dto.getCheck_status().equals("1")){
+                dto.setCheck_status("已稽核");
+            }else if(dto.getCheck_status().equals("2")){
+                dto.setCheck_status("已驳回");
+            }
+        }
+        try{
+            String title = "集团资金余额汇总日报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"开始时间："+parameter.getLast_operat_date_start(),"结束时间："+parameter.getLast_operat_date_end()};
+            String check_code = "";
+            if(list != null && list.size() > 0 && list.get(0).getCheck_status() != null && list.get(0).getCheck_status().equals("已稽核")){
+                check_code = list.get(0).getCheck_code();
+            }
+            String[]  foot = {"制表人：系统自动编制","稽核人："+check_code};
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+    //资金调账报表数据导出
+    @RequestMapping("/exportGroupFundAccountReconciliationDailyReport")
+    public String exportGroupFundAccountReconciliationDailyReport(GroupFundReconciliationDailyRptDto parameter,HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","调出集团单位名称","调出集团单位编码","调入集团单位名称","调入集团单位编码","调账金额","调账申请单号","工单状态","工单办结日期","申请人","申请时间"};
+        String[] methods = {"getOrg_name","getBusiness_center","getOut_group_name","getOut_group_no","getInto_group_name","getInto_group_no","getRegulation_money","getRegulation_apply_no","getOrder_status","getDealend_date","getStaff_name","getApply_date"};
+
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+
+            String datestart = parameter.getDealend_date_start();
+
+//            parameter.setDealend_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundReconciliationDailyRptDto> list = groupFundReportService.getFundAccountReconciliationDailyList(parameter);
+//        try{
+//            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+//            DateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+//            for(GroupFundReconciliationDailyRptDto dto:list){
+//                if(dto.getCheck_status().equals("0")){
+//                    dto.setCheck_status("未稽核");
+//                }else if(dto.getCheck_status().equals("1")){
+//                    dto.setCheck_status("已稽核");
+//                }else if(dto.getCheck_status().equals("2")){
+//                    dto.setCheck_status("已驳回");
+//                }
+//                dto.setDealend_date(df3.format(df.parse(dto.getDealend_date())));
+//                dto.setApply_date(df3.format(df2.parse(dto.getApply_date())));
+//                dto.setCheck_date(df3.format(df2.parse(dto.getCheck_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+
+        try{
+            String title = "集团资金调账日报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"时间："+parameter.getDealend_date_start()};
+            String check_code = "";
+            if(list.get(list.size()-1).getStaff_name() != null && !list.get(list.size()-1).getStaff_name().equals("")&&list.get(list.size()-1).getDealend_date().equals("已稽核")){
+                check_code = list.get(list.size()-1).getStaff_name();
+            }
+            String[] foot = {"制表人：系统自动编制","稽核人："+check_code};
+//            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+    //集团类业务受理对账统计表数据导出
+    @RequestMapping("/exportGroupBusAcceptAccountCheckReport")
+    public String exportGroupBusAcceptAccountCheckReport(GroupBusAcceptAccountCheckDto parameter,HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","业务受理员","受理时间","业务类型","实际使用金额","集团编号","集团名称","业务工单编号"};
+        String[] methods = {"getOrg_name","getBusiness_center","getBusiness_processer","getProcess_date","getBusiness_type","getReal_use_money","getGroup_code","getGroup_name","getOrder_id"};
+
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+
+            String datestart = parameter.getProcess_date_start();
+
+            parameter.setProcess_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupBusAcceptAccountCheckDto> list = groupFundReportService.getGroupBusAcceptAccountCheckInfoList(parameter);
+        try{
+            DateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            DateFormat df3 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+            for(GroupBusAcceptAccountCheckDto dto:list){
+                dto.setProcess_date(df3.format(df.parse(dto.getProcess_date())));
+            }
+        }catch (Exception e){
+
+        }
+        try{
+            String title = "集团类业务受理对账统计表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"时间："+parameter.getProcess_date_start()};
+            String[] foot = {"制表人：系统自动编制"};
+//            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+    //集团历史短款余额变化明细报表(报表导出)
+    @RequestMapping(value="/expertHistoryRecorded")
+    public String expertApprove(GroupHistoryShortFeeDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","集团编号","集团名称","历史短款金额","历史短款发生日期","历史短款冲销申请单号","状态","本次冲销金额","本次冲销后余额","工单办结日期","申请人","申请日期","申请金额(元)","客户经理"};
+        String[] methods = {"getName","getBusiness_center","getGroupNo","getGroupName","getShortFee", "getShortDate", "getTaskOrderId", "getStatus","getOffsetAmount","getAfterOffsetAmount","getDealTime","getLogin_name","getApplyDate","getApplyAmount","getLogin_name2"};
+
+        List <GroupHistoryShortFeeDto> list=groupFundReportService.groupHistoryShortFeeReportList(parameter);
+        try {
+            //报表加表头表尾
+            String title = "集团历史短款余额变化明细报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_id(),"行业中心："+parameter.getCenter_code(),"时间："+parameter.getStart_time()};
+            String[] foot = {"制表人：系统自动编制"};
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="999";
+        }
+        return message;
+    }
+    //集团业务申请单统计表(报表导出)
+    @RequestMapping(value="/expertBusAppRecorded")
+    public String expertApprove(GroupBusApplyCountDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","集团编号","集团名称","客户经理","申请单类型","申请单号","申请单状态","账务员","申请日期","是否生成业务受理工单","申请单生成的业务受理单编号","业务受理单状态"};
+        String[] methods = {"getName","getBusiness_center","getGroupNo","getGroupName","getManagerName", "getType_name", "getTaskOrderId", "getOrder_status","getClerk","getApplyDate","getIsFormAcceptOrder","getBusAcceptOrderId","getAcceptStatus"};
+
+        List <GroupBusApplyCountDto> list=groupFundReportService.groupBusApplyCountReportList(parameter);
+        try {
+            String title = "集团业务申请单统计表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_id(),"行业中心："+parameter.getCenter_code(),"开始时间："+parameter.getStart_time(),"结束时间："+parameter.getOver_time()};
+            String[] foot = {"制表人：系统自动编制"};
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,list,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="999";
+        }
+        return message;
+    }
+
+    //资金使用驳回
+    @RequestMapping("/updateFundAccountUseDetailCheckBack")
+    public int updateFundAccountUseDetailCheckBack(GroupFundsUseDetailedRptDto dto){
+        int result = 999;
+        String[] ids = dto.getOrder_id().split(",");
+        try{
+            for(String id:ids){
+                GroupFundsUseDetailedRptDto param = new GroupFundsUseDetailedRptDto();
+                param.setOrder_id(id);
+                param.setCheck_code(dto.getCheck_code());
+                param.setCheck_status("2");
+                groupFundReportService.updateFundAccountUseDetailCheck(param);
+            }
+            result = 0;
+        }catch (Exception e){
+            result = 999;
+        }
+        return  result;
+    }
+
+    //资金余额驳回
+    /*@RequestMapping("/updateFundAccountChangeDailyCheckBack")
+    public int updateFundAccountChangeDailyCheckBack(GroupFundsChangeDailyRptDto dto){
+        int result = 999;
+        String[] ids = dto.getId().split(",");
+        try{
+            for(String id:ids){
+                GroupFundsChangeDailyRptDto param = new GroupFundsChangeDailyRptDto();
+                param.setId(id);
+                param.setCheck_code(dto.getCheck_code());
+                param.setCheck_status("2");
+                groupFundReportService.updateFundAccountChangeDailyCheck(param);
+            }
+            result = 0;
+        }catch (Exception e){
+            result = 999;
+        }
+        return result;
+    }*/
+    //资金余额稽核
+    @RequestMapping("/updateCheckFundAccountChangeDaily")
+    public int updateCheckFundAccountChangeDaily(GroupFundReportCheckDto param){
+        int result = 999;
+        param.setProcess_type("5");//类型
+        param.setAudit_status("1");//稽核
+        try{
+            result = groupFundReportService.updateFundReportCheck(param);
+        }catch (Exception e){
+            result=999;
+        }
+
+        return result;
+    }
+    //资金余额驳回
+    @RequestMapping("/updateDailyCheckBackFundAccountChange")
+    public int updateDailyCheckBackFundAccountChange(GroupFundReportCheckDto param){
+        int result = 999;
+        param.setProcess_type("5");//类型
+        param.setAudit_status("2");//驳回
+        try{
+            result = groupFundReportService.updateFundReportCheck(param);
+        }catch(Exception e){
+            result = 999;
+        }
+        return result;
+    }
+
+    //资金调账驳回
+    @RequestMapping("/updateFundAccountReconciliationDailyCheckBack")
+    public int updateFundAccountReconciliationDailyCheckBack(GroupFundReconciliationDailyRptDto dto){
+
+        int result = 999;
+        String[] ids = dto.getRegulation_apply_no().split(",");
+        try{
+            for(String id:ids){
+                GroupFundReconciliationDailyRptDto param = new GroupFundReconciliationDailyRptDto();
+                param.setRegulation_apply_no(id);
+                param.setCheck_status("2");
+                param.setCheck_code(dto.getCheck_code());
+                groupFundReportService.updateFundAccountReconciliationDailyCheck(param);
+            }
+            result = 0;
+        }catch (Exception e){
+            result = 999;
+        }
+        return result;
+    }
+
+    //资金使用月报表
+    @RequestMapping("/groupFundAccountUseDetailReportMonth")
+    public List<GroupFundsUseDetailedRptDto> getFundAccountUseDetailListMonth(GroupFundsUseDetailedRptDto parameter, HttpServletRequest request){
+        DateFormat df = new SimpleDateFormat("yyyy-MM");
+        DateFormat df2 = new SimpleDateFormat("yyyyMM");
+        try{
+            String startDate = parameter.getProcess_date_start();
+
+//            parameter.setProcess_date_start(df2.format(df.parse(startDate)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundsUseDetailedRptDto> list = groupFundReportService.getFundAccountUseDetailListMonth(parameter);
+//        try {
+//            for (GroupFundsUseDetailedRptDto dto : list) {
+//                dto.setProcess_date(df.format(df2.parse(dto.getProcess_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+        return list;
+    }
+
+    //资金使用报表数据导出
+    @RequestMapping("/exportGroupFundAccountUseDetailReportMonth")
+    public String exportGroupFundAccountUseDetailReportMonth(GroupFundsUseDetailedRptDto parameter, HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","账期","集团编号","集团名称","业务类型","实际使用金额(元)"};
+        String[] methods = {"getOrg_name","getBusiness_center","getProcess_date","getGroup_code","getGroup_name","getBusiness_type","getActual_use_amount"};
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM");
+        DateFormat df1 = new SimpleDateFormat("yyyyMM");
+        try{
+            String datestart = parameter.getProcess_date_start();
+
+//            parameter.setProcess_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundsUseDetailedRptDto> qrylist = groupFundReportService.getFundAccountUseDetailListMonth(parameter);
+//        try {
+//            for (GroupFundsUseDetailedRptDto dto : qrylist) {
+//                dto.setProcess_date(df.format(df1.parse(dto.getProcess_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+        result.setData(qrylist);
+
+        try{
+            String title = "集团资金使用月报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"时间："+parameter.getProcess_date_start()};
+            String[] foot = {"制表人：系统自动编制"};
+//            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,qrylist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+
+    //资金调账月报表
+    @RequestMapping("/groupFundAccountReconciliationDailyReportMonth")
+    public List<GroupFundReconciliationDailyRptDto> getFundAccountReconciliationDailyListMonth(GroupFundReconciliationDailyRptDto parameter, HttpServletRequest request){
+        DateFormat df = new SimpleDateFormat("yyyy-MM");
+        DateFormat df2 = new SimpleDateFormat("yyyyMM");
+        try{
+            String startDate = parameter.getDealend_date_start();
+
+//            parameter.setDealend_date_start(df2.format(df.parse(startDate)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundReconciliationDailyRptDto> list = groupFundReportService.getFundAccountReconciliationDailyListMonth(parameter);
+//        try {
+//            for (GroupFundReconciliationDailyRptDto dto : list) {
+//                dto.setDealend_date(df.format(df2.parse(dto.getDealend_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+        return list;
+    }
+
+    //资金调账报表数据导出
+    @RequestMapping("/exportGroupFundAccountReconciliationDailyReportMonth")
+    public String exportGroupFundAccountReconciliationDailyReportMonth(GroupFundReconciliationDailyRptDto parameter, HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"分公司","行业中心","账期","集团编号","集团名称","调出金额","调入金额"};
+        String[] methods = {"getOrg_name","getBusiness_center","getDealend_date","getOut_group_no","getOut_group_name","getRegulation_money_negative","getRegulation_money_positive"};
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM");
+        DateFormat df1 = new SimpleDateFormat("yyyyMM");
+        try{
+            String datestart = parameter.getDealend_date_start();
+
+//            parameter.setDealend_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+
+        }
+
+        List<GroupFundReconciliationDailyRptDto> qrylist = groupFundReportService.getFundAccountReconciliationDailyListMonth(parameter);
+//        try {
+//            for (GroupFundReconciliationDailyRptDto dto : qrylist) {
+//                dto.setDealend_date(df.format(df1.parse(dto.getDealend_date())));
+//            }
+//        }catch (Exception e){
+//
+//        }
+        result.setData(qrylist);
+
+        try{
+            String title = "集团资金调账月报表";
+            String[] qryCheckInfo = {"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"时间："+parameter.getDealend_date_start()};
+            String[] foot = {"制表人：系统自动编制"};
+//            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+            orderWorkFlowService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,qrylist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+
+    //资金使用稽核
+    @RequestMapping("/updateFundAccountUseDetailCheckNext")
+    public int updateFundAccountUseDetailCheckNext(GroupFundReportCheckDto dto){
+        dto.setProcess_type("3");
+        dto.setAudit_status("1");
+        int result = 999;
+        try{
+            result = groupFundReportService.updateFundReportCheck(dto);
+        }catch (Exception e){
+            result = 999;
+        }
+        return  result;
+    }
+
+    //资金使用驳回
+    @RequestMapping("/updateFundAccountUseDetailCheckBackNext")
+    public int updateFundAccountUseDetailCheckBackNext(GroupFundReportCheckDto dto){
+        dto.setProcess_type("3");
+        dto.setAudit_status("2");
+        int result = 999;
+        try{
+            result = groupFundReportService.updateFundReportCheck(dto);
+        }catch (Exception e){
+            result = 999;
+        }
+        return  result;
+    }
+
+    //资金调账稽核
+    @RequestMapping("/updateFundAccountReconciliationDailyCheckNext")
+    public int updateFundAccountReconciliationDailyCheckNext(GroupFundReportCheckDto dto){
+        dto.setProcess_type("4");
+        dto.setAudit_status("1");
+        int result = 999;
+        try{
+            result = groupFundReportService.updateFundReportCheck(dto);
+        }catch (Exception e){
+            result = 999;
+        }
+        return result;
+    }
+
+    //资金调账稽核
+    @RequestMapping("/updateFundAccountReconciliationDailyCheckBackNext")
+    public int updateFundAccountReconciliationDailyCheckBackNext(GroupFundReportCheckDto dto){
+        dto.setProcess_type("4");
+        dto.setAudit_status("2");
+        int result = 999;
+        try{
+            result = groupFundReportService.updateFundReportCheck(dto);
+        }catch (Exception e){
+            result = 999;
+        }
+        return result;
+    }
+}

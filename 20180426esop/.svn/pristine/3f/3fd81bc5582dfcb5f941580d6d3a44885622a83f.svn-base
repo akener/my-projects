@@ -1,0 +1,53 @@
+package com.esop.basicManagement.controller;
+
+
+import com.esop.basicManagement.dto.BasicBossBusimentDto;
+import com.esop.basicManagement.service.BasicBossBusimentService;
+import com.esop.common.jaxb.CallCrmService;
+import com.esop.common.security.DESPlus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.net.HttpURLConnection;
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@RestController
+public class BasicBossBusimentRC {
+    @Autowired
+    BasicBossBusimentService basicBossBusimentService;
+    //更新
+    @RequestMapping(value="/getBossBusiLogin")
+    public List basicBossBusiLoginQuery(BasicBossBusimentDto parameter){
+        List<BasicBossBusimentDto> list;
+        list = basicBossBusimentService.queryBusiBossLoginList(parameter);
+        String loginRegion = "";
+        String loginBegin = "";
+        String loginEnd = "";
+        int iNum;
+        if(list.size()>0){
+            loginRegion = list.get(0).getLogin_region()+"2";
+            loginBegin = "0000";
+            loginEnd = "9999";
+            iNum = 4;
+        }else {
+            loginRegion = "2";
+            loginBegin = "00000";
+            loginEnd = "99999";
+            iNum = 5;
+        }
+        parameter.setLoginRegion(loginRegion);
+        parameter.setLoginBegin(loginBegin);
+        parameter.setLoginEnd(loginEnd);
+
+        list = basicBossBusimentService.queryBusiBossLoginInfoList(parameter);
+        if(list.size()>0){
+            return list;
+        }else{
+            return null;
+        }
+    }
+}

@@ -1,0 +1,22 @@
+package com.esop.workflow.dto;
+
+import com.esop.workflow.vo.Step;
+
+import java.util.List;
+
+/**
+ * 获取下一环节信息OutDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class GetNextStepsOutDTO extends OutDTO {
+    private List<Step> stepList;
+
+    public List<Step> getStepList() {
+        return stepList;
+    }
+
+    public void setStepList(List<Step> stepList) {
+        this.stepList = stepList;
+    }
+}

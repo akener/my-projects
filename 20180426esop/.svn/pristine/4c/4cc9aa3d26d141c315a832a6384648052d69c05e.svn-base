@@ -1,0 +1,55 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by lilei on 2017/6/7
+ */
+public class ProCaseInfoDto extends BaseDto{
+    private String market_no;
+    private String market_name;
+    private String region_code;
+    private String option_no;
+    private String DT_RowId ="";
+
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getMarket_no() {
+        return market_no;
+    }
+
+    public void setMarket_no(String market_no) {
+        this.market_no = market_no;
+    }
+
+    public String getMarket_name() {
+        return market_name;
+    }
+
+    public void setMarket_name(String market_name) {
+        this.market_name = market_name;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getOption_no() {
+        return option_no;
+    }
+
+    public void setOption_no(String option_no) {
+        this.option_no = option_no;
+    }
+}

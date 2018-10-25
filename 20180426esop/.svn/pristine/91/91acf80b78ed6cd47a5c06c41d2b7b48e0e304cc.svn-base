@@ -1,0 +1,39 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.StateOfWorkOptDto;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class StateOfWorkOptService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    CapitalInfoApplyService capitalInfoApplyService;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+
+    public int putStateOfWorkInfoSvc(StateOfWorkOptDto parameter){
+        String selectTion = "";
+        selectTion = "insertStateOfWorkInfo";
+        int result = sqlSessionTemplate.insert(selectTion,parameter);
+
+
+        //缴费成功后更新发票申请单状态为已回款状态
+        if("3".equals(parameter.getORDER_STATUS())) {
+            capitalInfoApplyService.updateChangeStateInvoiceOrderId(parameter.getORDER_NUMBER());
+        }
+
+
+        return result;
+    }
+}

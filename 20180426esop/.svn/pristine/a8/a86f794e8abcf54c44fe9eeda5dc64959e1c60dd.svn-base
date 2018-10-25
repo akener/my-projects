@@ -1,0 +1,126 @@
+package com.esop.base.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 2017/1/23.
+ */
+public class SysLogQueryDto extends BaseDto{
+    String DT_RowId = "";
+    String op_code = "";
+    String function_name = "";
+    String out_sys_name = "";
+    String login_no = "";
+    String login_name = "";
+    String group_name = "";
+    String boss_login_no = "";
+    String bass_login_no1 = "";
+    String op_time = "";
+    String ip_addr = "";
+    String op_time_start = "";
+    String op_time_end = "";
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getOp_code() {
+        return op_code;
+    }
+
+    public void setOp_code(String op_code) {
+        this.op_code = op_code;
+    }
+
+    public String getFunction_name() {
+        return function_name;
+    }
+
+    public void setFunction_name(String function_name) {
+        this.function_name = function_name;
+    }
+
+    public String getOut_sys_name() {
+        return out_sys_name;
+    }
+
+    public void setOut_sys_name(String out_sys_name) {
+        this.out_sys_name = out_sys_name;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getBoss_login_no() {
+        return boss_login_no;
+    }
+
+    public void setBoss_login_no(String boss_login_no) {
+        this.boss_login_no = boss_login_no;
+    }
+
+    public String getBass_login_no1() {
+        return bass_login_no1;
+    }
+
+    public void setBass_login_no1(String bass_login_no1) {
+        this.bass_login_no1 = bass_login_no1;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getIp_addr() {
+        return ip_addr;
+    }
+
+    public void setIp_addr(String ip_addr) {
+        this.ip_addr = ip_addr;
+    }
+
+    public String getOp_time_start() {
+        return op_time_start;
+    }
+
+    public void setOp_time_start(String op_time_start) {
+        this.op_time_start = op_time_start;
+    }
+
+    public String getOp_time_end() {
+        return op_time_end;
+    }
+
+    public void setOp_time_end(String op_time_end) {
+        this.op_time_end = op_time_end;
+    }
+}

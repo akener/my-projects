@@ -1,0 +1,57 @@
+package com.esop.workbench.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.InformationIncomeDto;
+import com.esop.workbench.service.InformationIncomeService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class InformationIncomeRC {
+    @Autowired
+    InformationIncomeService informationIncomeService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    private static Logger logger = Logger.getLogger(InformationIncomeRC.class);
+    //查询节点默认台账信息
+    @RequestMapping(value="/thisInformationIncome")
+    public List getInformationIncome(InformationIncomeDto parameter){
+        List list;
+        list= informationIncomeService.getInformationIncome(parameter);
+        return list;
+    }
+    @RequestMapping(value="/thisInformationIncomeList")
+    public Result getInformationIncomeList(InformationIncomeDto parameter, HttpServletRequest request, boolean flag){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = informationIncomeService.getInformationIncomeList(parameter);
+        //JSONObject js = new
+        return result;
+    }
+    @RequestMapping(value="/cityCodeListShow")
+    public List getCityCodeListRC(InformationIncomeDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= informationIncomeService.getCityCodeShowList(parameter);
+        return list;
+    }
+}

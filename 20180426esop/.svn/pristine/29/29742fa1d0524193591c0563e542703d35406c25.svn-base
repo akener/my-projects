@@ -1,0 +1,34 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by zuoyue on 2017/7/28.
+ */
+public class businessListDto {
+    String iCustIdNo="";//集团编号
+    String WO_NO="";//商机编码，工单编号
+    String title="";//工单主题
+
+    public String getiCustIdNo() {
+        return iCustIdNo;
+    }
+
+    public void setiCustIdNo(String iCustIdNo) {
+        this.iCustIdNo = iCustIdNo;
+    }
+
+    public String getWO_NO() {
+        return WO_NO;
+    }
+
+    public void setWO_NO(String WO_NO) {
+        this.WO_NO = WO_NO;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}

@@ -1,0 +1,125 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//竞争对手选择入参
+public class CompeteMsgInDto {
+    String related_id = "";//附件关联id
+    String town_name = "";//地区 group_name
+    String town_id = "";//区县编码 goroup_id
+    String group_name = "";//集团名 unit_name
+    String group_id = "";//集团id  unit_id
+    String compete_person = "";//竞争对手
+    String compete_policy = "";//竞争对手政策 可以为空
+    String import_degree = "";//重要程度
+    String exp_data = "";//失效日期 2017-02-01
+    String service_no = "";//客户经理工号
+    String compete_id = "";//唯一标识
+    String prc_name = "";//产品
+    String charges = "";//资费
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getTown_id() {
+        return town_id;
+    }
+
+    public void setTown_id(String town_id) {
+        this.town_id = town_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getCompete_person() {
+        return compete_person;
+    }
+
+    public void setCompete_person(String compete_person) {
+        this.compete_person = compete_person;
+    }
+
+    public String getCompete_policy() {
+        return compete_policy;
+    }
+
+    public void setCompete_policy(String compete_policy) {
+        this.compete_policy = compete_policy;
+    }
+
+    public String getImport_degree() {
+        return import_degree;
+    }
+
+    public void setImport_degree(String import_degree) {
+        this.import_degree = import_degree;
+    }
+
+    public String getExp_data() {
+        return exp_data;
+    }
+
+    public void setExp_data(String exp_data) {
+        this.exp_data = exp_data;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getCompete_id() {
+        return compete_id;
+    }
+
+    public void setCompete_id(String compete_id) {
+        this.compete_id = compete_id;
+    }
+
+    public String getPrc_name() {
+        return prc_name;
+    }
+
+    public void setPrc_name(String prc_name) {
+        this.prc_name = prc_name;
+    }
+
+    public String getCharges() {
+        return charges;
+    }
+
+    public void setCharges(String charges) {
+        this.charges = charges;
+    }
+}

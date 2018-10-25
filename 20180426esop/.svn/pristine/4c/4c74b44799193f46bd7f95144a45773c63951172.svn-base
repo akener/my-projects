@@ -1,0 +1,119 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金调账</span>
+            </div>
+        </div>
+        <input type="hidden" id="login_no" value="<%=login_no%>">
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>申请单编号：</th>
+                            <td>
+                                <input type="text" id="work_order_flowNo" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请人工号：</th>
+                            <td>
+                                <input type="text" id="applicant" type="text" class="input-sty04 form-ipt">
+                            </td>
+                           <%-- <th>处理状态：</th>
+                            <td>
+                                <select id="dealStatus" name="dealStatus" class="input-sty04 form-ipt">
+                                    <option value="">请选择</option>
+                                    <option value="1">未处理</option>
+                                    <option value="2">审批中</option>
+                                    <option value="3">已处理</option>
+                                </select>
+                            </td>--%>
+                        </tr>
+                        <tr>
+                            <th> 申请开始时间 </th>
+                            <td>
+                                <input type=text id="startTime" class="input-sty04 form-ipt" maxlength="11"  >
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     onclick="WdatePicker({el:'startTime',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>
+                                申请结束时间
+                            </th>
+                            <td>
+                                <input type=text id="endTime" class="input-sty04 form-ipt" maxlength="11"  >
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     onclick="WdatePicker({el:'endTime',dateFmt:'yyyy-MM-dd'})"
+
+                                     title="选择时间" />
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="qryAdjustListInfo()">查询</button>
+                           <%-- <button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>调账待办列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="epAdjustListInfo" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">操作</th>
+                            <th class="text-center">申请单编号</th>
+                            <th class="text-center">入账集团</th>
+                            <th class="text-center">申请人</th>
+                            <th class="text-center">申请人工号</th>
+                            <th class="text-center">申请时间</th>
+                            <th class="text-center">资金账户余额(元)</th>
+                            <th class="text-center">资金账户可用余额(元)</th>
+                            <th class="text-center">调账金额(元)</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--待审批页面-->
+    <div class="modal fade bs-example-modal-lg" id="doAdjustApplyApprove" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog" role="document" style="width:60%;">
+            <div class="modal-content">
+                <%@ include file="adjustDoApprove.jsp"%>
+            </div>
+        </div>
+    </div>
+    <!--详情页面-->
+    <%@ include file="adjustDetailInfo.jsp"%>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/accountRegulation/adjustApply.js"></script>
+</html>

@@ -1,0 +1,402 @@
+package com.esop.workflow.service;
+
+import com.emobile.bpm.invoker.RunWorkflowInvoker;
+import com.emobile.bpm.invoker.WfEntryInfoInvoker;
+import com.emobile.bpm.invoker.WorkflowDefInvoker;
+import com.emobile.bpm.invoker.bean.InputBean;
+import com.emobile.bpm.invoker.bean.ResultBean;
+import com.emobile.bpm.invoker.bean.StepBean;
+import com.emobile.bpm.invoker.exception.BPMException;
+import com.esop.workflow.api.IAssigneeFilter;
+import com.esop.workflow.exception.BpmException;
+import com.esop.workflow.mapper.*;
+import com.esop.workflow.model.*;
+import com.esop.workflow.util.ApplicationContextUtil;
+import com.esop.workflow.vo.Assignee;
+import com.esop.workflow.vo.Param;
+import com.esop.workflow.vo.Step;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+/**
+ * 业务工作流接口封装类
+ *
+ * @author daish 2017/10/31
+ */
+@Service
+public class WorkFlowService {
+
+    private static final Logger logger = LogManager.getLogger(WorkFlowService.class);
+    // 默认用户
+    private static final String DEFAULT_USER = "admin";
+    // 流程定义调用
+    private static final WorkflowDefInvoker defInvoker = new WorkflowDefInvoker(DEFAULT_USER);
+    // 流程驱动调用
+    private static final RunWorkflowInvoker invoker = new RunWorkflowInvoker(DEFAULT_USER);
+    // 流程实例调用
+    private static final WfEntryInfoInvoker instInvoker = new WfEntryInfoInvoker(DEFAULT_USER);
+
+    @Autowired
+    private CtProcMatchCfgMapper ctProcMatchCfgMapper;
+    @Autowired
+    private CtProcStepRelMapper ctProcStepRelMapper;
+    @Autowired
+    private CtAssigneeFilterCfgMapper ctAssigneeFilterCfgMapper;
+    @Autowired
+    private CtProcStepRoleRelMapper ctProcStepRoleRelMapper;
+    @Autowired
+    private CtProcPropertyCfgMapper ctProcPropertyCfgMapper;
+    @Autowired
+    private CtProcInstInfoMapper ctProcInstInfoMapper;
+    @Autowired
+    private CtProcInstParamsInfoMapper ctProcInstParamsInfoMapper;
+    @Autowired
+    private CtTaskTakeMsgInfoMapper ctTaskTakeMsgInfoMapper;
+    @Autowired
+    private CtTaskInstInfoMapper ctTaskInstInfoMapper;
+    @Autowired
+    private CtDiscountCreditAuditCfgMapper auditCfgMapper;
+
+    /**
+     * 流程匹配
+     *
+     * @param retrievalCondition 检索条件
+     * @return 流程匹配信息
+     */
+    public CtProcMatchCfg qryProcessMatch(CtProcMatchCfg retrievalCondition) {
+        logger.info("[流程开始匹配：" + retrievalCondition + "]");
+        CtProcMatchCfg ctProcMatchCfg = ctProcMatchCfgMapper.selectByProcTypeCodeAndDeptIdAndKeyValue(retrievalCondition);
+        if (ctProcMatchCfg == null) {
+            retrievalCondition.setDeptId("CQ.CQ");
+            ctProcMatchCfg = ctProcMatchCfgMapper.selectByProcTypeCodeAndDeptIdAndKeyValue(retrievalCondition);
+        }
+        if (ctProcMatchCfg == null) {
+            retrievalCondition.setKeyValue("0");
+            ctProcMatchCfg = ctProcMatchCfgMapper.selectByProcTypeCodeAndDeptIdAndKeyValue(retrievalCondition);
+        }
+        logger.info("[流程匹配结果：" + ctProcMatchCfg + "]");
+        return ctProcMatchCfg;
+    }
+
+    /**
+     * 获取首环节（支持首环节即分支的场景）
+     *
+     * @param assignee 入参
+     * @return 流程环节信息
+     */
+    public List<Step> getFirstSteps(Assignee assignee) {
+        int actionId = assignee.getActionId() == null ? 1 : Integer.parseInt(assignee.getActionId());
+        List<Step> stepList = new ArrayList<Step>();
+        try {
+            StepBean[] stepBeans = defInvoker.getNextStepByActionId(assignee.getProcNameEn(), actionId);
+            if (stepBeans != null && stepBeans.length > 0) {
+                for (int i = 0; i < stepBeans.length; i++) {
+                    StepBean stepBean = stepBeans[i];
+                    Step step = getStep(assignee, String.valueOf(stepBean.getStepId()));
+                    stepList.add(step);
+
+                    /*if (assignees != null && assignees.length > 1) {
+                        CtProcStepRoleRel ctProcStepRoleRel = new CtProcStepRoleRel();
+                        ctProcStepRoleRel.setProcId(ctProcMatchCfg.getProcId());
+                        ctProcStepRoleRel.setStepId(String.valueOf(stepBean.getStepId()));
+                        String roles = qryProcStepRoles(ctProcStepRoleRel);
+                        System.out.println(roles);
+                    }*/
+                }
+            } else {
+                logger.info("【未获取到首环节信息，请检查：" + assignee.toString() + "。 actionId=" + actionId);
+            }
+            return stepList;
+        } catch (BPMException e) {
+            throw new BpmException("获取流程首环节信息出错", e);
+        }
+    }
+
+    /**
+     * 获取下一环节
+     *
+     * @param assignee
+     * @param params
+     * @return
+     */
+    public List<Step> getNextSteps(Assignee assignee, Param[] params) {
+        List<Step> stepList = new ArrayList<Step>();
+        InputBean[] inputBeans = transParamsToInputBeans(params);
+        try {
+            int[] actionIdsAll = invoker.getAvailableActionsByRemote(Long.parseLong(assignee.getProcInstId()), inputBeans);
+            int[] actionIds = defInvoker.getActionIdsByStepId(assignee.getProcNameEn(), Integer.parseInt(assignee.getStepId()));
+
+            if (actionIds != null) {
+                for (int i = 0; i < actionIds.length; i++) {
+                    int actionId = actionIds[i];
+                    for (int j = 0; j < actionIdsAll.length; j++) {
+                        int iActionId = actionIdsAll[j];
+                        if (actionId == iActionId) {
+                            StepBean[] stepBeans = defInvoker.getNextStepByActionId(assignee.getProcNameEn(), actionId);
+                            if (stepBeans != null) {
+                                for (int k = 0; k < stepBeans.length; k++) {
+                                    StepBean stepBean = stepBeans[k];
+                                    Step step = getStep(assignee, String.valueOf(stepBean.getStepId()));
+                                    stepList.add(step);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            throw new BpmException("获取流程下一环节信息出错", e);
+        }
+        return stepList;
+    }
+
+    /**
+     * 根据相关信息查询出流程环节信息以及指定的处理人员集合
+     *
+     * @param assignee
+     * @return
+     */
+    public Step getStep(Assignee assignee, String stepId) {
+        assignee.setStepId(stepId);
+        System.out.println(assignee);
+        CtProcStepRel retrievalCondition = new CtProcStepRel();
+        retrievalCondition.setProcId(assignee.getProcId());
+        retrievalCondition.setStepId(assignee.getStepId());
+        CtProcStepRel ctProcStepRel = ctProcStepRelMapper.selectByProcIdAndStepId(retrievalCondition);
+        CtAssigneeFilterCfg ctAssigneeFilterCfg = ctAssigneeFilterCfgMapper.selectByPrimaryKey(ctProcStepRel.getFilterId());
+        IAssigneeFilter filter = (IAssigneeFilter) ApplicationContextUtil.getBean(ctAssigneeFilterCfg.getImplClass());
+        Assignee[] assignees = filter.getAssignee(assignee);
+        Step step = new Step();
+        step.setCtProcStepRel(ctProcStepRel);
+        step.setAssignees(assignees);
+        return step;
+    }
+
+    /**
+     * 启动流程实例
+     *
+     * @param ctProcInstInfo 流程实例信息
+     * @param params         参数信息
+     * @param actionId       actionId
+     * @return
+     */
+    public String startProcInst(CtProcInstInfo ctProcInstInfo, Param[] params, String actionId) throws BPMException {
+        int initialAction = actionId == null ? 1 : Integer.parseInt(actionId);
+        InputBean[] inputBeans = transParamsToInputBeans(params);
+        ResultBean resultBean = invoker.initializeByRemote(ctProcInstInfo.getProcNameEn(), initialAction, inputBeans);
+        String procInstId = String.valueOf(resultBean.getEntryId());
+        if ("-1".equals(procInstId)) {
+            throw new BPMException("[启动流程实例异常，返回值][procNameEn=" + ctProcInstInfo.getProcNameEn() + "]");
+        }
+
+        ctProcInstInfo.setProcInstId(procInstId);
+        ctProcInstInfo.setStartTime(new Date());
+        ctProcInstInfo.setStatus("1");
+        ctProcInstInfoMapper.insertProcInst(ctProcInstInfo);
+
+        if (params != null && params.length > 0) {
+            for (Param param : params) {
+                CtProcInstParamsInfo ctProcInstParamsInfo = new CtProcInstParamsInfo();
+                ctProcInstParamsInfo.setProcInstId(procInstId);
+                ctProcInstParamsInfo.setParamKey(param.getKey());
+                ctProcInstParamsInfo.setParamType(StringUtils.isBlank(param.getType()) ? "String" : param.getType());
+                ctProcInstParamsInfo.setParamValue(param.getValue());
+                ctProcInstParamsInfoMapper.insert(ctProcInstParamsInfo);
+            }
+        }
+
+        CtTaskTakeMsgInfo ctTaskTakeMsgInfo = new CtTaskTakeMsgInfo();
+        ctTaskTakeMsgInfo.setProcInstId(procInstId);
+        ctTaskTakeMsgInfo.setStatus("0");
+        ctTaskTakeMsgInfoMapper.insertTaskTakeMsg(ctTaskTakeMsgInfo);
+
+        return procInstId;
+    }
+
+    /**
+     * 人工提交任务
+     *
+     * @param ctTaskInstInfo
+     * @param params
+     */
+    public void submitTask(CtTaskInstInfo ctTaskInstInfo, Param[] params) {
+        if (params != null) {
+            for (Param param : params) {
+                CtProcInstParamsInfo retrievalCondition = new CtProcInstParamsInfo();
+                retrievalCondition.setProcInstId(ctTaskInstInfo.getProcInstId());
+                retrievalCondition.setParamKey(param.getKey());
+                retrievalCondition.setParamType(StringUtils.isBlank(param.getType()) ? "String" : param.getType());
+                retrievalCondition.setParamValue(param.getValue());
+                CtProcInstParamsInfo ctProcInstParamsInfo = ctProcInstParamsInfoMapper.selectByProcInstIdAndParamKey(retrievalCondition);
+                if (ctProcInstParamsInfo != null) {
+                    ctProcInstParamsInfoMapper.update(retrievalCondition);
+                } else {
+                    ctProcInstParamsInfoMapper.insert(retrievalCondition);
+                }
+            }
+        }
+        ctTaskInstInfo.setStatus("1"); //人工提交
+        ctTaskInstInfo.setEndTime(new Date());
+        if (StringUtils.isBlank(ctTaskInstInfo.getRemarks())) {
+            ctTaskInstInfo.setRemarks(ctTaskInstInfo.getDealOpinion());
+        }
+        if (StringUtils.isBlank(ctTaskInstInfo.getSuccFlag())) {
+            ctTaskInstInfo.setSuccFlag("1");
+        }
+        ctTaskInstInfoMapper.updateSeveralFieldsByPrimaryKey(ctTaskInstInfo);
+    }
+
+    /**
+     * 中止流程
+     *
+     * @param procInstId 流程实例ID
+     */
+    public void stopProcInst(String procInstId){
+        try {
+            invoker.changeEntryState(Long.parseLong(procInstId), 3);
+        } catch (BPMException e) {
+            throw new BpmException("中止流程实例失败", e);
+        }
+    }
+
+    /**
+     * 根据流程环节获得参与角色
+     *
+     * @param ctProcStepRoleRel 流程环节角色关系
+     * @return 参与角色字符串，多个以“,”隔开
+     */
+    public String qryProcStepRoles(CtProcStepRoleRel ctProcStepRoleRel) {
+        List<String> stringList = ctProcStepRoleRelMapper.selectByProcIdAndStepId(ctProcStepRoleRel);
+        if (stringList != null && stringList.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < stringList.size(); i++) {
+                sb.append("'").append(stringList.get(i)).append("'").append(",");
+            }
+            String retStr = sb.toString();
+            if (retStr.indexOf(",") != -1) {
+                return retStr.substring(0, retStr.length() - 1);
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 参数类型转换
+     *
+     * @param params
+     * @return
+     */
+    public InputBean[] transParamsToInputBeans(Param[] params) {
+        InputBean[] inputBeans = null;
+        if (params != null && params.length > 0) {
+            inputBeans = new InputBean[params.length + 1];
+            for (int i = 0; i < params.length; i++) {
+                Param param = params[i];
+                inputBeans[i + 1] = new InputBean(param.getKey(), StringUtils.isBlank(param.getType()) ? "String" : param.getType(), param.getValue());
+            }
+        } else {
+            inputBeans = new InputBean[1];
+        }
+        inputBeans[0] = new InputBean("NEXT_USER", "String", DEFAULT_USER);
+        return inputBeans;
+    }
+
+    /**
+     * 根据procId获取流程属性配置信息
+     *
+     * @param procId 流程模板Id
+     * @return
+     */
+    public List<CtProcPropertyCfg> qryProcProperties(String procId) {
+        return ctProcPropertyCfgMapper.selectByProcId(procId);
+    }
+
+    /**
+     * 根据配置属性在请求参数中获取属性值
+     *
+     * @param ctProcPropertyCfgList
+     * @param httpServletRequest
+     * @return
+     */
+    public Param[] qryParamsFromRequest(List<CtProcPropertyCfg> ctProcPropertyCfgList, HttpServletRequest httpServletRequest) {
+        if (ctProcPropertyCfgList != null) {
+            List<Param> paramList = new ArrayList<Param>();
+            for (int i = 0; i < ctProcPropertyCfgList.size(); i++) {
+                CtProcPropertyCfg ctProcPropertyCfg = ctProcPropertyCfgList.get(i);
+                String key = ctProcPropertyCfg.getParamKey();
+                String value = httpServletRequest.getParameter(key);
+                if (value != null && !value.trim().equals("")) {
+                    Param param = new Param(key, value, StringUtils.isBlank(ctProcPropertyCfg.getParamType()) ? "String" : ctProcPropertyCfg.getParamType());
+                    paramList.add(param);
+                }
+            }
+            return paramList.toArray(new Param[paramList.size()]);
+        }
+        return null;
+    }
+
+    /**
+     * 获取下一环节是否需上级审批
+     *
+     * @param condition
+     * @return 0-不需要、1-需要
+     */
+    public String getApprLevel(CtDiscountCreditAuditCfg condition, String money) {
+        CtDiscountCreditAuditCfg creditAuditCfg = auditCfgMapper.select4Apprival(condition);
+        if (creditAuditCfg == null && !"CQ.CQ".equals(condition.getDeptId())) {
+            condition.setDeptId("CQ.CQ");
+            creditAuditCfg = auditCfgMapper.select4Apprival(condition);
+        }
+        if (creditAuditCfg == null) {
+            return "1";
+        } else {
+            if ("1".equals(creditAuditCfg.getAuditFlag())) {//直接返回1
+                return "1";
+            } else {
+                return judge(money, creditAuditCfg.getSumFeeMin(), creditAuditCfg.getSumFeeMax(), creditAuditCfg.getOcFlag());
+            }
+        }
+    }
+
+    /**
+     * 判断某一金额是否在额度判断区间
+     *
+     * @param money      金额
+     * @param leftMoney  区间最小金额
+     * @param rightMoney 区间最大金额
+     * @param ocFlag     数学上的区间标识
+     * @return "1"-不在区间，"0"-满足区间
+     */
+    public String judge(String money, String leftMoney, String rightMoney, String ocFlag) {
+        String returnFlag = "0";//标识默认为在区间
+        if (!"#".equals(rightMoney)) {
+            double d1 = Math.abs(Double.parseDouble(money));
+            double d2 = Double.parseDouble(leftMoney);
+            double d3 = Double.parseDouble(rightMoney);
+            if (leftMoney.equals(rightMoney)) {
+                return d1 == d2 ? "0" : "1";
+            } else {
+                if ("L".equals(ocFlag)) { //表示前闭后开[a,b)
+                    returnFlag = (d1 >= d2 && d1 < d3) ? "0" : "1";
+                } else {
+                    if (d1 == 0.0d) {
+                        return "0";
+                    } else {
+                        returnFlag = (d1 > d2 && d1 <= d3) ? "0" : "1";
+                    }
+                }
+            }
+
+        }
+        return returnFlag;
+    }
+}

@@ -1,0 +1,87 @@
+package com.esop.alertClassified.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class AccountWarnDto{
+    String DT_RowId = "";     //dataTables.editor使用参数,如果没有此参数,编辑功能不可用.
+    String cust_id = "";//集团ID
+    String cust_name = "";//集团名称
+    String prod_id = "";//集团产品ID
+    String prod_name = "";//集团产品名称
+    String arrears_num = "";//欠费金额
+    String arrears_date = "";//欠费开始时间
+    String left_date = "";//累计欠费月
+
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public void setCust_name(String cust_name) {
+        this.cust_name = cust_name;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public void setArrears_num(String arrears_num) {
+        this.arrears_num = arrears_num;
+    }
+
+    public void setArrears_date(String arrears_date) {
+        this.arrears_date = arrears_date;
+    }
+
+
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public String getCust_name() {
+        return cust_name;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public String getArrears_num() {
+        return arrears_num;
+    }
+
+    public String getArrears_date() {
+        return arrears_date;
+    }
+
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+
+    public String getLeft_date() {
+        return left_date;
+    }
+
+    public void setLeft_date(String left_date) {
+        this.left_date = left_date;
+    }
+}

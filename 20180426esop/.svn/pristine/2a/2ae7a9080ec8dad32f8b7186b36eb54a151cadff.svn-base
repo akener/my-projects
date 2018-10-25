@@ -1,0 +1,390 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp" %>
+<%@ include file="../pub/dataTables.jsp" %>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>工号配置</title>
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]>
+    <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./assets/js/ie-emulation-modes-warning.js"></script>
+</head>
+<!--<hr />-->
+<body class="hold-transition skin-blue sidebar-mini">
+<!--组织树展现-->
+<div class="modal fade" id="grouptreemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">组织部门&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value=""
+                                                                                                  style="font-size: 14px;"
+                                                                                                  id="group_search"
+                                                                                                  placeholder="搜索"/>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div id="grouptree" class=""></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--工号配置添加-->
+<div class="modal fade" id="addLoginConfiguration" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:800px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="a_identity">分配身份</h4>
+            </div>
+            <div class="form-horizontal modal-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">员工手机号</label>
+
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input class="form-control" id="phone_no" name="group_name">
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label">员工姓名</label>
+                    <div class="col-sm-2">
+                        <div class="input-group">
+                            <input class="form-control" id="login_name" name="group_name">
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <button id="query_login" class="btn btn-info">查询</button>
+                        <button id="add_login" class="btn btn-info">提交</button>
+                    </div>
+                </div>
+                <table id="login_table" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th class="text-center">手机号</th>
+                        <th class="text-center">姓名</th>
+                        <th class="text-center">节点信息</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th></th>
+                        <th class="text-center">手机号</th>
+                        <th class="text-center">姓名</th>
+                        <th class="text-center">节点信息</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Horizontal Form -->
+        <html:hidden id="group_id"/>
+        <html:hidden id="login_no"/>
+        <div class="box">
+            <div class="form-horizontal box-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">组织节点</label>
+
+                    <div class="col-sm-2 has-feedback">
+                        <div class="input-group">
+                            <input class="form-control" id="group_name" name="group_name" readonly="true">
+                            <span class="input-group-addon" id="org_choose" style="cursor:pointer;"><i
+                                    class="fa fa-home"></i></span>
+                        </div>
+                    </div>
+                    <label class="col-sm-2 control-label">身份类型</label>
+                    <div class="col-sm-2">
+                        <select id="identity_code" name="identity_code"
+                                class="selectpicker show-tick form-control-hall">
+                            <option value="">请选择</option>
+                            <option value="0">省财务部稽核员</option>
+                            <option value="1">分公司稽核员</option>
+                            <option value="2">库管员</option>
+                            <option value="3">记账员</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <button id="query" class="btn btn-info">查询</button>
+                        <button id="add" class="btn btn-info" data-container="body" data-toggle="popover"
+                                data-placement="bottom" data-content="请选择身份类型">添加
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div style="border:0.5px solid #0f0f0f"></div>
+            <div class="box-body">
+                <table id="example" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th class="text-center">用户信息</th>
+                        <th class="text-center">身份类型</th>
+                        <th class="text-center">节点信息</th>
+                    </tr>
+                    </thead>
+                    <tfoot>
+                    <tr>
+                        <th></th>
+                        <th class="text-center">用户信息</th>
+                        <th class="text-center">身份类型</th>
+                        <th class="text-center">节点信息</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.row -->
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    //$('#group_id').val('HB');
+    //$('#group_name').val('湖北');
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var ltable;
+    //加载登陆信息
+    $.ajax({
+        type: "GET",
+        url: "getSessionInfo",
+        data: "&uid=" + $("#uid").val()
+    }).then(function (data) {
+        $('#group_name').val(data.group_name);
+        $('#group_id').val(data.group_id);
+        editor = new $.fn.DataTable.Editor({
+            ajax: "/loginConfigurationManage",
+            table: "#example",
+            i18n: {
+                edit: {
+                    button: "编辑",
+                    title: "编辑物流公司信息",
+                    submit: "提交"
+                },
+                remove: {
+                    button: "删除",
+                    title: "删除物流公司信息",
+                    submit: "提交",
+                    confirm: {
+                        _: "确认删除本条记录?",
+                        1: "确认删除本条记录?"
+                    }
+                }
+            },
+            fields: [{
+                type: "hidden",
+                label: "序号:",
+                name: "config_id"
+            }, {
+                label: "身份类型:",
+                name: "identity_code",
+                type: "select",
+                options: [
+                    {value: "", label: "请选择"},
+                    {value: "0", label: "省财务部稽核员"},
+                    {value: "1", label: "分公司稽核员"},
+                    {value: "2", label: "库管员"},
+                    {value: "3", label: "记账员"}
+                ]
+            }]
+        });
+
+        table = $('#example').DataTable({
+            dom: "Bfrtip",
+            bLengthChange: true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "/loginConfigurationManage",
+                type: "POST",
+                data: {
+                    group_id: $("#group_id").val()
+                }
+            },
+            columns: [
+                {data: "config_id", visible: false},
+                {data: "login_name"},
+                {data: "identity_name"},
+                {data: "group_name"}
+            ],
+            select: true,
+            buttons: [
+                {extend: "edit", editor: editor},
+                {extend: "remove", editor: editor}
+            ]
+        });
+        //组织树加载
+        $('#grouptree').jstree({
+            'core': {
+                "check_callback": true,
+                'data': {
+                    "url": "getGroupInfoTree",
+                    "data": function (node) {
+                        if (node.id == "#") {
+                            return {"id": $('#group_id').val(), "flag": true};
+                        } else {
+                            return {"id": node.id};
+                        }
+                    }
+                }
+            },
+            'plugins': ["search"]
+        });
+
+    });
+    var to = false;
+    $('#group_search').keyup(function () {
+        if (to) {
+            clearTimeout(to);
+        }
+        to = setTimeout(function () {
+            var v = $('#group_search').val();
+            $('#grouptree').jstree(true).search(v);
+        }, 200);
+    });
+
+    $("#org_choose").click(function () {
+        //alert( $('#treechoosemodal').modal('show'));
+        $('#grouptreemodal').modal('show');
+    });
+    //jstree双击事件
+    $('#grouptree').on("dblclick.jstree", function () {
+
+    });
+    //表现为jstree单击事件
+    $('#grouptree').on("changed.jstree", function (e, data) {
+        $("#group_id").val(data.selected);
+        $("#group_name").val(data.instance.get_selected(true)[0].text);
+        $('#group_search').val("");
+        $('#grouptreemodal').modal('hide');
+    });
+
+    $(document).ready(function () {
+
+        /*editor.on('submitSuccess',function ( e, type ) {
+         alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+         } );*/
+        //查询工号信息
+        ltable = $('#login_table').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "bFilter": false,
+            dom: 'T<"clear">lfrtip',
+            "bLengthChange": false,
+            "language": {
+                "url": "/static/data/Chinese.json"
+            }, //多语言配置
+            ajax: {
+                url: "/getLoginList",
+                type: "POST",
+                data: {
+                    group_id: $("#group_id").val()
+                }
+            },
+            columns: [
+                {data: "login_no", visible: false},
+                {data: "phone_no"},
+                {data: "login_name"},
+                {data: "group_name"}
+            ],
+            tableTools: {
+                "sRowSelect": "multi",
+                "aButtons": ["select_all", "select_none"]
+            }
+        });
+    });
+
+    /*editor.on('submitSuccess',function ( e, type ) {
+     alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+     } );*/
+    $("#query").click(function () {
+        var group_id = $("#group_id").val();
+        var identity_code = $("#identity_code").val();
+        var param = {
+            "group_id": $("#group_id").val().toString(),//必须强制转换为字符串,不然HB.WH中的.会被解析为数组,返回group_id[]
+            "identity_code": $("#identity_code").val()
+        };
+        table.settings()[0].ajax.data = param;
+        table.ajax.reload();
+    });
+    $("#add").click(function () {
+        $('#add').popover('disable');
+        if ($('#identity_code').find("option:selected").val() == "") {
+            $('#add').popover('enable');
+            $('#add').popover('show');
+        } else {
+            $('#add').popover('hide');
+            //重置查询参数
+            var param = {
+                "group_id": $("#group_id").val().toString()//必须强制转换为字符串,不然HB.WH中的.会被解析为数组,返回group_id[]
+            };
+            ltable.settings()[0].ajax.data = param;
+            ltable.ajax.reload();
+            $('#a_identity').text("分配(" + $('#identity_code').find("option:selected").text() + ")身份");
+            $('#addLoginConfiguration').modal('show');
+        }
+    });
+    $("#query_login").click(function () {
+        //重置查询参数
+        var param = {
+            "group_id": $("#group_id").val(),
+            "phone_no": $("#phone_no").val(),
+            "login_name": $("#login_name").val()
+        };
+        ltable.settings()[0].ajax.data = param;
+        ltable.ajax.reload();
+    });
+    $("#add_login").click(function () {
+        $('#login_no').val("");
+        //alert(ltable.cell('.selected', 0).data());
+        //alert(ltable.rows('.selected').data().length );
+        //alert($('#identity_code').find("option:selected").val());
+        ltable.rows('.selected').data().each(function (data, index) {
+            $('#login_no').val($('#login_no').val() + ",'" + data.login_no + "'");
+        });
+        $('#login_no').val($('#login_no').val().substr(1));
+        $.ajax({
+            type: "GET",
+            url: "insertLoginConfiguration",
+            data: "&login_no=" + $("#login_no").val() + "&identity_code=" + $("#identity_code").val()
+        }).then(function (data) {
+            var param = {
+                "group_id": $("#group_id").val().toString(),//必须强制转换为字符串,不然HB.WH中的.会被解析为数组,返回group_id[]
+                "identity_code": $("#identity_code").val()
+            };
+            table.settings()[0].ajax.data = param;
+            table.ajax.reload();
+            $('#addLoginConfiguration').modal('hide');
+        });
+    });
+</script>
+</html>

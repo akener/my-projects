@@ -1,0 +1,187 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>专用发票>>多账号发票冲红>>发票信息</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>多账号发票信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table id="table-account" class="cost-table rev-tabs" width="100%;">
+                        <tbody id="trancesTb">
+                        <tr>
+                            <th>选择</th>
+                            <th>发票号码</th>
+                            <th>发票代码</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    var originalApplicationNo = getQueryString("originalApplicationNo");
+    var groupId = getQueryString("groupId");
+    var codeAndNumber=getQueryString("codeAndNumber");
+    $(document).ready(function () {
+        loadPrePrintInv();
+    });
+
+
+    /**
+     * 查询boss预打发票信息
+     */
+    function loadPrePrintInv() {
+            <!--ESOP清单编号-->
+            if (originalApplicationNo == "") {
+                return false;
+            }
+            <!--集团编码-->
+            if (groupId == "") {
+                return false;
+            }
+            <!--集团账号-->
+            var url = 'UserOrderService';
+            var method = "arQryPrePrintInv";
+            <!--集团编码-->
+            var param={};
+            param['GROUPID'] = groupId;
+            param['ESOPORDERID'] = originalApplicationNo;
+            //moni();
+            var _this=this;
+            $.ajax({
+                type: 'POST',
+                url: '<%=ctxPath %>/boss/postRest',
+                data: {
+                    url: url,
+                    method: method,
+                    param: JSON.stringify(param),
+                    connectTimeout: 10000,
+                    readTimeOut: 30000
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var res_code = data.res_code;
+                    if (res_code == "0") {
+                        var result = data.result;
+                    /*    result= [
+                            {
+                                "GROUPACCTID": "0",
+                                "BEGINCYCLE": "201710",
+                                "ENDCYCLE": "201710",
+                                "PRINTDATE": "2018-03-20 19:16:51",
+                                "GROUPACCNAME": "",
+                                "ORDERID": "220180320185655100",
+                                "STATUS": "已回款",
+                                "INVNOTE": "",
+                                "INVOICEFEE": "193419",
+                                "INVLIST": [
+                                    {
+                                        "INVOICECODE": "5000002140",
+                                        "INVOICENUM": "01274114"
+                                    }
+                                ]
+                            }
+                        ];*/
+                        if (isNotNull(result)) {
+                            _this.parent.countInvSumVal(result[0].INVOICEFEE/100);
+                            for (var i = 0; i < result.length; i++) {
+                                var invList = result[i].INVLIST;
+                                if (isNotNull(invList)) {
+                                    for (var j = 0; j < invList.length; j++) {
+                                        var inv = invList[j];
+                                        var invHtml = "<tr>" +
+                                            "    <td>\n" +
+                                            "        <input type=\"checkbox\" name=\"accBox\" class=\"chbox-ipt\"/>\n" +
+                                            "    </td>\n" +
+                                            "    <td>" + inv.INVOICENUM + "</td>\n" +
+                                            "    <td>" + inv.INVOICECODE + "</td>\n" +
+                                            "</tr>";
+                                        $("#table-account tr:last").after(invHtml);
+                                        _this.parent.checkFundOccupy(inv.INVOICENUM);
+                                    }
+
+                                }
+                            }
+                        }
+                        refresh();
+                    } else {
+                        var errorMessage = data.res_desc;
+                    }
+                }
+            });
+    }
+
+    function moni(){
+            var result = [{
+                "GROUPACCTID": "0",
+                "BEGINCYCLE": "201709",
+                "ENDCYCLE": "201709",
+                "PRINTDATE": "2018-03-09 19:20:22",
+                "GROUPACCNAME": "",
+                "ORDERID": "220180309102349100",
+                "STATUS": "未回款",
+                "INVNOTE": "",
+                "INVOICEFEE": "36022",
+                "INVLIST": [{
+                    "INVOICECODE": "5000002140",
+                    "INVOICENUM": "01274100"
+                },{
+                        "INVOICECODE": "5000002141",
+                        "INVOICENUM": "01274101"
+                    },{
+                        "INVOICECODE": "5000002142",
+                        "INVOICENUM": "01274102"
+                    }]
+            }
+            ];
+            if (isNotNull(result)) {
+                this.parent.countInvSumVal(result[0].INVOICEFEE/100);
+                for (var i = 0; i < result.length; i++) {
+                    var invList = result[i].INVLIST;
+                    if (isNotNull(invList)) {
+                        for (var j = 0; j < invList.length; j++) {
+                            var inv = invList[j];
+                            var invHtml = "<tr>" +
+                                "    <td>\n" +
+                                "        <input type=\"checkbox\" name=\"accBox\" class=\"chbox-ipt\"/>\n" +
+                                "    </td>\n" +
+                                "    <td>" + inv.INVOICENUM + "</td>\n" +
+                                "    <td>" + inv.INVOICECODE + "</td>\n" +
+                                "</tr>";
+                            $("#table-account tr:last").after(invHtml);
+                            this.parent.checkFundOccupy(inv.INVOICENUM);
+                        }
+                    }
+                }
+            }
+        refresh();
+    }
+    //回显
+    function refresh(){
+        $("input[name=accBox]").each(function(){
+            var row=$(this).parent("td").parent("tr");
+            var number=row.find("td:eq(1)").html();
+            var code=row.find("td:eq(2)").html();
+            if(codeAndNumber.indexOf(number+";"+code) != -1){
+                $(this).attr("checked","checked");
+            }
+        });
+    }
+</script>
+</html>

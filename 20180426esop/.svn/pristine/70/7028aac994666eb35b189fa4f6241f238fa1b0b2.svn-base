@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectGroupInformation"  parameterType="com.esop.menus.dto.GroupInformationDto" resultType="com.esop.menus.dto.GroupInformationDto" >
+        select eff_date,
+               count(*) as grp_num,
+               trunc(nvl(sum(GROUP_INCOME), '0'), 0) as group_income,
+               nvl(sum(IMPORT_MEMBER_AMOUT), '0') as import_member_amout,
+               nvl(sum(GROUP_PERSON_AMOUT), '0') as group_person_amout,
+               trunc(nvl(sum(INFORMATION_INCOME), '0'), 0) as information_income,
+               nvl(sum(PRODUCT_AMOUT), '0') as product_amout,
+               trunc(nvl(sum(PRODUCT_INCOME), '0'), 0) as product_income,
+               nvl(sum(PRODUCT_MEMBER_AMOUT), '0') as product_member_amout
+          from ep_group_info
+         where 1 = 1
+           and substr(eff_date, 0, 4) = to_char(sysdate, 'yyyy')
+         group by eff_date
+         order by eff_date
+    </select>
+    <select id="selectGroupInformationLevel"  parameterType="com.esop.menus.dto.GroupInformationDto" resultType="com.esop.menus.dto.GroupInformationDto" >
+        select eff_date,group_type,count(*) as grp_num_level
+        from ep_group_info where 1 = 1
+         and eff_date = (select max(eff_date) from ep_group_info)
+        group by eff_date,group_type
+        order by count(*) desc
+    </select>
+    <select id="selectGroupInformationLevelRegion"  parameterType="com.esop.menus.dto.GroupInformationDto" resultType="com.esop.menus.dto.GroupInformationDto" >
+        select eff_date,region_code, region_name, group_type, count(*) as grp_num_level
+        from ep_group_info where 1=1
+        and eff_date = (select max(eff_date) from ep_group_info)
+        <if test="group_type != ''">
+           and group_type = #{group_type}
+        </if>
+        group by eff_date,region_code, region_name, group_type
+        order by count(*) desc
+    </select>
+    <select id="selectGroupInformationRegion"  parameterType="com.esop.menus.dto.GroupInformationDto" resultType="com.esop.menus.dto.GroupInformationDto" >
+        select eff_date,region_code, region_name,
+        <if test="region_code != ''">
+            town_code, town_name,
+        </if>
+        count(*) as grp_num
+        from ep_group_info where 1=1
+        and eff_date = (select max(eff_date) from ep_group_info)
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        group by eff_date,region_code, region_name
+        <if test="region_code != ''">
+            ,town_code ,town_name
+        </if>
+        order by count(*) desc
+    </select>
+    <select id="selectGroupInformationTown"  parameterType="com.esop.menus.dto.GroupInformationDto" resultType="com.esop.menus.dto.GroupInformationDto" >
+        select eff_date,group_type, count(*) as grp_num
+        from ep_group_info where 1=1
+        and eff_date = (select max(eff_date) from ep_group_info)
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        group by eff_date,group_type
+        order by count(*) desc
+    </select>
+</mapper>

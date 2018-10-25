@@ -1,0 +1,311 @@
+
+$(document).ready(function() {
+    groupSuperMemOperate();
+    getApplySumMoney();
+    getContactType();
+    getSuperCapitalListInfo();
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+} );
+//重置
+function pageReset(){
+    $("input").val("");
+    $("textarea").val("");
+};
+//获取联系人类型
+function getContactType() {
+    $.ajax({
+        type: 'POST',
+        url: '/qryContactType',
+        cache: false,
+        data: {
+        },
+        success: function (data) {
+            var type_data="";
+            var list = data.ROOT.BODY.contactTypeList;
+            $.each(list, function (i, field) {
+                //拼接json数据集字符串
+                type_data += "<option value='" + field.type_name + "' ";
+                type_data += ">" + field.type_name + "</option>";
+            });
+            $("#contact_type").append(type_data);
+            //$("#qry_solution_type").append(type_data)
+        },
+        error: function (resp) {
+            // alert("查询数据失败");
+            $("#modal_text").text("插入数据失败");
+            $("#modalInfo").modal('show');
+            return false;
+
+        },
+    });
+}
+//超大集团成员--集团资金账户查询列表
+function getSuperCapitalListInfo() {
+    table1 = $('#superCapitalListInfo').DataTable({
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getCapitalListInfo",
+            type:"POST",
+            data:{
+                grpCustId:$("#grpCustId2").val(),
+                grpFundAcctid:$("#grpFundAcctid2").val()
+            }
+        },
+        columns: [
+            { data: "grpFundAcctid"},
+            { data: "grpCustId"},
+            { data: "grpCustName"},
+            { data: "bankAcctId"},
+            { data: "bankName"},
+            { data: "ownerOrgId"},
+            { data: "status"},
+            { data: "balance"},
+            { data: "nowBalance"},
+            { data: "holdBalance"},
+            { data: "freezeFee"},
+            { data: "grpCustId",
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    return data= "<button type='button' style='width: 60px' onclick=showRefundMsg('"+row.grpCustId+"')>查看</button>"+
+                        "<button type='button' style='width: 60px' onclick=addSuperGroupApply('"+row.grpCustId+"')>新增</button>";
+                }
+            }
+        ],
+        select: true,
+        buttons: [
+        ]
+    })
+}
+
+function addSuperGroupApply(params){
+    getCaptialInfo(params);
+    $("#groupSuperApply").modal('show');
+    //window.open("groupSuperMemApply");
+}
+
+//超大集团成员资金申请业务操作工单
+function groupSuperMemOperate() {
+    table = $('#groupSuperMemOperate').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getGroupSuperMemOperateListInfo",
+            type:"POST",
+            data: {
+                orderID:$("#orderID").val(),
+                groupID:$("#groupID").val()
+            }
+
+        },
+        columns: [
+            { data: "orderID"},
+            { data: "recType"},
+            { data: "areaID"},
+            { data: "applyOpID"},
+            { data: "tradeCenterID"},
+            { data: "groupID"},
+            { data: "groupName"},
+            { data: "groupAcctID"},
+            { data: "groupAcctName"},
+            { data: "prePrintInvBeginCycle"},
+            { data: "prePrintInvEndCycle"},
+            { data: "invoicingInfo"},
+            { data: "freezeFee"},
+            { data: "applyFee"},
+            { data: "applyDate"},
+       /*     { data: "groupMemListFile"},
+            { data: "groupMemListFileLines"},
+            { data: "productBook"},*/
+            { data: "orderStatus"},
+            { data: "orderID",
+                "width": "6%",
+                render: function ( data, type, row, meta ) {
+                    return data= "<button  type='button' style='width: 60px' onclick=showApproveSGMInfo('"+row.orderID+"')>审批</button>";
+
+                }
+            }
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+//超大集团待审批页面详情信息
+function showApproveSGMInfo(orderID) {
+    $("#doGroupSuperMemApprove").modal('show');
+    $.ajax({
+        type:"POST",
+        url:"/getGroupSuperMemApproveInfo",
+        data:{"orderID":orderID}
+    }).then(function(data){
+        $("#orderId").val(data.orderID);
+        $("#apply_order_type").val(data.recType);
+        $("#areaID").val(data.areaID);
+        $("#applyOpID").val(data.applyOpID);
+        $("#tradeCenterID").val(data.tradeCenterID);
+        $("#groupID").val(data.groupID);
+        $("#groupName").val(data.groupName);
+        $("#groupAcctID").val(data.groupAcctID);
+        $("#groupAcctName").val(data.groupAcctName);
+        $("#prePrintInvBeginCycle").val(data.prePrintInvBeginCycle);
+        $("#prePrintInvEndCycle").val(data.prePrintInvEndCycle);
+        $("#freezeFee1").val(data.freezeFee);
+        $("#applyFee").val(data.applyFee);
+        $("#applyDate").val(data.applyDate);
+        $("#groupMemListFile").val(data.groupMemListFile);
+        $("#groupMemListFileLines").val(data.groupMemListFileLines);
+        $("#invoicingInfo").val(data.invoicingInfo);
+        $("#note").val(data.note);
+    })
+}
+
+//提交申请信息
+function superMemSave(){
+    $.ajax({
+        type: "POST",
+        url: "saveGroupSuperMemApplyInfo",
+        async:false,
+        data:{
+            orderID:$("#orderID").val(),
+            recType:$("#apply_order_type").val(),
+            areaID:$("#areaID").val(),
+            applyOpID:$("#applyOpID").val(),
+            tradeCenterID:$("#tradeCenterID").val(),
+            groupID:$("#groupID").val(),
+            groupName:$("#groupName").val(),
+            groupAcctID:$("#groupAcctID").val(),
+            groupAcctName:$("#groupAcctName").val(),
+            prePrintInvBeginCycle:$("#prePrintInvBeginCycle").val(),
+            prePrintInvEndCycle:$("#prePrintInvEndCycle").val(),
+            invoicingInfo:$("#invoicingInfo").val(),
+            freezeFee:$("#freezeFee2").val(),
+            applyFee:$("#applyFee").val(),
+            applyDate:$("#applyDate").val(),
+            groupMemListFile:$("#groupMemListFile").val(),
+            groupMemListFileLines:$("#groupMemListFileLines").val(),
+            note:$("#note").val()
+        },
+        cache: false,
+        success: function (result) {
+            if(result.info == "操作成功"){
+                bootStrapAlert('操作成功!');
+                goOperatePage();
+            }else{
+                bootStrapAlert('操作失败!');
+                goGroupMemApplyPage();
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+
+}
+//跳转待操作列表页面
+function goOperatePage(){
+    location.href="groupSuperMemOperate";
+}
+//跳转申请页面
+function goGroupMemApplyPage(){
+    location.href="groupSuperMemApply";
+}
+$("#xFile").on("change", function(){
+    if ($('#id').val() == "") {
+        $.ajax({
+            type: "POST",
+            url: "getUploadFileRelatedID",
+            async: false
+        }).then(function (data) {
+            $('#id').val(data);
+        });
+
+    }
+    $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+        url:"fileUpload",
+        type:"post", //提交的类型必需是post，
+        data: { related_id: $("#id").val()},
+        dateType:"json",
+        success:function(data){
+            //如果提交成功执行
+            //如果附件编码不为空，开始取附件
+           /* if($("#id").val()!="") {
+                $.ajax({
+                    type: "POST",
+                    url: "uploadFileSelect",
+                    data: {
+                        "related_id": $("#id").val()
+                    }
+                }).then(function (data) {
+                    //循环展现附件信息
+                    $("#fileList div").remove();
+                    $.each(data, function (index, item) {
+                        $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                            + "</a></div>"
+                            + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                            + "<i class=\"fa fa-times\"></i></button></div></div>");
+                    });
+                });
+            }*/
+        },
+        error:function(data){
+            alert("error:"+data);
+        }
+    });
+});
+//删除附件
+function deleteFile(buttonID,fileID){
+    $.ajax({
+        type: "POST",
+        url: "deleteFile",
+        data: {id:fileID}
+    }).then(function (data) {
+        //alert(data.result);
+        $(buttonID).parent().parent().remove();
+    });
+}
+//解析附件(txt文件)申请的总金额
+function getApplySumMoney(){
+    $.ajax({
+        type: 'POST',
+        url: '/getFileApplySumMoney',
+        cache: false
+    }).then(function (data){
+        //页面显示总金额
+        $("#fileApplySumMoney").val(data);
+    });
+}
+
+
+
+
+
+

@@ -1,0 +1,139 @@
+package com.esop.alertClassified.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class AccountAlertSetDto extends BaseDto {
+
+    String DT_RowId = "";     //dataTables.editor使用参数,如果没有此参数,编辑功能不可用.
+    String user_name = "";
+    String birthday = "";
+    String contact_addr = "";
+    String phone_no = "";
+    String unit_id = "";
+    String duty = "";
+
+    String imp_id = "";
+    String alert_value = "";//欠费预警阈值
+    String phone_blc = "";//话费预警阈值
+    String rateflow_blc = "";//流量预警阈值;
+    String service_no  = "";
+    String opt = "";
+
+    String num = "";
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getContact_addr() {
+        return contact_addr;
+    }
+
+    public void setContact_addr(String contact_addr) {
+        this.contact_addr = contact_addr;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getAlert_value() {
+        return alert_value;
+    }
+
+    public void setAlert_value(String alert_value) {
+        this.alert_value = alert_value;
+    }
+
+    public String getPhone_blc() {
+        return phone_blc;
+    }
+
+    public void setPhone_blc(String phone_blc) {
+        this.phone_blc = phone_blc;
+    }
+
+    public String getRateflow_blc() {
+        return rateflow_blc;
+    }
+
+    public void setRateflow_blc(String rateflow_blc) {
+        this.rateflow_blc = rateflow_blc;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getOpt() {
+        return opt;
+    }
+
+    public void setOpt(String opt) {
+        this.opt = opt;
+    }
+
+    public String getImp_id() {
+        return imp_id;
+    }
+
+    public void setImp_id(String imp_id) {
+        this.imp_id = imp_id;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+}

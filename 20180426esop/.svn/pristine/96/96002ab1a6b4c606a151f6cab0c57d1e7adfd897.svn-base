@@ -1,0 +1,183 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/10/23.
+ */
+public class GroupFundAccountDayRptDto extends BaseDto{
+    private String branch_company;//分公司
+    private String bus_org;//行业中心
+    private String date_recorded;//入账日期
+    private String in_group_num;//入账集团编号
+    private String in_group_name;//入账集团名称
+    private String manager;//客户经理
+    private String apply_type;//申请单类型(认领申请单\调账单)
+    private String apply_type_num;//申请单号(可以是入账申请单号、也可是调账申请单号)
+    private String net_amount;//入账金额
+    private String account_clerk;//账务员
+    private String credit_note;//入账备注
+    private String reciprocal_account_num;//对方账号
+    private String reciprocal_account_name;//对方户名
+    private String received_date;//到账日期
+    private String receive_num;//到账账号
+    private String receive_name;//到账户名
+    private String memo;//备注
+    private String unique_code;//唯一标识码
+    private String apply_date;//申请日期
+    private String bak1;//备用字段
+
+
+    public String getNet_amount() {
+        return net_amount;
+    }
+
+    public void setNet_amount(String net_amount) {
+        this.net_amount = net_amount;
+    }
+
+    public String getBranch_company() {
+        return branch_company;
+    }
+
+    public void setBranch_company(String branch_company) {
+        this.branch_company = branch_company;
+    }
+
+    public String getBus_org() {
+        return bus_org;
+    }
+
+    public void setBus_org(String bus_org) {
+        this.bus_org = bus_org;
+    }
+
+    public String getDate_recorded() {
+        return date_recorded;
+    }
+
+    public void setDate_recorded(String date_recorded) {
+        this.date_recorded = date_recorded;
+    }
+
+    public String getIn_group_num() {
+        return in_group_num;
+    }
+
+    public void setIn_group_num(String in_group_num) {
+        this.in_group_num = in_group_num;
+    }
+
+    public String getIn_group_name() {
+        return in_group_name;
+    }
+
+    public void setIn_group_name(String in_group_name) {
+        this.in_group_name = in_group_name;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getApply_type() {
+        return apply_type;
+    }
+
+    public void setApply_type(String apply_type) {
+        this.apply_type = apply_type;
+    }
+
+    public String getApply_type_num() {
+        return apply_type_num;
+    }
+
+    public void setApply_type_num(String apply_type_num) {
+        this.apply_type_num = apply_type_num;
+    }
+
+    public String getAccount_clerk() {
+        return account_clerk;
+    }
+
+    public void setAccount_clerk(String account_clerk) {
+        this.account_clerk = account_clerk;
+    }
+
+    public String getCredit_note() {
+        return credit_note;
+    }
+
+    public void setCredit_note(String credit_note) {
+        this.credit_note = credit_note;
+    }
+
+    public String getReciprocal_account_num() {
+        return reciprocal_account_num;
+    }
+
+    public void setReciprocal_account_num(String reciprocal_account_num) {
+        this.reciprocal_account_num = reciprocal_account_num;
+    }
+
+    public String getReciprocal_account_name() {
+        return reciprocal_account_name;
+    }
+
+    public void setReciprocal_account_name(String reciprocal_account_name) {
+        this.reciprocal_account_name = reciprocal_account_name;
+    }
+
+    public String getReceived_date() {
+        return received_date;
+    }
+
+    public void setReceived_date(String received_date) {
+        this.received_date = received_date;
+    }
+
+    public String getReceive_num() {
+        return receive_num;
+    }
+
+    public void setReceive_num(String receive_num) {
+        this.receive_num = receive_num;
+    }
+
+    public String getReceive_name() {
+        return receive_name;
+    }
+
+    public void setReceive_name(String receive_name) {
+        this.receive_name = receive_name;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getUnique_code() {
+        return unique_code;
+    }
+
+    public void setUnique_code(String unique_code) {
+        this.unique_code = unique_code;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+}

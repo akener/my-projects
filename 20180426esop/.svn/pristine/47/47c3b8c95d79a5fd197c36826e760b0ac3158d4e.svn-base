@@ -1,0 +1,20 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtTaskInstInfo;
+import java.util.List;
+
+public interface CtTaskInstInfoMapper {
+    int deleteByPrimaryKey(String taskInstId);
+
+    int insert(CtTaskInstInfo record);
+
+    CtTaskInstInfo selectByPrimaryKey(String taskInstId);
+
+    List<CtTaskInstInfo> selectAll();
+
+    int updateByPrimaryKey(CtTaskInstInfo record);
+
+    int updateSeveralFieldsByPrimaryKey(CtTaskInstInfo record);
+
+    int updateForStopByProcInstId(CtTaskInstInfo record);
+}

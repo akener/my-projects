@@ -1,0 +1,217 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojain
+  Date: 2017/6/9
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  客户经理工单查询
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+    <link rel="icon" href="./favicon.ico">
+
+    <title>客户经理工单查询</title>
+
+</head>
+
+<!--<hr />-->
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<!-- 下发工单提示框 -->
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">客户经理工单查询</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">选择查询工单批次号</label>
+                            <div class="col-sm-2">
+                                <select class="input-md" id="id_no" style="width:300px;">
+                                    <option value="">--请选择--</option>
+                                </select>
+                            </div>
+                            <label class="col-sm-2 control-label">工单状态</label>
+                            <div class="col-sm-2">
+                                <select class="input-md" id="record_status" style="width:300px;">
+                                    <option value="">--请选择--</option>
+                                    <%--<option value="01">省欠费管理员导入</option>
+                                    <option value="02">下发地市欠费管理员</option>--%>
+                                    <option value="03">转发至客户经理</option>
+                                    <option value="04">催缴成功结单</option>
+                                    <option value="05">回退至地市欠费管理员</option>
+                                    <option value="06">回退至省欠费管理员</option>
+                                    <option value="07">催缴失败结单</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="submit" class="btn btn-info pull-right" id="queryRecord">查询</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th class="text-center">批次号</th>
+        <th class="text-center">集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">产品编码</th>
+        <th class="text-center">产品名称</th>
+        <th class="text-center">缴费周期</th>
+        <th class="text-center">欠费金额</th>
+        <th class="text-center">账期结束时间</th>
+        <th class="text-center">客户经理</th>
+        <th class="text-center">工单状态</th>
+        <%--<th class="text-center">客户经理姓名</th>--%>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        <th class="text-center">批次号</th>
+        <th class="text-center">集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">产品编码</th>
+        <th class="text-center">产品名称</th>
+        <th class="text-center">缴费周期</th>
+        <th class="text-center">欠费金额</th>
+        <th class="text-center">账期结束时间</th>
+        <th class="text-center">客户经理</th>
+        <th class="text-center">工单状态</th>
+        <%--<th class="text-center">客户经理姓名</th>--%>
+    </tr>
+    </tfoot>
+</table>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    $(document).ready(function() {
+        editor = new $.fn.DataTable.Editor( {
+        } );
+
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 15,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"getRecordByService",
+                type:"POST",
+                data:{
+                    service_no:service_no
+                }
+            },
+            columns: [
+                {
+                    data: "record_id",
+                    render:function (data, type, row, meta) {
+                        return "<a href='#' onclick='showDetail("+row.id+")'>" + row.record_id + "</a>"
+                    }
+                },
+                { data: "cust_id" },
+                { data: "cust_name" },
+                { data: "product_id" },
+                { data: "product_name" },
+                { data: "pay_period" },
+                { data: "owe_money" },
+                { data: "account_end_date" },
+                { data: "service_no" },
+                { data: "status_name" }
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+
+        //获取批次号
+        $.ajax({
+            type: "GET",
+            url: "getRecordIdByService",
+            data:{
+                service_no:service_no
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                $("#id_no").append("<option value='"+item.record_id+"'>"+item.record_id+"</option>");
+            });
+        });
+
+    } );
+
+    $("#queryRecord").click(function(){
+        table = $('#example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            ajax: {
+                url:"getRecordByService",
+                type:"POST",
+                data:{
+                    record_id:$("#id_no").val(),
+                    record_status:$("#record_status").val(),
+                    service_no:service_no
+                }
+            },
+            columns: [
+                {
+                    data: "record_id",
+                    render:function (data, type, row, meta) {
+                        return "<a href='#' onclick='showDetail("+row.id+")'>" + row.record_id + "</a>"
+                    }
+                },
+                { data: "cust_id" },
+                { data: "cust_name" },
+                { data: "product_id" },
+                { data: "product_name" },
+                { data: "pay_period" },
+                { data: "owe_money" },
+                { data: "account_end_date" },
+                { data: "service_no" },
+                { data: "status_name" }
+            ],
+        } );
+    } );
+
+    function showDetail(id){
+        location.href="showOneOweRecordDetail?id="+id+"&&flag=sg";
+    }
+</script>
+</html>

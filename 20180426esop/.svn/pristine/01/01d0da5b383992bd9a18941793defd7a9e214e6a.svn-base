@@ -1,0 +1,309 @@
+package com.esop.basicManagement.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class BasicBossManagementDto {
+    String num = "";
+    String login_no = "";
+    String id_card_no = "";
+    String busi_boss_no = "";
+    String oa_login_no = "";
+    String mis_no = "";
+    String login_name = "";
+    String password = "";
+    String contract_phone = "";
+    String vilid_flag = "";
+    String is_grp_staff = "";
+    String grpusertype = "";
+    String grp_staff_number = "";
+    String need_remind = "";
+    String grp_role_code = "";
+    String role_code = "";
+    String role_code_small = "";
+    String group_id = "";
+    String work_area = "";
+    String role_name = "";
+    String group_name = "";
+    String busido_region = "";
+    String busido_town = "";
+    String office_town = "";
+
+    String is_grp_staff4 = "";
+    String grp_staff_number4 = "";
+
+    String landing_no = "";
+    String boss_password = "";
+
+    String boss_role_code = "";
+    String right_code = "";
+    String org_code = "";
+
+    String busi_password = "";
+    String busi_password4 = "";
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public String getId_card_no() {
+        return id_card_no;
+    }
+
+    public void setId_card_no(String id_card_no) {
+        this.id_card_no = id_card_no;
+    }
+
+    public String getOa_login_no() {
+        return oa_login_no;
+    }
+
+    public void setOa_login_no(String oa_login_no) {
+        this.oa_login_no = oa_login_no;
+    }
+
+    public String getMis_no() {
+        return mis_no;
+    }
+
+    public void setMis_no(String mis_no) {
+        this.mis_no = mis_no;
+    }
+
+    public String getBusi_boss_no() {
+        return busi_boss_no;
+    }
+
+    public void setBusi_boss_no(String busi_boss_no) {
+        this.busi_boss_no = busi_boss_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getContract_phone() {
+        return contract_phone;
+    }
+
+    public void setContract_phone(String contract_phone) {
+        this.contract_phone = contract_phone;
+    }
+
+    public String getVilid_flag() {
+        return vilid_flag;
+    }
+
+    public void setVilid_flag(String vilid_flag) {
+        this.vilid_flag = vilid_flag;
+    }
+
+    public String getIs_grp_staff() {
+        return is_grp_staff;
+    }
+
+    public void setIs_grp_staff(String is_grp_staff) {
+        this.is_grp_staff = is_grp_staff;
+    }
+
+    public String getGrpusertype() {
+        return grpusertype;
+    }
+
+    public void setGrpusertype(String grpusertype) {
+        this.grpusertype = grpusertype;
+    }
+
+    public String getGrp_staff_number() {
+        return grp_staff_number;
+    }
+
+    public void setGrp_staff_number(String grp_staff_number) {
+        this.grp_staff_number = grp_staff_number;
+    }
+
+    public String getNeed_remind() {
+        return need_remind;
+    }
+
+    public void setNeed_remind(String need_remind) {
+        this.need_remind = need_remind;
+    }
+
+    public String getGrp_role_code() {
+        return grp_role_code;
+    }
+
+    public void setGrp_role_code(String grp_role_code) {
+        this.grp_role_code = grp_role_code;
+    }
+
+    public String getRole_code() {
+        return role_code;
+    }
+
+    public void setRole_code(String role_code) {
+        this.role_code = role_code;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getWork_area() {
+        return work_area;
+    }
+
+    public void setWork_area(String work_area) {
+        this.work_area = work_area;
+    }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getBusido_region() {
+        return busido_region;
+    }
+
+    public void setBusido_region(String busido_region) {
+        this.busido_region = busido_region;
+    }
+
+    public String getBusido_town() {
+        return busido_town;
+    }
+
+    public void setBusido_town(String busido_town) {
+        this.busido_town = busido_town;
+    }
+
+    public String getOffice_town() {
+        return office_town;
+    }
+
+    public void setOffice_town(String office_town) {
+        this.office_town = office_town;
+    }
+
+    public String getIs_grp_staff4() {
+        return is_grp_staff4;
+    }
+
+    public void setIs_grp_staff4(String is_grp_staff4) {
+        this.is_grp_staff4 = is_grp_staff4;
+    }
+
+    public String getGrp_staff_number4() {
+        return grp_staff_number4;
+    }
+
+    public void setGrp_staff_number4(String grp_staff_number4) {
+        this.grp_staff_number4 = grp_staff_number4;
+    }
+
+    public String getRole_code_small() {
+        return role_code_small;
+    }
+
+    public void setRole_code_small(String role_code_small) {
+        this.role_code_small = role_code_small;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+
+    public String getBoss_password() {
+        return boss_password;
+    }
+
+    public void setBoss_password(String boss_password) {
+        this.boss_password = boss_password;
+    }
+
+    public String getBoss_role_code() {
+        return boss_role_code;
+    }
+
+    public void setBoss_role_code(String boss_role_code) {
+        this.boss_role_code = boss_role_code;
+    }
+
+    public String getRight_code() {
+        return right_code;
+    }
+
+    public void setRight_code(String right_code) {
+        this.right_code = right_code;
+    }
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+
+    public String getBusi_password() {
+        return busi_password;
+    }
+
+    public void setBusi_password(String busi_password) {
+        this.busi_password = busi_password;
+    }
+
+    public String getBusi_password4() {
+        return busi_password4;
+    }
+
+    public void setBusi_password4(String busi_password4) {
+        this.busi_password4 = busi_password4;
+    }
+}

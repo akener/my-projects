@@ -1,0 +1,248 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<head>
+    <title>历史短款申请审批</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>历史短款申请</span>
+            </div>
+        </div>
+        <input type="hidden" value="" id="jiaoyi_liushui">
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>归属分公司</th><td>
+                            <input style="width:200px;text-align:left" value="" id="ownerorgid1name" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                            <input type="hidden" id="ownerorgid1" >
+                        </td>
+                            <th>资金账户余额（元）</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="zhanghu_yue1_yuan" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                                <input type="hidden" id="zhanghu_yue1">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>可用余额（元）</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="keyong_yue1_yuan" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                                <input type="hidden" id="keyong_yue1">
+                            </td>
+                            <th>占用资金（元）</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="zhanyong_zijin1_yuan" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                                <input type="hidden" id="zhanyong_zijin1">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>冻结资金（元）</th>
+                            <td colspan="3">
+                                <input style="width:200px;text-align:left" value="" id="dongjie_zijin1_yuan" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                                <input type="hidden" id="dongjie_zijin1">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团单位名称</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="out_group1" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                            </td>
+                            <th>集团编号</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="outGroupNo1" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>资金联系人</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="capitalContact1" type="text" class="input-sty04 form-ipt" readonly="readonly" />
+                            </td>
+                            <th>联系人电话</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="contactNumber1" type="text" class="input-sty04 form-ipt" readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>联系人类型</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="contactType1" type="text" class="input-sty04 form-ipt" readonly="readonly" />
+                            </td>
+                            <th>申请时间</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="applyDate1" type="text" class="input-sty04 form-ipt" readonly="readonly"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>本次申请使用金额（元）</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="applyAmount1_yuan" type="text" class="input-sty04 form-ipt" readonly="readonly" />
+                                <input type="hidden" id="applyAmount1">
+                            </td>
+                            <th>冲减历史短款金额（元）</th>
+                            <td>
+                                <input type="hidden" id="runningWarterNo1" value="">
+                                <input type="hidden" id="historyOffsetAmount1">
+                                <input style="width:200px;text-align:left" value="" id="historyOffsetAmount1_yuan" type="text" class="input-sty04 form-ipt" readonly="readonly" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注信息</th>
+                            <td colspan="3">
+                                <textarea rows="5" cols="80" id="remark1" readonly="readonly"></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>附件信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table-infor-7" width="100%;">
+                        <tbody>
+                        <tr>
+                            <th>证明材料：</th>
+                            <td colspan="3" id="doloadFile">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="nodeId" value="">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>下一环节</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <input type="hidden" id="node_id" value="">
+                    <input type="hidden" id="first_node_id" value="">
+                    <input type="hidden" id="taskOrderId" value="">
+                    <table class="table-infor-7" width="100%">
+                        <tbody id="appove_show">
+                        <%@ include file="../workFlowQuery.jsp"%>
+                        </tbody>
+                        <tbody id="agree_show">
+                        <%@ include file="../workFlowQuery_Next.jsp"%>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="saveDoApproveOffsetInfo()">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<input id="fileName" name="" type="hidden" value="">
+<input id="attach_file_id" name="" type="hidden" value="">
+<!--行业中心-->
+<input type="hidden" id="ruzhang_zuzhi"/>
+<input type="hidden" id="center_code"/>
+<input type="hidden" id="applicant" />
+
+<script type="text/javascript" language="javascript" class="init">
+
+    function getNextLink(ind_type,node_id) {
+        //带入审批信息
+        $.ajax({
+            type: "POST",
+            url: "workFlowQuery",
+            data:{
+                ind_type:ind_type,
+                node_id:node_id
+            },
+            cache: false,
+            success: function (result) {
+                if(result.length > 0) {
+                    $("#nextLink").html(result[0].node_role_name);
+                    getNextDealPerson(result[0].node_role_id);
+                    $("#first_node_id").val(result[0].node_id);
+                }else{
+                    document.getElementById("appove_show").style.display='none';
+                }
+            },
+            error: function () {
+                bootStrapAlert('请求超时，请重试！');
+            }
+        });
+    }
+    //获取下一环节处理人
+    function getNextDealPerson(role_id) {
+        var hangye_zhongxin = $("#outGroupNo1").val();
+        if((role_id!='23064')){
+            hangye_zhongxin = "";
+        }
+        var root_org_id="<%=root_org_id%>";
+        var org_id;
+        if(root_org_id!=null&&root_org_id!=""){
+            org_id = root_org_id.substring(0,8);
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'qryNextDealPerson_new',
+            cache: false,
+            data: {
+                role_id:role_id,
+                union_code:hangye_zhongxin,
+                org_id:org_id
+            },
+            success: function (data) {
+                var type_data="";
+                $.each(data, function (i, field) {
+                    //拼接json数据集字符串
+                    type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                    type_data += ">" + field.login_name + "</option>";
+                });
+                $("#nextStepDealPerson").empty();
+                $("#nextStepDealPerson").append(type_data);
+            },
+            error: function (resp) {
+                bootStrapAlert('获取下一步处理人失败！');
+                return false;
+
+            },
+        });
+    }
+</script>
+</body>
+</html>

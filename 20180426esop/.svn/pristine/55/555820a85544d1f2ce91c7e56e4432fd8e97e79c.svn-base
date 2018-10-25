@@ -1,0 +1,73 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by lilei on 2017/6/24
+ */
+public class EarlyWarningDto extends BaseDto{
+
+    private String DT_RowId ="";
+    private String region_name;
+    private String work;
+    private String sign;
+    private String recover;
+    private String web;
+    private String broad;
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getWork() {
+        return work;
+    }
+
+    public void setWork(String work) {
+        this.work = work;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public String getRecover() {
+        return recover;
+    }
+
+    public void setRecover(String recover) {
+        this.recover = recover;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
+    public void setWeb(String web) {
+        this.web = web;
+    }
+
+    public String getBroad() {
+        return broad;
+    }
+
+    public void setBroad(String broad) {
+        this.broad = broad;
+    }
+}

@@ -1,0 +1,24 @@
+package com.esop.workflow.vo;
+
+import com.esop.workflow.model.CtProcStepRel;
+
+public class Step {
+    private CtProcStepRel ctProcStepRel;
+    private Assignee[] assignees;
+
+    public CtProcStepRel getCtProcStepRel() {
+        return ctProcStepRel;
+    }
+
+    public void setCtProcStepRel(CtProcStepRel ctProcStepRel) {
+        this.ctProcStepRel = ctProcStepRel;
+    }
+
+    public Assignee[] getAssignees() {
+        return assignees;
+    }
+
+    public void setAssignees(Assignee[] assignees) {
+        this.assignees = assignees;
+    }
+}

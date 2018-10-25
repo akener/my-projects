@@ -1,0 +1,22 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+import com.esop.cqDevelopment.capitalManage.dto.GroupAttachFileDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class GetGroupAttachInfoService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public GroupAttachFileDto getGroupAttachFileInfo(GroupAttachFileDto dto, String type){
+        String statement = "getGroupAttachFileInfo";
+        if(type.equals("GrpFundGMCharge")){
+            statement = "getGroupAttachFileInfo";
+        }else if(type.equals("GrpFundLMCharge")){
+            statement = "getBigGroupAttachFileInfo";
+        }
+        return sqlSessionTemplate.selectOne(statement,dto);
+    }
+}

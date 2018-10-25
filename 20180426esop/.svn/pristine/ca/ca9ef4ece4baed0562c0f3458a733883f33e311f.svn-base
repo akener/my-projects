@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto">
+    <select id="selectGroupMoneyRecorded" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" >
+        select * from( SELECT
+        b.name,
+        c.business_center,
+        date_format(a.caozuo_riqi,'%Y-%m-%d %H:%i') as caozuo_riqi,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        f.login_name,
+        a.shenqing_leixin,
+        a.shenqing_danhao,
+        a.ruzhang_jine,
+        e.login_name login_name2,
+        a.ruzhang_beizhu,
+        a.duifang_zhanghao,
+        a.duifang_huming,
+        date_format(a.daozhang_riqi,'%Y-%m-%d') as daozhang_riqi,
+        a.daozhang_zhanghao,
+        a.daozhang_huming,
+        a.weiyibiaoshima,
+        a.shenqing_riqi,
+        '' as is_jihe_zhongwen,
+        '' as jihe_shijian,
+        '' as login_name3
+        from
+        se_group_money_recorded_info a left join se_contract_qddw b on SUBSTRING(a.fen_gongs,1,8)=b.id
+        left join se_business_center c on a.hangye_zhongxin=c.center_code
+        left join bs_systemuser_info d on a.kehu_jingli=d.staff_code
+        left join bs_systemuser_info e on a.zhangwu_yuan=e.staff_code,
+        bs_systemuser_info f
+        where
+         f.staff_code=a.kehu_jingli
+        <if test="fen_gongs != '' and fen_gongs !=null">
+            and SUBSTRING(a.fen_gongs,1,8) = #{fen_gongs}
+        </if>
+        <if test="hangye_zhongxin !=null and hangye_zhongxin != '' and hangye_zhongxin != 'null' ">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(a.chaxun_riqi,'%Y-%m-%d') = #{chaxun_riqi}
+        </if>
+        union ALL
+        select '总计','','','','','','','',cast(coalesce(sum(ruzhang_jine),0)as decimal(18,2)),'','','','','','','','','','','',''
+        from se_group_money_recorded_info
+        where 1=1
+        <if test="fen_gongs != '' and fen_gongs !=null">
+            and SUBSTRING(fen_gongs,1,8) = #{fen_gongs}
+        </if>
+        <if test="hangye_zhongxin !=null and hangye_zhongxin != '' and hangye_zhongxin != 'null' ">
+            and hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(chaxun_riqi,'%Y-%m-%d') = #{chaxun_riqi}
+        </if>
+        union ALL
+        select '','','','','','','','','','','','','','','','','','',case audit_status when '0' then '未稽核' when '1' then '已稽核' when '2' then '驳回' END  as is_jihe_zhongwen,opt_date as jihe_shijian,login_name as login_name3
+        FROM ep_cap_processstatus_info
+        WHERE
+        process_type='1'
+        <if test="fen_gongs != '' and fen_gongs !=null">
+            and org_id = #{fen_gongs}
+        </if>
+        <if test="hangye_zhongxin !=null and hangye_zhongxin != '' and hangye_zhongxin != 'null' ">
+            and center_code = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(audit_date,'%Y-%m-%d') = #{chaxun_riqi}
+        </if>
+        )a
+    </select>
+    <select id="selectGroupMoneyAllRecorded" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" >
+        select e.audit_date as chaxun_riqi,e.org_id as fen_gongs,f.name,e.business_center,e.center_code as hangye_zhongxin,cast(coalesce(d.ruzhang_jine,0)as decimal(18,2)) as ruzhang_jine,case e.audit_status when '0' THEN '未稽核' when '1' then '已稽核' when '2' then '驳回' end as is_jihe_zhongwen,e.login_name,e.opt_date as jihe_shijian
+        from
+        ep_cap_processstatus_info e LEFT JOIN (
+        select date_format(a.chaxun_riqi,'%Y-%m-%d') as chaxun_riqi,b.name,a.fen_gongs,a.hangye_zhongxin,c.business_center,cast(coalesce(sum(a.ruzhang_jine),0)as decimal(18,2)) as ruzhang_jine
+        from se_group_money_recorded_info a LEFT JOIN bs_systemuser_info d on d.staff_code=a.jihe_ren,se_contract_qddw b,se_business_center c
+        where SUBSTR(a.fen_gongs,1,8)=b.id
+        and c.center_code=a.hangye_zhongxin
+        GROUP BY a.chaxun_riqi,a.hangye_zhongxin) d on d.hangye_zhongxin=e.center_code and d.chaxun_riqi=e.audit_date,se_contract_qddw f
+        where f.id=e.org_id
+        and e.process_type='1'
+        <if test="fen_gongs != '' and fen_gongs !=null">
+            and e.org_id = #{fen_gongs}
+        </if>
+        <if test="hangye_zhongxin !=null and hangye_zhongxin != '' and hangye_zhongxin != 'null' ">
+            and e.center_code = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null and chaxun_riqi !='null'">
+            and date_format(e.audit_date,'%Y-%m-%d') &gt;= #{chaxun_riqi}
+        </if>
+        <if test="chaxun_riqi2 != '' and chaxun_riqi2 !=null and chaxun_riqi2 !='null'">
+            and date_format(e.audit_date,'%Y-%m-%d') &lt;= #{chaxun_riqi2}
+        </if>
+        GROUP BY e.audit_date,e.center_code
+        ORDER BY e.audit_date desc
+    </select>
+    <select id="selectGroupMoneyMonthRecorded" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" >
+        select * from(
+
+        SELECT
+        b.name,
+        c.business_center,
+        date_format(a.caozuo_riqi,'%Y-%m') as caozuo_riqi,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        a.ruzhang_jine
+        from
+        se_group_money_recorded_info a left join se_contract_qddw b on SUBSTRING(a.fen_gongs,1,8)=b.id
+        left join se_business_center c on a.hangye_zhongxin=c.center_code,
+        ep_cap_processstatus_info d
+        where
+        d.process_type='1'
+        and
+        d.audit_status='1'
+        and d.center_code=a.hangye_zhongxin
+        and date_format(d.audit_date,'%Y-%m-%d')=date_format(a.caozuo_riqi,'%Y-%m-%d')
+        <if test="fen_gongs != '' and fen_gongs !=null">
+            and SUBSTRING(a.fen_gongs,1,8) = #{fen_gongs}
+        </if>
+        <if test="hangye_zhongxin !=null and hangye_zhongxin != '' and hangye_zhongxin != 'null' ">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(a.chaxun_riqi,'%Y-%m') = #{chaxun_riqi}
+        </if>
+        union ALL
+        select '总计','','','','',cast(coalesce(sum(a.ruzhang_jine),0)as decimal(18,2))
+        from se_group_money_recorded_info a,ep_cap_processstatus_info d
+        where
+        d.process_type='1'
+        and
+        d.audit_status='1'
+        and d.center_code=a.hangye_zhongxin
+        and date_format(d.audit_date,'%Y-%m-%d')=date_format(a.caozuo_riqi,'%Y-%m-%d')
+        <if test="fen_gongs != '' and fen_gongs !=null">
+            and SUBSTRING(a.fen_gongs,1,8) = #{fen_gongs}
+        </if>
+        <if test="hangye_zhongxin !=null and hangye_zhongxin != '' and hangye_zhongxin != 'null' ">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(a.chaxun_riqi,'%Y-%m') = #{chaxun_riqi}
+        </if>
+        )a
+        order by  a.caozuo_riqi desc
+    </select>
+<select id="selectJihe" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto" resultType="String">
+    select audit_status
+    FROM  ep_cap_processstatus_info
+    where audit_date=#{audit_date}
+    AND  org_id=#{org_id}
+    and  center_code=#{center_code}
+    and   process_type=#{process_type}
+</select>
+
+    <update id="jiheruzhang" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto">
+        UPDATE ep_cap_processstatus_info SET audit_status=#{audit_status},login_no=#{login_no},login_name=#{login_name},opt_date=now()
+        WHERE process_type=#{process_type} and audit_date=#{audit_date} and org_id=#{org_id} and center_code=#{center_code}
+    </update>
+    <update id="bohuiruzhang" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto">
+        UPDATE se_group_money_recorded_info
+        SET is_jihe='2',jihe_ren=#{jihe_ren},jihe_shijian=#{jihe_shijian}
+        where shenqing_danhao=#{shenqing_danhao}
+    </update>
+
+</mapper>

@@ -1,0 +1,225 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var login_no = "<%=login_no%>";
+        var table;
+
+        $(document).ready(function () {
+            //capitalClaimApproveQuery();
+        });
+
+        function capitalClaimApproveQuery() {
+            var gongdan_bianhao = $("#gongdan_bianhao_1").val();
+            var jituan_bianhao = $("#jituan_bianma_1").val();
+            var jituan_mingcheng = $("#jituan_mingcheng_1").val();
+            var shenqing_jine_1 = $("#shenqing_jine_1").val();
+            var shenqing_ren_1 = $("#shenqing_ren_1").val();
+            var shenqing_shijian_start_1 = $("#shenqing_shijian_start_1").val();
+            var shenqing_shijian_end_1 = $("#shenqing_shijian_end_1").val();
+
+            table = $('#example').DataTable({
+                "scrollX": true,
+                "processing": true,
+                "serverSide": true,
+                destroy: true,
+                "bFilter": false,
+                "pageLength": 5,//设置每页显示多少条记录
+                //"bSort":false,
+                "bLengthChange": false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                "ajax": {
+                    url: "/capitalUseApproveQuery",
+                    type: "POST",
+                    "data": {
+                        nextDealPerson_sp: login_no,
+                        chanpin_leixing:"2",
+                        gongdan_bianhao:gongdan_bianhao,
+                        jituan_bianhao:jituan_bianhao,
+                        jituan_mingcheng:jituan_mingcheng,
+                        shiyong_jine_yuan:shenqing_jine_1,
+                        applyNo:shenqing_ren_1,
+                        shenqing_shijian_start:shenqing_shijian_start_1,
+                        shenqing_shijian_end:shenqing_shijian_end_1
+                    }
+                },
+                "columns": [
+                    {
+                        "width": "10%",
+                        render: function ( data, type, row, meta ) {
+                            if(row.nodeId > 9){
+                                return data= "<button type='button' class='ui-btn mgr-10' style='width: 60px' onclick=aprrove_button('"+row.gongdan_bianhao+"','"+row.nodeId+"')>审批</button>";
+                            }else{
+                                return data= "<input style='width: 60px' value='已审批'/>";
+                            }
+                        }
+                    },
+                    {data: "gongdan_bianhao"},
+                    {
+                        render: function ( data, type, row, meta ) {
+                            return data="集团成员缴费";
+                        }
+                    },
+                    {data: "fengongsiname"},
+                    {data: "shenqingrenname"},
+                    {data: "shenqingren"},
+                    {data: "hangye_zhongxin_name"},
+                    {data: "jituan_bianhao"},
+                    {data: "jituan_mingcheng"},
+                    /*{data: "jituan_zhanghao"},
+                    {data: "zhanghao_mingcheng"},
+                    {data: "dongjie_jine_yuan"},*/
+                    {data: "shiyong_jine_yuan"},
+                    {data: "shenqing_shijian"},
+                    {data: "beizhu_xinxi"},
+                    {
+                        "width": "10%",
+                        render: function ( data, type, row, meta ) {
+                            var file_name = row.fileName;
+                            var i = file_name.indexOf("\\");
+                            if(i>=0){
+                                var tpst = file_name.split("\\");
+                                file_name = tpst[tpst.length-1];
+                                //alert(file_name);
+                            }
+                            return data= file_name;
+                        }
+                    }
+                ],
+                select: true
+            });
+        }
+
+        function aprrove_button(gongdan_bianhao,nodeId) {
+            $("#approve_detail").modal('show');
+            init(gongdan_bianhao,nodeId);
+        }
+
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团成员缴费</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>工单编号：</th>
+                            <td>
+                                <input type="text" id="gongdan_bianhao_1" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团编号：</th>
+                            <td>
+                                <input type="text" id="jituan_bianma_1" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团名称：</th>
+                            <td>
+                                <input type="text" id="jituan_mingcheng_1" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请金额：</th>
+                            <td>
+                                <input type="text" id="shenqing_jine_1" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="shenqing_ren">申请人工号：</th>
+                            <td class="shenqing_ren">
+                                <input type="text" id="shenqing_ren_1" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请时间（始）：</th>
+                            <td>
+                                <input type=text id="shenqing_shijian_start_1" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'shenqing_shijian_start_1',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>申请时间（终）：</th>
+                            <td>
+                                <input type=text id="shenqing_shijian_end_1" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'shenqing_shijian_end_1',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalClaimApproveQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="cost-table" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center">操作</th>
+                                <th class="text-center">ESOP工单号码</th>
+                                <th class="text-center">申请工单业务类型</th>
+                                <th class="text-center">分公司</th>
+                                <th class="text-center">申请人</th>
+                                <th class="text-center">申请人工号</th>
+                                <th class="text-center">行业中心</th>
+                                <th class="text-center">集团编号</th>
+                                <th class="text-center">集团名称</th>
+                                <%--<th class="text-center">集团账号</th>
+                                <th class="text-center">集团账号名称</th>
+                                <th class="text-center">冻结金额</th>--%>
+                                <th class="text-center">申请使用金额</th>
+                                <th class="text-center">申请时间</th>
+                                <th class="text-center">备注信息</th>
+                                <th class="text-center">附件</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="approve_detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document" style="width:60%;">
+        <div class="modal-content">
+            <%@ include file="capitalUseApproveDetail_cyjf.jsp"%>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+package com.esop.basicManagement.controller;
+
+import com.esop.alertClassified.dto.AccountAlertServiceCallingDto;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * Created by yanhao on 2017/6/30.
+ */
+public class Client4ATest {
+
+    @RequestMapping(value="/client4AService")
+    public String getClient4AService(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+        Client4A client4A = new Client4A();
+        Map param=new HashMap();
+        param.put("userid", "aavg90");
+        param.put("username", "test");
+        param.put("userpassword", "abc123");
+        param.put("phone", "13466866081");
+        param.put("email", "www.sitech.com");
+        param.put("rolecode", "02");
+        param.put("groupId", "10031");
+        //新增的必填字段
+        param.put("status", "1");       //工号是否可用
+        //String tempPassword = des.decrypt(passWord);
+        param.put("passWord", "abc123");
+        param.put("reloginflag", "Y");   //重复登陆标示
+        param.put("ipbindflag", "N");
+        param.put("bindip", "");
+        param.put("allowbegin", "20160630");     //允许登陆的时间     start
+        param.put("allowend", "20500630");         //允许登陆的时间     end
+        param.put("regioncode", "01");     //归属地市
+
+
+
+        String tempRetMsg=client4A.Webservice4ACall("userAdd","10.110.26.23", "aavg38", param);
+        //logger.info("resulXml=返回xml报文"+resulXml);
+
+        System.out.println("resulXml=返回xml报文"+tempRetMsg);
+        return tempRetMsg;
+    }
+}

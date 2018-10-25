@@ -1,0 +1,53 @@
+package com.esop.Interface.controller;
+
+import com.esop.common.util.ParameterConversion;
+import com.esop.cust.dto.CompeteMsgInDto;
+import com.esop.cust.dto.CompeteMsgOutDto;
+import com.esop.cust.service.CompeteMsgService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//竞争情报
+@RestController
+public class CompeteMsgController {
+    private static Logger logger = Logger.getLogger(CompeteMsgController.class);
+    @Autowired
+    CompeteMsgService competeMsgService;
+    @RequestMapping(value = "/insertCompeteMsg")
+    public Map insertCompeteMsg(HttpServletRequest request){
+        CompeteMsgInDto param = ParameterConversion.jsonToObject(request,CompeteMsgInDto.class);
+
+       /* CompeteMsgInDto param = new CompeteMsgInDto();
+        param.setService_no("aavg38");
+        param.setCompete_person("联通");
+        param.setImport_degree("非常重要");
+        param.setCompete_policy("免费");
+        param.setExp_data("2017-09-03");
+        param.setGroup_id("4514618035");
+        param.setGroup_name("哈尔滨中融国际大厦思特奇");
+        param.setTown_id("10031");
+        param.setTown_name("哈尔滨");
+        param.setRelated_id("476");*/
+
+        int flag = competeMsgService.insertCompeteMsg(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(flag>0){
+            map.put("return_msg","提交成功");
+            map.put("return_code","000000");
+        }else{
+            map.put("return_msg","提交失败");
+            map.put("return_code","-1");
+        }
+        return  map;
+    }
+}

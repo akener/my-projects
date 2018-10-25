@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectManagerInfoXml"  parameterType="String" resultType="com.esop.callServiceOtherSys.dto.ManagerInfoQueryDto" >
+        select trim(name) as login_name,trim(phone_no) as phone_no from dgrpmanagermsg
+        where service_no = #{service_no}
+    </select>
+</mapper>

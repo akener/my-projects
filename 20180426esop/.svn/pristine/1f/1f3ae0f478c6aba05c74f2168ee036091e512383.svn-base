@@ -1,0 +1,176 @@
+package com.esop.visitInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by subt on 2017/7/16 0016.
+ */
+public class LogManagementDto extends BaseDto{
+
+    String op_code          ="";//操作功能代码
+    String function_name    ="";//功能名称
+    String out_sys_name     ="";//系统名称
+    String login_no         ="";//操作工号
+    String login_name       ="";//工号名称
+    String group_name       ="";//地市区县名称
+    String boss_login_no    ="";//
+    String bass_login_no1   ="";//boss工号
+    String op_time          ="";//操作时间
+    String ip_addr          ="";//IP地址
+    String function_code    ="";//唯一标识
+    String group_id         ="";//地市区县ID
+    String parent_group_id  ="";//
+    String out_sys_id       ="";//外系统标识
+    String open_date        ="";
+    String audit_date       ="";
+
+    public String getOpen_date() {
+        return open_date;
+    }
+
+    public void setOpen_date(String open_date) {
+        this.open_date = open_date;
+    }
+
+    public String getAudit_date() {
+        return audit_date;
+    }
+
+    public void setAudit_date(String audit_date) {
+        this.audit_date = audit_date;
+    }
+
+    public String getOp_code() {
+        return op_code;
+    }
+
+    public void setOp_code(String op_code) {
+        this.op_code = op_code;
+    }
+
+    public String getFunction_name() {
+        return function_name;
+    }
+
+    public void setFunction_name(String function_name) {
+        this.function_name = function_name;
+    }
+
+    public String getOut_sys_name() {
+        return out_sys_name;
+    }
+
+    public void setOut_sys_name(String out_sys_name) {
+        this.out_sys_name = out_sys_name;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getBoss_login_no() {
+        return boss_login_no;
+    }
+
+    public void setBoss_login_no(String boss_login_no) {
+        this.boss_login_no = boss_login_no;
+    }
+
+    public String getBass_login_no1() {
+        return bass_login_no1;
+    }
+
+    public void setBass_login_no1(String bass_login_no1) {
+        this.bass_login_no1 = bass_login_no1;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getIp_addr() {
+        return ip_addr;
+    }
+
+    public void setIp_addr(String ip_addr) {
+        this.ip_addr = ip_addr;
+    }
+
+    public String getFunction_code() {
+        return function_code;
+    }
+
+    public void setFunction_code(String function_code) {
+        this.function_code = function_code;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getParent_group_id() {
+        return parent_group_id;
+    }
+
+    public void setParent_group_id(String parent_group_id) {
+        this.parent_group_id = parent_group_id;
+    }
+
+    public String getOut_sys_id() {
+        return out_sys_id;
+    }
+
+    public void setOut_sys_id(String out_sys_id) {
+        this.out_sys_id = out_sys_id;
+    }
+
+    @Override
+    public String toString() {
+        return "LogManagementDto{" +
+                "op_code='" + op_code + '\'' +
+                ", function_name='" + function_name + '\'' +
+                ", out_sys_name='" + out_sys_name + '\'' +
+                ", login_no='" + login_no + '\'' +
+                ", login_name='" + login_name + '\'' +
+                ", group_name='" + group_name + '\'' +
+                ", boss_login_no='" + boss_login_no + '\'' +
+                ", bass_login_no1='" + bass_login_no1 + '\'' +
+                ", op_time='" + op_time + '\'' +
+                ", ip_addr='" + ip_addr + '\'' +
+                ", function_code='" + function_code + '\'' +
+                ", group_id='" + group_id + '\'' +
+                ", parent_group_id='" + parent_group_id + '\'' +
+                ", out_sys_id='" + out_sys_id + '\'' +
+                ", open_date='" + open_date + '\'' +
+                ", audit_date='" + audit_date + '\'' +
+                '}';
+    }
+}

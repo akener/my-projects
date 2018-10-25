@@ -1,0 +1,73 @@
+package com.esop.workflow.model;
+
+public class CtProcPropertyCfg {
+    private String procId;
+
+    private String procNameCh;
+
+    private String paramKey;
+
+    private String paramName;
+
+    private String condiFlag;
+
+    private String componentType;
+
+    private String paramType;
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameCh() {
+        return procNameCh;
+    }
+
+    public void setProcNameCh(String procNameCh) {
+        this.procNameCh = procNameCh;
+    }
+
+    public String getParamKey() {
+        return paramKey;
+    }
+
+    public void setParamKey(String paramKey) {
+        this.paramKey = paramKey;
+    }
+
+    public String getParamName() {
+        return paramName;
+    }
+
+    public void setParamName(String paramName) {
+        this.paramName = paramName;
+    }
+
+    public String getCondiFlag() {
+        return condiFlag;
+    }
+
+    public void setCondiFlag(String condiFlag) {
+        this.condiFlag = condiFlag;
+    }
+
+    public String getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType(String componentType) {
+        this.componentType = componentType;
+    }
+
+    public String getParamType() {
+        return paramType;
+    }
+
+    public void setParamType(String paramType) {
+        this.paramType = paramType;
+    }
+}

@@ -1,0 +1,146 @@
+package com.esop.ledger.controller;
+
+import com.esop.common.excel.ExportExcelUtils;
+import com.esop.ledger.service.LedgerWriteService;
+import org.apache.log4j.Logger;
+import org.apache.poi.ss.usermodel.Row;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import com.esop.ledger.dto.LedgerInfoDto;
+import com.esop.ledger.dto.LedgerDetailsInfoDto;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Clob;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 16/8/4.
+ */
+@RestController
+public class LedgerWriteRC {
+    @Autowired
+    LedgerWriteService ledgerInfoService;
+
+    private static Logger logger = Logger.getLogger(LedgerWriteRC.class);
+    //查询节点默认台账信息
+    @RequestMapping(value="/defaultLedgerInfo")
+    public List<LedgerInfoDto> getOrgInfoTree(LedgerInfoDto parameter){
+        return ledgerInfoService.defaultLedgerInfo(parameter);
+    }
+    //查询台账详细信息
+    @RequestMapping(value="/ledgerDetailsInfoByLedgerId")
+    public List<LedgerDetailsInfoDto> ledgerDetailsInfoByLedgerId(LedgerDetailsInfoDto parameter){
+        List list;
+        list= ledgerInfoService.ledgerDetailsInfoByLedgerId(parameter);
+        return list;
+    }
+    //查询台账详细信息总记录数
+    @RequestMapping(value="/ledgerDetailsInfoByLedgerIdCount")
+    public int ledgerDetailsInfoByLedgerIdCount(LedgerDetailsInfoDto parameter){
+        int total =0;
+        total= ledgerInfoService.ledgerDetailsInfoByLedgerIdCount(parameter);
+        return total;
+    }
+    //查询台账明细信息
+    @RequestMapping(value="/selectLedgerDetailsInfo")
+    public LedgerDetailsInfoDto selectLedgerDetailsInfo(LedgerDetailsInfoDto parameter){
+        return ledgerInfoService.selectLedgerDetailsInfo(parameter).get(0);
+    }
+    //插入空台账数据
+    @RequestMapping(value="/insertLedgerDetailsInfo")
+    public int insertLedgerDetailsInfo(LedgerDetailsInfoDto parameter){
+        System.out.println("parameter--------------getRegion_code-----------");
+        System.out.println(parameter.getRegion_code());
+        return ledgerInfoService.insertLedgerDetailsInfo(parameter);
+    }
+    //更新台账明细信息
+    @RequestMapping(value="/updateLedgerDetailsInfo")
+    public int updateLedgerDetailsInfo(LedgerDetailsInfoDto parameter){
+        return ledgerInfoService.updateLedgerDetailsInfo(parameter);
+    }
+    //更新台账信息
+    @RequestMapping(value="/updateLedgerInfo")
+    public int updateLedgerInfo(LedgerInfoDto parameter){
+
+        return ledgerInfoService.updateLedgerInfo(parameter);
+    }
+    @RequestMapping(value = "excelLedgerInfo")
+    @ResponseBody  //将内容或对象作为 HTTP 响应正文返回，使用@ResponseBody将会跳过视图处理部分，而是调用适合HttpMessageConverter，将返回值写入输出流。
+    //@RequestBody 将 HTTP 请求正文插入方法中,使用适合的HttpMessageConverter将请求体写入某个对象。
+    public Object excelLedgerInfo(LedgerDetailsInfoDto parameter, HttpServletResponse response) throws Exception{
+        logger.info("parameter=excel导出数据");
+        logger.info("parameter="+parameter.getLedger_id());
+        List<String> headerList = new ArrayList(); // 表格Title
+        headerList.add("资源父类");
+        headerList.add("资源信息");
+        headerList.add("上期结存");
+        headerList.add("本期入库");
+        headerList.add("本期退库");
+        headerList.add("上级下拨");
+        headerList.add("退回上级");
+        headerList.add("拨给下级");
+        headerList.add("下级退回");
+        headerList.add("待入");
+        headerList.add("待出");
+        headerList.add("下拨路过");
+        headerList.add("回退路过");
+        headerList.add("普通销售");
+        headerList.add("折扣销售");
+        headerList.add("销售差异");
+        headerList.add("赠送");
+        headerList.add("赠送差异");
+        headerList.add("坏卡更换");
+        headerList.add("小计");
+        headerList.add("本期结存");
+        headerList.add("业务用品领用");
+        headerList.add("隔日退回");
+        headerList.add("隔月退回");
+        //定义行数   从第二行开始
+        int rownum = 2;
+        // 实例化 导出Excel工具
+        ExportExcelUtils ee = new ExportExcelUtils("台账明细信息(时期:"+parameter.getLedger_date()+",节点:"+parameter.getGroup_name()+")",headerList);
+        List list;
+        logger.info(parameter.getLedger_id());
+        list= ledgerInfoService.ledgerDetailsInfoByLedgerId(parameter);
+        //List<Map<String,Object>> statusList = orderService.getOrderStatus(param);  // 订单状态列表
+        logger.info("获得总记录数"+list.size());
+        for(Object list1 : list){
+            System.out.println(((LedgerDetailsInfoDto)list1).getAllocation_lower());
+            rownum++;
+            Row row = ee.addRow();
+            ee.addCell(row, 0,((LedgerDetailsInfoDto)list1).getPresource_name());
+            ee.addCell(row, 1,((LedgerDetailsInfoDto)list1).getResource_name());
+            ee.addCell(row, 2,((LedgerDetailsInfoDto)list1).getLast_balance());
+            ee.addCell(row, 3,((LedgerDetailsInfoDto)list1).getInput_godown());
+            ee.addCell(row, 4,((LedgerDetailsInfoDto)list1).getReturn_godown());
+            ee.addCell(row, 5,((LedgerDetailsInfoDto)list1).getHigher_allocation());
+            ee.addCell(row, 6,((LedgerDetailsInfoDto)list1).getReturn_higher());
+            ee.addCell(row, 7,((LedgerDetailsInfoDto)list1).getAllocation_lower());
+            ee.addCell(row, 8,((LedgerDetailsInfoDto)list1).getLower_return());
+            ee.addCell(row, 9,((LedgerDetailsInfoDto)list1).getWait_in());
+            ee.addCell(row, 10,((LedgerDetailsInfoDto)list1).getWait_out());
+            ee.addCell(row, 11,((LedgerDetailsInfoDto)list1).getAllocation_passing());
+            ee.addCell(row, 12,((LedgerDetailsInfoDto)list1).getReturn_passing());
+            ee.addCell(row, 13,((LedgerDetailsInfoDto)list1).getSales());
+            ee.addCell(row, 14,((LedgerDetailsInfoDto)list1).getDiscount_sales());
+            ee.addCell(row, 15,((LedgerDetailsInfoDto)list1).getSales_difference());
+            ee.addCell(row, 16,((LedgerDetailsInfoDto)list1).getGive());
+            ee.addCell(row, 17,((LedgerDetailsInfoDto)list1).getGive_difference());
+            ee.addCell(row, 18,((LedgerDetailsInfoDto)list1).getBad_replace());
+            ee.addCell(row, 19,((LedgerDetailsInfoDto)list1).getSubtotal());
+            ee.addCell(row, 20,((LedgerDetailsInfoDto)list1).getNow_balance());
+            ee.addCell(row, 21,((LedgerDetailsInfoDto)list1).getService_use());
+            ee.addCell(row, 22,((LedgerDetailsInfoDto)list1).getDay_return());
+            ee.addCell(row, 23,((LedgerDetailsInfoDto)list1).getMonth_return());
+        }
+        logger.info("parameter=excel导出数据-台账明细信息.xls");
+        //response.setHeader("Content-Disposition", "attachment; filename=" + java.net.URLEncoder.encode("台账明细信息（日期:"+parameter.getLedger_date()+",节点:"+parameter.getGroup_name()+"）.xls", "UTF-8"));
+        ee.write(response,"台账明细信息(日期:"+parameter.getLedger_date()+",节点:"+parameter.getGroup_name()+").xls");
+        return null;
+    }
+}

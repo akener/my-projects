@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%
+    /*
+     * 功能: 资金管理审核
+     * 版本: 1.0
+     * 日期: 2011/11/19
+     * 作者: fengwd
+     * 版权: si-tech
+     * 修改历史
+     * 修改日期      修改人      修改目的
+     */
+    /***
+     **
+     **每个任务处理界必须有6个元素： procInstId -流程实例ID taskInstId - 任务实例编码 dealOpinion-处理意见 remarks-处理备注 procId -流程模版ID  stepId 当前流程环节
+     **
+     ***/
+%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="com.sitech.crmpd.core.context.SpringContextFactory"%>
+<%@ page import="com.sitech.crm.cmd.s11920.service.ContractSvrImp"%>
+<%@ include file="/npage/include/public_title_name.jsp"%>
+<%
+    String contractId = request.getParameter("contractId");
+    String procId = request.getParameter("procId");
+    String stepId = request.getParameter("stepId");
+    String procInstId = request.getParameter("procInstId");
+    String taskId = request.getParameter("taskId");
+    String nextFlag = request.getParameter("nextFlag");
+    String taskInstId = request.getParameter("taskInstId");
+    String procNameEn = request.getParameter("procNameEn");
+    String contractTypeDetail = request.getParameter("contractTypeDetail");
+    ContractSvrImp service = (ContractSvrImp) SpringContextFactory.getBean("contractSvc");
+    String normalProcId = service.findContractProcId(procInstId); //return procInstId;
+%>
+<html>
+<head>
+    <link type="text/css" rel="stylesheet"
+          href="<%=rootPath%>/nresources/extend/themes/default/style.css" />
+    <script type="text/javascript"
+            src="<%=rootPath%>/njs/plugins/jquery.js"></script>
+    <script type="text/javascript"
+            src="<%=rootPath%>/njs/plugins/jquery.jstree.js"></script>
+    <script type="text/javascript"
+            src="<%=rootPath%>/njs/plugins/jquery.combox.js"></script>
+</head>
+<body>
+<div id="operation">
+    <div id="operation_table">
+        <div id="contract_info_div">
+        </div>
+        <div id="attach_info">
+            <!-- 附件信息 -->
+        </div>
+        <div id="taskNormalDealTraceDiv">
+            <!-- 流程正常处理轨迹 -->
+        </div>
+        <div id="taskDealTraceDiv">
+            <!-- 流程废弃处理轨迹 -->
+        </div>
+        <div class="title" onclick="showOrHidden('dealDiv','btn_3')">
+            <div class="text">
+                审核意见
+            </div>
+            <div class="title_tu">
+                <input type="button" class="butClose" id="btn_3" title="收缩" />
+            </div>
+        </div>
+        <form action="" id="taskDealForm" name="taskDealForm">
+            <!-- 处理意见，每个任务处理界面均有此域,任务处理意见 -->
+            <input type="hidden" id="dealOpinion" name="dealOpinion" value="" />
+            <div class="input" id="dealDiv">
+                <input type="hidden" name="procInstId" value="<%=procInstId%>" />
+                <input type="hidden" name="taskInstId" value="<%=taskInstId%>" />
+                <input type="hidden" name="taskId" value="<%=taskId%>" />
+                <input type="hidden" name="procId" value="<%=procId%>" />
+                <input type="hidden" name="stepId" value="<%=stepId%>" />
+                <input type="hidden" name="procNameEn" value="<%=procNameEn%>" />
+                <input type="hidden" name="contractTypeDetail" value="<%=contractTypeDetail%>" />
+                <table>
+                    <tr>
+                        <th>
+                            审核意见
+                        </th>
+                        <td colspan="3">
+                            <select class="required" name="isPass_<%=stepId%>"
+                                    id="isPass_<%=stepId%>" onchange="loadNextStep()">
+                                <option value="">
+                                    -请选择-
+                                </option>
+                                <option value="1">
+                                    同意
+                                </option>
+                                <option value="0">
+                                    退回
+                                </option>
+                            </select>
+                            <span class="red">*</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            备注
+                        </th>
+                        <td colspan="3">
+                            <!-- 任务处理备注 -->
+                            <textarea id="dealRemarks" name="dealRemarks" rows="3"
+                                      cols="80" class="required"></textarea>
+                            <span id="remarkSpan" class="red">*</span>
+                        </td>
+                    </tr>
+                    <tr id="nextStepTr">
+
+                    </tr>
+                </table>
+            </div>
+            <div id="operation_button">
+                <input class="b_foot" type="button" id="qry" value="提交"
+                       onclick="taskDeal()" />
+            </div>
+        </form>
+    </div>
+</body>
+<%@ include file="/npage/include/footer.jsp"%>
+<script type="text/javascript">
+    $(document).ready(
+        function(){
+            loading();
+            //加载合同信息
+            loadContractInfo();
+            //加载正常处理轨迹
+            loadNormalTaskTraceInfo();
+            //加载废弃处理轨迹
+            loadTaskTraceInfo();
+            //加载附件信息
+            loadAttachInfo();
+            unLoading('ajaxLoadingDiv');
+        }
+    );
+
+    //加载合同信息
+    function loadContractInfo(){
+        if("1" == "<%=contractTypeDetail%>"){
+            $("#contract_info_div").load("<%=rootPath%>/npage/func/contractMge/contractMge_info.jsp?contractId=<%=contractId%>");
+        }else if("2" == "<%=contractTypeDetail%>"){
+            $("#contract_info_div").load("<%=rootPath%>/npage/func/contractMge/biaozhun/contractMge_info_BZ.jsp?contractId=<%=contractId%>");
+        }
+    }
+
+    function loadAttachInfo(){
+        $("#attach_info").load("<%=request.getContextPath()%>/npage/func/contractMge/common/attach_info.jsp?contractId=<%=contractId%>");
+    }
+
+    //加载任务 正常处理轨迹
+    function loadNormalTaskTraceInfo(){
+        if("1" == "<%=contractTypeDetail%>"){
+            $("#taskNormalDealTraceDiv").load("<%=rootPath%>/npage/func/contractMge/taskDealTrace.jsp?procInstId=<%=normalProcId%>");
+        }else if("2" == "<%=contractTypeDetail%>"){
+            $("#taskNormalDealTraceDiv").load("<%=rootPath%>/npage/func/contractMge/biaozhun/taskDealTrace.jsp?procInstId=<%=normalProcId%>");
+        }
+    }
+
+    //加载任务 废弃处理轨迹
+    function loadTaskTraceInfo(){
+        $("#taskDealTraceDiv").load("taskDealTrace.jsp?procInstId=<%=procInstId%>");
+    }
+
+    function loadNextStep(){
+        //备注
+        var isPass = $("#isPass_<%=stepId%>").val();
+        if(isPass == "1"){
+            $("#dealRemarks").removeAttr("class");
+            $("#dealRemarks").val("同意");
+            $("#remarkSpan").hide();
+        } else if(isPass == "0"){
+            $("#dealRemarks").removeAttr("class");
+            $("#dealRemarks").val("不同意");
+            $("#remarkSpan").hide();
+        } else {
+            $("#dealRemarks").attr("class","required");
+            $("#dealRemarks").val("");
+            $("#remarkSpan").show();
+        }						//有
+        if("1" == "<%=nextFlag%>"){
+            $("#nextStepTr").css("display","block");
+            var val = $("#isPass_<%=stepId%>").val();
+            if(val != ""){
+                var url = "<%=rootPath%>/npage/func/wfCfg/nextStep.jsp";
+                loading();
+                $("#nextStepTr").load(encodeURI(url),encodeURI($("#taskDealForm").serialize()),function(data){
+                    $("input.KCombox").regAsCombox();
+                    unLoading('ajaxLoadingDiv');
+                });
+            }
+        }
+
+        var opinion = $("#isPass_<%=stepId%>").find('option:selected').text();
+        $("#dealOpinion").val(opinion);
+    }
+
+    function taskDeal(){
+        if(!checksubmit(document.taskDealForm)){
+            return false;
+        }
+        loading();
+        var url = "<%=request.getContextPath()%>/npage/func/contractMge/feiqi/taskDealDo.jsp";
+        $.post(url,encodeURI($("#taskDealForm").serialize()),function(data){
+            var retFlag = data.respFlag;
+            var retMsg = data.respMsg;
+            if(retFlag == "Y"){
+                showDialog("提交成功!", 2, 'closeFunc=resetForm()');
+            }else{
+                showDialog(retMsg,0 , 'closeFunc=resetForm()');
+            }
+
+        },"json");
+    }
+
+    function resetForm(){
+        closeDivWin();
+        parent.qryDo();
+    }
+</script>
+</html>
+

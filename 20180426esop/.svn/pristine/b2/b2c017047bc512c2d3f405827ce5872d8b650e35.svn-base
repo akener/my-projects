@@ -1,0 +1,46 @@
+package com.esop.cust.dto;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Administrator on 2017/6/22.
+ */
+public class PcKpiInfoReturnDto {
+    String code = "";
+    String message = "";
+    String promptMsg = "";
+    Map data;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getPromptMsg() {
+        return promptMsg;
+    }
+
+    public void setPromptMsg(String promptMsg) {
+        this.promptMsg = promptMsg;
+    }
+
+    public Map getData() {
+        return data;
+    }
+
+    public void setData(Map data) {
+        this.data = data;
+    }
+}

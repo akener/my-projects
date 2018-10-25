@@ -1,0 +1,88 @@
+<%@ page contentType="text/html;charset=utf-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<%@ page import="com.esop.common.security.DESPlus"%>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Map" %>
+<%
+    String encryString = request.getParameter("encryString");
+//    System.out.println("************************************ encryString = " + encryString);
+
+    DESPlus des = new DESPlus();
+    String posturl = des.decrypt(encryString);
+//    System.out.println("************************************ posturl = " + posturl);
+
+    //String posturl = "loginNo=123&password=321&jspName=456&maintainFlag=654";
+    Map<String, Object> map = new HashMap<String, Object>(0);
+    String[] params = posturl.split("&");
+    for (int i = 0; i < params.length; i++) {
+        String[] p = params[i].split("=");
+        if (p.length == 2) {
+            map.put(p[0], p[1]);
+        }
+    }
+
+    String login_no = (String) map.get("login_no");
+    String login_name = (String) map.get("login_name");
+    String jspName = (String) map.get("jspName");
+    String root_org_id = (String) map.get("root_org_id");
+    String org_name = (String) map.get("org_name");
+    String blogin_code = (String) map.get("blogin_code");
+    String clogin_code = (String) map.get("clogin_code");
+    String root_org_name = (String) map.get("root_org_name");
+    String mobile_phone = (String) map.get("mobile_phone");
+    String role_codes = (String) map.get("role_codes");
+    String org_id = (String) map.get("org_id");
+    String center_code_ep = (String) map.get("center_code");
+
+    //System.out.println("************************************ login_no = " + login_no);
+    //System.out.println("************************************ login_name = " + login_name);
+    //System.out.println("************************************ jspName = " + jspName);
+    //System.out.println("************************************ root_org_id = " + root_org_id);
+    session.setAttribute("login_no", login_no);//工号
+    session.setAttribute("login_name", login_name);//姓名
+    session.setAttribute("root_org_id", root_org_id);//分公司ID
+    session.setAttribute("root_org_name", root_org_name);//分公司名称
+    session.setAttribute("org_id", org_id);//组织机构ID
+    session.setAttribute("org_name", org_name);//组织机构名称
+    session.setAttribute("blogin_code", blogin_code);//经分工号
+    session.setAttribute("clogin_code", clogin_code);//boss工号
+    session.setAttribute("mobile_phone", mobile_phone);//手机号码
+    session.setAttribute("role_codes", role_codes);//拥有的角色串
+    session.setAttribute("center_code_ep", center_code_ep);//拥有的行业中心串
+
+%>
+<head>
+    <title>esopcloud单点登陆</title>
+</head>
+<body>
+<form id="form1" name="form1" action="<%=jspName%>" method="post">
+    <input type="hidden" name="href_url" id="href_url" value=""/>
+    <input type="hidden" name="username" id="username" value=""/>
+    <input type="hidden" name="password" id="password" value=""/>
+    <%--<input type="hidden" name="login_no" id="login_no" value="<%=login_no %>"/>
+    <input type="hidden" name="login_name" id="login_name" value="<%=java.net.URLEncoder.encode(login_name, "UTF-8") %>"/>
+    <input type="hidden" name="root_org_id" id="root_org_id" value="<%=root_org_id %>"/>
+    <input type="hidden" name="root_org_name" id="root_org_name" value="<%=java.net.URLEncoder.encode(root_org_name, "UTF-8") %>"/>
+    <input type="hidden" name="org_id" id="org_id" value="<%=org_id %>"/>
+    <input type="hidden" name="org_name" id="org_name" value="<%=java.net.URLEncoder.encode(org_name, "UTF-8") %>"/>
+    <input type="hidden" name="blogin_code" id="blogin_code" value="<%=blogin_code %>"/>
+    <input type="hidden" name="clogin_code" id="clogin_code" value="<%=clogin_code %>"/>
+    <input type="hidden" name="mobile_phone" id="mobile_phone" value="<%=mobile_phone %>"/>
+    <input type="hidden" name="role_codes" id="role_codes" value="<%=role_codes %>"/>--%>
+</form>
+<script type="text/javascript" language="javascript" class="init">
+    window.onload = function(){
+        if (!!window.ActiveXObject || "ActiveXObject" in window)
+        {
+            document.forms[0].submit();
+        }
+        else
+        {
+            alert("请使用IE！");
+            window.location.href = "login.jsp";
+        }
+    }
+</script>
+</body>
+</html>

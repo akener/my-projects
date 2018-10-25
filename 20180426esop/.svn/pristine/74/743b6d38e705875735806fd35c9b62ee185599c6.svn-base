@@ -1,0 +1,63 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/22.
+ */
+//selectReturnRemind
+//走访提醒出参
+public class VisitReminderDto {
+    String unit_id="";// 集团id
+    String unit_name="";//集团名
+    String service_no = "";//客户经理工号
+    String owner_code = "";//集团等级
+    String return_date = "";//最近一次回访日期
+    String surplus_days= "";//剩余天数
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getOwner_code() {
+        return owner_code;
+    }
+
+    public void setOwner_code(String owner_code) {
+        this.owner_code = owner_code;
+    }
+
+    public String getReturn_date() {
+        return return_date;
+    }
+
+    public void setReturn_date(String return_date) {
+        this.return_date = return_date;
+    }
+
+    public String getSurplus_days() {
+        return surplus_days;
+    }
+
+    public void setSurplus_days(String surplus_days) {
+        this.surplus_days = surplus_days;
+    }
+}

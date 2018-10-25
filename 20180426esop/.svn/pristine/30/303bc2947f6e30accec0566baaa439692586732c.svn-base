@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="WarningRpository">
+    <select id="qryImportMemberListByServiceNo"  parameterType="com.esop.alertClassified.dto.AccountAlertServiceCallingDto" resultType="com.esop.alertClassified.dto.AccountAlertServiceCallingDto" >
+        select a.service_no, a.user_name, a.phone_no
+        from dgrpcustimpmanmsg a
+        where 1=1
+        <if test="landing_no != ''">
+            and a.service_no = #{landing_no}
+        </if>
+    </select>
+</mapper>

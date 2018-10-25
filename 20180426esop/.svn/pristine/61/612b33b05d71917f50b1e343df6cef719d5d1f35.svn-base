@@ -1,0 +1,44 @@
+package com.esop.cqDevelopment.service;
+
+import com.esop.cqDevelopment.dto.GroupMemAlertDto;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class GroupMemAlertService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public int getGrpMemAlertSvc(GroupMemAlertDto parameter){
+        int i=sqlSessionTemplate.insert("insertGrpMemAlertInfo",parameter);
+        List<GroupMemAlertDto> list = sqlSessionTemplate.selectList("selectAlertContactPhoneInfo",parameter);
+        if(list.size()>0) {
+            String mobile_phone = list.get(0).getMobile_phone();
+            if (!mobile_phone.equals("") && mobile_phone != null) {
+                parameter.setMobile_phone(mobile_phone);
+                if(parameter.getInitiative_conn_count()==""||parameter.getInitiative_conn_count()==null)
+                    parameter.setInitiative_conn_count("0");
+                if(parameter.getInitiative_conn_count_mth()==""||parameter.getInitiative_conn_count_mth()==null)
+                    parameter.setInitiative_conn_count_mth("0");
+                if(parameter.getPassiveness_conn_count()==""||parameter.getPassiveness_conn_count()==null)
+                    parameter.setPassiveness_conn_count("0");
+                if(parameter.getPassiveness_conn_count_mth()==""||parameter.getPassiveness_conn_count_mth()==null)
+                    parameter.setPassiveness_conn_count_mth("0");
+                int bd_num = Integer.valueOf(parameter.getInitiative_conn_count())+Integer.valueOf(parameter.getPassiveness_conn_count());
+                int bd_num_thmth = Integer.valueOf(parameter.getInitiative_conn_count_mth())+Integer.valueOf(parameter.getPassiveness_conn_count_mth());
+                String shortmsg = "预警工作台温馨提醒：您服务的单位【\" + parameter.getCust_name() + \"】的关键人【\" + parameter.getKey_person_num() + \"】被疑似【\" + parameter.getBusiness_competitor_num() + \"】客户经理频繁联系，本周：\"+bd_num+\"次（主叫\" + parameter.getInitiative_conn_count() + \"次，被叫\" + parameter.getPassiveness_conn_count() + \"次），过去三月：\"+bd_num_thmth+\"次（主叫\" + parameter.getInitiative_conn_count_mth() + \"次，被叫\" + parameter.getPassiveness_conn_count_mth() + \"次），请您密切关注。";
+                parameter.setShort_msg(shortmsg);
+                i = sqlSessionTemplate.insert("insertGrpAlertShortMsgInfo", parameter);
+            }
+        }
+        return i;
+    }
+}

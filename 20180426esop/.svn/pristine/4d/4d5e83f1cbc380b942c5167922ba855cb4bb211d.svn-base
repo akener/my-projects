@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CallPhoneRepository">
+    <!--普通成员信息-->
+    <select id="qryMemberBaseInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.CallPhoneDto">
+        select distinct a.unit_id,a.name,'员工' as duty,b.unit_name,'普通成员' as member_type from dgrpmembermsg a, dgrpcustmsg b
+        where 1=1
+        and a.unit_id = b.unit_id
+        and a.phone_no like  #{phone_no}||'%'
+        union all
+        select distinct a.unit_id,a.name,a.duty,c.unit_name,'普通成员' as member_type from dgrpmembermsg a,  dgrppremsg c
+        where 1=1
+        and a.unit_id = c.unit_id
+        and a.phone_no like  #{phone_no}||'%'
+        union all
+        select distinct a.unit_id,a.name,a.duty,d.unit_name,'普通成员' as member_type from dgrpmembermsg a,  dgrpcustpotmsg d
+        where 1=1
+        and a.unit_id = d.unit_id
+        and a.phone_no like  #{phone_no}||'%'
+    </select>
+    <!--重要成员信息-->
+    <select id="qryImpMemberInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.CallPhoneDto">
+        select a.name,b.unit_id,b.duty,c.unit_name,'重要成员' as member_type from dgrpmembermsg a, dgrpcustimpmanmsg b,dgrpcustmsg c
+        where 1=1
+        and  a.phone_no = b.phone_no
+        and  b.unit_id = c.unit_id
+        and  a.phone_no like  #{phone_no}||'%'
+    </select>
+</mapper>

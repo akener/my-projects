@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <!-- 查询量酬情况排名 -->
+    <select id="selectAmountPaymentList"  parameterType="String" resultType="com.esop.workbench.dto.AmountPaymentDto" >
+
+        <!--select rownum,region_name,town_name,employee_no,role_name,payment_money
+        from (
+        select  t1.amout_expire,t1.region_name,t1.town_name,t1.employee_no,t1.payment_money,t3.role_name
+        from (select amout_expire,region_code,region_name,town_code,town_name,boss_no,employee_no,round(sum(payment_money),2) payment_money
+        from ep_amout_payment
+        group by amout_expire,region_code,region_name,town_code,town_name,boss_no,employee_no) t1,ep_sys_loginmsg_new t2,ep_sys_rolecode_info t3
+        where t1.employee_no = t2.mis_no
+        and t2.role_code = t3.role_code
+        and t1.region_code = '10031'
+        and t1.amout_expire = '201705'
+        order by to_number(t1.payment_money) desc
+        ) -->
+
+        select rownum,region_name,town_name,employee_no,role_name,payment_money
+        from (
+        select  t1.amout_expire,t1.region_name,t1.town_name,t1.employee_no,t1.payment_money,t3.role_name
+        from (select amout_expire,region_code,region_name,town_code,town_name,boss_no,employee_no,round(sum(replace(replace(payment_money,chr(13),''),chr(10),'')),2) payment_money
+              from ep_amout_payment
+              group by amout_expire,region_code,region_name,town_code,town_name,boss_no,employee_no) t1
+        left join ep_sys_loginmsg_new t2
+        on t1.employee_no = t2.mis_no
+        left join ep_sys_rolecode_new t3
+        on t2.role_code = t3.role_code
+        where 1=1
+        <if test="region_code != ''">
+            and t1.region_code = #{region_code}
+        </if>
+        <if test="town_code != ''">
+            and t1.town_code = #{town_code}
+        </if>
+        <if test="amout_expire != ''">
+            and t1.amout_expire = #{amout_expire}
+        </if>
+        order by to_number(t1.payment_money) desc
+        )
+    </select>
+    <!-- 量酬成本展示 -->
+    <select id="selectAmountPaymentCost"  parameterType="String" resultType="com.esop.workbench.dto.AmountPaymentDto" >
+        select region_name,
+        <if test="town_code != ''">
+            town_name,
+        </if>
+        sum_payment,avg_payment,ampay_year_live
+        from (
+            select
+            <if test="region_code == ''">
+                '全省' region_name,
+            </if>
+            <if test="region_code != ''">
+                region_name,
+            </if>
+            <if test="town_code != ''">
+                town_name,
+            </if>
+            round(sum(replace(replace(payment_money,chr(13),''),chr(10),'')),2) sum_payment ,round(avg(replace(replace(payment_money,chr(13),''),chr(10),'')),2) avg_payment
+            from
+            (
+                select t1.region_code,t1.region_name,t1.town_code,t1.town_name,t1.boss_no,t1.employee_no,t1.payment_criterion,sum(replace(replace(t1.payment_money,chr(13),''),chr(10),'')) payment_money
+                from ep_amout_payment t1
+                where 1=1
+                and t1.amout_expire = #{amout_expire}
+                <if test="region_code != ''">
+                    and t1.region_code = #{region_code}
+                </if>
+                <if test="town_code != ''">
+                    and t1.town_code = #{town_code}
+                </if>
+                group by t1.region_code,t1.region_name,t1.town_code,t1.town_name,t1.boss_no,t1.employee_no,t1.payment_criterion
+            )
+            <if test="region_code == ''">
+                group by '全省'
+            </if>
+            <if test="region_code != ''">
+                group by region_name
+            </if>
+            <if test="town_code != ''">
+                ,town_name
+            </if>
+        ),
+        (select round(sum(t2.ampay_year_live),2) ampay_year_live
+         from ep_keep_ampay t2
+         where 1=1
+         <if test="op_time != ''">
+             and t2.op_time = #{op_time}
+         </if>
+         <if test="region_code != ''">
+             and region_code = #{region_code}
+         </if>
+        )
+
+    </select>
+    <!-- 录入全年薪酬成本上限 -->
+    <select id="insertAmountPayment"  parameterType="com.esop.workbench.dto.AmountPaymentDto" resultType="int" >
+        insert into ep_keep_ampay(region_code,region_name,ampay_year_live,op_time)
+        values(#{region_code},#{region_name},#{ampay_year_live},#{op_time})
+    </select>
+    <!-- 查询添加的全年量酬上限是否重复 -->
+    <select id="selectAmountPaymentCostCount"  parameterType="com.esop.workbench.dto.AmountPaymentDto" resultType="int" >
+        select count(*)
+        from ep_keep_ampay
+        where 1=1
+        <if test="region_name !=''">
+            and region_name = #{region_name}
+        </if>
+        <if test="op_time != ''">
+            and op_time = #{op_time}
+        </if>
+    </select>
+    <!-- 查询全年薪酬成本上限 -->
+    <select id="selectAllAmountPayment"  parameterType="String" resultType="com.esop.workbench.dto.AmountPaymentDto" >
+        SELECT op_time,ampay_year_live,region_name,'&lt;button class="ui-btn" onclick="editTable(this)" >修改&lt;/button>' as opt
+        from ep_keep_ampay
+    </select>
+    <!-- 修改量酬成本上限 -->
+    <select id="updateAmountCost"  parameterType="com.esop.workbench.dto.AmountPaymentDto" resultType="int" >
+        update ep_keep_ampay
+        set ampay_year_live = #{ampay_year_live}
+        where region_name = #{region_name} and op_time = #{op_time}
+    </select>
+</mapper>

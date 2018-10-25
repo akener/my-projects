@@ -1,0 +1,53 @@
+/**
+ * Created by yanhao on 2017/12/8.
+ */
+function getNextLink(ind_type,node_id) {
+    //带入审批信息
+    $.ajax({
+        type: "POST",
+        url: "workFlowQuery",
+        data:{
+            ind_type:ind_type,
+            node_id:node_id
+        },
+        cache: false,
+        success: function (result) {
+            if(result.length > 0) {
+                $("#nextLink").html(result[0].node_role_name);
+                getNextDealPerson(result[0].node_role_id);
+                $("#first_node_id").val(result[0].node_id);
+            }else{
+                document.getElementById("appove_show").style.display='none';
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+}
+//获取下一环节处理人
+function getNextDealPerson(role_id) {
+    $.ajax({
+        type: 'POST',
+        url: 'qryNextDealPerson',
+        cache: false,
+        data: {
+            role_id:role_id
+        },
+        success: function (data) {
+            var type_data="";
+            $.each(data, function (i, field) {
+                //拼接json数据集字符串
+                type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                type_data += ">" + field.login_name + "</option>";
+            });
+            $("#nextStepDealPerson").empty();
+            $("#nextStepDealPerson").append(type_data);
+        },
+        error: function (resp) {
+            bootStrapAlert('获取下一步处理人失败！');
+            return false;
+
+        },
+    });
+}

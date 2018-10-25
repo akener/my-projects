@@ -1,0 +1,63 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/7/4.
+ */
+//文件上传
+public class UploadFileDto {
+    String related_id = "";//文件id
+    String create_no = "";//创建工号
+    String create_date = "";//上传时间
+    String name = "";//文件名
+    String path = "";//文件保存路径
+    String valid = "";//文件是否有效
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+
+
+    public String getCreate_no() {
+        return create_no;
+    }
+
+    public void setCreate_no(String create_no) {
+        this.create_no = create_no;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+}

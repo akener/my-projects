@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HallRepository">
+
+    <select id="SeContractInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto">
+        SELECT
+        t1.contract_name,
+        t1.contract_id,
+        t1.bak3,
+        t2.contract_detail_name,
+        t1.group_name,
+        t1.oper_date,
+        t5.jsp_path,
+        t3.proc_id,
+        t3.proc_name_ch,
+        t5.step_id,
+        t5.step_name,
+        t3.proc_inst_id,
+        t4.task_inst_id,
+        t5.next_flag,
+        t4.task_id,
+        t3.proc_name_en,
+        t1.oper_date,
+        t1.contract_type_detail,
+        t1.oper_no,
+        t1.firstway_name,
+        t1.oper_name,
+        t1.contract_money,
+        t1.contract_status,
+        t6.discount
+        from
+        se_contract_info t1,
+        se_contracttypedetail_dict t2,
+        ct_proc_inst_info t3,
+        ct_task_inst_info t4,
+        ct_proc_step_rel t5,
+        se_new_contract_info t6,
+        bs_product_info t7
+        WHERE    t1.CONTRACT_TYPE_DETAIL = t2.CONTRACT_DETAIL_CODE
+        AND t3.PROC_TYPE_CODE = '3008'
+        AND t3.BIZ_RECORD_ID = t1.contract_id
+        AND t3.PROC_INST_ID = t4.PROC_INST_ID
+        AND t4.STATUS = '0'
+        AND t3.PROC_ID = t5.PROC_ID
+        AND t4.STEP_ID = t5.STEP_ID
+        AND t6.contract_id = t1.contract_id
+        AND t7.prod_id = t6.product_id
+        <if test="contract_id != ''">
+         AND  t1.contract_id=#{contract_id}
+        </if>
+        <if test="contract_name != ''">
+          AND  t1.contract_name  LIKE    CONCAT('%',#{contract_name},'%')
+        </if>
+        <if test="oper_name != ''">
+            AND t1.oper_name LIKE CONCAT('%',#{oper_name},'%')
+        </if>
+        <if test="contract_type_detail != ''">
+            AND t1.contract_type_detail = #{contract_type_detail}
+        </if>
+        <if test="contract_status != ''">
+            AND   t1.contract_status=#{contract_status}
+        </if>
+        <if test="contract_status != ''">
+            AND   t1.contract_status=#{contract_status}
+        </if>
+        <if test="contract_status != ''">
+            AND   t1.contract_status=#{contract_status}
+        </if>
+        <if test="first_price != ''  ">
+            AND cast(t1.contract_money as SIGNED INTEGER) &gt; #{first_price}
+        </if>
+        <if test="next_price != '' ">
+            AND #{next_price} &gt; cast(t1.contract_money as SIGNED INTEGER)
+        </if>
+        <if test="catalog_id != '' ">
+            AND t7.catalog_id = #{catalog_id}
+        </if>
+        <if test="bak3 != ''">
+            and t1.bak3 = #{bak3}
+        </if>
+        ORDER by t1.oper_date DESC
+    </select>
+
+
+    <select id="getProcInstId" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto"
+            resultType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto">
+        SELECT * FROM
+        se_contract_info t1,
+        ct_proc_inst_info t3
+        where
+        t3.BIZ_RECORD_ID = t1.contract_id
+        and t1.contract_id = #{contract_id}
+    </select>
+</mapper>

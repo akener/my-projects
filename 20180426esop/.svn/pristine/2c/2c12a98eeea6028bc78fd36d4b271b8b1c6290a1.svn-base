@@ -1,0 +1,235 @@
+
+$(document).ready(function() {
+    refundApplyInfo();
+    bankDealInfo();
+    //addRefundApply();
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+} );
+//重置
+function pageReset(){
+    $("input").val("");
+    $("textarea").val("");
+};
+//新增资金退款申请单页面
+function addRefundApply(){
+    $("#refund_applicant").val("");
+    $("#apply_date").val("");
+    $("#expenditure_presentation_group").val("");
+    $("#group_num").val("");
+    $("#capital_contact").val("");
+    $("#telphone").val("");
+    $("#contact_type").val("");
+    $("#book_balance").val("");
+    $("#available_balance").val("");
+    $("#bill").val("");
+    $("#account").val("");
+    $("#userid").val("");
+    $("#arrive_account").val("");
+    $("#arrive_account_name").val("");
+    $("#arrive_date").val("");
+    $("#arrival_amount").val("");
+    $("#billing_date").val("");
+    $("#account_clerk").val("");
+    $("#abstracts").val("");
+    $("#refund_account").val("");
+    $("#refund_account_name").val("");
+    $("#refund_opening_bank").val("");
+    $("#refund_amount").val("");
+    $("#auditor").val("");
+    $("#order_status").val("");
+    $("#fileList div").remove();
+    bankContentQry();
+    $("#alertInfo").modal('show');
+}
+//获取关联银行到账接口信息
+function  bankContentQry(){
+    //唯一标识码
+    var biaoshima='23423424';
+    $.ajax({
+        type: "post",
+        url: "/getBankDealInfo",
+        dataType:'json',
+        data:{
+            "biaoshima":biaoshima
+        },
+        success: function (result) {
+            console.log(result.info)
+            //拼接json数据集字符串
+            $.each(result.info,function(i,filed){
+                arriveBankInfo(filed);
+            });
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    });
+}
+//获取关联银行到账
+function arriveBankInfo(result){
+    //$("#bill").val(result.bill);
+    $("#account").val(result.duifang_zhanghao);
+    $("#userid").val(result.duifang_huming);
+    $("#arrive_account").val(result.yinhang_zhanghao);
+    $("#arrive_account_name").val(result.huming);
+    $("#arrive_date").val(result.jiaoyi_shijian);
+    $("#arrival_amount").val(result.jiefang_jine);
+    $("#billing_date").val(result.shenqing_shijian);
+    $("#account_clerk").val(result.zhangwuyuan);
+    $("#abstracts").val(result.zhaiyao);
+}
+//提交退款申请单内容
+function saveRefundApply(){
+    //判断是否是只读
+    $.ajax({
+        type: "post",
+        url: "/getRefundInfo",
+        data: {
+            "refund_applicant":	$("#refund_applicant").val(),
+            "apply_date" :	$("#apply_date").val(),
+            "expenditure_presentation_group"   : $("#expenditure_presentation_group").val(),
+            "group_num" :	$("#group_num").val(),
+            "capital_contact":	$("#capital_contact").val(),
+            "telphone"  :	$("#telphone").val(),
+            "contact_type":   $("#contact_type").val(),
+            "book_balance" :	$("#book_balance").val( ),
+            "available_balance" :	$("#available_balance").val(),
+            "bill":	$("#bill").val( ),
+            "file":	$("#file").val( ),
+            "account" : $("#account").val(),
+            "userid"  :	$("#userid").val(),
+            "arrive_account"  :	$("#arrive_account").val(),
+            "arrive_account_name"  : $("#arrive_account_name").val(),
+            "arrive_date" :	$("#arrive_date").val(),
+            "arrival_amount"  :	$("#arrival_amount").val(),
+            "billing_date"   :	 $("#billing_date").val(),
+            "account_clerk"  :	$("#account_clerk").val(),
+            "abstracts"   :	 $("#abstracts").val(),
+            "refund_account"   :	$("#refund_account").val(),
+            "refund_account_name"  :	$("#refund_account_name").val(),
+            "refund_opening_bank":	$("#refund_opening_bank").val(),
+            "refund_amount":	$("#refund_amount").val(),
+            "auditor"  :	 $("#auditor").val(),
+            "order_status"   : $("#order_status").val()
+        },
+        success: function (result) {
+            alert(result.info);
+            //拼接json数据集字符串
+            if(result.info == "操作成功！"){
+                //getoa();
+            }else{
+                //alert(result.info);
+            }
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    });
+}
+
+//资金账户查看
+function refundApplyInfo() {
+    table = $('#refundApplyInfo').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getFundListInfo",
+            type:"POST",
+        },
+        columns: [
+            { data: "bill"},
+            { data: "arrival_time"},
+            { data: "source_client"},
+            { data: "source_num"},
+            { data: "arrival_amount"},
+            { data: "arrival_amount_name"},
+            { data: "arrival_num"},
+            { data: "publish_time"},
+            { data: "group_name"},
+            { data: "manager"},
+            { data: "deal_status"},
+            { data: "group_ids"},
+            { data: "account_clerk"},
+            { data: "abstracts"},
+            { data: "group_ids",
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    return data= "<button  type='button' style='width: 60px' onclick='addRefundApply("+row.group_ids+")' name='"+row.group_ids+"'>新增</button>"+
+                        "<button type='button' style='width: 60px' onclick='selRefundMsg("+row.group_ids+")' name='"+row.group_ids+"'>查看</button>";
+
+                }
+            }
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+
+//银行交易明细查询列表
+function bankDealInfo() {
+    table1 = $('#bankDealInfo').DataTable({
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getRelBankDealInfo",
+            type:"POST",
+        },
+        columns: [
+            { data: "jiaoyi_liushui"},
+            { data: "yinhang_zhanghao"},
+            { data: "huming"},
+            { data: "duifang_zhanghao"},
+            { data: "duifang_huming"},
+            { data: "zhaiyao"},
+            { data: "yongtu"},
+            { data: "jihe_biaoshima"},
+            { data: "yingye_gonghao"},
+            { data: "jiefang_jine"},
+            { data: "daifang_jine"},
+            { data: "shouxufei"},
+            { data: "jiaoyi_shijian"},
+            { data: "jiaofei_fangshi"},
+            { data: "zhipiaohao"},
+            { data: "yinhang_wangdian"},
+            { data: "chuli_zhuangtai"}
+            /*{ data: "group_ids",
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    return data= "<button  type='button' style='width: 60px' onclick='addRefundApply("+row.group_ids+")' name='"+row.group_ids+"'>新增</button>"+
+                        "<button type='button' style='width: 60px' onclick='selRefundMsg("+row.group_ids+")' name='"+row.group_ids+"'>查看</button>";
+
+                }
+            }*/
+        ],
+        select: true,
+        buttons: [
+        ]
+    })
+}

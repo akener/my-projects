@@ -1,0 +1,89 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+       <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编号：</th>
+                            <td>
+                                <input type="text" id="grpCustId1" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团资金账号：</th>
+                            <td>
+                                <input type="text" id="grpFundAcctid1" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="getCapitalListInfo()">查询</button>
+                            <button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>
+                            <%--<button class="ui-btn" type="reset"  onclick="addRefundApply()">新增</button>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金账户查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="capitalListInfo" width="100%;">
+                        <thead>
+                            <tr>
+                                <th class="text-center">集团资金账户号</th>
+                                <th class="text-center">集团客户编号</th>
+                                <th class="text-center">集团客户名称</th>
+                                <th class="text-center">绑定银行账号</th>
+                                <th class="text-center">开户行</th>
+                                <th class="text-center">归属分公司</th>
+                                <th class="text-center">账号状态</th>
+                                <th class="text-center">资金账户余额（分）</th>
+                                <th class="text-center">资金账户可用余额（分）</th>
+                                <th class="text-center">占用资金（分）</th>
+                                <th class="text-center">冻结资金（分）</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--申请页面-->
+ <%@ include file="groupMemberApply.jsp"%>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/refund/refundApply.js"></script>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/groupMember/groupMember.js"></script>
+</html>

@@ -1,0 +1,403 @@
+package com.esop.visitInfo.dto;
+
+/**
+ * Created by subt on 2017/7/7 0007.
+ */
+public class DevelopmentDto {
+
+    String group_id         ="";//地市区县ID
+    String visit_company    ="";//走访单位名称
+    String industry_id      ="";//所属行业
+    String address          ="";//地址（到街道、门牌）
+    String photo_id         ="";//照片
+    String telephone        ="";//电话
+    String unit_id          ="";//集团ID
+    String login_no         ="";//走访人
+    String net_id           ="";//网格ID
+    String boss_no          ="";//走访人BOSS工号
+    String brdbd_type       ="";//宽带类型
+    String brdbd_width      ="";//宽带带宽
+    String brdbd_postage    ="";//宽带资费
+    String brdbd_enddate    ="";//宽带到期时间
+    String tel_type         ="";//固话类型
+    String tel_no           ="";//固话号码
+    String tel_postage      ="";//固话资费
+    String tel_enddate      ="";//固话到期时间
+    String ddn_type         ="";//专线类型
+    String ddn_width        ="";//专线带宽
+    String ddn_postage      ="";//专线资费
+    String ddn_enddate      ="";//专线到期时间
+    String total_num        ="";//号码总人数
+    String yd_num           ="";//使用移动号码数
+    String lt_num           ="";//使用联通号码数
+    String dx_num           ="";//使用电信号码数
+    String month_rate       ="";//月电话费
+    String inf_demand_id    ="";//信息化应用需求编号
+    String other_demand     ="";//其他需求
+    String create_date      ="";//创建时间
+    String update_date      ="";//修改时间
+
+    //应用需求
+    String appdm_code       ="";//应用需求类别
+    String appdm_name       ="";//名称
+    String ind_type         ="";//编号
+    //所属行业
+    String trade_code       ="";//编号
+    String trade_name       ="";//名称
+    //地市
+    String name             ="";//名称trim(name)
+    String tree_str         ="";
+    String boss_org_code    ="";
+    //
+
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getVisit_company() {
+        return visit_company;
+    }
+
+    public void setVisit_company(String visit_company) {
+        this.visit_company = visit_company;
+    }
+
+    public String getIndustry_id() {
+        return industry_id;
+    }
+
+    public void setIndustry_id(String industry_id) {
+        this.industry_id = industry_id;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getPhoto_id() {
+        return photo_id;
+    }
+
+    public void setPhoto_id(String photo_id) {
+        this.photo_id = photo_id;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getNet_id() {
+        return net_id;
+    }
+
+    public void setNet_id(String net_id) {
+        this.net_id = net_id;
+    }
+
+    public String getBoss_no() {
+        return boss_no;
+    }
+
+    public void setBoss_no(String boss_no) {
+        this.boss_no = boss_no;
+    }
+
+    public String getBrdbd_type() {
+        return brdbd_type;
+    }
+
+    public void setBrdbd_type(String brdbd_type) {
+        this.brdbd_type = brdbd_type;
+    }
+
+    public String getBrdbd_width() {
+        return brdbd_width;
+    }
+
+    public void setBrdbd_width(String brdbd_width) {
+        this.brdbd_width = brdbd_width;
+    }
+
+    public String getBrdbd_postage() {
+        return brdbd_postage;
+    }
+
+    public void setBrdbd_postage(String brdbd_postage) {
+        this.brdbd_postage = brdbd_postage;
+    }
+
+    public String getBrdbd_enddate() {
+        return brdbd_enddate;
+    }
+
+    public void setBrdbd_enddate(String brdbd_enddate) {
+        this.brdbd_enddate = brdbd_enddate;
+    }
+
+    public String getTel_type() {
+        return tel_type;
+    }
+
+    public void setTel_type(String tel_type) {
+        this.tel_type = tel_type;
+    }
+
+    public String getTel_no() {
+        return tel_no;
+    }
+
+    public void setTel_no(String tel_no) {
+        this.tel_no = tel_no;
+    }
+
+    public String getTel_postage() {
+        return tel_postage;
+    }
+
+    public void setTel_postage(String tel_postage) {
+        this.tel_postage = tel_postage;
+    }
+
+    public String getTel_enddate() {
+        return tel_enddate;
+    }
+
+    public void setTel_enddate(String tel_enddate) {
+        this.tel_enddate = tel_enddate;
+    }
+
+    public String getDdn_type() {
+        return ddn_type;
+    }
+
+    public void setDdn_type(String ddn_type) {
+        this.ddn_type = ddn_type;
+    }
+
+    public String getDdn_width() {
+        return ddn_width;
+    }
+
+    public void setDdn_width(String ddn_width) {
+        this.ddn_width = ddn_width;
+    }
+
+    public String getDdn_postage() {
+        return ddn_postage;
+    }
+
+    public void setDdn_postage(String ddn_postage) {
+        this.ddn_postage = ddn_postage;
+    }
+
+    public String getDdn_enddate() {
+        return ddn_enddate;
+    }
+
+    public void setDdn_enddate(String ddn_enddate) {
+        this.ddn_enddate = ddn_enddate;
+    }
+
+    public String getTotal_num() {
+        return total_num;
+    }
+
+    public void setTotal_num(String total_num) {
+        this.total_num = total_num;
+    }
+
+    public String getYd_num() {
+        return yd_num;
+    }
+
+    public void setYd_num(String yd_num) {
+        this.yd_num = yd_num;
+    }
+
+    public String getLt_num() {
+        return lt_num;
+    }
+
+    public void setLt_num(String lt_num) {
+        this.lt_num = lt_num;
+    }
+
+    public String getDx_num() {
+        return dx_num;
+    }
+
+    public void setDx_num(String dx_num) {
+        this.dx_num = dx_num;
+    }
+
+    public String getMonth_rate() {
+        return month_rate;
+    }
+
+    public void setMonth_rate(String month_rate) {
+        this.month_rate = month_rate;
+    }
+
+    public String getInf_demand_id() {
+        return inf_demand_id;
+    }
+
+    public void setInf_demand_id(String inf_demand_id) {
+        this.inf_demand_id = inf_demand_id;
+    }
+
+    public String getOther_demand() {
+        return other_demand;
+    }
+
+    public void setOther_demand(String other_demand) {
+        this.other_demand = other_demand;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(String update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getAppdm_code() {
+        return appdm_code;
+    }
+
+    public void setAppdm_code(String appdm_code) {
+        this.appdm_code = appdm_code;
+    }
+
+    public String getAppdm_name() {
+        return appdm_name;
+    }
+
+    public void setAppdm_name(String appdm_name) {
+        this.appdm_name = appdm_name;
+    }
+
+    public String getInd_type() {
+        return ind_type;
+    }
+
+    public void setInd_type(String ind_type) {
+        this.ind_type = ind_type;
+    }
+
+    public String getTrade_code() {
+        return trade_code;
+    }
+
+    public void setTrade_code(String trade_code) {
+        this.trade_code = trade_code;
+    }
+
+    public String getTrade_name() {
+        return trade_name;
+    }
+
+    public void setTrade_name(String trade_name) {
+        this.trade_name = trade_name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTree_str() {
+        return tree_str;
+    }
+
+    public void setTree_str(String tree_str) {
+        this.tree_str = tree_str;
+    }
+
+    public String getBoss_org_code() {
+        return boss_org_code;
+    }
+
+    public void setBoss_org_code(String boss_org_code) {
+        this.boss_org_code = boss_org_code;
+    }
+
+    @Override
+    public String toString() {
+        return "DevelopmentDto{" +
+                "group_id='" + group_id + '\'' +
+                ", visit_company='" + visit_company + '\'' +
+                ", industry_id='" + industry_id + '\'' +
+                ", address='" + address + '\'' +
+                ", photo_id='" + photo_id + '\'' +
+                ", telephone='" + telephone + '\'' +
+                ", unit_id='" + unit_id + '\'' +
+                ", login_no='" + login_no + '\'' +
+                ", net_id='" + net_id + '\'' +
+                ", boss_no='" + boss_no + '\'' +
+                ", brdbd_type='" + brdbd_type + '\'' +
+                ", brdbd_width='" + brdbd_width + '\'' +
+                ", brdbd_postage='" + brdbd_postage + '\'' +
+                ", brdbd_enddate='" + brdbd_enddate + '\'' +
+                ", tel_type='" + tel_type + '\'' +
+                ", tel_no='" + tel_no + '\'' +
+                ", tel_postage='" + tel_postage + '\'' +
+                ", tel_enddate='" + tel_enddate + '\'' +
+                ", ddn_type='" + ddn_type + '\'' +
+                ", ddn_width='" + ddn_width + '\'' +
+                ", ddn_postage='" + ddn_postage + '\'' +
+                ", ddn_enddate='" + ddn_enddate + '\'' +
+                ", total_num='" + total_num + '\'' +
+                ", yd_num='" + yd_num + '\'' +
+                ", lt_num='" + lt_num + '\'' +
+                ", dx_num='" + dx_num + '\'' +
+                ", month_rate='" + month_rate + '\'' +
+                ", inf_demand_id='" + inf_demand_id + '\'' +
+                ", other_demand='" + other_demand + '\'' +
+                ", create_date='" + create_date + '\'' +
+                ", update_date='" + update_date + '\'' +
+                ", appdm_code='" + appdm_code + '\'' +
+                '}';
+    }
+}

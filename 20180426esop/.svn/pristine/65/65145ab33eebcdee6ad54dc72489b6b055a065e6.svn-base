@@ -1,0 +1,98 @@
+package com.esop.cqDevelopment.groupFundReport.controller;
+
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto;
+import com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto;
+import com.esop.cqDevelopment.groupFundReport.service.GroupFundReportSummaryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+
+@RestController
+public class GroupFundReportSummaryController {
+    @Autowired
+    private GroupFundReportSummaryService groupFundReportSummaryService;
+
+    Result result = new Result();
+
+    //集团资金调账汇总表
+    @RequestMapping(value = "/getGroupFundAccountAdjustmentSummaryList")
+    public List<GroupFundReconciliationDailyRptDto>  getGroupFundAccountAdjustmentSummaryList(GroupFundReconciliationDailyRptDto parameter, HttpServletRequest request){
+        try{
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            DateFormat df1 = new SimpleDateFormat("yyyyMMddHHmmss");
+            Calendar calendar = Calendar.getInstance();
+
+            String datestart = parameter.getDealend_date_start();
+            String dateend = parameter.getDealend_date_end();
+
+            Date endDate = df.parse(dateend);
+            calendar.setTime(endDate);
+            calendar.add(Calendar.DAY_OF_MONTH,1);
+            calendar.add(Calendar.MILLISECOND, -1);
+            endDate = calendar.getTime();
+
+//            parameter.setDealend_date_start(df1.format(df.parse(datestart)));
+//            parameter.setDealend_date_end(df1.format(df.parse(dateend)));
+        }catch (Exception e){
+
+        }
+
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+
+        List<GroupFundReconciliationDailyRptDto> list = groupFundReportSummaryService.selectGroupFundAccountAdjustmentSummaryList(parameter);
+        return list;
+    }
+
+    //集团资金调账汇总表数据导出
+    @RequestMapping("/exportGroupFundAllReconciliationDetailReport")
+    public String exportGroupFundAllAccountUseDetailReport(GroupFundReconciliationDailyRptDto parameter, HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"报表日期","分公司","行业中心","调出总金额","日报稽核状态","稽核人员","稽核时间"};
+        String[] methods = {"getDealend_date","getOrg_name","getBusiness_center","getRegulation_money","getCheck_status","getCheck_code","getCheck_date"};
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df1 = new SimpleDateFormat("yyyyMMdd");
+        try{
+            String datestart = parameter.getInsert_date();
+//            parameter.setDealend_date_start(df1.format(df.parse(datestart)));
+        }catch (Exception e){
+        }
+        List<GroupFundReconciliationDailyRptDto> qrylist = groupFundReportSummaryService.selectGroupFundAccountAdjustmentSummaryList(parameter);
+
+        for(GroupFundReconciliationDailyRptDto dto:qrylist){
+            if(dto.getCheck_status().equals("0")){
+                dto.setCheck_status("未稽核");
+            }else if(dto.getCheck_status().equals("1")){
+                dto.setCheck_status("已稽核");
+            }else if(dto.getCheck_status().equals("2")){
+                dto.setCheck_status("已驳回");
+            }
+        }
+        result.setData(qrylist);
+
+        try{
+            String title = "集团资金调账汇总报表";
+            String[] qryCheckInfo=null;
+            qryCheckInfo = new String[]{"分公司："+parameter.getOrg_name(),"行业中心："+parameter.getBusiness_center(),"开始时间："+parameter.getDealend_date_start(),"结束时间："+parameter.getDealend_date_end()};
+            String[] foot = {};
+            groupFundReportSummaryService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,qrylist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+}

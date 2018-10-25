@@ -1,0 +1,28 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class InvoiceCheckDto{
+
+    String invoiceNo = "";
+    String num = "";
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+}

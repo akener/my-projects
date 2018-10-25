@@ -1,0 +1,354 @@
+//申请人(获取当前登录的员工)
+var login_no = $("#login_no").val();
+var login_name = $("#login_name").val();
+//集团账号查询账号名称
+function getGroupInfo(groupNo) {
+    $.ajax({
+        url:"custInfoQuery",
+        type:"POST",
+        data:{union_code:groupNo},
+        success:function (data) {
+            $("#out_group").val(data.data[0].union_name);
+        }
+    })
+}
+
+//待审批反撤操作列表
+function qryAnnulApplyList(){
+    table = $('#epCapAnnulApplyList').DataTable( {
+        dom: "Bfrtip",
+        destroy:true,
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 10,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        "bSort":false,
+        ajax: {
+            url:"/getAnnulDoApproveQuery",
+            type:"POST",
+            data: {
+                applicant:$("#applicant").val(),
+                out_grp_no:$("#out_grp_no").val(),
+                start_date:$("#start_date").val(),
+                end_date:$("#end_date").val(),
+                nextDealPerson: login_no
+            }
+        },
+        columns: [
+            {
+                "width": "8%",
+                render: function ( data, type, row, meta ) {
+                    if(row.nodeId == 1){
+                        return data= "<input style='width: 60px' value='已审批'/>";
+                    }else{
+                        return data= "<button type='button' style='width: 60px' class='ui-btn mgr-10' onclick=annulApprove('"+row.taskOrderId+"')>审批</button>";
+                    }
+                }
+            },
+            { data: "taskOrderId" },
+            { data: "applicant" },
+            { data: "apply_date"},
+            { data: "out_group"},
+            { data: "out_grp_no"},
+            { data: "out_linkman"},
+            { data: "out_link_phone"},
+            { data: "out_link_type"},
+            { data: "out_balance_yuan"},
+            { data: "out_usable_balance_yuan"},
+            { data: "annul_balance_yuan"},
+            { data: "annul_explain"}
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+
+//查询反撤申请详情
+function showAnnulMsg(param) {
+    //展示出模态框
+    $("#annulDetailInfo").modal('show');
+    $.ajax({
+        type: "post",
+        url: "/getDoAnnulApproveInfo",
+        dataType: 'json',
+        data: {
+            "taskOrderId": param
+        },
+        success: function (data) {
+            $("#account1").val(data.account);
+            $("#userid1").val(data.userid);
+            $("#arrive_account1").val(data.arrive_account);
+            $("#arrive_account_name1").val(data.arrive_account_name);
+            $("#arrive_date1").val(data.arrive_date);
+            $("#arrival_amount1").val(data.arrival_amount);
+            $("#billing_date1").val(data.billing_date);
+            $("#account_clerk1").val(data.account_clerk);
+            $("#abstracts1").val(data.abstracts);
+            $("#taskOrderId1").val(data.taskOrderId);
+            $("#applicant2").val(data.applicant);
+            $("#apply_date1").val(data.apply_date);
+            $("#out_groups1").val(data.out_group);
+            $("#out_grp_nos1").val(data.out_grp_no);
+            $("#out_linkman1").val(data.out_linkman);
+            $("#out_link_phone1").val(data.out_link_phone);
+            $("#contact_type1").val(data.out_link_type);
+            $("#out_balance1").val(data.out_balance);
+            $("#out_usable_balance1").val(data.out_usable_balance);
+            $("#annul_balance1").val(data.annul_balance);
+            $("#annul_explain1").val(data.annul_explain);
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    })
+}
+//审批页面
+function annulApprove(taskOrderId){
+    $("#qu_reset").attr('disabled',false);
+    $("#qu_reset").text("提交");
+    $("#doAnnulApplyApprove").modal('show');
+    $.ajax({
+        type:"POST",
+        url:"/getDoAnnulApproveInfo",
+        data:{"taskOrderId":taskOrderId}
+    }).then(function(data){
+        $("#bill").val(data.bill);
+        $("#account").val(data.account);
+        $("#userid").val(data.userid);
+        $("#arrive_account").val(data.arrive_account);
+        $("#arrive_account_name").val(data.arrive_account_name);
+        $("#arrive_date").val(data.arrive_date);
+        $("#billing_date").val(data.billing_date);
+        $("#account_clerk").val(data.account_clerk);
+        $("#abstracts").val(data.abstracts);
+        $("#taskOrderId").val(data.taskOrderId);
+        $("#applicant1").val(data.applicant);
+        $("#applicant_name").val(data.login_name);
+
+
+        $("#apply_date").val(data.apply_date);
+        $("#out_groups").val(data.out_group);
+        $("#out_grp_nos").val(data.out_grp_no);
+        $("#out_linkman").val(data.out_linkman);
+        $("#out_link_phone").val(data.out_link_phone);
+        $("#contact_type").val(data.out_link_type);
+        $("#annul_explain").val(data.annul_explain);
+        $("#bankformnum").val(data.bankformnum);
+
+        $("#arrival_amount").val(data.arrival_amount);
+        $("#out_balance").val(data.out_balance);
+        $("#out_usable_balance").val(data.out_usable_balance);
+        $("#annul_balance").val(data.annul_balance);
+        //页面显示元
+        $("#arrival_amount_yuan").val(data.arrival_amount_yuan);
+        $("#out_balance_yuan").val(data.out_balance_yuan);
+        $("#out_usable_balance_yuan").val(data.out_usable_balance_yuan);
+        $("#annul_balance_yuan").val(data.annul_balance_yuan);
+        $("#doloadFile a").remove();//模态框每次打开之前,清空之前的文件
+        if(data.fileName!=null&&$.trim(data.fileName)!=''){
+            $("#fileName").val(data.fileName);
+            $("#attach_file_id").val(data.file);
+            $("#doloadFile").append("<a href='javascript:downloadFile()' title='"+data.fileName+"'>"+data.fileName+"</a>")
+
+        }
+
+        qryWFNodeId(data.taskOrderId);
+    })
+}
+
+//查询流程info表的NodeId
+function qryWFNodeId(taskOrderId){
+    $.ajax({
+        type: "post",
+        url: "/getWorkFlowNodeIdByTaskOrderId",
+        dataType: 'json',
+        data: {
+            "taskOrderId": taskOrderId
+        },
+        success: function (result) {
+            //获取响应的json数据
+            var  filed  =result.info;
+            $("#node_id").val(filed[0].nodeId);
+            getNextLink("8",$("#node_id").val());
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    })
+
+};
+function getLastDay(year,month){
+    var new_year = year;        //取当前的年份
+    var new_month = month++;    //取下一个月的第一天，方便计算（最后一天不固定）
+    if(month>12){                //如果当前大于12月，则年份转到下一年
+        new_month -=12;            //月份减
+        new_year++;                //年份增
+    }
+    var new_date = new Date(new_year,new_month,1);   // 取当年当月的 下个 月中的第一天
+    // 获取当月最后一天日期
+    return (new Date(new_date.getTime()-1000*60*60*24)).getDate();
+}
+//提交审批信息
+function saveDoApproveAnnulInfo(){
+    var shifou_tongguo=$("#shifou_tongguo").val();
+    if(shifou_tongguo=="" || shifou_tongguo==undefined){
+        alert("信息加载完再提交！");
+        return;
+    }
+    if(shifou_tongguo=="1"){
+        var statusdate=$("#billing_date").val();
+        /*var newDate = +"-"+statusdate.substring(4,6)+"-"+s;//资金认领的时间*/
+        var date = new Date(statusdate.substring(0,4),parseInt(statusdate.substring(4,6),10)-1,statusdate.substring(6,8));
+        //取当前月的第一天
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth()+1;
+        if(month < 10){
+            month = '0'+month;
+        }
+        var lastDay = getLastDay(year,month);
+        var lastDate = year+"-"+month+"-"+lastDay; //取当前月的最后一天
+        var fdate = new Date( year,parseInt(month,10)-1,01);
+
+        if(date < fdate){
+            alert("不予许对跨月认领的资金进行入账反撤操作,请驳回释放资金！");
+            return false;
+        }
+    }
+
+    $("#qu_reset").attr('disabled',true);
+    $("#qu_reset").text("提交中..");
+    var annul_balance = $("#annul_balance").val();//反撤金额
+    var bankformnum = $("#bankformnum").val();//银行交易流水号
+    var out_grp_nos = $("#out_grp_nos").val();//集团编码
+    //审批信息
+    var nextStepDealPerson = $("#nextStepDealPerson").val();//下一步处理人
+    var nodeId = $("#first_node_id").val();//下一环节ID
+    // var dealTime = getNowFormatTime();//处理时间
+    var approveOpinion = $("#shifou_tongguo").val();//审批意见
+    var memo = $("#shenpi_yijian").val();//备注
+    var taskOrderId = $("#taskOrderId").val();
+    $.ajax({
+        type: "post",
+        url: "/getDoApproveAnnulInfo",
+        dataType:"text",
+        data: {
+            "taskOrderId" : taskOrderId,
+            "nextDealPerson"   : nextStepDealPerson,
+            "nodeId"   : nodeId,
+            // "dealTime"   : dealTime,
+            "approveOpinion"   : approveOpinion,
+            "memo"   : memo,
+            "applicantNo"   : $("#applicant1").val(),
+            "annul_balance"   : annul_balance,
+            "BANKFORMNUM"   : bankformnum,
+            "group_num"   : out_grp_nos
+
+        },
+        success: function (result) {
+            var res_code=result.split("|")[0];
+            var res_desc=result.split("|")[1];
+            if(res_code == 1){
+                alert(res_desc);
+                $("#doAnnulApplyApprove").modal('hide');
+                qryAnnulApplyList();
+            }else if(res_code == 2){
+                alert(res_desc);
+                $("#qu_reset").attr('disabled',false);
+                $("#qu_reset").text("提交");
+
+            }else if(res_code ==3){
+                alert(res_desc);
+                $("#qu_reset").attr('disabled',false);
+                $("#qu_reset").text("提交");
+            }else if(res_code ==4){
+                alert(res_desc);
+                $("#qu_reset").attr('disabled',false);
+                $("#qu_reset").text("提交");
+            }else if(res_code ==5){
+                alert(res_desc);
+                $("#qu_reset").attr('disabled',false);
+                $("#qu_reset").text("提交");
+            }else{
+                alert(res_desc);
+                $("#qu_reset").attr('disabled',false);
+                $("#qu_reset").text("提交");
+            }
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+            $("#qu_reset").attr('disabled',false);
+            $("#qu_reset").text("提交");
+
+        }
+    });
+}
+
+// 字符串转日期
+function formatDate(value) {
+    //var date = new Date(value).format("yyyy-MM-dd");
+    var date = new Date(value).formatDate("yyyy-MM-dd")
+    if (date == "1970-01-01 08:00")
+        return "--";
+    else
+        return date;
+}
+
+//集团账号查询账号名称
+function getGroupInfo(groupNo) {
+    $.ajax({
+        url:"custInfoQuery",
+        type:"POST",
+        data:{union_code:groupNo},
+        success:function (data) {
+            $("#out_group").val(data.data[0].union_name);
+        }
+    })
+}
+
+//查询集团账号缴费联系人
+function group_connect_choose() {
+    var jituan_bianhao = $("#group_num").val();
+    var url="/esop/jtlxrcx?jituan_bianhao=" + jituan_bianhao;
+    var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+    if(ret!=undefined){
+        var data=ret.split("#");
+        $("#capital_contact").val(data[0]);
+        $("#telphone").val(data[1]);
+        $("#contact_type").val(data[2]);
+    }
+}
+function getNowFormatTime() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        + " " + date.getHours() + seperator2 + date.getMinutes()
+        + seperator2 + date.getSeconds();
+    return currentdate;
+
+}
+function downloadFile() {
+    var attach_file_id = $("#attach_file_id").val();
+    if(attach_file_id==null||$.trim(attach_file_id)==''){
+        alert("下载失败");
+        return;
+    }
+    window.location.href = "downloadFile?attach_file_id="+attach_file_id;
+}
+

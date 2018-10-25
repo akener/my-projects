@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceSummaryRepository">
+
+    <!--集团资金调账汇总表-->
+    <select id="selectGroupFundAccountAdjustmentSummaryList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        select SUBSTR(t1.dealend_date,1,8) insert_date,t2.group_pay_code,t1.org_id,t1.org_name,t1.center_code,t1.business_center,cast(coalesce(sum(t1.regulation_money),0)as decimal(18,2)) regulation_money,ifnull(t1.check_status,'') check_status,ifnull(t3.login_name,'') check_code,ifnull(t1.check_date,'') check_date
+        from ep_group_money_account_regulation_day_check t1 left join bs_systemuser_info t3 on t1.check_code = t3.staff_code,se_orgid_rel t2
+        where t2.fen_gongs = substring(t1.org_id,1,8)
+        <if test="org_id != null and org_id != '' ">
+            and t2.group_pay_code = #{org_id}
+        </if>
+        <if test="center_code != null and center_code != '' and center_code != 'null' ">
+            and t1.center_code = #{center_code}
+        </if>
+        <if test="insert_date != null and insert_date != '' ">
+            and date_format(SUBSTR(t1.dealend_date,1,8),'%Y-%m-%d') >= #{insert_date}
+        </if>
+        <if test="dealend_date_end != null and dealend_date_end != '' ">
+            and date_format(SUBSTR(t1.dealend_date,1,8),'%Y-%m-%d') &lt;= #{dealend_date_end}
+        </if>
+        GROUP BY t1.business_center,SUBSTR(t1.dealend_date,1,8)
+        ORDER BY insert_date
+    </select>
+
+</mapper>

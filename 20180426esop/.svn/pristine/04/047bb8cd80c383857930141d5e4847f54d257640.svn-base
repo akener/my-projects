@@ -1,0 +1,196 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by MaiBenBen on 2017/12/6
+ * 账号管理
+ */
+
+public class AcountManageDto extends BaseDto
+
+{
+    private int id;
+    private String  contract_id;//合同序号
+    private String  pack_no;//合同编号
+    private String  account_code;//集团账户编码
+    private String  account_name;//集团账户名称
+    private String  grp_subsid;//集团产品用户编码(crm产品编码）
+    private String  pay_cycle;//缴费周期
+    private String  state;//是否同步到CRM 默认为0未同步，1同步',
+    private String  bak1;//備註
+    private String  bak2;  //備註
+    //訂單部分參數
+    private  String request_num;//訂單編號
+
+    //流程部分參數
+    private String procTypeCode;//流程大类 (3008)
+    private String branchCode;//部门ID   (CQ.CQ)
+    private String keyValue;//(1)
+    private String bizRecordId;//电子订单主键
+    private String  assignee;//下一环节处理人工号
+    private String startDept;//登录人部门
+    private String startLoginNo;//登录人工号
+    private String startRegion;//登录人分公司组织ID
+    private String chose;//选择 驳回 0 还是 同意 1
+
+    public String getChose() {
+        return chose;
+    }
+
+    public void setChose(String chose) {
+        this.chose = chose;
+    }
+
+    public String getRequest_num() {
+        return request_num;
+    }
+
+    public void setRequest_num(String request_num) {
+        this.request_num = request_num;
+    }
+
+    public String getProcTypeCode() {
+        return procTypeCode;
+    }
+
+    public void setProcTypeCode(String procTypeCode) {
+        this.procTypeCode = procTypeCode;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public String getBizRecordId() {
+        return bizRecordId;
+    }
+
+    public void setBizRecordId(String bizRecordId) {
+        this.bizRecordId = bizRecordId;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public String getStartDept() {
+        return startDept;
+    }
+
+    public void setStartDept(String startDept) {
+        this.startDept = startDept;
+    }
+
+    public String getStartLoginNo() {
+        return startLoginNo;
+    }
+
+    public void setStartLoginNo(String startLoginNo) {
+        this.startLoginNo = startLoginNo;
+    }
+
+    public String getStartRegion() {
+        return startRegion;
+    }
+
+    public void setStartRegion(String startRegion) {
+        this.startRegion = startRegion;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getPack_no() {
+        return pack_no;
+    }
+
+    public void setPack_no(String pack_no) {
+        this.pack_no = pack_no;
+    }
+
+    public String getAccount_code() {
+        return account_code;
+    }
+
+    public void setAccount_code(String account_code) {
+        this.account_code = account_code;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
+    }
+
+    public String getGrp_subsid() {
+        return grp_subsid;
+    }
+
+    public void setGrp_subsid(String grp_subsid) {
+        this.grp_subsid = grp_subsid;
+    }
+
+    public String getPay_cycle() {
+        return pay_cycle;
+    }
+
+    public void setPay_cycle(String pay_cycle) {
+        this.pay_cycle = pay_cycle;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1;
+    }
+
+    public String getBak2() {
+        return bak2;
+    }
+
+    public void setBak2(String bak2) {
+        this.bak2 = bak2;
+    }
+}

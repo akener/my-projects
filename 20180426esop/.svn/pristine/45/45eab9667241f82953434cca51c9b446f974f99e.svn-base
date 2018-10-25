@@ -1,0 +1,77 @@
+package com.esop.capAdjustApply.controller;
+
+import com.esop.capAdjustApply.dto.EpCapBalanceRpt;
+import com.esop.capAdjustApply.dto.EpCapCardTrackRpt;
+import com.esop.capAdjustApply.dto.EpCapRefundDailyRpt;
+import com.esop.capAdjustApply.service.CapDailyRptSvr;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+
+/**
+ * Created by user on 2017/10/27.
+ */
+@RestController
+public class CapDailyRptCtrl {
+    @Autowired
+    CapDailyRptSvr rptService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    //资金回退日报表
+    @RequestMapping(value="/getRefundDailyRpt")
+    public Result getRefundDailyRpt(EpCapRefundDailyRpt parameter, HttpServletRequest request){
+        System.out.println("资金回退日报参数="+parameter.toString());
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = rptService.getRefundDailyRpt(parameter);
+        return result;
+    }
+
+    //集团资金余额日报表
+    @RequestMapping(value="/getBalanceDailyRpt")
+    public Result getBalanceDailyRpt(EpCapBalanceRpt parameter, HttpServletRequest request){
+        System.out.println("资金余额日报参数="+parameter.toString());
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = rptService.getBalanceDailyRpt(parameter);
+        return result;
+    }
+
+    //集团资金办理有价卡业务出库跟踪表(清单报表）
+    @RequestMapping(value="/getCardOUtRpt")
+    public Result getCardOUtRpt(EpCapCardTrackRpt parameter, HttpServletRequest request){
+        System.out.println("集团资金办理有价卡业务出库跟踪表参数="+parameter.toString());
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = rptService.getCardOUtRpt(parameter);
+        return result;
+    }
+}

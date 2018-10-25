@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.invoice.model.EpInvSpeBossInfoMonth">
+  <resultMap id="BaseResultMap" type="com.esop.invoice.model.EpInvSpeBossInfoMonth">
+    <result column="dis_month" jdbcType="VARCHAR" property="disMonth" />
+    <result column="rec_serial_no" jdbcType="VARCHAR" property="recSerialNo" />
+    <result column="application_no" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="manager_id" jdbcType="VARCHAR" property="managerId" />
+    <result column="payment_state" jdbcType="CHAR" property="paymentState" />
+    <result column="payment_state_date" jdbcType="CHAR" property="paymentStateDate" />
+    <result column="payment_limit_date" jdbcType="CHAR" property="paymentLimitDate" />
+    <result column="start_account_period" jdbcType="CHAR" property="startAccountPeriod" />
+    <result column="end_account_period" jdbcType="CHAR" property="endAccountPeriod" />
+    <result column="invoice_type" jdbcType="CHAR" property="invoiceType" />
+    <result column="invoice_mode" jdbcType="CHAR" property="invoiceMode" />
+    <result column="open_type" jdbcType="CHAR" property="openType" />
+    <result column="applicant_id" jdbcType="VARCHAR" property="applicantId" />
+    <result column="applicant_org" jdbcType="VARCHAR" property="applicantOrg" />
+    <result column="cust_id" jdbcType="VARCHAR" property="custId" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="account_id" jdbcType="VARCHAR" property="accountId" />
+    <result column="invoice_total_money" jdbcType="VARCHAR" property="invoiceTotalMoney" />
+    <result column="invoice_sheet_num" jdbcType="SMALLINT" property="invoiceSheetNum" />
+    <result column="work_state" jdbcType="CHAR" property="workState" />
+    <result column="red_state" jdbcType="CHAR" property="redState" />
+    <result column="invalid_state" jdbcType="CHAR" property="invalidState" />
+    <result column="invalid_range" jdbcType="CHAR" property="invalidRange" />
+    <result column="is_reprint" jdbcType="CHAR" property="isReprint" />
+    <result column="red_reason" jdbcType="VARCHAR" property="redReason" />
+    <result column="red_app_no" jdbcType="VARCHAR" property="redAppNo" />
+    <result column="ent_name" jdbcType="VARCHAR" property="entName" />
+    <result column="tax_no" jdbcType="VARCHAR" property="taxNo" />
+    <result column="tax_bank" jdbcType="VARCHAR" property="taxBank" />
+    <result column="tax_bank_account" jdbcType="VARCHAR" property="taxBankAccount" />
+    <result column="tax_address" jdbcType="VARCHAR" property="taxAddress" />
+    <result column="tax_phone" jdbcType="VARCHAR" property="taxPhone" />
+    <result column="is_sum" jdbcType="CHAR" property="isSum" />
+    <result column="opener_id" jdbcType="VARCHAR" property="openerId" />
+    <result column="invoice_no" jdbcType="VARCHAR" property="invoiceNo" />
+    <result column="invoice_code" jdbcType="VARCHAR" property="invoiceCode" />
+    <result column="print_date" jdbcType="CHAR" property="printDate" />
+    <result column="money_amount_tax" jdbcType="VARCHAR" property="moneyAmountTax" />
+    <result column="tax_rate" jdbcType="VARCHAR" property="taxRate" />
+    <result column="money_amount_notax" jdbcType="VARCHAR" property="moneyAmountNotax" />
+    <result column="invoice_state" jdbcType="CHAR" property="invoiceState" />
+    <result column="state_date" jdbcType="CHAR" property="stateDate" />
+    <result column="manager_name" jdbcType="VARCHAR" property="managerName" />
+    <result column="opener_name" jdbcType="VARCHAR" property="openerName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dis_month, rec_serial_no, application_no, manager_id, payment_state, payment_state_date, 
+    payment_limit_date, start_account_period, end_account_period, invoice_type, invoice_mode, 
+    open_type, applicant_id, applicant_org, cust_id, group_id, account_name, account_id, 
+    invoice_total_money, invoice_sheet_num, work_state, red_state, invalid_state, invalid_range, 
+    is_reprint, red_reason, red_app_no, ent_name, tax_no, tax_bank, tax_bank_account, 
+    tax_address, tax_phone, is_sum, opener_id, invoice_no, invoice_code, print_date, 
+    money_amount_tax, tax_rate, money_amount_notax, invoice_state, state_date, manager_name, 
+    opener_name, update_time
+  </sql>
+  <insert id="insert" parameterType="com.esop.invoice.model.EpInvSpeBossInfoMonth">
+    insert into ep_inv_spe_boss_info_month (dis_month, rec_serial_no, application_no, 
+      manager_id, payment_state, payment_state_date, 
+      payment_limit_date, start_account_period, end_account_period, 
+      invoice_type, invoice_mode, open_type, 
+      applicant_id, applicant_org, cust_id, 
+      group_id, account_name, account_id, 
+      invoice_total_money, invoice_sheet_num, work_state, 
+      red_state, invalid_state, invalid_range, 
+      is_reprint, red_reason, red_app_no, 
+      ent_name, tax_no, tax_bank, 
+      tax_bank_account, tax_address, tax_phone, 
+      is_sum, opener_id, invoice_no, 
+      invoice_code, print_date, money_amount_tax, 
+      tax_rate, money_amount_notax, invoice_state, 
+      state_date, manager_name, opener_name, 
+      update_time)
+    values (#{disMonth,jdbcType=VARCHAR}, #{recSerialNo,jdbcType=INTEGER}, #{applicationNo,jdbcType=VARCHAR}, 
+      #{managerId,jdbcType=VARCHAR}, #{paymentState,jdbcType=CHAR}, #{paymentStateDate,jdbcType=CHAR}, 
+      #{paymentLimitDate,jdbcType=CHAR}, #{startAccountPeriod,jdbcType=CHAR}, #{endAccountPeriod,jdbcType=CHAR}, 
+      #{invoiceType,jdbcType=CHAR}, #{invoiceMode,jdbcType=CHAR}, #{openType,jdbcType=CHAR}, 
+      #{applicantId,jdbcType=VARCHAR}, #{applicantOrg,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, 
+      #{groupId,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{accountId,jdbcType=VARCHAR}, 
+      #{invoiceTotalMoney,jdbcType=VARCHAR}, #{invoiceSheetNum,jdbcType=SMALLINT}, #{workState,jdbcType=CHAR}, 
+      #{redState,jdbcType=CHAR}, #{invalidState,jdbcType=CHAR}, #{invalidRange,jdbcType=CHAR}, 
+      #{isReprint,jdbcType=CHAR}, #{redReason,jdbcType=VARCHAR}, #{redAppNo,jdbcType=VARCHAR}, 
+      #{entName,jdbcType=VARCHAR}, #{taxNo,jdbcType=VARCHAR}, #{taxBank,jdbcType=VARCHAR}, 
+      #{taxBankAccount,jdbcType=VARCHAR}, #{taxAddress,jdbcType=VARCHAR}, #{taxPhone,jdbcType=VARCHAR}, 
+      #{isSum,jdbcType=CHAR}, #{openerId,jdbcType=VARCHAR}, #{invoiceNo,jdbcType=VARCHAR}, 
+      #{invoiceCode,jdbcType=VARCHAR}, #{printDate,jdbcType=CHAR}, #{moneyAmountTax,jdbcType=VARCHAR}, 
+      #{taxRate,jdbcType=VARCHAR}, #{moneyAmountNotax,jdbcType=VARCHAR}, #{invoiceState,jdbcType=CHAR}, 
+      #{stateDate,jdbcType=CHAR}, #{managerName,jdbcType=VARCHAR}, #{openerName,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <select id="selectUnBackHisSta" parameterType="com.esop.invoice.model.EpInvSpeBossInfoMonth"  resultMap="BaseResultMap">
+    select t.rec_serial_no, t.application_no, t.manager_id,
+    IF(t.payment_state=1, '是', '否') AS	payment_state,
+    t.payment_state_date, t.payment_limit_date, t.start_account_period, t.end_account_period,
+    IF(t.invoice_type=1, '普票', '专票') AS invoice_type,
+    IF(t.invoice_mode=1, '实收', '月结') AS invoice_mode,
+    t.open_type, t1.applicant_esop_no applicant_id, t1.branch_no applicant_org, t.cust_id, t.group_id, t.account_name, t.account_id,t.work_state,
+    cast(coalesce(sum(t.invoice_total_money),0)as decimal(18,2)) as invoice_total_money,
+    SUM(t.invoice_sheet_num) as invoice_sheet_num,
+    IF(t.red_state=1, '是', '否') AS red_state,
+    t.invalid_state, t.invalid_range,t.is_reprint, t.red_reason, t.red_app_no, t.ent_name, t.tax_no, t.tax_bank, t.tax_bank_account,
+    t.tax_address, t.tax_phone, t.is_sum, t.opener_id, t.invoice_no, t.invoice_code, t.print_date,
+    t.money_amount_tax, t.tax_rate, t.money_amount_notax, t.invoice_state, t.state_date,t.manager_name,t.opener_name
+    from ep_inv_spe_boss_info_month t left join ep_inv_preprint_app_info t1 on t.application_no=t1.application_no
+    where t.payment_state in ('0','1')
+    <if test="disMonth != null and disMonth != ''">
+      and t.dis_month=#{disMonth,jdbcType=VARCHAR}
+    </if>
+    <if test="applicationNo != null and applicationNo != ''">
+      and t.application_no = #{applicationNo,jdbcType=VARCHAR}
+    </if>
+    <if test="applicantOrg != null and applicantOrg != ''">
+      and t1.branch_no = #{applicantOrg,jdbcType=VARCHAR}
+    </if>
+    <!--<if test="indCentName != null and indCentName != ''">
+      and  = #{indCentName,jdbcType=VARCHAR}
+    </if>-->
+    <if test="managerId != null and managerId != ''">
+      and t.manager_id = #{managerId,jdbcType=VARCHAR}
+    </if>
+    <if test="applicantId != null and applicantId != ''">
+      AND t1.applicant_esop_no = #{applicantId,jdbcType=VARCHAR}
+    </if>
+    <if test="accountName != null and accountName != ''">
+      AND t.account_name like CONCAT('%','${accountName}','%')
+    </if>
+    <if test="accountId != null and accountId != ''">
+      and t.account_id = #{accountId,jdbcType=VARCHAR}
+    </if>
+    <if test="invoiceType != null and invoiceType != ''">
+      and t.invoice_type = #{invoiceType,jdbcType=VARCHAR}
+    </if>
+    <if test="invoiceMode != null and invoiceMode != ''">
+      and t.invoice_mode = #{invoiceMode,jdbcType=CHAR}
+    </if>
+    <if test="invoiceNo != null and invoiceNo != ''">
+      and t.invoice_no = #{invoiceNo,jdbcType=VARCHAR}
+    </if>
+    <if test="paymentState != null and paymentState != ''">
+      and t.payment_state = #{paymentState,jdbcType=VARCHAR}
+    </if>
+    <if test="paymentLimitDateStart != null and paymentLimitDateStart != ''">
+      and str_to_date(t.print_date,'%Y%m%d') &gt;= #{paymentLimitDateStart}
+    </if>
+    <if test="paymentLimitDateEnd != null and paymentLimitDateEnd != ''">
+      and str_to_date(t.print_date,'%Y%m%d') &lt; #{paymentLimitDateEnd}
+    </if>
+    GROUP BY t1.branch_no,t.invoice_type,t.invoice_mode
+    order by t.application_no
+  </select>
+</mapper>

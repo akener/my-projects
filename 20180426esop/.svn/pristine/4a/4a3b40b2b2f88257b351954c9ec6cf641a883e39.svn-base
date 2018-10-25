@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="caseRecordServiceRepository">
+
+    <!--省营销数据导入 -->
+    <select id="insertProRecordInfo" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+       INSERT into ep_market_record (batch_no,unit_id,unit_name,region_name,intelligent_number,permeability,employee_number,user_number,manager_name,reid,status,region_id,create_time,login_no)VALUES (
+        #{batch_no},#{unit_id},#{unit_name},#{region_name},#{intelligent_number},#{permeability},#{employee_number},#{user_number},#{manager_name},mkrd_seq.nextval,#{status},#{region_id},
+        #{create_time},#{login_no}
+       )
+    </select>
+
+
+    <!-- 展示省营销案导入数据 -->
+    <select id="selectProInfo" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select batch_no,unit_id,unit_name,region_name,intelligent_number,permeability,employee_number,user_number,login_no,manager_name,region_id,reid from ep_market_record where status=#{status}
+    </select>
+
+    <!-- 省营销活动查询 -->
+    <select id="selectCaseAct" parameterType="com.esop.workOrderInfo.dto.ProCaseInfoDto" resultType="com.esop.workOrderInfo.dto.ProCaseInfoDto">
+        select option_no,market_no,market_name,region_code from ep_market_info where region_code=#{region_code}
+    </select>
+
+    <!-- 查询营销活动名称 -->
+    <select id="selectMarketName" parameterType="com.esop.workOrderInfo.dto.CaseRelDto" resultType="com.esop.workOrderInfo.dto.CaseRelDto">
+        select option_no,market_no,market_name,region_code from ep_market_info where market_no=#{market_no}
+    </select>
+
+    <!-- 营销活动下发地市-->
+    <select id="sendTORegion" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update ep_market_record set status='02',local_number=#{local_number},end_time=#{end_time},dispatch_time=#{dispatch_time} where  region_id=#{region_id} and unit_id=#{unit_id} and batch_no=#{batch_no} and status=#{status}
+    </select>
+    <!-- 批次号，活动编码插入到中间表-->
+    <select id="insertToCaseRel" parameterType="com.esop.workOrderInfo.dto.CaseRelDto" resultType="int">
+        insert into ep_market_rel(market_no,market_name,batch_no,mkid) values (#{market_no},#{market_name},#{batch_no},market_seq.nextval)
+    </select>
+
+    <!-- 查询地市管理员手机号 -->
+    <select id="getPhoneNoByCustService" parameterType="com.esop.workOrderInfo.dto.SendMsgDto" resultType="com.esop.workOrderInfo.dto.SendMsgDto">
+        select login_no,contract_phone from ep_sys_loginmsg_new where group_id=#{group_id} and role_code='05'
+    </select>
+
+    <!--短信下发到地市营销管理员-->
+    <select id="sendMsg" parameterType="Map" resultType="int">
+        insert into push_sms_crm_0(
+               SEQ,
+               TEMPLATEID,
+               PARAMETER,
+               SERVICE_NO,
+               PHONE_NO,
+               INSERT_TIME,
+               OP_CODE,
+               LOGIN_NO,
+               SERV_NO,
+               SERV_NAME,
+               SUB_PHONE_SEQ,
+               SEND_TIME,
+               HOLD1,
+               HOLD2,
+               HOLD3,
+               HOLD4,
+               HOLD5,
+               REAL_SEND_TIME)
+        values (
+              pushsms_seq.nextval,
+              'CRM_0558',
+              '{"sms_release":"","tmpMsg":"您好，现场办公工单已下发，请及时处理！[中国移动]"}',
+              '',
+              #{PHONE_NO},
+              sysdate,
+              #{OP_CODE},
+              #{LOGIN_NO},
+              '',
+              '',
+              '',
+              to_date(#{SEND_TIME}, 'yyyy-mm-dd hh24:mi:ss'),
+              '',
+              '',
+              '',
+              '',
+              '',
+              null
+        )
+    </select>
+
+    <!-- 省下发地市工单展示-->
+    <select id="qryProSendToRegionInfo" parameterType="com.esop.workOrderInfo.dto.CaseRelDto" resultType="com.esop.workOrderInfo.dto.CaseRelDto">
+           select batch_no,market_no,market_name,mkid from ep_market_rel where batch_no in(
+            select batch_no
+              from ep_market_record
+             where region_id =#{region_id}
+               and status =#{status}
+             group by batch_no
+            )
+    </select>
+
+    <!-- 查询地市下的集团编码-->
+    <select id="qryRegionUnitId" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select unit_id from ep_market_record where batch_no=#{batch_no} and region_id=#{region_id}
+    </select>
+
+    <!-- 删除省下发营销活动-->
+    <select id="deleteProSendInfo" parameterType="com.esop.workOrderInfo.dto.CaseRelDto" resultType="int">
+        delete from ep_market_rel where mkid=#{mkid}
+    </select>
+
+
+    <!-- 模糊查询营销活动-->
+    <select id="selectNameByLike" parameterType="com.esop.workOrderInfo.dto.ProCaseInfoDto" resultType="com.esop.workOrderInfo.dto.ProCaseInfoDto">
+
+        select market_no,market_name,region_code,option_no from ep_market_info  where region_code=#{region_code} and market_name like '%'||#{market_name}||'%'
+    </select>
+
+    <!--&lt;!&ndash; 根据地市查批次号和集团编码&ndash;&gt;
+    <select id="selectBatchNoAndUnitIdByRegionId" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select batch_no,unit_id from ep_market_record  where region_id=#{region_id} and status=#{status}
+    </select>-->
+
+    <!-- 地市下发客户经理-->
+    <select id="RegionCaseToCustManager" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update  ep_market_record set status='03' where region_id=#{region_id} and status=#{status} and login_no in
+        (select a.login_no from ep_market_record a where region_id=#{region_id} and status=#{status})
+  </select>
+
+    <!-- 查询客户经理对应的工号-->
+    <select id="qryUnitIdByLoginNo" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select unit_id from ep_market_record where region_id=#{region_id} and status=#{status} and login_no=#{login_no}
+    </select>
+
+    <!-- 查询客户经理处的工单数据-->
+    <select id="selectCustManagerWorkOrderInfo" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select local_number, role,batch_no, unit_id,unit_name,region_name,intelligent_number,permeability,employee_number,
+user_number,manager_name,login_no,region_id,status,create_time,dispatch_time,end_time,reid from ep_market_record where  status=#{status} and login_no=#{login_no}
+    </select>
+
+
+    <!-- 查询客户经理对应的营销活动-->
+    <select id="qryCaseByCustManagerLoginNo" parameterType="com.esop.workOrderInfo.dto.CaseRelDto" resultType="com.esop.workOrderInfo.dto.CaseRelDto">
+      select batch_no, market_name
+      from ep_market_rel
+      where batch_no in
+       (select t.batch_no
+          from ep_market_record t
+         where t.status = #{status}
+           and t.login_no = #{login_no})
+    </select>
+
+    <!--客户经理回退给地市管理员-->
+    <select id="backToRegion" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update  ep_market_record set status=#{status},back_reason=#{back_reason} where reid=#{reid}
+    </select>
+
+    <!--地市回退到省-->
+    <select id="RegionBackToPro" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update  ep_market_record set status='06' where region_id=#{region_id} and status=#{status}
+    </select>
+
+    <!--省结单-->
+    <select id="proOverCaseRecord" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update  ep_market_record set status='07' where  status=#{status}
+    </select>
+
+    <!--当前数据总数-->
+    <select id="selectNumByRecordCount"  resultType="int">
+        select count(reid) as reid from ep_market_record
+    </select>
+
+    <!--客户经理结单-->
+    <select id="endCaseByCustManager" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update  ep_market_record set status=#{status},case_cust_no=#{case_cust_no},act_start_time=#{act_start_time},act_end_time=#{act_end_time} where reid=#{reid}
+    </select>
+
+    <!-- 查询客户经理回退到地市的工单 -->
+    <select id="selectCaseBackToRegion" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select reid,local_number,batch_no,unit_id,unit_name,region_name,intelligent_number,permeability,employee_number,user_number,login_no,manager_name,region_id
+         from ep_market_record where 1=1 and status=#{status}
+        <if test="region_id != null and region_id != ''">
+            and region_id=#{region_id}
+        </if>
+        <if test="login_no != null and login_no != ''">
+            and login_no=#{login_no}
+        </if>
+    </select>
+
+    <!--查询地市回退到省到工单-->
+    <select id="selectProviceAllOwnCase" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+        select reid,local_number,batch_no,unit_id,unit_name,region_name,intelligent_number,permeability,employee_number,user_number,login_no,manager_name,region_id from ep_market_record where status=#{status}
+    </select>
+
+    <!-- 客户经理新增工单提交到地市管理员-->
+    <select id="upCustRecordSendTORegion" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update ep_market_record set status=#{status} where region_id=#{region_id} and unit_id=#{unit_id} and batch_no=#{batch_no}
+    </select>
+
+    <!--根据年月查询下发工单-->
+    <select id="qryAllRecordByYearAndMon" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="com.esop.workOrderInfo.dto.ProCaseSendDto">
+          select t.reid,
+       t.local_number,
+       t.batch_no,
+       t.unit_id,
+       t.unit_name,
+       t.region_name,
+       t.intelligent_number,
+       t.permeability,
+       t.employee_number,
+       t.user_number,
+       t.login_no,
+       t.manager_name,
+       t.region_id,
+       DECODE(TRIM(t.status),
+                       '02',
+                       '省下发地市',
+                       '03',
+                       '地市下发客户经理',
+                       '04',
+                       '客户经理结单',
+                       '05',
+                       '客户经理回退地市',
+                       '06',
+                       '地市回退省',
+                       '07',
+                       '省结单',
+                       '12',
+                       '逾期系统自动结单') status
+  from ep_market_record t
+ where t.dispatch_time = #{dispatch_time}
+    </select>
+
+
+    <!-- 查询一条工单数据对应的营销活动-->
+    <select id="qryCaseByOneToMany" parameterType="com.esop.workOrderInfo.dto.CaseRelDto" resultType="com.esop.workOrderInfo.dto.CaseRelDto">
+         select market_no,market_name from ep_market_rel where
+   batch_no=(select batch_no from ep_market_record where reid=#{reid})
+    </select>
+
+
+    <!-- 客户经理关闭省和地市回退工单-->
+    <select id="closeCaseByProAndRegion" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update ep_market_record set status='13' where  unit_id=#{unit_id} and batch_no=#{batch_no} and status=#{status}
+    </select>
+
+    <!-- 客户经理关闭省和地市回退工单-->
+    <select id="DeleteCaseByProAndRegion" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        delete from  ep_market_record  where unit_id=#{unit_id} and batch_no=#{batch_no} and status=#{status}
+    </select>
+
+    <!-- 自动结单-->
+    <select id="moreDateEndRecordInfo" parameterType="com.esop.workOrderInfo.dto.ProCaseSendDto" resultType="int">
+        update ep_market_record set status='12' where status in('02','03','05','06') and to_date(#{end_time}, 'yyyy-MM-dd') >to_date(end_time,'yyyy-MM-dd')
+    </select>
+
+
+    <!--省督办单-->
+    <select id="lookAtProEarlyWarning" parameterType="com.esop.workOrderInfo.dto.EarlyWarningDto" resultType="com.esop.workOrderInfo.dto.EarlyWarningDto">
+      select u.region_name,
+       (u.workTotal - u.work) as work,
+       (u.signTotal - u.sign) as sign,
+       (u.recoverTotal - u.recover) as recover,
+       (u.cust - u.web_amount) as web,
+       (u.broad - u.broad_dep_amount) as broad
+  from ((select a.region_name,
+                a.region_no,
+                f.cust,
+                f.broad,
+                nvl(a.recover, 0) as recoverTotal,
+                nvl(a.work, 0) as workTotal,
+                nvl(a.sign, 0) as signTotal,
+                nvl(b.web_amount, 0) as web_amount,
+                nvl(b.broad_dep_amount, 0) as broad_dep_amount,
+                nvl(c.recover, 0) as recover,
+                nvl(d.work, 0) as work,
+                nvl(e.sign, 0) as sign
+           from (select a.region_name,
+                        a.region_no,
+                        a.cust,
+                        a.broad,
+                        nvl(count(distinct b.id), 0) as recover,
+                        nvl(count(distinct c.reid), 0) as work,
+                        nvl(count(distinct d.id), 0) as sign
+                   from ep_dict_manage       a,
+                        ep_owerecord_info    b,
+                        ep_market_record     c,
+                        ep_signonrecord_info d
+                  where a.region_no in
+                        (select b.group_id
+                           from ep_sys_regioncode_dict a, ep_sys_group_info b
+                          where trim(a.region_name) = trim(b.group_name))
+                    and b.org_code(+) = a.region_no
+                    and b.record_status(+) != '04'
+                    and c.region_id(+) = a.region_no
+                    and c.status(+) = '12'
+                    and d.org_code(+) = a.region_no
+                    and d.record_status(+) = '10'
+                  group by a.region_name, a.region_no, a.cust, a.broad
+                  order by a.region_no
+
+                 ) a,
+                (select a.region_code,
+                        sum(a.web_amount) as web_amount,
+                        sum(a.broad_dep_amount) as broad_dep_amount
+                   from ep_control_order a
+                  where to_char(to_date(a.eff_date, 'yyyy-MM-dd hh24:mi:ss'),
+                                'yyyyMM') = to_char(sysdate, 'yyyyMM')
+                  group by a.region_code) b,
+                (select a.region_no as regionNo,
+                        nvl(count(distinct b.id), 0) as recover
+                   from ep_dict_manage a, ep_owerecord_info b
+                  where a.region_no in
+                        (select b.group_id
+                           from ep_sys_regioncode_dict a, ep_sys_group_info b
+                          where a.region_name = b.group_name)
+                    and b.org_code(+) = a.region_no
+                    and b.record_status(+) != '04'
+                    and to_char(to_date(b.account_end_date,
+                                        'yyyy-MM-dd hh24:mi:ss'),
+                                'yyyyMM') != to_char(sysdate, 'yyyyMM')
+                  group by a.region_name, a.region_no
+                  order by a.region_no) c,
+                (select a.region_no as regionNo,
+                        nvl(count(distinct c.reid), 0) as work
+                   from ep_dict_manage a, ep_market_record c
+                  where a.region_no in
+                        (select b.group_id
+                           from ep_sys_regioncode_dict a, ep_sys_group_info b
+                          where a.region_name = b.group_name)
+                    and c.region_id(+) = a.region_no
+                    and c.status(+) = '12'
+                    and to_char(to_date(c.end_time, 'yyyy-MM-dd hh24:mi:ss'),
+                                'yyyyMM') != to_char(sysdate, 'yyyyMM')
+                  group by a.region_name, a.region_no
+                  order by a.region_no) d,
+                (select a.region_no as regionNo,
+                        nvl(count(distinct d.id), 0) as sign
+                   from ep_dict_manage a, ep_signonrecord_info d
+                  where a.region_no in
+                        (select b.group_id
+                           from ep_sys_regioncode_dict a, ep_sys_group_info b
+                          where trim(a.region_name) = trim(b.group_name))
+                    and d.org_code(+) = a.region_no
+                    and d.record_status(+) = '10'
+                    and to_char(to_date(d.province_end_date,
+                                        'yyyy-MM-dd hh24:mi:ss'),
+                                'yyyyMM') != to_char(sysdate, 'yyyyMM')
+                  group by a.region_name, a.region_no
+                  order by a.region_no) e,
+                (select a.region_no, a.cust, a.broad
+                   from ep_dict_manage a
+                  where a.region_no in
+                        (select b.group_id
+                           from ep_sys_regioncode_dict a, ep_sys_group_info b
+                          where trim(a.region_name) = trim(b.group_name))
+                    and substr(a.order_no, length(a.order_no) - 7, 6) =
+                        to_char(sysdate, 'yyyyMM')
+                  group by a.region_name, a.region_no, a.cust, a.broad
+                  order by a.region_no) f
+          where a.region_no = b.region_code(+)
+            and a.region_no = c.regionNo(+)
+            and a.region_no = d.regionNo(+)
+            and a.region_no = e.regionNo(+)
+            and a.region_no = f.region_no(+))) u
+
+
+    </select>
+</mapper>

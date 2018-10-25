@@ -1,0 +1,80 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/5.
+ */
+public class AmoutPaymentInfoDto {
+    int rank = 0;//排名
+    String town_name = "";
+    String manager_name = "";
+    String employee_no = "";//员工编号
+    String boss_no = "";//boss工号
+    String region_name = "";//地市名称
+    float payment_money_mon = 0;//当月量酬金额
+    float payment_money_year = 0;//量酬金额年累计
+
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public String getEmployee_no() {
+        return employee_no;
+    }
+
+    public void setEmployee_no(String employee_no) {
+        this.employee_no = employee_no;
+    }
+
+    public String getBoss_no() {
+        return boss_no;
+    }
+
+    public void setBoss_no(String boss_no) {
+        this.boss_no = boss_no;
+    }
+
+    public float getPayment_money_mon() {
+        return payment_money_mon;
+    }
+
+    public void setPayment_money_mon(float payment_money_mon) {
+        this.payment_money_mon = payment_money_mon;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public float getPayment_money_year() {
+        return payment_money_year;
+    }
+
+    public void setPayment_money_year(float payment_money_year) {
+        this.payment_money_year = payment_money_year;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+}

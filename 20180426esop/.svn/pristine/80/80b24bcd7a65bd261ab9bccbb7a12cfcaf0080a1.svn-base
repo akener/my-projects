@@ -1,0 +1,249 @@
+package com.esop.common.filter;
+
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.text.ParseException;
+import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class XssSessionFilter
+        implements Filter {
+    static Logger xsslogger = Logger.getLogger("xssLogger");
+
+
+    public void init(FilterConfig servletConfig)
+            throws ServletException {
+        Config.init(); 
+    }
+
+    public void destroy() {
+
+    }
+
+    public void doFilter(ServletRequest srequest, ServletResponse sresponse, FilterChain fc)
+            throws IOException, ServletException {
+        
+        try 
+        {
+        	
+        	HttpServletRequest request = (HttpServletRequest) srequest;
+            HttpServletResponse response = (HttpServletResponse) sresponse;
+            response.setHeader("Set-Cookie", "name=value; HttpOnly"); //向所有会话cookie中添加“HttpOnly”属性。 Add by tangxlc 2015/04/29
+        	if (Config.OPEN) 
+        	{
+            
+                String currentPage = request.getServletPath().trim();
+                if (!Config.XSS_URL.containsKey(currentPage)){  //config.XSS_URL 为config类中定义的map，containsKey方法判断括号中的值是否与map中的任意一个key相同，如果有返回true，没有返回false
+                    Enumeration pNames = request.getParameterNames();
+                    //检查url串
+                    //例如http://10.95.242.153:11001/npage/login/link_kf.jsp?<javascript>alert('lll');</javascript>
+                    String rs = "";
+                    StringBuffer sb = null;
+                    String queryStr = request.getQueryString();
+                    //System.out.println("qs="+queryStr);
+                    if (null!=queryStr && !"".equals(queryStr)) {
+                        rs = checkStr(queryStr,true);
+                        if (!"".equals(rs)) {
+                            sb = new StringBuffer();
+                            sb.append("\n")
+                                    .append(rs)
+                                    .append("query_string=[")
+                                    .append(queryStr)
+                                    .append("]");
+                            xsslogger.info("页面 -" + currentPage + "- ;问题参数: " + sb.toString());
+                            if (Config.MODE) {
+                                String msg = "操作失败：您提交的数据中有非法字符! " + (Config.DEBUG ? rs : "");
+                                //msg = String.format(Config.RETURN_STRING, msg);
+                                msg = "{root:{rtnCode:999999,rtnMsg:"+msg+"}}";
+                                response.setContentType("text/html;charset=GBK");
+                                response.getOutputStream().println(msg);
+                                response.getOutputStream().flush();
+                                response.getOutputStream().close();
+                                return;
+                            }
+                        }
+                    }
+
+                    boolean valueSpeFlag = false;
+                    String keyStr = "";
+                    String valueStr = "";
+                    sb = new StringBuffer();
+                    while (pNames.hasMoreElements()) {
+                        keyStr = pNames.nextElement().toString();
+                        valueStr = request.getParameter(keyStr);
+                        rs = checkStr(valueStr,false);
+                        if (!"".equals(rs)) {
+                            valueSpeFlag = true;
+                            sb.append("\n");
+                            sb.append(rs);
+                            sb.append(keyStr);
+                            sb.append("=");
+                            sb.append(valueStr);
+                            if (Config.MODE) {
+                                break;
+                            }
+                        }
+                    }
+                    if (valueSpeFlag) {
+                        xsslogger.info("页面 -" + currentPage + "- ;问题参数: " + sb.toString());
+                        if (Config.MODE) {
+                            String msg = "操作失败：您提交的数据中有非法字符! " + (Config.DEBUG ? rs : "");
+                            //msg = String.format(Config.RETURN_STRING,msg);
+                            msg = "{root:{rtnCode:999999,rtnMsg:"+msg+"}}";
+                            response.setContentType("text/html;charset=GBK");
+                            response.getOutputStream().println(msg);
+                            response.getOutputStream().flush();
+                            response.getOutputStream().close();
+                            return;
+                        }
+                    }
+                }
+            }
+        
+        	fc.doFilter(request, response);
+        	
+        } 
+        catch(Throwable e)
+        {
+        	
+            //忽略异常，不影响业务
+            System.out.println("xss filter error. "+e.getMessage());
+            e.printStackTrace();
+        
+        }
+        
+    }
+
+    public String checkStr(final String str,boolean isUrl) {
+        String value = "";
+        try {
+            value = URLDecoder.decode(str);
+            value = value.toLowerCase().replaceAll("\u0000", "");//替换字符串中的\0 字符
+        } catch (Exception e) {
+            System.out.println("URLDecoderException:" + value);
+            value = str;
+        }
+        
+        String lowValue = replaceSpecial(value);//去掉特殊字符和空白字符  包括 \\0  等有特殊含义的字符串
+       
+        if (lowValue==null || lowValue.length()<3){
+            return "";
+        }
+
+        //判断是否为json串,或者是xml串,如果是，则返回空
+        if (Config.JSON){
+            if (lowValue.startsWith(Config.JSON_KEY)){
+                return "";
+            }
+            
+            if (lowValue.charAt(0)=='<'){
+                if (lowValue.startsWith("<xml")||lowValue.startsWith("<?xml")){
+                    return "";
+                }
+            }
+            else if (lowValue.charAt(0)=='&'){
+                if (lowValue.startsWith("&lt;xml")||lowValue.startsWith("&lt;?xml")){
+                    return "";
+                }
+            }
+        }
+        
+        Matcher matcher = null;
+        if (!isUrl) {//传参 
+            if (Config.SQL) {
+                matcher = Config.sqlPattern.matcher(lowValue);//检查sql关键字
+                System.out.println("bbb="+lowValue);
+                if (matcher.find()) {
+                    return " sql [|or =|] ";
+                }
+            }
+        }
+
+        if (isUrl){//如果是url上     则只检查<>
+            matcher = Config.specialCharPatternByUrl.matcher(lowValue);
+        }
+        else {
+            matcher = Config.specialCharPattern.matcher(lowValue);//单个字符过滤  判断这个：xss_char
+        }
+        if (matcher.find()) {//过滤特殊符号的
+            matcher = Config.xssPattern.matcher(lowValue);//过滤关键字
+            if (matcher.find()) {//过滤关键字的
+            	
+                String result = " xss ";
+                if (Config.DEBUG){
+                    //如果为debug模式找出违反了哪个关键字
+                    /*for (String key : Config.XSSS){
+                        if (lowValue.indexOf(key)>=0){
+                            result = result + "[|"+key+"|] ";
+                        }
+                    }*/
+                	for (int i=0;i<Config.XSSS.length;i++){
+                        if (lowValue.indexOf(Config.XSSS[i])>=0){
+                            result = result + "[|"+Config.XSSS[i]+"|] ";
+                        }
+                    }
+                	
+                }
+                return result;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * 去掉字符串中的特殊字符和空白字符  包括 \\0  等有特殊含义的字符串
+     *
+     * @param str
+     * @return
+     */
+    public static String replaceSpecial(String str) {
+        String dest = "";
+        if (str != null) {
+            Matcher m = Config.replacePattern.matcher(str);
+            dest = m.replaceAll("");
+        }
+//        System.out.println("dest="+dest);
+        return dest;
+    }
+
+    /**
+     *
+     * @param str
+     * @return
+     * @deprecated
+     */
+    private boolean checkStrOld(String str) {
+        String regEx = "[|&;$%@'\"\\'\\\"<>()+,\\n\\r\\\\]";
+        String urlde = str;
+        try {
+            urlde = URLDecoder.decode(str);
+        } catch (Exception e) {
+            System.out.println("URLDecoderException:" + urlde);
+        }
+        Pattern pattern = Pattern.compile(regEx, 2);
+        Matcher matcher = pattern.matcher(urlde);
+        return matcher.find();
+    }
+
+    /**
+     *
+     *
+     * @return
+     * @deprecated
+     */
+    private boolean ifNotCheck(String notCheckUrl, String obj) {
+        String[] urls = notCheckUrl.split(",");
+        for (int i = 0; i < urls.length; i++) {
+            if ((obj != null) && (obj.equals(urls[i]))) {
+                return true;
+            }
+        }
+        return false;
+    }
+}

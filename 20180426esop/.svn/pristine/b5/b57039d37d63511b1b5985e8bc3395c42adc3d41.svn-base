@@ -1,0 +1,43 @@
+package com.esop.workflow.api.impl;
+
+import com.esop.workflow.api.IAssigneeFilter;
+import com.esop.workflow.mapper.CtElecWoExtInfoMapper;
+import com.esop.workflow.mapper.LoginBeanMapper;
+import com.esop.workflow.model.CtElecWoExtInfo;
+import com.esop.workflow.vo.Assignee;
+import com.esop.workflow.model.LoginBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * 被指定人为领导
+ *
+ * @author daish 2017/10/31
+ */
+@Service(value = "assigneeAudiLeaderSvc")
+public class AssigneeFilterAsLeader implements IAssigneeFilter {
+    @Autowired
+    private CtElecWoExtInfoMapper ctElecWoExtInfoMapper;
+    @Autowired
+    private LoginBeanMapper loginBeanMapper;
+
+    public Assignee[] getAssignee(Assignee iAssignee) {
+        String woNo = iAssignee.getBizRecordId();
+        CtElecWoExtInfo ctElecWoExtInfo = new CtElecWoExtInfo();
+        ctElecWoExtInfo.setWoNo(woNo);
+        ctElecWoExtInfo.setParamKey("audiLeader");
+        CtElecWoExtInfo extInfo = ctElecWoExtInfoMapper.selectByWoNoAndParamKey(ctElecWoExtInfo);
+        Assignee[] arr = new Assignee[1];
+        if (extInfo != null) {
+            String loginNo = extInfo.getParamVal();
+            LoginBean loginBean = loginBeanMapper.selectByLoginNo(loginNo);
+            if (loginBean != null) {
+                Assignee assignee = new Assignee();
+                assignee.setAssignee(loginBean.getLoginNo());
+                assignee.setAssigneeName(loginBean.getLoginName());
+                arr[0] = assignee;
+            }
+        }
+        return arr;
+    }
+}

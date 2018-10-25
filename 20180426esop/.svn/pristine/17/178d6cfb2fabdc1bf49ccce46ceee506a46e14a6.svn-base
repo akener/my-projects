@@ -1,0 +1,618 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lilei
+  Date: 2017/6/14
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+    客户经理工单展示
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+
+
+
+    <!--<link rel="icon" href="./favicon.ico">-->
+</head>
+
+
+<body>
+<div class="modal fade" id="fault5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">请上传jpg或png格式的文件</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">请至少录入一个工号</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">请选择活动的开始日期和结束日期</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">活动的开始日期不能大于结束日期</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice4">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo4">请上传照片</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">客户经理结单成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="tobefore2" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice6">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo6">客户经理结单失败</label>
+            </div>
+            <div class="modal-footer">
+                <button id="tobefore3" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice7">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo7">客户经理回退工单成功</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="tobefore" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice8">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="tobefore1" class="control-label" id="noticeInfo8">客户经理回退工单失败</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault10" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice9">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label  class="control-label" id="noticeInfo9">回退工单必须填写回退原因</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="caseId" >
+    <table id="caseTable" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center" ><strong >工单编号</strong></th>
+            <th class="text-center" ><strong >批次号</strong></th>
+            <th class="text-center" ><strong>地市编码</strong></th>
+            <th class="text-center" ><strong>地市名称</strong></th>
+            <th class="text-center" ><strong>集团编码</strong></th>
+            <th class="text-center" ><strong>集团名称</strong></th>
+            <th class="text-center"><strong>智能V网成员数</strong></th>
+            <th class="text-center"><strong>4G渗透率</strong></th>
+            <th class="text-center"><strong>员工数</strong></th>
+            <th class="text-center"><strong>移动用户数</strong></th>
+            <th class="text-center"><strong>客户经理工号</strong></th>
+            <th class="text-center"><strong>客户经理名称</strong></th>
+            <th class="text-center"><strong>工单办理</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+</div>
+<div id="recordCaseId" >
+    <table id="recordTable" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center" ><strong >批 次 号</strong></th>
+            <th class="text-center" ><strong>省 营 销 活 动</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<div style="background-color: #ffffee;width: 100%;height: 20px">
+
+</div>
+
+<div id="handleId" style="display: none">
+
+    <div style="padding-left: 25%;height: 30px;margin: 20px">
+        <label>业务受理工号1:</label><input type="text" id="login1"/>
+        <label style="margin-left: 40px">业务受理工号2:</label>
+        <input type="text" id="login2"/>
+    </div>
+    <div style="padding-left: 25%;height: 30px;margin: 20px">
+        <label>业务受理工号3:</label><input type="text" id="login3" />
+        <label style="margin-left: 40px">业务受理工号4:</label>
+        <input type="text" id="login4" />
+    </div>
+
+    <div  style="padding-left: 25%;height: 30px;margin: 20px;" >
+        <label >业务受理工号5:</label><input type="text" id="login5"/>
+
+        <label class="btn btn-info " for="xFile" style="margin-left: 40px;width: 230px;height: 29px">上传附件(.jpg,.png格式)</label>
+        <form id="upload-form" method="post" enctype="multipart/form-data">
+            <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+        </form>
+
+    </div>
+    <div >
+        <div id="fileList" style="padding-left: 25%;overflow: auto">
+
+        </div>
+    </div>
+
+    <div class="input-append date" id="startTime" data-date="" data-date-format="dd-mm-yyyy" style="height:auto;  display:inline;padding-left: 24%">
+        <label style="padding-left: 40px">活动开始日期:</label>
+        <input size="20" type="text" id="sTime" readonly>
+        <span class="add-on"  ><i style="padding-left: 2% "class="icon-th"></i></span>
+    </div>
+
+    <div class="input-append date" id="endTime" data-date="" data-date-format="dd-mm-yyyy" style="height:auto; display:inline;padding-left: 1%" >
+        <label >活动结束日期:</label>
+        <input id="eTime" size="20" type="text"  readonly>
+        <span class="add-on" ><i style="padding-left: 1% " class="icon-th"></i></span>
+    </div>
+    <div style="padding-left: 25%;height:30px;margin-top:10px; ">
+        <label style="padding-left: 28px">回退原因:</label>
+        <input type="text" id="reMsg" style="width: 430px" />
+    </div>
+    <div style="padding-left: 25%;height: 30px;margin: 20px;display:inline;">
+        <button id="subCase" style="margin-left: 170px;width: 80px;" type="button" >结单</button>
+        <button id="backCase" style="margin-left: 40px;width: 80px;" type="button" >退回上级</button>
+    </div>
+
+</div>
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var table1;
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+    $(document).ready(function() {
+
+        editor = new $.fn.DataTable.Editor( {
+        } );
+
+        //工单数据
+        table = $('#caseTable').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/qryCustCaseInfo",
+                type:"POST",
+                data:{"status":"03","login_no":login_no}
+            },
+            columns: [
+                { data:"local_number"},
+                { data:"batch_no"},
+                { data:"region_id"},
+                { data: "region_name" },
+                { data: "unit_id" },
+                { data: "unit_name" },
+                { data: "intelligent_number" },
+                { data: "permeability" },
+                { data: "employee_number" },
+                { data: "user_number" },
+                { data: "login_no" },
+                { data: "manager_name" },
+                {
+                    data:"reid",
+                    //"orderable": false,
+                    "width": "8%",
+                    render: function ( data, type, row, meta ) {
+
+                        return data= "<button  type='button' style='width: 50px' onclick='getEndCase("+row.reid+")' name='"+row.reid+"'>办理</button>";
+
+                    } }
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+
+        table1 = $('#recordTable').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength":10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy:true,
+            ajax: {
+                url:"/qryCustOfRecordByLoginNo",
+                type:"POST",
+                data:{"login_no":login_no,"status":"03"}
+            },
+            columns: [
+                {data:"batch_no"},
+                { data:"market_name"}
+            ],
+            select: true,
+            buttons: []
+        } );
+
+
+    } );
+    var subReId="";
+    function getEndCase(reid){
+        subReId=reid;
+        //alert(subReId+" ddddd");
+        //location.href="sciuli?reid="+reid;
+        $("#handleId").show();
+
+    }
+    //附件上传
+    $("#xFile").on("change", function(){
+        //alert($('#xFile')[0].files[0].name);
+        var file_name = $('#xFile').val();
+        var names = file_name.split("\\");
+        var length = names.length;
+        $("#file_path").val(names[length-1]);
+        var strs = names[length-1].split(".");
+        var rex = strs[strs.length-1];
+        if(rex != 'png' && rex != 'jpg'){
+            $("#fault5").modal('show');
+            return;
+        }
+
+        $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+            url:"${pageContext.request.contextPath}/fileUpload",
+            type:"post", //提交的类型必需是post，
+            data: { related_id: subReId},
+            dateType:"json",
+            success:function(data){
+                //如果提交成功执行
+                //如果附件编码不为空，开始取附件
+                if(subReId!="") {
+                    $.ajax({
+                        type: "POST",
+                        url: "uploadFileSelect",
+                        data: {
+                            "related_id": subReId
+                        }
+                    }).then(function (data) {
+                        //循环展现附件信息
+
+                        //循环展现附件信息
+                        $("#fileList div").remove();
+                        $.each(data, function (index, item) {
+                            $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                                + "</a></div>"
+                                + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                                + "<i class=\"fa fa-times\"></i></button></div></div>");
+                        });
+                        /* $("#related_id").val(subReId);
+                         $("#fileList").append("<div id='aName'><div  class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a  href='fileLoad/"+data.pathValue+"/"+$('#xFile')[0].files[0].name+"'>"+$('#xFile')[0].files[0].name
+                         +"</a></div>"
+                         +"<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this,"+data.id+")' title=\"删除\">"
+                         +"<i class=\"fa fa-times\"></i></button></div>");*/
+                    });
+                }
+            },
+            error:function(data){
+                alert("error:"+data);
+            }
+        });
+
+    });
+    //删除附件
+    function deleteFile(buttonID,fileID){
+        $.ajax({
+            type: "POST",
+            url: "deleteFile",
+            data: {id:fileID}
+        }).then(function (data) {
+            //alert(data.result);
+            $(buttonID).parent().parent().remove();
+        });
+    }
+
+    var loginsName="";
+    //客户经理结单
+    $("#subCase").click(function () {
+        //alert(subReId);
+        var log1=$("#login1").val();
+        var log2=$("#login2").val();
+        var log3=$("#login3").val();
+        var log4=$("#login4").val();
+        var log5=$("#login5").val();
+        var beginTime=$("#sTime").val();
+        var overTime=$("#eTime").val();
+        //alert(beginTime);
+        //alert(overTime);
+        var buf=[];
+        buf.push(log1);
+        buf.push(log2);
+        buf.push(log3);
+        buf.push(log4);
+        buf.push(log5);
+
+
+        var flag=0;
+        for (var i=0;i<buf.length;i++){
+            if(buf[i]!= undefined && buf[i]!=null && buf[i] !=""){
+                flag++;
+                if(i==buf.length-1){
+                    loginsName+=buf[i];
+                }else{
+                    loginsName+=buf[i]+",";
+                }
+
+            }
+        }
+        //alert(loginsName);
+        if(flag<1){
+            $("#fault4").modal('show');
+            return;
+        }
+
+
+        if(beginTime=="" || beginTime== undefined || overTime=="" || overTime== undefined){
+            $("#fault3").modal('show');
+            return;
+        }
+
+
+        var oDate1 = new Date(beginTime);//开始时间
+        var oDate2 = new Date(overTime);//结束时间
+        var d1= oDate1.getTime();
+        var d2=oDate2.getTime();
+        //alert(d1+" "+d2);
+        d1=d1+86400000;
+        if(d1 > d2){
+            $("#fault2").modal('show');
+            return;
+        }
+
+
+
+        var imgFlag= $("#fileList").find('div').length;
+        if(imgFlag == 0){
+            //alert(imgFlag);
+            $("#fault1").modal('show');
+            return;
+        }
+
+        $.ajax({
+            type:"GET",
+            url:"/custEndCaseInfo",
+            data:{"reid":subReId,"case_cust_no":loginsName,"act_start_time":beginTime,"act_end_time":overTime,"status":"04"}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault6").modal('show');
+
+                // location.href="CMWorkOrderProcessing"
+            }else{
+                $("#fault7").modal('show');
+                //location.href="CMWorkOrderProcessing"
+            }
+
+        });
+    });
+
+    //工单回退
+    $("#backCase").click(function () {
+        var testList=$("#reMsg").val();
+        //alert(testList);
+        if(testList=="" || testList ==undefined){
+            $("#fault10").modal('show');
+            return;
+        }
+
+        $.ajax({
+            type:"GET",
+            url:"/custBackRegionManage",
+            data:{"reid":subReId,"status":"05","testList":testList}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault8").modal('show');
+
+
+            }else{
+                $("#fault9").modal('show');
+
+            }
+
+        });
+    });
+
+    //新增
+    $('#startTime').datetimepicker({
+        format:'yyyy-mm-dd',
+        autoclose:true,//自动关闭
+        minView:'month',
+        weekStart:0,
+        language: 'zh-CN',
+        pickerPosition:'bottom-right'
+    });
+    $('#endTime').datetimepicker({
+        format:'yyyy-mm-dd',
+        autoclose:true,//自动关闭
+        minView:'month',
+        weekStart:0,
+        language: 'zh-CN',
+        pickerPosition:'bottom-right'
+    });
+    $("#tobefore").click(function () {
+
+        document.location.reload();
+    });
+    $("#tobefore1").click(function () {
+
+        document.location.reload();
+    });
+    $("#tobefore2").click(function () {
+
+        document.location.reload();
+    });
+    $("#tobefore3").click(function () {
+
+        document.location.reload();
+    });
+
+
+</script>
+</html>

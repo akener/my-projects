@@ -1,0 +1,318 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/6/3
+  Time: 9:34
+  客户经理欠费工单处理
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<%@ include file="../../pub/hlj.jsp"%>--%>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>工单详情</title>
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+</head>
+</head>
+<body>
+<!-- 提交确认 -->
+<div class="modal fade" id="submitRecord" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提交</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">确认提交催缴记录工单吗？</label>
+            </div>
+            <div class="modal-footer">
+                <button id="doSubmitRecord" name="doSubmitRecord" class="btn btn-info">是</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 催缴失败提醒 -->
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">请选择催缴失败原因</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">请填写催缴失败原因</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">该集团产品仍处于欠费状态，不能提交</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">工单详情</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <input type="hidden" id="record_id" value="${record_id}">
+                            <input type="hidden" id="p_id" value="${product_id}">
+                            <input type="hidden" id="id" value="${id}">
+                            <input type="hidden" id="flag" value="${flag}">
+                            <input type="hidden" id="resend" value="">
+                            <label class="col-sm-3 control-label">集团编码</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="cust_id" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">集团名称</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="cust_name" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">产品ID</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="product_id" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">产品名称</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="product_name" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">缴费周期</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="pay_period" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">欠费金额</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="owe_money" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">客户经理工号</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="service_no" readonly="true">
+                            </div>
+                            <label class="col-sm-3 control-label">客户经理姓名</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="service_name" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">账期结束时间</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="account_end_date" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">工单截止日期</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="record_end_date" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">工单状态</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="record_status" readonly="true">
+                            </div>
+                            <div id="reason">
+                                <label class="col-sm-3 control-label">催缴失败原因</label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="fault_reason" readonly="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">归属地市</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="name" readonly="true">
+                            </div>
+
+                            <%--<label class="col-sm-3 control-label">催缴记录单</label>
+                            <div class="col-sm-3" id="fileList">
+                                ${fileList}
+                            </div>--%>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group" id="fileList">
+                            <div class="col-sm-3">
+                                ${fileList}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-info pull-right" id="back">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    //获取数据
+    $(document).ready(function() {
+        var record_id = $("#record_id").val();
+        var product_id = $("#p_id").val();
+        var id = $("#id").val();
+        //alert(record_id);
+        //alert(product_id);
+        $.ajax({
+            type: "GET",
+            url: "getOneRecordDetail",
+            data:{
+                id:id
+            }
+        }).then(function (data) {
+            //alert(data.product_id);
+            $("#cust_id").val(data.cust_id);
+            $("#cust_name").val(data.cust_name);
+            $("#product_id").val(data.product_id);
+            $("#product_name").val(data.product_name);
+            $("#pay_period").val(data.pay_period);
+            $("#owe_money").val(data.owe_money);
+            $("#account_end_date").val(data.account_end_date);
+            $("#record_end_date").val(data.record_end_date);
+            if(data.record_status == "回退至地市欠费管理员" || data.record_status == "回退至省欠费管理员" || data.record_status == "催缴失败结单"){
+                $("#reason").show();
+            }else{
+                $("#reason").hide();
+            }
+            $("#fault_reason").val(data.fault_reason);
+            $("#record_status").val(data.record_status);
+            $("#name").val(data.org_name);
+            $("#service_no").val(data.service_no);
+            $("#service_name").val(data.service_name);
+        });
+
+        $.ajax({
+            type: "GET",
+            url: "getFileOfOweRecord",
+            data:{
+                related_id:id
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='/esop/fileLoad/"+item.path+"/"+item.name+"'>"+item.name
+                    +"</a></div>"
+                    +"</div>");
+            });
+        });
+    });
+
+    $("#back").click(function(){
+       var flag = $("#flag").val();
+       if(flag == "pi"){
+           location.href="showAllOweRecord";
+       }
+       if(flag == "gi"){
+           location.href="showOweRecordByGroup";
+       }
+        if(flag == "pg"){
+            location.href="getOweRecordByProvince";
+        }
+        if(flag == "gg"){
+            location.href="getOweRecordByGroup";
+        }
+        if(flag == "sg"){
+            location.href="getOweRecordByService";
+        }
+    });
+</script>
+</html>

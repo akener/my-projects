@@ -1,0 +1,27 @@
+package com.esop.cqDevelopment.controller;
+
+import com.esop.alertClassified.dto.AccountAlertRetrunDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.dto.ServiceTestDto;
+import com.esop.cqDevelopment.service.ServiceTestService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+
+@RestController
+public class ServiceTestRC {
+    @Autowired
+    ServiceTestService serviceTestService;
+    @RequestMapping(value="/serviceTest")
+    public List getServcieTestMsg(ServiceTestDto parameter, HttpServletRequest request, boolean flag){
+
+        List list;
+        list= serviceTestService.getServiceTestList(parameter);
+        return list;
+    }
+}

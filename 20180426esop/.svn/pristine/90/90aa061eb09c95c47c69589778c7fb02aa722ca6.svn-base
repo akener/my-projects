@@ -1,0 +1,279 @@
+package com.esop.common.word;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.util.*;
+import java.util.List;
+
+import com.lowagie.text.*;
+import com.lowagie.text.html.simpleparser.HTMLWorker;
+import com.lowagie.text.html.simpleparser.StyleSheet;
+import com.lowagie.text.rtf.RtfWriter2;
+import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
+
+/**
+ * iText操作word的主类，包括了所有的操作方法。
+ * @param document 文档对象
+ * @param bfChinese 基本字体
+ * @param baos 字节输出流
+ * @param bais 字节输出流
+ * @author footmarkt--hehongze
+ */
+public class WordTemplate {
+ /*   private Document document;
+    private ByteArrayOutputStream baos = null;
+    //引入具体操作类
+    private InsertTitle insertTitle = new InsertTitle();
+    private InsertOutlineTitle insertOutlineTitle = new InsertOutlineTitle();
+    private InsertFooter insertFooter = new InsertFooter();
+    private InsertHeader insertHeader = new InsertHeader();
+    private InsertImg insertImg = new InsertImg();
+    private InsertContent insertContent = new InsertContent();
+    private InsertTable insertTable = new InsertTable();
+    *//**
+     * 默认构造函数，页面大小设置为A4
+     *//*
+    public WordTemplate(){
+        this.document = new Document(PageSize.A4);
+    }
+    *//**
+     * 构造函数，页面大小由参数决定，方便用户自定义
+     *//*
+    public WordTemplate(Rectangle rectangle){
+        this.document = new Document(rectangle);
+    }
+    *//**
+     * 建立一个书写器(Writer)与document对象关联，通过书写器(Writer)可以将文档写入到一个输出流中
+     * @throws DocumentException
+     * @throws IOException
+     *//*
+    public void openDocument() throws DocumentException,IOException {
+        baos = new ByteArrayOutputStream();
+        RtfWriter2.getInstance(this.document, baos);
+        this.document.open();
+    }
+    *//**
+     * @param filePath 建立一个书写器(Writer)与document对象关联，通过书写器(Writer)可以将文档写入到磁盘中
+     * @throws DocumentException
+     * @throws IOException
+     *//*
+    public void openDocument(String filePath) throws DocumentException,IOException {
+        RtfWriter2.getInstance(this.document, new FileOutputStream(filePath));
+        this.document.open();
+    }
+    *//**
+     * @param filePath 建立一个书写器(Writer)与document对象关联，通过书写器(Writer)可以将文档写入到磁盘中
+     * @throws DocumentException
+     * @throws IOException
+     *//*
+    public void openDocument(String filePath,Image img) throws DocumentException,IOException {
+        RtfHeaderFooter header = new RtfHeaderFooter(img);
+        RtfWriter2.getInstance(this.document, new FileOutputStream(filePath)).setHeader(header);
+        this.document.open();
+    }
+    *//**
+     * 插入主标题方法
+     * @param title 标题格式默认为：三号宋体加粗，居中
+     *//*
+    public void insertMainTitle(String title) throws DocumentException, IOException{
+        insertTitle.insertMainTitle(this.document, title);
+    }
+    *//**
+     * 插入主标题,由用户定义标题格式
+     * @param title 标题内容
+     * @param fontSize 字体大小
+     * @param fontStyle 字体样式
+     * @param elementAlign 内容摆放位置
+     *//*
+    public void insertMainTitle(String title,int fontSize,int fontStyle,int elementAlign) throws DocumentException, IOException{
+        insertTitle.insertMainTitle(this.document, title, fontSize, fontStyle, elementAlign);
+    }
+    *//**
+     * 插入大纲标题，3号黑体加粗，居左
+     * @param document 文档对象
+     * @param outlineTitle 大纲内容
+     * @param outline 大纲级别，取值为1、2、3之一
+     *//*
+    public void insertOutlineTitleContent(String outlineTitle,int outline) throws DocumentException, IOException{
+        insertOutlineTitle.insertOutlineTitle(this.document, outlineTitle, outline);
+    }
+    *//**
+     * 插入大纲标题，标题样式由参数定义
+     * @param document 文档对象
+     * @param outlineTitle 大纲内容
+     * @param outline 大纲级别，取值为1、2、3之一
+     * @param fontSize 字体大小
+     * @param fontStyle 字体样式
+     * @param elementAlign 标题位置
+     *//*
+    public void insertOutlineTitleContent(String outlineTitle,int outline,int fontSize,int fontStyle,int elementAlign) throws DocumentException, IOException{
+        insertOutlineTitle.insertOutlineTitle(this.document, outlineTitle, outline, fontSize, fontStyle, elementAlign);
+    }
+    *//**
+     * 插入内容，默认为：行距1.5；左右边距1；段前断后距离1；段首空两个字符；左对齐
+     * @param content
+     *//*
+    public void insertContext(String content) throws DocumentException, IOException{
+        insertContent.insertContext(this.document, content);
+    }
+    *//**
+     * 插入内容
+     * @param context 内容
+     * @param fontsize 字体大小
+     * @param fontStyle 字体样式
+     * @param elementAlign 对齐方式
+     * @param leading 行距
+     * @param spacingBefore 离上一段空的行数
+     * @param lineIndent 段首空的列数,空两个字符则设为30
+     * @throws DocumentException
+     * @throws IOException
+     *//*
+    public void insertContext(String context,int fontsize,int fontStyle,int elementAlign,float leading,
+                              float spacingBefore,float lineIndent) throws DocumentException, IOException{
+        insertContent.insertContext(this.document, context, fontsize, fontStyle, elementAlign, leading, spacingBefore, lineIndent);
+    }
+    *//**
+     * 插入页脚，字符串形式标志页码
+     * @param fontsize 字体大小
+     * @param fontStyle 字体样式
+     *//*
+    public void insertFooterPageAndTotal(int fontsize,int fontStyle) throws DocumentException, IOException{
+        insertFooter.insertFooterPageAndTotal(this.document, fontsize, fontStyle);
+    }
+    *//**
+     * 插入页脚，字符串形式标志页码
+     * @param fontsize 字体大小
+     * @param fontStyle 字体样式
+     *//*
+    public void insertFooterPage() throws DocumentException, IOException{
+        insertFooter.insertFooterPage(this.document);
+    }
+    *//**
+     * 插入页眉，字符串形式
+     * @param headerStr 页眉内容
+     * @param fontsize 字体大小
+     * @param fontStyle 字体样式
+     *//*
+    public void insertHeaderContent(String headerStr,int fontsize,int fontStyle) throws DocumentException, IOException{
+        insertHeader.insertHeader(this.document, headerStr, fontsize, fontStyle);
+    }
+    *//**
+     * 插入页眉，由图片参数定义
+     * @param img 图片对象
+     * @param height 高度
+     *//*
+    public void insertHeaderImage(String imgUrl,int height) throws BadElementException, MalformedURLException, IOException{
+        insertHeader.insertHeader(this.document, imgUrl,height);
+    }
+    *//**
+     * 根据水平位置插入图片，长和宽自定义
+     * @param imgUrl 图片路径
+     * @param imageAlign 显示位置，有left、center、right
+     * @param height 显示高度
+     * @param weight 显示宽度
+     * @throws MalformedURLException
+     * @throws IOException
+     * @throws DocumentException
+     *//*
+    public void insertImgByAlign(String imgUrl,int imageAlign,int weight,int height) throws MalformedURLException, IOException, DocumentException{
+        insertImg.insertImgByAlign(this.document, imgUrl, imageAlign, weight, height);
+    }
+    *//**
+     * 添加表格到文档
+     * @param table 表格
+     * @throws DocumentException
+     *//*
+    public void insertTable(int rowsNum,int colsNum,int colsWidth,boolean fullPage) throws DocumentException, IOException{
+        insertTable.insertTable(this.document, rowsNum, colsNum, colsWidth, fullPage);
+    }
+    *//**
+     * 返回输入流
+     *//*
+    public ByteArrayOutputStream getOutputStream() throws IOException{
+        return this.baos;
+    }
+    *//**
+     * 关闭decument对象
+     * @throws IOException
+     * @throws DocumentException
+     *//*
+    public void closeDocument() throws DocumentException, IOException{
+        if(this.baos!=null)
+            this.baos.close();
+        this.document.close();
+    }
+    public Document getDocument() {
+        return document;
+    }
+    public void setDocument(Document document) {
+        this.document = document;
+    }
+    public ByteArrayOutputStream getBaos() {
+        return baos;
+    }
+    public void setBaos(ByteArrayOutputStream baos) {
+        this.baos = baos;
+    }
+    public InsertTitle getInsertTitle() {
+        return insertTitle;
+    }
+    public void setInsertTitle(InsertTitle insertTitle) {
+        this.insertTitle = insertTitle;
+    }
+    public InsertOutlineTitle getInsertOutlineTitle() {
+        return insertOutlineTitle;
+    }
+    public void setInsertOutlineTitle(InsertOutlineTitle insertOutlineTitle) {
+        this.insertOutlineTitle = insertOutlineTitle;
+    }
+    public InsertFooter getInsertFooter() {
+        return insertFooter;
+    }
+    public void setInsertFooter(InsertFooter insertFooter) {
+        this.insertFooter = insertFooter;
+    }
+    public InsertHeader getInsertHeader() {
+        return insertHeader;
+    }
+    public void setInsertHeader(InsertHeader insertHeader) {
+        this.insertHeader = insertHeader;
+    }
+    public InsertImg getInsertImg() {
+        return insertImg;
+    }
+    public void setInsertImg(InsertImg insertImg) {
+        this.insertImg = insertImg;
+    }
+    public InsertContent getInsertContent() {
+        return insertContent;
+    }
+    public void setInsertContent(InsertContent insertContent) {
+        this.insertContent = insertContent;
+    }
+    public InsertTable getInsertTable() {
+        return insertTable;
+    }
+    public void setInsertTable(InsertTable insertTable) {
+        this.insertTable = insertTable;
+    }
+    *//*public static void main(String[] args) throws DocumentException, IOException{
+        WordTemplate t = new WordTemplate();
+        t.openDocument("d://test.doc");
+        t.insertTable(10, 10, 3, true);
+        t.closeDocument();
+    }*//*
+
+    public void insertHtml(String html)throws DocumentException, IOException{
+    *//*    StyleSheet s = new StyleSheet();
+        List htmlList =  HTMLWorker.parseToList(new StringReader(html), s);
+        Paragraph context = new Paragraph();
+        for (int i = 0; i < htmlList.size(); i++) {
+            com.lowagie.text.Element e = (com.lowagie.text.Element) htmlList.get(i);
+            context.add(e);
+        }
+        this.document.add(context);*//*
+    }*/
+}

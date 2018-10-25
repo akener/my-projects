@@ -1,0 +1,26 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.BankDealQueryDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class BankDealQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getBankDealInfoSvc(BankDealQueryDto parameter){
+        String selectTion = "";
+        selectTion = "selectBankDealInfo";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

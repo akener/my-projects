@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HallRepository">
+    <select id="getElecStatusList" resultType="com.esop.cqDevelopment.elecPack.dto.SeElecPackStatusDictDto">
+        select * FROM
+        se_elec_pack_status_dict
+    </select>
+    <select id="getElecPackList" resultType="com.esop.cqDevelopment.elecPack.dto.SeElecPackInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.SeElecPackInfoDto">
+        select pack.*,product.catalog_name,product.catalog_id,product.prod_name,product.pro_type,status.status_name status_name
+        from se_elec_pack_info pack
+        left join bs_product_info product on pack.prod_code = product.prod_id
+        left join se_elec_pack_status_dict status on pack.state = status.status_code
+        where 1=1
+        <if test="id !=null and id != ''">
+            and pack.id = #{id}
+        </if>
+        <if test="oper_no != null and oper_no !=''">
+            AND pack.oper_no = #{oper_no}
+        </if>
+        <if test="catalog_id !=''">
+            and product.catalog_id = #{catalog_id}
+        </if>
+        <if test="pack_name != null and  pack_name != ''">
+            AND  pack.pack_name LIKE  concat("%",#{pack_name},"%")
+        </if>
+        <if test="prod_code != null and prod_code != ''">
+            AND pack.prod_code = #{prod_code}
+        </if>
+        <if test="state != null and state != ''">
+            AND pack.state = #{state}
+        </if>
+        <if test="start_oper_date != null and start_oper_date != ''">
+            AND pack.oper_date &gt; #{start_oper_date}
+        </if>
+        <if test="end_oper_date != null and end_oper_date != ''">
+            AND pack.oper_date &lt; #{end_oper_date}
+        </if>
+        GROUP BY pack.id
+    </select>
+    <insert id="addElecPack" parameterType="com.esop.cqDevelopment.elecPack.dto.SeElecPackInfoDto">
+        INSERT INTO se_elec_pack_info(oper_no,pack_name,prod_code,xml_name)
+        VALUES (#{oper_no},#{pack_name},#{prod_code},#{xml_name})
+    </insert>
+</mapper>

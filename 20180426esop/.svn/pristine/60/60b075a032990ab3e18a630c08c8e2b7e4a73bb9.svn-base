@@ -1,0 +1,221 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>订单详情</title>
+    <script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/newCheckGroup.js"></script>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3> 订单处理 </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单信息</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团缴费联系人姓名</th>
+                            <td>
+                                <input id="link_man5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                            <th>集团缴费联系人电话</th>
+                            <td>
+                                <input id="mobile_no5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>集团缴费联系人地址</th>
+                            <td>
+                                <input id="address5" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                            </td>
+                            <th>集团缴费联系人身份证号</th>
+                            <td>
+                                <input id="id_number5" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>邮件</th>
+                            <td>
+                                <input id="email5" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团单位名称</th>
+                            <td>
+                                <input id="union_name5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                            <th>集团单位编码</th>
+                            <td>
+                                <input id="union_code5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团账户名称</th>
+                            <td>
+                                <input id="account_name5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+
+                            <th>集团账户编码</th>
+                            <td>
+                                <input id="account_code5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                        </tr>
+                        <td style="display: none">
+                            <input id="del_up_state5" type="text" >
+                        </td>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单流程处理轨迹</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" width="100%;">
+                        <tbody id="trancesTb">
+                        <tr>
+                            <th>任务编号</th>
+                            <th>任务名称</th>
+                            <th>处理人</th>
+                            <th>处理时间</th>
+                            <th>处理意见</th>
+                            <th>处理备注</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols" id="advice2"><b style="border: 2px solid #eca100;"></b>审核意见</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th id="advice">审核意见：</th>
+                            <td colspan="3">
+                                <select id="idea5" class="selector_region input-sty04 form-ipt" onchange="getRemark5()">
+                                    <option value="">
+                                        -请选择-
+                                    </option>
+                                    <option value="1">
+                                        同意
+                                    </option>
+                                    <option value="0">
+                                        退回
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注：</th>
+                            <td colspan="3">
+                                <textarea   id="remark5" rows="3"  class="ui-text form-ctrl" style="width:60%;"></textarea>
+                            </td>
+                        </tr>
+                        <tr class="tr-data-cc" id="next_deal">
+                            <th>下一环节：</th>
+                            <td>
+                                <input id="next_deal5"  type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                            <th>下一环节处理人：</th>
+                            <td>
+                                <select   CLASS="ASSIGNEE select-style-1" ></select>
+                            </td>
+                        </tr>
+
+                        <input id="procInstId" type="hidden" value=""/>
+                        <input id="taskInstId" type="hidden" value=""/><%--每做一部要变--%>
+                        <input id="taskId" type="hidden" value=""/>
+                        <input id="stepId" type="hidden" value=""/>
+                        <input id="procId" type="hidden" value=""/>
+                        <input id="procNameEn" type="hidden" value=""/>
+                        <input id="bizRecordId" type="hidden" value=""/>
+                        <input id="regionId" type="hidden" value="CQ.CQ"/>
+                        <input id="source_id" type="hidden" value=""/>
+
+                        <input id="loginCode" type="hidden" value="112900001"/>
+                        <input id="loginName" name="" type="hidden" value="思特奇员工">
+
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="dealTask2()" id="subButton5">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../assets/js/My97DatePicker/WdatePicker.js"></script>
+</body>
+<script>
+    $(document).ready(function() {
+
+        $("#procInstId").val("${proc_inst_id}");
+        $("#taskInstId").val("${task_inst_id}");
+        $("#taskId").val("${task_id}");
+        $("#stepId").val("${step_id}");
+        $("#procId").val("${proc_id}");
+        $("#procNameEn").val("${proc_name_en}");
+        $("#bizRecordId").val("${biz_record_id}");
+        $("#source_id").val("${source_id}");
+
+        order_title="集团缴费联系人";
+        region_code="230";
+        seq_relation_info="230201712129715166";
+
+        loginCode=$("#loginCode").val();
+        loginName=$("#loginName").val();
+        contract_id="10002";
+        id=$("#source_id").val();
+        source_id=$("#source_id").val();
+        request_num=$("#bizRecordId").val();
+        important="MemberSort03";
+        roletype="MemberSort0305";
+        selOrderTrances();
+        chooseStep();
+        selectGroupPayContactByRequsetNum5();
+    } );
+
+</script>
+</html>

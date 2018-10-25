@@ -1,0 +1,30 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.ArrearWarnDto;
+import com.esop.workbench.service.ArrearWarnService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+
+/**
+ * Created by liuxiao on 2017/5/31.
+ */
+@RestController
+public class ArrearWarnController {
+    @Autowired
+    ArrearWarnService arrearWarnService;
+    private static Logger logger = Logger.getLogger(ArrearWarnController.class);
+    @RequestMapping(value = "/arrearWarn")
+    public List getArrearWarnList(ArrearWarnDto arrearWarnDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        String eff_date = request.getParameter("eff_date");
+        arrearWarnDto.setRegion_code(region_code);
+        arrearWarnDto.setEff_date(eff_date);
+        return arrearWarnService.getArrearWarnList(arrearWarnDto);
+    }
+}

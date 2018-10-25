@@ -1,0 +1,288 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <title>资金入账月报表</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var login_no;
+        var root_org_id;
+        $(document).ready(function () {
+            login_no="<%=login_no%>";
+            root_org_id="<%=root_org_id%>";
+            root_org_name="<%=root_org_name%>";
+            if(root_org_id.length>8){
+                root_org_id=root_org_id.substr(0,8);
+            }
+            if(root_org_id=="CQ.CQ"||root_org_id=="CQ.CQ.C4"|| root_org_id=="CQ.CQ.0B"){
+                selectOrgId();
+            }else {
+                selectBusinessCenterByLoginNo();
+                $("#fen_gongs").append("<option value='"+root_org_id+"'>"+root_org_name+"</option>");
+            }
+            nowDate();
+        });
+        function nowDate() {
+            var now=getNowFormatDate();
+            $("#shenqing_shijian_5").val(now);
+        }
+        function selectOrgId(){
+            $.ajax({
+                url:"/selectOrgId",
+                type:"post",
+                success:function (data) {
+                $("#fen_gongs").append("<option value=''>重庆市</option>");
+                for(var i=0;i<data.length;i++){
+                    $("#fen_gongs").append("<option value='"+data[i].fen_gongs+"'>"+data[i].group_pay_name+"</option>");
+                }
+                }
+            })
+        }
+        function selectBusinessCenterByLoginNo() {
+            $.ajax({
+                url:"/selectBusinessCenterForZhangwuyun",
+                type:"POST",
+                data:{
+                    login_no:login_no
+                },success:function (data) {
+               if(data.length==1){
+                   $("#hangye_zhongxin").append("<option value='"+data[0].center_code+"'>"+data[0].business_center+"</option>");
+               }else if(data.length==0){
+                   /*当是分公司，但是有查询所有行业中心数据权限的*/
+                   selectBusiness();
+               }else{
+                   for(var i=0;i<data.length;i++){
+                       $("#hangye_zhongxin").append("<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>");
+                   }
+               }
+                }
+            })
+        }
+        function selectBusiness() {
+            $("#hangye_zhongxin").empty();
+          var b=  $("#fen_gongs").val();
+            $.ajax({
+                url:"/selectBusinessCenterCode",
+                type:"post",
+                data:{
+                    fen_gongs:b
+                },
+                success:function (data) {
+                    $("#hangye_zhongxin").append("<option value=''>--请选择--</option>");
+                    for(var i=0;i<data.length;i++){
+                        $("#hangye_zhongxin").append("<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>");
+                    }
+
+                }
+            })
+        }
+        function capitalClaimApproveQuery() {
+            var fen_gongs;
+            var hangye_zhongxin;
+            var shenqing_shijian_5;
+            if(root_org_id=="CQ.CQ"||root_org_id=="CQ.CQ.C4"|| root_org_id=="CQ.CQ.0B"){
+                 fen_gongs=  $("#fen_gongs").val();
+                 hangye_zhongxin=  $("#hangye_zhongxin").val();
+                 shenqing_shijian_5= $("#shenqing_shijian_5").val();
+                if(shenqing_shijian_5==''){
+                    alert("请选择要查询的日期！");
+                    return;
+                }
+            }else{
+                fen_gongs=root_org_id;
+                hangye_zhongxin=  $("#hangye_zhongxin").val();
+                shenqing_shijian_5= $("#shenqing_shijian_5").val();
+                if(shenqing_shijian_5==''){
+                    alert("请选择要查询的日期！");
+                    return;
+                }
+            }
+
+            table = $('#example').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                "bSort":false,
+                "bPaginate":false,
+                ajax: {
+                    url: "/groupMoneyMonthRecorded",
+                    type: "POST",
+                    "data": {
+                        fen_gongs:fen_gongs,
+                        hangye_zhongxin:hangye_zhongxin,
+                        chaxun_riqi:shenqing_shijian_5
+                    }
+                },
+                columns: [
+                    {data: "name"},
+                    {data: "business_center"},
+                    {data: "caozuo_riqi"},
+                    {data: "jituan_bianhao"},
+                    {data: "jituan_mingcheng"},
+                    {data: "ruzhang_jine_yuan"}
+                ],
+                select: true,
+                buttons: [
+
+                ]
+            });
+        }
+        function exportClaimApproveQuery(){
+            var fen_gongs;
+            var group_pay_name;
+            var hangye_zhongxin;
+            var business_center;
+            var shenqing_shijian_5;
+            if(root_org_id=="CQ.CQ"||root_org_id=="CQ.CQ.C4"|| root_org_id=="CQ.CQ.0B"){
+                fen_gongs=  $("#fen_gongs").val();
+                group_pay_name=$("#fen_gongs").find("option:selected").text();
+                hangye_zhongxin=  $("#hangye_zhongxin").val();
+                business_center=$("#hangye_zhongxin").find("option:selected").text();
+                shenqing_shijian_5= $("#shenqing_shijian_5").val();
+                if(business_center=='--请选择--'){
+                    business_center='';
+                }
+                if(shenqing_shijian_5==''){
+                    alert("请选择要导出的日期！");
+                    return;
+                }
+            }else{
+                fen_gongs=root_org_id;
+                group_pay_name=root_org_name;
+                hangye_zhongxin=  $("#hangye_zhongxin").val();
+                business_center= $("#hangye_zhongxin").find("option:selected").text();
+                shenqing_shijian_5= $("#shenqing_shijian_5").val();
+                if(shenqing_shijian_5==''){
+                    alert("请选择要导出的日期！");
+                    return;
+                }
+            }
+            var f = document.getElementById('exportExcel');
+            var actionUrl ='expertMoneyMonthRecorded?fen_gongs='+fen_gongs
+                +'&group_pay_name='+group_pay_name
+                +'&hangye_zhongxin='+hangye_zhongxin
+                +'&business_center='+business_center
+                +'&chaxun_riqi='+shenqing_shijian_5;
+            f.action = actionUrl;
+            f.submit();
+        }
+        
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var month = date.getMonth() + 1;
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+
+            var currentdate = date.getFullYear() + seperator1 + month ;
+            return currentdate;
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3> 资金入账月报表 </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th   >分公司：</th>
+                            <td   >
+                                <select id="fen_gongs" class="select-style-1" onchange="selectBusiness()">
+
+                                </select>
+                            </td>
+                            <th  >行业中心：</th>
+                            <td   >
+                                <select id="hangye_zhongxin" class="select-style-1" >
+
+                                </select>
+                            </td>
+                            <th >查询日期：</th>
+                            <td >
+                                <input type=text id="shenqing_shijian_5" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'shenqing_shijian_5',dateFmt:'yyyy-MM'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                  <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalClaimApproveQuery()">查询</button>
+                            <button class="ui-btn btn-success mgr-10" onclick="exportClaimApproveQuery()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="table table-bordered" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>分公司</th>
+                                <th class="text-center" nowrap='nowrap'>行业中心</th>
+                                <th class="text-center" nowrap='nowrap'>账期</th>
+                                <th class="text-center" nowrap='nowrap'>入账集团编号</th>
+                                <th class="text-center" nowrap='nowrap'>入账集团名称</th>
+                                <th class="text-center" nowrap='nowrap'>入账金额（元）</th>
+
+                            </tr>
+                            </thead>
+                            <tbody id="example2">
+
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

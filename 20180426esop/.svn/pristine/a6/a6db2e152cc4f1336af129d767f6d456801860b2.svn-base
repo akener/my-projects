@@ -1,0 +1,479 @@
+<%@ page pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+
+</head>
+<body>
+<div id="operation_table" class="block02" style="width: 800px; margin: 0 auto;">
+    <div style="padding-top:5px; padding-left:1px;width: 100%;height:1000px;background-color:#ffffff ">
+        <div class="title-style04">
+            <select id="demand_id" name="demand_id" onchange="changeTitle()">
+                <option value="IDS_1">宾馆酒店行业摸底信息收集单</option>
+                <option value="IDS_2">楼宇园区行业摸底信息收集单</option>
+                <option value="IDS_3">医疗药业行业摸底信息收集单</option>
+                <option value="IDS_4">教育行业摸底信息收集单</option>
+                <option value="IDS_5">餐饮娱乐行业摸底信息收集单</option>
+                <option value="IDS_6">快递物流摸底信息收集单</option>
+                <option value="IDS_7">批发零售行业摸底信息收集单</option>
+            </select>
+        </div>
+        <div class="title-style04" style="height: 30px;width: 100%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+            <span>◆</span><b>基础信息</b>
+        </div>
+        <table align="center" cellspacing="1" cellpadding="2" border="1" width="100%"
+               style="margin-top: 2px;border:1px solid #2A97DC ">
+            <tr>
+                <th width='20%'class="text-center">
+                    地市
+                </th>
+                <td>
+                    <select id="group_md" name="group_id" style="width: 90%">
+
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    走访单位名称
+                </th>
+                <td>
+                    <input value="" id="visit_company" name="visit_company"
+                           size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    所属行业
+                </th>
+                <td>
+                    <select id="industry_id" name="industry_id" style="width: 90%">
+
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    地址（到街道、门牌）
+                </th>
+                <td>
+                    <input value="" id="address" name="address" size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    照片
+                </th>
+                <td>
+                    <input value="" id="photo_id" name="photo_id" size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    电话
+                </th>
+                <td>
+                    <input value="" id="telephone" name="telephone" size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    集团ID
+                </th>
+                <td>
+                    <input value="" id="unit_id" name="unit_id" size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    走访人
+                </th>
+                <td>
+                    <input value="aavg38" id="login_no" name="login_no"
+                           size="80" readonly="readonly" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    网格ID
+                </th>
+                <td>
+                    <input value="" id="net_id" name="net_id" size="80" />
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center">
+                    走访人BOSS工号
+                </th>
+                <td>
+                    <input value="" id="boss_no" name="boss_no" size="80" />
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="title-style04" style="height: 30px;width: 100%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+            <span>◆</span><b>在用重点业务信息</b>
+        </div>
+
+        <table align="center" cellspacing="1" cellpadding="2" border="1" width="100%"
+               class="table-04" style="margin-top: 2px;border:1px solid #2A97DC ">
+            <tr>
+                <th width="20%" class="text-center">
+                    宽带
+                </th>
+                <td width="20%">
+                    <label>
+                        <input id="brdbd_type_yd" name="brdbd_type" type="radio"
+                               value="移动" />
+                        移动
+                    </label>
+                    <label>
+                        <input id="brdbd_type_lt" name="brdbd_type" type="radio"
+                               value="联通" />
+                        联通
+                    </label>
+                    <label>
+                        <input id="brdbd_type_dx" name="brdbd_type" type="radio"
+                               value="电信" />
+                        电信
+                    </label>
+                </td>
+                <td>
+                    带宽
+                </td>
+                <td width="15%">
+                    <input value="" id="brdbd_width" name="brdbd_width" size="12" />
+                </td>
+                <td>
+                    资费
+                </td>
+                <td width="15%">
+                    <input value="" id="brdbd_postage" name="brdbd_postage"
+                           size="12" />
+                </td>
+                <td>
+                    到期时间
+                </td>
+                <td>
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:120px"  id="brdbd_enddate" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th width='20%' class="text-center">
+                    固话
+                </th>
+                <td>
+                    <label>
+                        <input id="tel_type_yd" name="tel_type" type="radio"
+                               value="移动" />
+                        移动
+                    </label>
+                    <label>
+                        <input id="tel_type_lt" name="tel_type" type="radio"
+                               value="联通" />
+                        联通
+                    </label>
+                    <label>
+                        <input id="tel_type_dx" name="tel_type" type="radio"
+                               value="电信" />
+                        电信
+                    </label>
+                </td>
+                <td>
+                    号码
+                </td>
+                <td>
+                    <input value="" id="tel_no" name="tel_no" size="12" />
+                </td>
+                <td>
+                    资费
+                </td>
+                <td>
+                    <input value="" id="tel_postage" name="tel_postage" size="12" />
+                </td>
+                <td>
+                    到期时间
+                </td>
+                <td>
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:120px"  id="tel_enddate" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th width='20%' class="text-center">
+                    专线
+                </th>
+                <td>
+                    <label>
+                        <input id="ddn_type_yd" name="ddn_type" type="radio"
+                               value="移动" />
+                        移动
+                    </label>
+                    <label>
+                        <input id="ddn_type_lt" name="ddn_type" type="radio"
+                               value="联通" />
+                        联通
+                    </label>
+                    <label>
+                        <input id="ddn_type_dx" name="ddn_type" type="radio"
+                               value="电信" />
+                        电信
+                    </label>
+                </td>
+                <td>
+                    带宽
+                </td>
+                <td>
+                    <input value="" id="ddn_width" name="ddn_width" size="12" />
+                </td>
+                <td>
+                    资费
+                </td>
+                <td>
+                    <input value="" id="ddn_postage" name="ddn_postage" size="12" />
+                </td>
+                <td>
+                    到期时间
+                </td>
+                <td>
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:120px"  id="ddn_enddate" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <table cellspacing="0" cellpadding="0" border="1" width="100%"
+               class="table-04" style="margin-top: 2px;border:1px solid #2A97DC ">
+            <tr>
+                <th rowspan=2 width="20%" class="text-center">
+                    号码
+                </th>
+                <td>
+                    总人数
+                </td>
+                <td>
+                    <input value="" id="total_num" name="total_num" size="12" />
+                </td>
+                <td>
+                    使用移动号码数
+                </td>
+                <td>
+                    <input value="" id="yd_num" name="yd_num" size="12" />
+                </td>
+                <td>
+                    使用联通号码数
+                </td>
+                <td>
+                    <input value="" id="lt_num" name="lt_num" size="12" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    使用电信号码数
+                </td>
+                <td>
+                    <input value="" id="dx_num" name="dx_num" size="12" />
+                </td>
+                <td>
+                    月电话费
+                </td>
+                <td>
+                    <input value="" id="month_rate" name="month_rate" size="12" />
+                </td>
+            </tr>
+        </table>
+
+        <div class="title-style04" style="height: 30px;width: 100%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+            <span>◆</span><b>信息化应用需求</b>
+        </div>
+        <table cellspacing="1" cellpadding="2" border="1" width="100%"
+               class="table-04" style="margin-top: 2px;border:1px solid #2A97DC ">
+            <tr>
+                <th width='20%' class="text-center">
+                    应用需求
+                </th>
+                <td id="demandInfo">
+
+                </td>
+            </tr>
+            <tr name="trOBusi" id="trOBusi">
+                <th width='20%' class="text-center">
+                    其它需求
+                </th>
+                <td>
+								<textarea class="input-general" id="other_demand"
+                                          name="other_demand" rows=4 cols=80></textarea>
+                </td>
+            </tr>
+        </table>
+        <div id="operation_button" style="margin-top: 10px;padding-top:5px;height:40px;width:100%;background-color:#c0e9ef;border:1px solid #2A97DC;" align="center">
+            <button type="button" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="GetDevelopinfo()">
+                提交
+            </button>
+        </div>
+
+    </div>
+
+</div>
+<div>
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="ind_type" value="${ind_type}">
+</div>
+
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+
+    var group_id = $("#group_id").val();
+    var group_name = $("#group_name").val();
+    var ind_type = $("#ind_type").val();
+    $(document).ready(function () {
+        prdCity();
+        prdProfession();
+        prdDemandApp();
+        //时间控件
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            pickerPosition: "bottom-left"
+        });
+    });
+    var str = "";
+    function GetDevelopinfo(){
+        $('input[name="category"]:checked').each(function(){
+            //chk_value.push($(this).val());
+            var strBff = $(this).val();
+            str+=strBff+",";
+        });
+        //alert(str);
+        $.ajax({
+            type: "post",
+            url: "/getDevelopmentInfo",
+            data:{
+                "group_id"	: $("#group_id").val(),
+                "visit_company"	: $("#visit_company").val(),
+                "industry_id"	: $("#industry_id").val(),
+                "address"	: $("#address").val(),
+                "photo_id"	: $("#photo_id").val(),
+                "telephone"	: $("#telephone").val(),
+                "unit_id"	: $("#unit_id").val(),
+                "login_no"	: $("#login_no").val(),
+                "net_id"	: $("#net_id").val(),
+                "boss_no"	: $("#boss_no").val(),
+                "brdbd_width"	: $("#brdbd_width").val(),
+                "brdbd_postage"	: $("#brdbd_postage").val(),
+                "brdbd_enddate"	: $("#brdbd_enddate").val(),
+                "tel_no"	: $("#tel_no").val(),
+                "tel_postage"	: $("#tel_postage").val(),
+                "tel_enddate"	: $("#tel_enddate").val(),
+                "ddn_width"	: $("#ddn_width").val(),
+                "ddn_postage"	: $("#ddn_postage").val(),
+                "ddn_enddate"	: $("#ddn_enddate").val(),
+                "total_num"	: $("#total_num").val(),
+                "yd_num"	: $("#yd_num").val(),
+                "lt_num"	: $("#lt_num").val(),
+                "dx_num"	: $("#dx_num").val(),
+                "month_rate"	: $("#month_rate").val(),
+                //"inf_demand_id" : $("#demandInfo").val(),
+                "other_demand" : $("#other_demand").val(),
+                "str":str
+            },
+            success : function (result) {
+                city_data = "";
+                if(result.info == "操作成功！"){
+                    alert(result.info);
+                }
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+
+    //循环遍历地市
+    function  prdCity() {
+        $.ajax({
+            type:"post",
+            url:"/getCity",
+            data:{
+                "parent_group_id":group_id
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                if(index==0){
+                    //alert(item.group_id)
+                    $("#group_md").append("<option value='"+item.group_id+"'>"+'├'+""+item.name+"</option>");
+                }else{
+                    $("#group_md").append("<option value='"+item.group_id+"'>"+'&nbsp;&nbsp;├'+""+item.group_id+""+item.name+"</option>");
+                }
+
+            });
+        });
+    }
+    //所属行业
+    function  prdProfession() {
+        $.ajax({
+            type:"post",
+            url:"/getProfession"
+
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+
+                $("#industry_id").append("<option value='"+item.trade_code+"'>"+item.trade_code+""+'->'+""+item.trade_name+"</option>");
+            });
+        });
+    }
+    //应用需求
+    function  prdDemandApp() {
+        $.ajax({
+            type:"post",
+            url:"/getDemandApp",
+            data:{
+               "ind_type": ind_type
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+
+                $("#demandInfo").append("<label><input type='checkbox' name='category' value='"+item.appdm_code+"' />"+item.appdm_name+"</label>");
+            });
+        });
+    }
+    //取值
+/*    function fun(){
+        obj = document.getElementsByName("category");
+        check_val = [];
+        for(k in obj){
+            if(obj[k].checked)
+                check_val.push(obj[k].value);
+        }
+        alert(check_val);
+    }*/
+
+
+</script>
+</html>

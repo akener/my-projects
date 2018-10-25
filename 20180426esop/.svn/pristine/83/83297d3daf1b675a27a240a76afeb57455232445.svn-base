@@ -1,0 +1,11 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.OutDTO;
+
+/**
+ * 预打发票流程审批OutDTO
+ *
+ * @author daish 2017/11/20
+ */
+public class InvApprOutDTO extends OutDTO {
+}

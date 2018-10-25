@@ -1,0 +1,67 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script type="text/javascript" language="javascript" class="init">
+		var editor; // use a global for the submit and return data rendering in the examples
+		var table;
+		$(document).ready(function() {
+			editor = new $.fn.DataTable.Editor( {
+			} );
+
+			table = $('#example').DataTable( {
+				dom: "Bfrtip",
+				bLengthChange:true,
+				"bFilter": false,
+				"pageLength": 15,//设置每页显示多少条记录
+				"language": {
+					"url": "/static/data/Chinese.json"
+				}, //多语言配置
+				processing: true,
+				serverSide: true,
+				ajax: {
+					url:"/accountAlertManage",
+					type:"POST"
+				},
+				columns: [
+					{ data: "cust_id" },
+					{ data: "cust_name" },
+					{ data: "prod_id" },
+					{ data: "prod_name" },
+					{ data: "arrears_num" },
+					{ data: "arrears_date" }
+				],
+				select: true,
+				buttons: [
+				]
+			} );
+			/*editor.on('submitSuccess',function ( e, type ) {
+			 alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+			 } );*/
+		} );
+	</script>
+
+</head>
+
+<!--<hr />-->
+<body>
+<table id="example" class="display" cellspacing="0" width="100%">
+	<thead>
+	<tr>
+		<th class="text-center">集团ID</th>
+		<th class="text-center">集团名称</th>
+		<th class="text-center">集团产品ID</th>
+		<th class="text-center">集团产品名称</th>
+		<th class="text-center">欠费金额</th>
+		<th class="text-center">欠费开始时间</th>
+	</tr>
+	</thead>
+	<tfoot>
+	</tfoot>
+</table>
+</body>
+</html>

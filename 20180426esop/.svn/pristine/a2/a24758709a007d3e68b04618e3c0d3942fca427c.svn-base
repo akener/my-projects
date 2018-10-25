@@ -1,0 +1,354 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/11/9.
+ */
+public class CapBankDealDetailInfo extends BaseDto {
+    private String bankformnum;//交易流水号
+    private String bankacctid;//银行账号
+    private String bankacctname;//户名
+    private String fromacctid;//对方账号
+    private String fromacctname;//对方户名
+    private String summary;//摘要
+    private String usage;//用途
+    private String checkcode;//稽核标识码
+    private String bankopid;//营业员工号
+    private String transdate;//交易时间
+    private String chargetype;//缴款方式
+    private String checknum;//支票号
+    private String bankorgid;//银行网点编号
+    private String grpfundacctid;//集团资金账户
+    private String claimoid;//唯一标识码
+    private String applyopid;//申请人
+    private String applydate;//申请时间
+    private String status;//处理状态(已归集、未归集（入账反撤）、认领中、已认领、已核销（转营业外收入）、已回退（资金回退成功）)
+    private String statusdate;//处理时间
+    private String accountclerk;//账务员
+    private String note;//入账备注
+    private String groupid	;//集团编号
+    private String areaid	;//分公司
+    private String groupmgr	;//客户经理
+    private String enterorg	;//入账组织
+    private String infee;//借方金额
+    private String outfee;//贷方金额
+    private String servfee;//手续费
+    private String groupname;//集团名称
+    private String esoporderid;//ESOP认领工单流水号
+    //页面显示元
+    private String infee_yuan;//借方金额（元）
+    private String outfee_yuan;//贷方金额（元）
+    private String servfee_yuan;//手续费（元）
+
+    private String areaid_zhongwen;//分公司中文
+    private String enterorg_zhongwen;//行业中心中文
+    private String groupmgr_zhongwen;//客户经理中文
+    private String accountclerk_zhongwen;//账务员中文
+    private String applyopid_zhongwen;//申请人中文
+
+
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
+    }
+
+    public String getEsoporderid() {
+        return esoporderid;
+    }
+
+    public void setEsoporderid(String esoporderid) {
+        this.esoporderid = esoporderid;
+    }
+
+    public String getInfee_yuan() {
+        return infee_yuan;
+    }
+
+    public void setInfee_yuan(String infee_yuan) {
+        this.infee_yuan = infee_yuan;
+    }
+
+    public String getOutfee_yuan() {
+        return outfee_yuan;
+    }
+
+    public void setOutfee_yuan(String outfee_yuan) {
+        this.outfee_yuan = outfee_yuan;
+    }
+
+    public String getServfee_yuan() {
+        return servfee_yuan;
+    }
+
+    public void setServfee_yuan(String servfee_yuan) {
+        this.servfee_yuan = servfee_yuan;
+    }
+
+    public String getAreaid_zhongwen() {
+        return areaid_zhongwen;
+    }
+
+    public void setAreaid_zhongwen(String areaid_zhongwen) {
+        this.areaid_zhongwen = areaid_zhongwen;
+    }
+
+    public String getEnterorg_zhongwen() {
+        return enterorg_zhongwen;
+    }
+
+    public void setEnterorg_zhongwen(String enterorg_zhongwen) {
+        this.enterorg_zhongwen = enterorg_zhongwen;
+    }
+
+    public String getGroupmgr_zhongwen() {
+        return groupmgr_zhongwen;
+    }
+
+    public void setGroupmgr_zhongwen(String groupmgr_zhongwen) {
+        this.groupmgr_zhongwen = groupmgr_zhongwen;
+    }
+
+    public String getAccountclerk_zhongwen() {
+        return accountclerk_zhongwen;
+    }
+
+    public void setAccountclerk_zhongwen(String accountclerk_zhongwen) {
+        this.accountclerk_zhongwen = accountclerk_zhongwen;
+    }
+
+    public String getApplyopid_zhongwen() {
+        return applyopid_zhongwen;
+    }
+
+    public void setApplyopid_zhongwen(String applyopid_zhongwen) {
+        this.applyopid_zhongwen = applyopid_zhongwen;
+    }
+
+    public String getBankformnum() {
+        return bankformnum;
+    }
+
+    public void setBankformnum(String bankformnum) {
+        this.bankformnum = bankformnum;
+    }
+
+    public String getBankacctid() {
+        return bankacctid;
+    }
+
+    public void setBankacctid(String bankacctid) {
+        this.bankacctid = bankacctid;
+    }
+
+    public String getBankacctname() {
+        return bankacctname;
+    }
+
+    public void setBankacctname(String bankacctname) {
+        this.bankacctname = bankacctname;
+    }
+
+    public String getFromacctid() {
+        return fromacctid;
+    }
+
+    public void setFromacctid(String fromacctid) {
+        this.fromacctid = fromacctid;
+    }
+
+    public String getFromacctname() {
+        return fromacctname;
+    }
+
+    public void setFromacctname(String fromacctname) {
+        this.fromacctname = fromacctname;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getUsage() {
+        return usage;
+    }
+
+    public void setUsage(String usage) {
+        this.usage = usage;
+    }
+
+    public String getCheckcode() {
+        return checkcode;
+    }
+
+    public void setCheckcode(String checkcode) {
+        this.checkcode = checkcode;
+    }
+
+    public String getBankopid() {
+        return bankopid;
+    }
+
+    public void setBankopid(String bankopid) {
+        this.bankopid = bankopid;
+    }
+
+    public String getInfee() {
+        return infee;
+    }
+
+    public void setInfee(String infee) {
+        this.infee = infee;
+    }
+
+    public String getOutfee() {
+        return outfee;
+    }
+
+    public void setOutfee(String outfee) {
+        this.outfee = outfee;
+    }
+
+    public String getServfee() {
+        return servfee;
+    }
+
+    public void setServfee(String servfee) {
+        this.servfee = servfee;
+    }
+
+    public String getTransdate() {
+        return transdate;
+    }
+
+    public void setTransdate(String transdate) {
+        this.transdate = transdate;
+    }
+
+    public String getChargetype() {
+        return chargetype;
+    }
+
+    public void setChargetype(String chargetype) {
+        this.chargetype = chargetype;
+    }
+
+    public String getChecknum() {
+        return checknum;
+    }
+
+    public void setChecknum(String checknum) {
+        this.checknum = checknum;
+    }
+
+    public String getBankorgid() {
+        return bankorgid;
+    }
+
+    public void setBankorgid(String bankorgid) {
+        this.bankorgid = bankorgid;
+    }
+
+    public String getGrpfundacctid() {
+        return grpfundacctid;
+    }
+
+    public void setGrpfundacctid(String grpfundacctid) {
+        this.grpfundacctid = grpfundacctid;
+    }
+
+    public String getClaimoid() {
+        return claimoid;
+    }
+
+    public void setClaimoid(String claimoid) {
+        this.claimoid = claimoid;
+    }
+
+    public String getApplyopid() {
+        return applyopid;
+    }
+
+    public void setApplyopid(String applyopid) {
+        this.applyopid = applyopid;
+    }
+
+    public String getApplydate() {
+        return applydate;
+    }
+
+    public void setApplydate(String applydate) {
+        this.applydate = applydate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatusdate() {
+        return statusdate;
+    }
+
+    public void setStatusdate(String statusdate) {
+        this.statusdate = statusdate;
+    }
+
+    public String getAccountclerk() {
+        return accountclerk;
+    }
+
+    public void setAccountclerk(String accountclerk) {
+        this.accountclerk = accountclerk;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getGroupid() {
+        return groupid;
+    }
+
+    public void setGroupid(String groupid) {
+        this.groupid = groupid;
+    }
+
+    public String getAreaid() {
+        return areaid;
+    }
+
+    public void setAreaid(String areaid) {
+        this.areaid = areaid;
+    }
+
+    public String getGroupmgr() {
+        return groupmgr;
+    }
+
+    public void setGroupmgr(String groupmgr) {
+        this.groupmgr = groupmgr;
+    }
+
+    public String getEnterorg() {
+        return enterorg;
+    }
+
+    public void setEnterorg(String enterorg) {
+        this.enterorg = enterorg;
+    }
+}

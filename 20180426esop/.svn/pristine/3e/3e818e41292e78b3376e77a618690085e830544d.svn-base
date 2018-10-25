@@ -1,0 +1,336 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>集团资金余额日报汇总表</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <select id="org_id" class="input-sty04 form-ipt" onchange="getBusinessCenter(this.value)">
+                                </select>
+                            </td>
+                            <th>行业中心：</th>
+                            <td>
+                                <select id="center_code" class="input-sty04 form-ipt">
+                                </select>
+                            </td>
+                            <th>开始时间：</th>
+                            <td>
+                                <input type=text id="last_operat_date_start" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'last_operat_date_start',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>结束时间：</th>
+                            <td>
+                                <input type=text id="last_operat_date_end" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'last_operat_date_end',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="fundAccountDayQuery()">查询</button>
+                            <button class="ui-btn mgr-10" id="excelExport" onclick="excelExport()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="fundAccountDayReport" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">操作</th>
+                            <th class="text-center">报表日期</th>
+                            <th class="text-center">分公司</th>
+                            <th class="text-center">行业中心</th>
+                            <th class="text-center">昨日余额总额</th>
+                            <th class="text-center">昨日可用余额总额</th>
+                            <th class="text-center">今日认款金额总额</th>
+                            <th class="text-center">今日业务工单扣减金额总额</th>
+                            <th class="text-center">今日调入金额总额</th>
+                            <th class="text-center">今日调出金额总额</th>
+                            <th class="text-center">今日退款金额总额</th>
+                            <th class="text-center">冻结金额总额</th>
+                            <th class="text-center">占用金额总额</th>
+                            <th class="text-center">今日历史短款扣减金额总额</th>
+                            <th class="text-center">今日账户余额总额总额</th>
+                            <th class="text-center">今日账户可用余额总额</th>
+                            <th class="text-center">日报稽核状态</th>
+                            <th class="text-center">稽核人员</th>
+                            <th class="text-center">操作时间</th>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var roleCode = '<%=role_codes %>';
+    var rootOrgId = '<%=root_org_id%>';
+    $(document).ready(function() {
+        $("#last_operat_date_start").val(getFormatDate(-1));
+        $("#last_operat_date_end").val(getFormatDate(-1));
+   /*     if(roleCode.indexOf('23064') > -1){
+            if(rootOrgId == 'CQ.CQ'){
+                $("#checkAgreement").remove();
+                $("#checkBack").remove();
+            }
+            $.ajax({
+                url:"/getOrgAndCenterByLoginNo",
+                type:"POST",
+                data:{group_pay_code:'<%=login_no%>'},
+                success:function (data) {
+                    $("#org_id").empty();
+                    $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+
+                    $("#center_code").empty();
+                    var centerStr = "";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").append(centerStr);
+                }
+            })
+        }else{
+            $("#checkAgreement").remove();
+            $("#checkBack").remove();*/
+            if(rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B'){
+                $.ajax({
+                    url:"/getOrgInfos",
+                    type:"POST",
+                    success:function (data) {
+                        var orgStr = "<option value=''>重庆市</option>";
+                        for(var i=0;i<data.length;i++){
+                            orgStr += "<option value='"+data[i].group_pay_code+"'>"+data[i].group_pay_name+"</option>";
+                        }
+                        $("#org_id").empty();
+                        $("#org_id").append(orgStr);
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:"/getOrgAndCenterByLoginNo",
+                    type:"POST",
+                    data:{group_pay_code:'<%=login_no%>'},
+                    success:function (data) {
+                        $("#org_id").empty();
+                        $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+                        var centerStr = "";
+                        for(var i=0;i<data.length;i++){
+                            centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                        }
+                        $("#center_code").empty();
+                        $("#center_code").append(centerStr);
+                        //   getBusinessCenter($("#org_id").val());
+                        if($("#center_code option").length==1&&$("#center_code option").eq(0).val()==""){
+                            getBusinessCenter($("#org_id option").eq(0).val());
+                        }
+                    }
+                });
+            }
+//       }
+
+    } );
+    //根据分公司查询行业中心
+    function getBusinessCenter(code) {
+        if(code != ""){
+            $.ajax({
+                url:"/getBusinessCenterInfos",
+                type:"POST",
+                data:{group_pay_code:code},
+                success:function (data) {
+                    var centerStr = "<option value=''>请选择</option>";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").empty();
+                    $("#center_code").append(centerStr);
+                }
+            })
+        }else{
+            $("#center_code").empty();
+            $("#center_code").append("<option value=''>请选择</option>");
+        }
+
+    }
+    var checkedData = "";
+    //集团资金余额日报汇总列表查询
+    function fundAccountDayQuery() {
+        checkedData = "";
+        var last_operat_date_start = $("#last_operat_date_start").val();
+        var last_operat_date_end = $("#last_operat_date_end").val();
+        if(last_operat_date_start == null || last_operat_date_start == "" ){
+            alert("开始日期不能为空");
+            return false;
+        }
+        if(last_operat_date_end == null || last_operat_date_end == "" ){
+            alert("结束日期不能为空");
+            return false;
+        }
+        var  center_code = $("#center_code").val();
+        if(center_code == null || center_code == ""){
+            center_code = "";
+        }
+        $("html").showLoading();
+        $.ajax({
+            type: "get",
+            url: "/groupFundAccountChangeDailySummaryReport",
+            data: {
+                org_id: $("#org_id").val(),
+                center_code: center_code,
+                last_operat_date_start: last_operat_date_start,
+                last_operat_date_end: last_operat_date_end
+            },
+            cache: false,
+            success: function (result) {
+                $("html").hideLoading();
+                var report_data = "";
+                $.each(result, function (i, field) {
+                    if(result.length > 1){
+                        if(field.check_status == '0') {
+                            checkedData += field.id + ',';
+                        }
+                    }
+                    //拼接json数据集字符串
+                    report_data += "<tr>";
+                    report_data += "<td nowrap='nowrap' ><button type='button' style='width: 85px' class='ui-btn mgr-10' onclick=detailDailyReport('"+field.org_id+"','"+field.center_code+"','" + field.insert_date+"','" + field.org_name+"','" + field.business_center+"') >查看</button></td>";
+                    report_data += "<td nowrap='nowrap'>" + field.insert_date + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.org_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_center + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.yesterday_balance + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.yesterday_available_balance + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_claim_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_deduction_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_into_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_out_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_refund_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_freeze_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_occupy_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_history_deduction_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_account_balance + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.today_account_available_balance + "</td>";
+                    if(field.check_status == '0'){
+                        report_data += "<td nowrap='nowrap'>未稽核</td>";
+                    }else if(field.check_status == '1'){
+                        report_data += "<td nowrap='nowrap'>已稽核</td>";
+                    }else if(field.check_status == '2'){
+                        report_data += "<td nowrap='nowrap'>已驳回</td>";
+                    }
+                    report_data += "<td nowrap='nowrap'>" + field.check_code + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.check_date + "</td>";
+                    report_data += "</tr>";
+                });
+                $("#list_info").empty();
+                $("#list_info").append(report_data);
+            },
+            error: function () {
+                $("html").hideLoading();
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+    //查看资金余额日报表明细
+    function detailDailyReport(org_id_report,center_code,insert_date,org_name_report,business_center_report){
+        var url="/esop/jtzjyebb?org_id_report=" + org_id_report + "&center_code=" +center_code+"&insert_date=" + insert_date+"&org_name_report=" + encodeURI(org_name_report)+"&business_center_report=" + encodeURI(business_center_report);
+        window.open(url);
+    }
+
+    function excelExport() {
+        var last_operat_date_start = $("#last_operat_date_start").val();
+        var last_operat_date_end = $("#last_operat_date_end").val();
+        if(last_operat_date_start == null || last_operat_date_start == "" ){
+            alert("开始日期不能为空");
+            return false;
+        }
+
+        if(last_operat_date_end == null || last_operat_date_end == "" ){
+            alert("结束日期不能为空");
+            return false;
+        }
+
+        var  center_code = $("#center_code").val();
+        if(center_code == null || center_code == ""){
+            center_code = "";
+        }
+
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='exportGroupFundAccountChangeReportMonth?org_id='+$("#org_id").val()
+            +'&org_name='+$("#org_id").find("option:selected").text()
+            +'&center_code='+center_code
+            +'&business_center='+$("#center_code").find("option:selected").text()
+            +'&last_operat_date_start='+$("#last_operat_date_start").val()
+            +'&last_operat_date_end='+$("#last_operat_date_end").val();
+        f.action = actionUrl;
+        f.submit();
+    }
+    function getFormatDate(index) {
+        var date = new Date();
+        date.setTime(date.getTime() + 24*60*60*1000*index);
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate();
+        if(month >= 1 && month <= 9){
+            month = "0"+month;
+        }
+        if(day >= 0 && day <= 9){
+            day = "0"+day;
+        }
+        var dateStr = year+"-"+month+"-"+day;
+        return dateStr;
+    }
+</script>
+</html>

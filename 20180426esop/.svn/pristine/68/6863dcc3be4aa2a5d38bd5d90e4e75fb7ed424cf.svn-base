@@ -1,0 +1,64 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class CapitalClaimQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getCapitalClaimInfoSvc(CapitalClaimQueryDto parameter){
+        String selectTion = "";
+        selectTion = "selectCapitalClaimInfo";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public List getCapitalClaimInfoSvc2(CapitalClaimQueryDto parameter){
+        String selectTion = "";
+        selectTion = "selectCapitalClaimInfo2";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public int putCapitalClaimApplySvc(CapitalClaimQueryDto parameter){
+        String selectTion = "";
+        selectTion = "insertCapitalClaimApply";
+        int result = sqlSessionTemplate.insert(selectTion,parameter);
+        return result;
+    }
+    public int putCapitalClaimApplySvc2(CapitalClaimQueryDto parameter){
+        String selectTion = "";
+        selectTion = "insertCapitalClaimApply2";
+        int result = sqlSessionTemplate.insert(selectTion,parameter);
+        return result;
+    }
+    public int putWorkFlowFirstSvc(WorkFlowFirstDto parameter){
+        String selectTion = "";
+        selectTion = "insertWorkFlowFirst";
+        int result = sqlSessionTemplate.insert(selectTion,parameter);
+        return result;
+    }
+    public int putWorkFlowFirstSvc2(WorkFlowFirstDto parameter){
+        String selectTion = "";
+        selectTion = "insertWorkFlowFirst2";
+        int result = sqlSessionTemplate.insert(selectTion,parameter);
+        return result;
+    }
+    public List queryFileName(CapitalInfoApplyDto parameter){
+        String selectTion = "";
+        selectTion = "queryFileNameInfo";
+        List result = sqlSessionTemplate.selectList(selectTion,parameter);
+        return result;
+    }
+}

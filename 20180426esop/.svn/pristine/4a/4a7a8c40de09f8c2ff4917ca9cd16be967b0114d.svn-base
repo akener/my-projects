@@ -1,0 +1,53 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/23.
+ */
+//重要成员生日提醒福短信接口入参
+public class SendBirthMsgDto {
+    String tmpMsg = "";//短信息
+    String phone_no = "";//短信下发至那个电话
+    String opCode ="";//opcode 可以定死
+    String service_no = "";//客户经理工号
+    String send_tim = "";//发送时间
+
+    public String getTmpMsg() {
+        return tmpMsg;
+    }
+
+    public void setTmpMsg(String tmpMsg) {
+        this.tmpMsg = tmpMsg;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getOpCode() {
+        return opCode;
+    }
+
+    public void setOpCode(String opCode) {
+        this.opCode = opCode;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getSend_tim() {
+        return send_tim;
+    }
+
+    public void setSend_tim(String send_tim) {
+        this.send_tim = send_tim;
+    }
+}

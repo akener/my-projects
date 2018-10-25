@@ -1,0 +1,75 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.AccountPbResolveDto;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class CapitalInfoApplyService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getCqLoginInfoSvc(CapitalInfoApplyDto parameter){
+        String selectTion = "";
+        selectTion = "selectCqLoginInfo";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    //过滤账号信息 临时
+    public List getAccountPbDataNumSvc(AccountPbResolveDto parameter){
+        String selectTion = "";
+        selectTion = "selectAccountPbDataNum";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    public int putCapitalApplyInfoSvc(CapitalInfoApplyDto parameter){
+        String selectTion = "";
+        selectTion = "insertCqLoginInfo";
+        int result = sqlSessionTemplate.insert(selectTion,parameter);
+
+        //根据产品信息入不同的表
+        int result1 = 0;
+        String chanpin_xinxi = parameter.getChanpin_xinxi();
+
+        if(chanpin_xinxi.equals("1")){
+            //集团缴费
+            result1 = sqlSessionTemplate.insert("insertCustpayInfo",parameter);
+        }else if(chanpin_xinxi.equals("2")){
+            //集团成员缴费
+            result1 = sqlSessionTemplate.insert("insertCustmempayInfo",parameter);
+        }else if(chanpin_xinxi.equals("3")){
+            //超大集团成员缴费
+            result1 = sqlSessionTemplate.insert("insertBigCustmempayInfo",parameter);
+        }else if(chanpin_xinxi.equals("4")){
+            //缴纳保证金
+            result1 = sqlSessionTemplate.insert("insertBondpayInfo",parameter);
+        }else if(chanpin_xinxi.equals("5")){
+            //一次性费用
+            result1 = sqlSessionTemplate.insert("insertTerminalInfo",parameter);
+        }
+
+        result = result + result1 - 1;
+        return result;
+    }
+
+    public List<String> selectUsedInvoiceOrderId(){
+        List<String> list = sqlSessionTemplate.selectList("selectUsedInvoiceOrderId");
+        return list;
+    }
+
+    public int updateChangeStateInvoiceOrderId(String param){
+        int result=sqlSessionTemplate.update("updateChangeStateInvoiceOrderId",param);
+        return result;
+    }
+}

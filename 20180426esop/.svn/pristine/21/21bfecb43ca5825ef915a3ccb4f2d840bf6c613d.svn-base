@@ -1,0 +1,377 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/3.
+ */
+//集团重要成员录入接口的入参
+public class GrpImpMemberAddDto {
+    String imp_id = "";//重要成员编号,不能为空,   ?
+    String phone_no ="";//手机号
+    String user_name = "";//用户姓名
+    String name = "";//姓名
+    String certi_type = "";//证件类型 00为空（请选择） 01 身份证 02军官证03驾驶证04其他05警官证06学生证07单位08校园09营业执照10护照
+    String certi_no = "";//证件号码
+    String contact_addr = "";//家庭地址
+    String haveSpeForAll ="";//电子邮箱
+    String member_code = "";//成员类型 A4关键决策人 B1重要联系人 A5行业流量包操作员 A6集团客户话费红包操作员 A7话费加油包管理员
+    String edu_code = "";//文化程度
+    String sex_code = "";//性别 1为男，2为女
+    String duty = "";//职务
+    String unit_id = "";//集团编号
+    String cust_id = "";///*客户编号*/
+    String dept = "";//部门
+    String service_no = "";//客户经理工号
+    String folk_code = "";//民族
+    String unit_name = "";//集团名
+
+    ////用于在重要成员添加的时候获取操作的一些相关信息
+    String  update_login = "";//工号 此属性一直到更新类型都不能为空  此部分不知道如何获取的参数
+    String  update_accept = "";//  查询出来的
+    String  update_time = "";//更新时间
+    String  update_code = "";//更新编码
+    String  update_type = "";//更新类型
+    //将重要成员添加进dGrpCustImpManMsgAdd和dGrpCustImpManMsgAddHis中的入参
+    String ent_type = "";//集团类别  不能为空 ，   02企业类 01政府类 00 不选择
+    String imp_level = "";//级别   根据企业类别来分，政府类：01~10分别为（省级，副省级，正厅级，副厅级，正处级，副处级，正科级，副科级，科员，其他）
+    //企业类:21~27(董事长，总经理，副总经理，部门经理，部门副经理，职员，其他)
+    String yd_phone = "";//移动电话
+    /*   String lt_phone = "";//联通电话
+     String xlt_phone = "";//小灵通
+    String gd_phone = "";//电信电话*/
+    String interest_code = "";// ?
+    String assess_code = "";// ?
+    String role = "";//角色 00未知，01核心决策者，02辅助决策者03技术决策者04需求首倡者05关键使用者06内线支持者07中层领导
+    String age = "";//年龄
+    String birthday = "";//生日
+    /*    String health = "";//
+        String health_reasion = "";//*/
+    String attitudes = "";//对服务的态度 00 未知 ，01满意，02较好，03一般，04不满意
+    String attitudes_reasion = "";//对服务态度的产生原因
+    String design_rate = "";// 决策权重 00未知 ，01大 ，02中， 03小
+    String design_scape = "";//决策范围
+    String co_record = "";//与移动公司合作的重大事件记录
+    String gift_record = "";//与重要成员发生过的礼品记录
+    String  create_time = "";//
+    /* String mate_name = "";//
+     String mate_birthday = "";//
+     String wedding_anniversary = "";//
+     String mate_health = "";//
+     String child_name = "";//
+     String child_birthday = "";//
+     String child_specialty = "";//
+     String child_toy = "";//
+     String offic_phone = "";//
+     String home_phone = "";//*/
+    public String getImp_id() {
+        return imp_id;
+    }
+
+    public void setImp_id(String imp_id) {
+        this.imp_id = imp_id;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCerti_type() {
+        return certi_type;
+    }
+
+    public void setCerti_type(String certi_type) {
+        this.certi_type = certi_type;
+    }
+
+    public String getCerti_no() {
+        return certi_no;
+    }
+
+    public void setCerti_no(String certi_no) {
+        this.certi_no = certi_no;
+    }
+
+    public String getContact_addr() {
+        return contact_addr;
+    }
+
+    public void setContact_addr(String contact_addr) {
+        this.contact_addr = contact_addr;
+    }
+
+    public String getHaveSpeForAll() {
+        return haveSpeForAll;
+    }
+
+    public void setHaveSpeForAll(String haveSpeForAll) {
+        this.haveSpeForAll = haveSpeForAll;
+    }
+
+    public String getMember_code() {
+        return member_code;
+    }
+
+    public void setMember_code(String member_code) {
+        this.member_code = member_code;
+    }
+
+    public String getEdu_code() {
+        return edu_code;
+    }
+
+    public void setEdu_code(String edu_code) {
+        this.edu_code = edu_code;
+    }
+
+    public String getSex_code() {
+        return sex_code;
+    }
+
+    public void setSex_code(String sex_code) {
+        this.sex_code = sex_code;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getFolk_code() {
+        return folk_code;
+    }
+
+    public void setFolk_code(String folk_code) {
+        this.folk_code = folk_code;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getEnt_type() {
+        return ent_type;
+    }
+
+    public void setEnt_type(String ent_type) {
+        this.ent_type = ent_type;
+    }
+
+    public String getImp_level() {
+        return imp_level;
+    }
+
+    public void setImp_level(String imp_level) {
+        this.imp_level = imp_level;
+    }
+
+    public String getInterest_code() {
+        return interest_code;
+    }
+
+    public void setInterest_code(String interest_code) {
+        this.interest_code = interest_code;
+    }
+
+    public String getAssess_code() {
+        return assess_code;
+    }
+
+    public void setAssess_code(String assess_code) {
+        this.assess_code = assess_code;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    /*    public String getHealth() {
+        return health;
+    }
+
+    public void setHealth(String health) {
+        this.health = health;
+    }
+
+    public String getHealth_reasion() {
+        return health_reasion;
+    }
+
+    public void setHealth_reasion(String health_reasion) {
+        this.health_reasion = health_reasion;
+    }*/
+
+    public String getAttitudes() {
+        return attitudes;
+    }
+
+    public void setAttitudes(String attitudes) {
+        this.attitudes = attitudes;
+    }
+
+    public String getAttitudes_reasion() {
+        return attitudes_reasion;
+    }
+
+    public void setAttitudes_reasion(String attitudes_reasion) {
+        this.attitudes_reasion = attitudes_reasion;
+    }
+
+    public String getDesign_rate() {
+        return design_rate;
+    }
+
+    public void setDesign_rate(String design_rate) {
+        this.design_rate = design_rate;
+    }
+
+    public String getDesign_scape() {
+        return design_scape;
+    }
+
+    public void setDesign_scape(String design_scape) {
+        this.design_scape = design_scape;
+    }
+
+    public String getCo_record() {
+        return co_record;
+    }
+
+    public void setCo_record(String co_record) {
+        this.co_record = co_record;
+    }
+
+    public String getGift_record() {
+        return gift_record;
+    }
+
+    public void setGift_record(String gift_record) {
+        this.gift_record = gift_record;
+    }
+
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getUpdate_login() {
+        return update_login;
+    }
+
+    public void setUpdate_login(String update_login) {
+        this.update_login = update_login;
+    }
+
+    public String getUpdate_accept() {
+        return update_accept;
+    }
+
+    public void setUpdate_accept(String update_accept) {
+        this.update_accept = update_accept;
+    }
+
+    public String getUpdate_time() {
+        return update_time;
+    }
+
+    public void setUpdate_time(String update_time) {
+        this.update_time = update_time;
+    }
+
+    public String getUpdate_code() {
+        return update_code;
+    }
+
+    public void setUpdate_code(String update_code) {
+        this.update_code = update_code;
+    }
+
+    public String getUpdate_type() {
+        return update_type;
+    }
+
+    public void setUpdate_type(String update_type) {
+        this.update_type = update_type;
+    }
+}

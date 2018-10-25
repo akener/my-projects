@@ -1,0 +1,205 @@
+$(document).ready(function() {
+    create_no="112900001";
+    create_name="思特奇员工"
+    region_code="CQ.CQ";
+    seq_relation_info="1111111111";
+    important = "MemberSort03";
+    role_type = "MemberSort0305";
+    contract_id="10002";
+    $("#order_title2").val("新增集团缴费联系人！！");
+    $("#notes2").val("需要新增集团缴费联系人！！！！！")
+    loadFirstSteps();
+    // selectContractInfo();
+    // selectAccountInfo();
+});
+
+//集团名称自动补全，并获取集团编号
+$("#jtName").autocomplete({
+    source: "selJtName",
+    select: function (event, ui) {
+        var jtCode = ui.item.jtCode;
+        $("#jtCode").val(jtCode);
+
+        $.ajax({
+            type: "post",
+            url: "selHtNo",
+            data: {jtCode: jtCode},
+            cache: false,
+            success: function (result) {
+                $("#htNo").empty();
+                $("#htNo").append('<option selected="selected" value="">请选择</option>')
+                $.each(result, function (i, field) {
+                    $("#htNo").append('<option  value="'+field.selValue+'">'+field.selKey+'</option>')
+                })
+            }
+        });
+    }
+});
+
+function selectContractInfo() {
+    contract_id= $("#htNo").val()
+    $.ajax({
+        type: "post",
+        url: "/selectSeNewContractInfoDto",
+        data: {
+            "contract_id":contract_id,
+        },
+        success: function (data) {
+            $("#link_man2").val(data.first_contacts_name);
+            $("#mobile_no2").val(data.first_contacts_phone);
+            $("#address2").val(data.first_contacts_address);
+            $("#id_number2").val(data.first_contacts_id_card);
+            $("#email2").val(data.first_contacts_email);
+            $("#union_name2").val(data.first_party);
+            $("#union_code2").val(data.first_party_code);
+        },
+        error: function (data) {
+            alert("请求超时，请重试");
+        }
+    });
+    selectAccountInfo(contract_id);
+}
+function selectAccountInfo(contract_id) {
+    $("#account_name2").empty();
+    $("#account_code2").empty();
+    $.ajax({
+        type: "post",
+        url: "/selectSeAccountInfoDto2",
+        data: {
+            "contract_id":contract_id,
+        },
+        success: function (data) {
+            $("#account_name2").append("<option value=''>--请选择--</option>");
+            $.each(data, function (index, item) {
+                var id = data[index].id;
+                var account_code=data[index].account_code;
+                $("#account_name2").append("<option value='"+account_code+"' >"+data[index].account_name+"</option>");
+                $("#account_account2").val(account_code);
+            });
+
+        },
+        error: function (data) {
+            alert("请求超时，请重试");
+        }
+    });
+
+}
+
+function accountCodeValue(account_code) {
+    $("#account_code2").empty();
+    $("#account_code2").val(account_code);
+}
+
+
+function loadFirstSteps() {
+    $.ajax({
+        type: 'POST',
+        url: '/workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+        },
+        success: loadFirstStepsHandler
+    });
+}
+
+function loadFirstStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    if(data.returnCode=="1"){
+        $("#next_deal2").val("加载下一步环节出错！");
+        $("#subButton").attr("disabled",true);
+    }
+    console.log(data);
+    if(data.returnCode=="0"){
+        var stepList = data.stepList[0];
+        $("#next_deal2").val(stepList.ctProcStepRel.stepName);
+
+        for (var i = 0; i < 3; i++) {     //循环添加多个值
+            $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+        }
+    }
+}
+
+
+function  saveGroupContact() {
+
+    var jtName = $("#jtName").val();
+    if(jtName==null||$.trim(jtName)=='' ){
+        alert('请录入集团信息！');
+        $("#jtName").focus();
+        return;
+    }
+
+
+    var htNo = $("#htNo").val();
+    if(htNo==null||$.trim(htNo)=='' ){
+        alert('请选择合同信息！');
+        $("#htNo").focus();
+        return;
+    }
+
+    var account_code2 = $("#account_code2").val();
+    if(account_code2==null||$.trim(account_code2)=='' ){
+        alert('请添加集团账户信息！');
+        $("#account_code2").focus();
+        return;
+    }
+
+    var ASSIGNEE_1 = $("#ASSIGNEE_1").val();
+    if(ASSIGNEE_1==null||$.trim(ASSIGNEE_1)=='' ){
+        alert('请选择处理人！');
+        $(".ASSIGNEE").focus();
+        return;
+    }
+
+
+    $("#subButton").text('提交中..')
+    $("#subButton").attr("disabled",true);
+    $.ajax({
+        url: "/checkAddContacter",
+        type: "post",
+        "data": {
+            "startDept":region_code,
+            "startLoginNo":"112900001",
+            "ASSIGNEE_1":$("#ASSIGNEE_1").val(),
+            "startRegion":region_code,
+            "procTypeCode":"3008",
+            "keyValue":"1",
+            "branchCode":"CQ.CQ",
+
+
+            "notes":$("#notes2").val(),
+            "depert_id":region_code,
+            "region_code":region_code,
+            "contract_id":contract_id,
+            "important":important,
+            "role_type":role_type,
+            "create_name":create_name,
+            "create_no":create_no,
+            "address":$("#address2").val(),
+            "order_title":$("#order_title2").val(),
+            "email":$("#email2").val(),
+            "link_man": $("#link_man2").val(),
+            "mobile_no" :$("#mobile_no2").val(),
+            "id_number"   : $("#id_number2").val(),
+            "union_name" :	$("#union_name2").val(),
+            "union_code":	$("#union_code2").val(),
+            "account_name"  :	$("#account_name2   option:selected").text(),
+            "account_code":   $("#account_code2").val()
+        },
+        success: function (result) {
+            if(result == "0"){
+                alert("增加流程启动成功！！！");
+                window.close();
+            }
+        },
+        error: function () {
+            alert("增加流程启动失败！！！");
+        }
+    });
+}

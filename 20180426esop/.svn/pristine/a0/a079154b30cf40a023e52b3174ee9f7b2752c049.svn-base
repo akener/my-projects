@@ -1,0 +1,44 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class AccountPbResolveDto {
+
+    String jituan_bianhao = "";
+    String jituan_zhanghao = "";
+    String zhuang_tai = "";
+    String num = "";
+
+    public String getJituan_bianhao() {
+        return jituan_bianhao;
+    }
+
+    public void setJituan_bianhao(String jituan_bianhao) {
+        this.jituan_bianhao = jituan_bianhao;
+    }
+
+    public String getJituan_zhanghao() {
+        return jituan_zhanghao;
+    }
+
+    public void setJituan_zhanghao(String jituan_zhanghao) {
+        this.jituan_zhanghao = jituan_zhanghao;
+    }
+
+    public String getZhuang_tai() {
+        return zhuang_tai;
+    }
+
+    public void setZhuang_tai(String zhuang_tai) {
+        this.zhuang_tai = zhuang_tai;
+    }
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+}

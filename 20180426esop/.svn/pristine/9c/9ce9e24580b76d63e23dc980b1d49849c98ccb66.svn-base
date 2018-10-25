@@ -1,0 +1,323 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto;
+import com.esop.cqDevelopment.capitalManage.dto.GroupAttachFileDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimQueryService;
+import com.esop.cqDevelopment.capitalManage.service.GetGroupAttachInfoService;
+import com.esop.cqDevelopment.refund.controller.CallBossServiceUtils.CallBossServiceUtils;
+import com.esop.invoice.model.EpInvPreprintActInfo;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@EnableTransactionManagement
+@RestController
+public class CapitalClaimQueryRC {
+    private static Logger logger =  LoggerFactory.getLogger(CapitalClaimQueryRC.class);
+
+    @Autowired
+    CapitalClaimQueryService capitalClaimQueryService;
+    @Autowired
+    CallBossServiceUtilsCapitalClaim callBossServiceUtilsCapitalClaim;
+    @Autowired
+    CallBossServiceUtils callBossServiceUtils;
+    @Autowired
+    GetGroupAttachInfoService getGroupAttachInfoService;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+
+    @RequestMapping(value="/capitalClaimQuery")
+    public List getCapitalClaimInfoRC(CapitalClaimQueryDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= capitalClaimQueryService.getCapitalClaimInfoSvc(parameter);
+        return list;
+    }
+
+
+    //审批信息填写
+    @Transactional
+    @RequestMapping(value="/capitalApprove")
+    public int putCapitalApproveInfo(WorkFlowFirstDto parameter, CapitalInfoApplyDto applyDto, HttpServletRequest request, boolean flag){
+        int result = 999;
+//        result = capitalClaimQueryService.putWorkFlowFirstSvc(parameter);
+
+        //如果作废 则解锁流水
+//        if(parameter.getNodeId().equals("2")){
+//            BankTradeLockDto bankTradeLockDto = new BankTradeLockDto();
+//            bankTradeLockDto.setBANKFORMNUM(parameter.getJiaoyi_liushui());
+//            bankTradeLockDto.setOPTYPE("0");//1锁定 0解锁
+//            int bakResult = callBossServiceUtilsCapitalClaim.bankTradeLockBoss(bankTradeLockDto);
+//            result = result + bakResult - 1;
+//        }
+
+
+        // if(result == 1){
+        //流程到最后一步，开始同步工单
+        if(parameter.getNodeId().equals("1")){
+            if(request.getParameter("reqType").equals("GrpFundGroupCharge")){
+                EpInvPreprintAppInfo appInfo = prePrintInvoiceService.qryInvAppInfo(applyDto.getEsop_orderId());
+
+                if(appInfo.getInvoiceMode().equals("2")){
+                    List<EpInvPreprintActInfo> actInfos = prePrintInvoiceService.qryInvActInfos(applyDto.getEsop_orderId());
+                    String type = "";
+                    String invoiceType = appInfo.getInvoiceType();
+
+                    if(invoiceType.equals("1")){
+                        type = "1";
+                    }
+                    Date startAccountPeriod = appInfo.getStartAccountPeriod();
+
+                    Map map = new HashMap();
+                    map.put("GROUPACCTID",actInfos.get(0).getGroupAccountId());
+                    map.put("INVOICETYPE",invoiceType);
+                    map.put("TYPE",type);
+
+                    String invResult = callBossServiceUtils.grpQryGrpAcctBaseInfoESOP(map);
+
+                    JSONObject invObj = new JSONObject(invResult);
+                    if(invObj.get("res_code").equals("0")){
+                        JSONObject resultObj = invObj.getJSONObject("result");
+                        if(resultObj != null){
+                            String minbillcycle = resultObj.getString("MINBILLCYCLE");
+                            if(minbillcycle != null  && minbillcycle != ""){
+                                DateFormat df1 = new SimpleDateFormat("yyyyMM");
+                                String startAccountPeriodStr = df1.format(startAccountPeriod);
+                                if(minbillcycle.equals(startAccountPeriodStr)){
+                                    result = 1;
+                                }else{
+                                    result = 998;
+                                }
+
+                            }else{
+                                result = 999;
+                            }
+                        }else{
+                            result = 999;
+                        }
+                    }else{
+                        result = 999;
+                    }
+                }else{
+                    result = 1;
+                }
+            }else{
+                result = 1;
+            }
+
+
+            if(result == 1){
+                Map map = new HashMap();
+                String reqResult = "";
+                String reqType = request.getParameter("reqType");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat dFormat = new SimpleDateFormat("yyyyMMdd");
+                String applyDate = "";
+                try{
+                    Date date = df.parse(applyDto.getShenqing_shijian());
+                    applyDate = dFormat.format(date);
+                }catch (Exception e){
+
+                }
+
+                GroupAttachFileDto fileDto = new GroupAttachFileDto();
+                fileDto.setGongdan_bianhao(applyDto.getGongdan_bianhao());
+
+                if(reqType.equals("GrpFundGroupCharge")){
+                    map.put("OrderID",applyDto.getGongdan_bianhao());
+                    map.put("AreaID",applyDto.getFengongsi());
+                    map.put("ApplyOpID",applyDto.getShenqingren());
+                    map.put("TradeCenterID",applyDto.getHangye_zhongxin());
+                    map.put("GroupID",applyDto.getJituan_bianhao());
+                    map.put("GroupName",applyDto.getJituan_mingcheng());
+                    map.put("GroupAcctID",applyDto.getJituan_zhanghao());
+                    map.put("GroupAcctName",applyDto.getZhanghao_mingcheng());
+                    map.put("PrePrintInvBeginCycle",applyDto.getKaishi_zhangqi());
+                    map.put("PrePrintInvEndCycle",applyDto.getJieshu_zhangqi());
+                    map.put("IsSettlePreInv",applyDto.getShifou_yuda());
+                    //                    map.put("PrePrintInvRecoid","");
+                    map.put("FreezeFee",applyDto.getShiyong_jine());
+                    map.put("ApplyFee",applyDto.getShiyong_jine());
+                    map.put("ApplyDate",applyDate);
+                    map.put("Note",applyDto.getBeizhu_xinxi());
+                    map.put("PRTINVFORMNUM",applyDto.getEsop_orderId());
+
+                    reqResult = callBossServiceUtils.syncFundAccountUserFlowGroupCharge(map);
+                }else if(reqType.equals("GrpFundGMCharge")){
+                    GroupAttachFileDto attachFile = getGroupAttachInfoService.getGroupAttachFileInfo(fileDto, reqType);
+                    map.put("OrderID",applyDto.getGongdan_bianhao());
+                    map.put("AreaID",applyDto.getFengongsi());
+                    map.put("ApplyOpID",applyDto.getShenqingren());
+                    map.put("TradeCenterID",applyDto.getHangye_zhongxin());
+                    map.put("GroupID",applyDto.getJituan_bianhao());
+                    map.put("GroupName",applyDto.getJituan_mingcheng());
+                    map.put("GroupAcctID",applyDto.getJituan_zhanghao());
+                    map.put("GroupAcctName",applyDto.getZhanghao_mingcheng());
+                    map.put("PrePrintInvBeginCycle",applyDto.getKaishi_zhangqi());
+                    map.put("PrePrintInvEndCycle",applyDto.getJieshu_zhangqi());
+                    map.put("FreezeFee",applyDto.getShiyong_jine());
+                    map.put("ApplyFee",applyDto.getShiyong_jine());
+                    map.put("ApplyDate",applyDate);
+                    String fileNamePass = "";
+                    String mid_name = "GrpFundGMCharge";
+                    String newFileName = "";
+                    if(!attachFile.getFujian().equals("")&&attachFile.getFujian()!=null){
+                        applyDto.setAttach_file_id(attachFile.getFujian());
+                        List<CapitalInfoApplyDto> rtlist = capitalClaimQueryService.queryFileName(applyDto);
+                        fileNamePass = rtlist.get(0).getTarget_file_name();
+                        if(!fileNamePass.equals("")&&fileNamePass!=null){
+                            String[] fname = fileNamePass.split("[.]");
+                            newFileName = fname[0]+mid_name+"."+fname[1];
+                        }
+                    }
+
+                    map.put("GroupMemListFile",newFileName);
+                    map.put("GroupMemListFileLines",attachFile.getJieshu_zhangqi());
+                    map.put("Note",applyDto.getBeizhu_xinxi());
+
+                    reqResult = callBossServiceUtils.syncFundAccountUserFlowGMCharge(map);
+                }else if(reqType.equals("GrpFundLMCharge")){
+                    GroupAttachFileDto attachFile = getGroupAttachInfoService.getGroupAttachFileInfo(fileDto, reqType);
+                    map.put("OrderID",applyDto.getGongdan_bianhao());
+                    map.put("AreaID",applyDto.getFengongsi());
+                    map.put("ApplyOpID",applyDto.getShenqingren());
+                    map.put("TradeCenterID",applyDto.getHangye_zhongxin());
+                    map.put("GroupID",applyDto.getJituan_bianhao());
+                    map.put("GroupName",applyDto.getJituan_mingcheng());
+                    map.put("GroupAcctID",applyDto.getJituan_zhanghao());
+                    map.put("GroupAcctName",applyDto.getZhanghao_mingcheng());
+                    map.put("PrePrintInvBeginCycle",applyDto.getKaishi_zhangqi());
+                    map.put("PrePrintInvEndCycle",applyDto.getJieshu_zhangqi());
+                    map.put("FreezeFee",applyDto.getShiyong_jine());
+                    map.put("ApplyFee",applyDto.getShiyong_jine());
+                    map.put("ApplyDate",applyDate);
+                    String fileNamePass = "";
+                    String mid_name = "GrpFundLMCharge";
+                    String newFileName = "";
+                    if(!attachFile.getFujian().equals("")&&attachFile.getFujian()!=null){
+                        applyDto.setAttach_file_id(attachFile.getFujian());
+                        List<CapitalInfoApplyDto> rtlist = capitalClaimQueryService.queryFileName(applyDto);
+                        fileNamePass = rtlist.get(0).getTarget_file_name();
+                        if(!fileNamePass.equals("")&&fileNamePass!=null){
+                            String[] fname = fileNamePass.split("[.]");
+                            newFileName = fname[0]+mid_name+"."+fname[1];
+                        }
+                    }
+                    map.put("GroupMemListFile",fileNamePass);
+                    map.put("GroupMemListFileLines",attachFile.getJieshu_zhangqi());
+                    map.put("Note",applyDto.getBeizhu_xinxi());
+
+                    reqResult = callBossServiceUtils.syncFundAccountUserFlowLMCharge(map);
+                }else if(reqType.equals("GrpFundSaleGoods")){
+                    map.put("OrderID",applyDto.getGongdan_bianhao());
+                    map.put("AreaID",applyDto.getFengongsi());
+                    map.put("ApplyOpID",applyDto.getShenqingren());
+                    map.put("TradeCenterID",applyDto.getHangye_zhongxin());
+                    map.put("GroupID",applyDto.getJituan_bianhao());
+                    map.put("GroupName",applyDto.getJituan_mingcheng());
+                    //                    map.put("GroupAcctID","2308106122088");
+                    //                    map.put("GroupAcctName","q1");
+                    map.put("FreezeFee",applyDto.getShiyong_jine());
+                    map.put("ApplyFee",applyDto.getShiyong_jine());
+                    map.put("ApplyDate",applyDate);
+                    map.put("Note",applyDto.getBeizhu_xinxi());
+                    map.put("ProjectId",applyDto.getProduct_id());
+
+                    reqResult = callBossServiceUtils.syncFundAccountUserFlowSaleGoods(map);
+                }
+
+
+                JSONObject object = new JSONObject(reqResult);
+                String res_code = object.getString("res_code");
+                //同步工单成功，修改状态为冻结
+                if(res_code != null && res_code.equals("0")){
+                    Map map2 = new HashMap();
+                    map2.put("ORDERID",parameter.getTaskOrderId());
+                    map2.put("GROUPID",applyDto.getJituan_bianhao());
+                    map2.put("OPERTYPE","2");
+                    map2.put("OPERFEE",applyDto.getShiyong_jine());
+                    map2.put("APPLYOPERID",parameter.getApplicantNo());
+                    String reqResult2 = callBossServiceUtils.changeGroupFundAccountStatus(map2);
+
+                    JSONObject object2 = new JSONObject(reqResult2);
+                    String res_code2 = object2.getString("res_code");
+                    if(res_code2 != null && res_code2.equals("0")){
+                        result = 1;
+                    }else{
+                        result = 999;
+                    }
+                }else{
+							/*//同步工单失败，释放流程发起时候占用的资金
+							Map map2 = new HashMap();
+							map2.put("ORDERID",parameter.getTaskOrderId());
+							map2.put("GROUPID",applyDto.getJituan_bianhao());
+							map2.put("OPERTYPE","1");
+							map2.put("OPERFEE",applyDto.getShiyong_jine());
+							map2.put("APPLYOPERID",parameter.getApplicantNo());
+							String reqResult2 = callBossServiceUtils.changeGroupFundAccountStatus(map2);
+
+							JSONObject object2 = new JSONObject(reqResult2);
+							String res_code2 = object2.getString("res_code");
+							if(res_code2 != null && res_code2.equals("0")){
+								result = 1;
+							}else{
+								result = 999;
+							}*/
+                    result = 999;
+                }
+
+                if(result == 1){
+                    result = capitalClaimQueryService.putWorkFlowFirstSvc(parameter);
+                }
+            }
+        }
+        //流程不同意，修改状态释放
+        else if(parameter.getNodeId().equals("2")){
+            Map map = new HashMap();
+            map.put("ORDERID",parameter.getTaskOrderId());
+            map.put("GROUPID",applyDto.getJituan_bianhao());
+            map.put("OPERTYPE","1");
+            map.put("OPERFEE",applyDto.getShiyong_jine());
+            map.put("APPLYOPERID",parameter.getApplicantNo());
+            String reqResult = callBossServiceUtils.changeGroupFundAccountStatus(map);
+
+            JSONObject object = new JSONObject(reqResult);
+            String res_code = object.getString("res_code");
+            if(res_code != null && res_code.equals("0")){
+                result = 1;
+            }else{
+                result = 999;
+            }
+
+            if(result == 1){
+                result = capitalClaimQueryService.putWorkFlowFirstSvc(parameter);
+            }
+        }else{
+            result = capitalClaimQueryService.putWorkFlowFirstSvc(parameter);
+        }
+        //     }
+
+        return result;
+    }
+}
+

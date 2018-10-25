@@ -1,0 +1,238 @@
+package com.esop.noteinformation.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Administrator on 2017/7/12 0012.
+ */
+public class NoteinfoDTO extends BaseDto{
+    //公告标识
+    String note_id ="";
+    //公告标题
+    String note_title="";
+    //公告内容
+    String note_content="";
+    //关键字
+    String key_word="";
+    //公告状态
+    String note_status="";
+    //公告等级
+    String note_level="";
+    //录入时间
+    String in_time="";
+    //发布时间
+    String pub_date="";
+    //失效时间
+    String exp_date="";
+    //外系统标识
+    String out_sys_id="";
+    //发布人
+    String pub_loginno="";
+    //发布人所属部门
+    String pub_groupid="";
+    //发布人电话
+    String phone_no="";
+    //发布人email
+    String e_mail="";
+    //备注
+    String op_notes="";
+    //未用
+    String power_right="";
+    //0:告警信息；1：公告信息
+    String note_type_flag="";
+
+    String login_no="";
+
+    String  group_id="";
+
+    String read_flag ="";
+
+    String name ="";
+
+    String filename="";
+
+    String related_id ="";
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRead_flag() {
+        return read_flag;
+    }
+
+    public void setRead_flag(String read_flag) {
+        this.read_flag = read_flag;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getNote_id() {
+        return note_id;
+    }
+
+    public void setNote_id(String note_id) {
+        this.note_id = note_id;
+    }
+
+    public String getNote_title() {
+        return note_title;
+    }
+
+    public void setNote_title(String note_title) {
+        this.note_title = note_title;
+    }
+
+    public String getNote_content() {
+        return note_content;
+    }
+
+    public void setNote_content(String note_content) {
+        this.note_content = note_content;
+    }
+
+    public String getKey_word() {
+        return key_word;
+    }
+
+    public void setKey_word(String key_word) {
+        this.key_word = key_word;
+    }
+
+    public String getNote_status() {
+        return note_status;
+    }
+
+    public void setNote_status(String note_status) {
+        this.note_status = note_status;
+    }
+
+    public String getNote_level() {
+        return note_level;
+    }
+
+    public void setNote_level(String note_level) {
+        this.note_level = note_level;
+    }
+
+    public String getIn_time() {
+        return in_time;
+    }
+
+    public void setIn_time(String in_time) {
+        this.in_time = in_time;
+    }
+
+    public String getPub_date() {
+        return pub_date;
+    }
+
+    public void setPub_date(String pub_date) {
+        this.pub_date = pub_date;
+    }
+
+    public String getExp_date() {
+        return exp_date;
+    }
+
+    public void setExp_date(String exp_date) {
+        this.exp_date = exp_date;
+    }
+
+    public String getOut_sys_id() {
+        return out_sys_id;
+    }
+
+    public void setOut_sys_id(String out_sys_id) {
+        this.out_sys_id = out_sys_id;
+    }
+
+    public String getPub_loginno() {
+        return pub_loginno;
+    }
+
+    public void setPub_loginno(String pub_loginno) {
+        this.pub_loginno = pub_loginno;
+    }
+
+    public String getPub_groupid() {
+        return pub_groupid;
+    }
+
+    public void setPub_groupid(String pub_groupid) {
+        this.pub_groupid = pub_groupid;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getE_mail() {
+        return e_mail;
+    }
+
+    public void setE_mail(String e_mail) {
+        this.e_mail = e_mail;
+    }
+
+    public String getOp_notes() {
+        return op_notes;
+    }
+
+    public void setOp_notes(String op_notes) {
+        this.op_notes = op_notes;
+    }
+
+    public String getPower_right() {
+        return power_right;
+    }
+
+    public void setPower_right(String power_right) {
+        this.power_right = power_right;
+    }
+
+    public String getNote_type_flag() {
+        return note_type_flag;
+    }
+
+    public void setNote_type_flag(String note_type_flag) {
+        this.note_type_flag = note_type_flag;
+    }
+}

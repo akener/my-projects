@@ -1,0 +1,28 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.BankDealQueryDto;
+import com.esop.cqDevelopment.capitalManage.service.BankDealQueryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class BankDealQueryRC {
+    @Autowired
+    BankDealQueryService bankDealQueryService;
+
+    //银行交易明细查询
+    @RequestMapping(value="/bankDealQuery")
+    public List getBankDealInfoRC(BankDealQueryDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= bankDealQueryService.getBankDealInfoSvc(parameter);
+        return list;
+    }
+}

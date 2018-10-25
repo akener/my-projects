@@ -1,0 +1,490 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/7/8
+  Time: 20:00
+  To change this template use File | Settings | File Templates.
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>产品大厅</title>
+</head>
+
+<body>
+<input type="hidden" id="product_id" value="">
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="alertInfo" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">详细信息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input type="hidden" id="id" value="">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>客户经理工号</th>
+                                <td>
+                                    <input id="manager_no"  class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>地市名称</th>
+                                <td>
+                                    <select name="region_code" id="region_code" class="selector_region">
+                                        <option value="10031">哈尔滨</option>
+                                        <option value="10032">齐齐哈尔</option>
+                                        <option value="10033">牡丹江</option>
+                                        <option value="10034">佳木斯</option>
+                                        <option value="10035">双鸭山</option>
+                                        <option value="10036">七台河</option>
+                                        <option value="10037">鸡西</option>
+                                        <option value="10038">鹤岗</option>
+                                        <option value="10039">伊春</option>
+                                        <option value="10040">黑河</option>
+                                        <option value="10041">绥化</option>
+                                        <option value="10042">大兴安岭</option>
+                                        <option value="10043">大庆</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>产品名称</th>
+                                <td>
+                                    <input id="product_name" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>产品简介</th>
+                                <td>
+                                    <textarea id="show_content" type="text" class="input-sty04 form-ipt" style="width:70%;height:80%" ></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>产品资费</th>
+                                <td>
+                                    <input id="product_fee" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>资费说明</th>
+                                <td>
+                                    <textarea id="fee_desc" type="text" class="input-sty04 form-ipt" style="width:70%;height:80%" ></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>方案上传</th>
+                                <td>
+                                    <div class="form-group">
+                                        <div class="col-sm-2">
+                                            <label class="btn btn-info pull-left" for="xFile" >上传附件(word,ppt,pdf格式)</label>
+                                            <form id="upload-form" method="post" enctype="multipart/form-data">
+                                                <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                            </form>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="form-group" id="fileList">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div id="fh_bt" class="modal-footer">
+                <button type="button" class="ui-btn  mgr-10" data-dismiss="modal" onclick="submit()">保存</button>
+                <button type="button" class="ui-btn  mgr-10" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>产品查询</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12" style="min-height:200px;">
+            <div class="pd-20 pos-rel pos-bg1">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>选择地市</th>
+                            <td>
+                                <select name="qry_region_code" id="qry_region_code" class="selector_region">
+                                    <option value="">
+                                        全省
+                                    </option>
+                                    <option value="10031">哈尔滨</option>
+                                    <option value="10032">齐齐哈尔</option>
+                                    <option value="10033">牡丹江</option>
+                                    <option value="10034">佳木斯</option>
+                                    <option value="10035">双鸭山</option>
+                                    <option value="10036">七台河</option>
+                                    <option value="10037">鸡西</option>
+                                    <option value="10038">鹤岗</option>
+                                    <option value="10039">伊春</option>
+                                    <option value="10040">黑河</option>
+                                    <option value="10041">绥化</option>
+                                    <option value="10042">大兴安岭</option>
+                                    <option value="10043">大庆</option>
+                                </select>
+                            </td>
+                            <th>客户经理工号</th>
+                            <td>
+                                <input id="qry_manager_no"  class="input-sty04 form-ipt">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>产品名称</th>
+                            <td>
+                                <input id="qry_product_name" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>产品编码</th>
+                            <td>
+                                <input id="qry_product_id" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-30">
+                        <div class="btn-box pdb-20">
+                            <button class="ui-btn mgr-10" onclick="qryProductInfo()">查询</button>
+                            <button class="ui-btn" onclick="addProductInfo()">新增</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <%--   <div class="row col-12">
+               <div class="pd-20 pos-rel" >
+                   <div class="active-cost-box" >--%>
+        <div class="row col-12" style="min-height:200px;">
+            <div class="pd-20 pos-rel pos-bg1">
+                <table id="epCompeteInfo" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th class="text-center">地市名称</th>
+                        <th class="text-center">客户经理编码</th>
+                        <th class="text-center">产品名称</th>
+                        <th class="text-center">产品简介</th>
+                        <th class="text-center">产品编号</th>
+                        <th class="text-center">产品资费</th>
+                        <th class="text-center">资费说明</th>
+                        <th class="text-center">创建时间</th>
+                        <th class="text-center">操作</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var editor;
+
+    function qryProductInfo(){
+        table = $('#epCompeteInfo').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            destroy:true,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/getProductHallInfo",
+                type:"POST",
+                data:{
+                    region_code : $("#qry_region_code").find("option:selected").val(),
+                    product_name:$("#qry_product_name").val(),
+                    manager_no:$("#qry_manager_no").val(),
+                    product_id:$("#qry_product_id").val()
+                },
+
+            },
+            columns: [
+                { data: "region_name"},
+                { data: "manager_no"},
+                { data:"product_name"},
+                { data: "show_content" },
+                { data:"product_id"},
+                { data: "product_fee"},
+                { data: "fee_desc"},
+                { data: "create_date" },
+                { data:"operator_str"}
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    }
+    $("#xFile").on("change", function(){
+        //alert($('#xFile')[0].files[0].name);
+        /* var file_name = $('#xFile').val();
+         var names = file_name.split("\\");
+         var length = names.length;
+         $("#file_path").val(names[length-1]);
+         var strs = names[length-1].split(".");
+         var rex = strs[strs.length-1];
+         if(rex != 'word' && rex != 'ppt' && rex != 'pdf'){
+         $("#fault5").modal('show');
+         return;
+         }*/
+        if ($('#id').val() == "") {
+            $.ajax({
+                type: "POST",
+                url: "getUploadFileInfoRelatedID",
+                async: false
+            }).then(function (data) {
+                $('#id').val(data);
+            });
+
+        }
+        $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+            url:"${pageContext.request.contextPath}/fileUpload",
+            type:"post", //提交的类型必需是post，
+            data: { related_id: $("#id").val()},
+            dateType:"json",
+            success:function(data){
+                //如果提交成功执行
+                //如果附件编码不为空，开始取附件
+                if($("#id").val()!="") {
+                    $.ajax({
+                        type: "POST",
+                        url: "uploadFileSelect",
+                        data: {
+                            "related_id": $("#id").val()
+                        }
+                    }).then(function (data) {
+                        //循环展现附件信息
+                        $("#fileList div").remove();
+                        $.each(data, function (index, item) {
+                            $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                                + "</a></div>"
+                                + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                                + "<i class=\"fa fa-times\"></i></button></div></div>");
+                        });
+                    });
+                }
+            },
+            error:function(data){
+                alert("error:"+data);
+            }
+        });
+    });
+    //删除附件
+    function deleteFile(buttonID,fileID){
+        $.ajax({
+            type: "POST",
+            url: "deleteFile",
+            data: {id:fileID}
+        }).then(function (data) {
+            //alert(data.result);
+            $(buttonID).parent().parent().remove();
+        });
+    }
+    function delFile(id){
+        $.ajax({
+            type: "POST",
+            url: "/delProductHallInfo",
+            data: {
+                product_id:id
+            }
+        }).then(function (data) {
+            qryProductInfo();
+        });
+    }
+    function updFile(product_id){
+        $("#manager_no").val("");
+        $("#region_code").val("");
+        $("#id").val("");
+        $("#product_name").val("");
+        $("#show_content").val("");
+        $("#fileList div").remove();
+        $("#alertInfo").modal('show');
+        $("#product_id").val(product_id);
+        $.ajax({
+            type: 'POST',
+            url: '/getProductInfoById',
+            cache : false,
+            data:{
+                product_id:$("#product_id").val()
+            },
+            success : function(data) {
+                //alert($("#solution_id").val());
+                $("#manager_no").val(data[0].manager_no);
+                $("#region_code").val(data[0].region_code);
+                $("#product_name").val(data[0].product_name);
+                $("#show_content").val(data[0].show_content);
+                $("#product_fee").val(data[0].product_fee);
+                $("#fee_desc").val(data[0].fee_desc);
+                $("#id").val(data[0].related_id);
+                if(data[0].relate_name!=""){
+                $.each(data, function (index, item) {
+                    $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.relate_path + "/" + item.relate_name + "'>" + item.relate_name
+                        + "</a></div>"
+                        + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                        + "<i class=\"fa fa-times\"></i></button></div></div>");
+                });
+                }
+                // $("#initElement").val(resp);
+            },
+            error:function(resp){
+                // alert("查询数据失败");
+                $("#modal_text").text("修改数据失败");
+                $("#modalInfo").modal('show');
+                return false;
+
+            },
+        });
+    }
+    function submit(){
+        if($("#product_id").val()!= ""){
+
+            $.ajax({
+                type: 'POST',
+                url: '/updProductHallInfo',
+                cache : false,
+                data:{
+                    region_name : $("#region_code").find("option:selected").text(),
+                    region_code : $("#region_code").find("option:selected").val(),
+                    manager_no:$("#manager_no").val(),
+                    product_name:$("#product_name").val(),
+                    show_content:$("#show_content").val(),
+                    product_fee:$("#product_fee").val(),
+                    fee_desc:$("#fee_desc").val(),
+                    product_id:$("#product_id").val(),
+                    related_id:$("#id").val()
+                },
+                success : function(data) {
+                    if(data == 1) {
+                        $("#product_id").val("");
+                        $("#modal_text").text("修改成功");
+                        $("#modalInfo").modal('show');
+                    }else{
+                        $("#product_id").val("");
+                        $("#modal_text").text("插入数据失败");
+                        $("#modalInfo").modal('show');
+                        return false;
+                    }
+                },
+                error:function(resp){
+                    // alert("查询数据失败");
+                    $("#modal_text").text("修改数据失败");
+                    $("#modalInfo").modal('show');
+                    return false;
+
+                },
+            });
+        }else {
+            $.ajax({
+                type: 'POST',
+                url: '/insProductHallInfo',
+                cache: false,
+                data: {
+                    region_name: $("#region_code").find("option:selected").text(),
+                    region_code: $("#region_code").find("option:selected").val(),
+                    manager_no: $("#manager_no").val(),
+                    product_name: $("#product_name").val(),
+                    product_fee:$("#product_fee").val(),
+                    show_content: $("#show_content").val(),
+                    fee_desc:$("#fee_desc").val(),
+                    related_id: $("#id").val()
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        $("#modal_text").text("插入成功");
+                        $("#modalInfo").modal('show');
+                    } else {
+                        $("#modal_text").text("插入数据失败");
+                        $("#modalInfo").modal('show');
+                        return false;
+                    }
+
+                    // $("#initElement").val(resp);
+                },
+                error: function (resp) {
+                    // alert("查询数据失败");
+                    $("#modal_text").text("插入数据失败");
+                    $("#modalInfo").modal('show');
+                    return false;
+
+                },
+            });
+
+        }
+        qryProductInfo();
+    }
+    function addProductInfo(){
+        $("#id").val("");
+        $('#region_code').prop('selectedIndex', 0);
+        $("#manager_no").val("");
+        $("#product_name").val("");
+        $("#show_content").val("");
+        $("#fee_desc").val("");
+        $("#product_fee").val("");
+        $("#fileList div").remove();
+        $("#alertInfo").modal('show');
+    }
+</script>
+</html>
+

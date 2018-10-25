@@ -1,0 +1,46 @@
+package com.esop.busiAnalysis.controller;
+
+import com.esop.busiAnalysis.dto.ManagerAmountTOP50Dto;
+import com.esop.busiAnalysis.service.managerAmountTop50Service;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/6.
+ */
+@RestController
+public class managerAmountTop50Controller {
+    @Autowired
+    managerAmountTop50Service managerAmountTop50Service;
+    @Autowired
+    DataConversion dataConversion;
+    Result result=new Result();
+
+    /*全省/市/县前50名region_name为空时查询全省前50*/
+    @RequestMapping(value = "/managerAmountTop50List")
+    public Result getRegionTopList(ManagerAmountTOP50Dto parameter,HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = managerAmountTop50Service.getRegionTop50list(parameter);
+        System.out.println("controller全市前50名"+result);
+        return result;
+    }
+    /*根据选择的地市查询出对对应的区县*/
+    @RequestMapping(value = "/selectTownName2")
+    public List geTown(ManagerAmountTOP50Dto parameter){
+        List list = managerAmountTop50Service.getTownName(parameter);
+        System.out.println("查询="+list);
+        return list;
+    }
+
+
+}

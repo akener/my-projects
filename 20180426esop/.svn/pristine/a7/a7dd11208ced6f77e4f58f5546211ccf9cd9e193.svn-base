@@ -1,0 +1,129 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var table = "";
+        var login_no;
+        $(document).ready(function () {
+            login_no="<%=login_no%>";
+            //IncomeListQuery();
+        });
+        function clear() {
+           $("#union_code").val("");
+            $("#union_name").val("");
+        }
+        function capitalApply(id,name) {
+            window.returnValue = id + "#" + name;
+            window.close();
+        }
+
+        function IncomeListQuery() {
+            table = $('#example').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "pageLength": 5,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                "bSort":false,
+                ajax: {
+                    url:"/getCustInfoBranchOffice",
+                    type:"POST",
+                    data:{
+                        union_code:$("#union_code").val(),
+                        union_name:$("#union_name").val(),
+                        service_no:login_no
+
+                    }
+                },
+                columns: [
+                    { data: "union_code",
+                        "width": "15%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<button class='ui-btn mgr-10' type='button' style='width: 85px' onclick=capitalApply('"+row.union_code+"','"+encodeURI(row.union_name)+"')>选择</button>";
+                        }
+                    },
+                    { data: "union_code"},
+                    { data: "union_name"}
+                ],
+                select: true,
+                buttons: [
+                ]
+            });
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团选择</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编码：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="union_code" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团名称：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="union_name" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="IncomeListQuery()">查询</button>
+                            <button class="ui-btn"  onclick="clear()">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="table table-bordered" id="example" width="100%;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>操作</th>
+                                <th class="text-center" nowrap='nowrap'>集团编号</th>
+                                <th class="text-center" nowrap='nowrap'>集团名称</th>
+                            </tr>
+                            </thead>
+                            <tfoot id="list_info">
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

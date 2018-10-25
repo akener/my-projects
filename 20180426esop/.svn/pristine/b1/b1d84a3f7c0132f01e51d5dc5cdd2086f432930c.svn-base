@@ -1,0 +1,61 @@
+package com.esop.cqDevelopment.elecPack.controller.PostUtil;
+import java.util.Calendar;
+/**
+ * 工具类
+ */
+public class StringUtils {
+    /**
+     * 获取指定位数的随机数
+     */
+    private static final int maxNo = 999999999;
+    private static int serialNo = 0;
+    /**
+     * 判断字符串是否为空
+     * @param msg
+     * @return
+     */
+    public static boolean isEmpty(String msg) {
+        boolean result=false;
+        if(msg==null||msg.trim().length()==0) {
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * 获取指定位数序列号
+     * @param len
+     * @return
+     */
+    public static synchronized String getSerialNo(int len){
+        if(++ serialNo > maxNo){
+            serialNo = 0;
+        }
+        String serialNo5 = withZeroPrefix(serialNo, len - 16).toString();
+        return getTime().append(serialNo5).toString();
+    }
+
+    public static StringBuffer withZeroPrefix(int num, int length){
+        int numLength = String.valueOf(num).length();
+        if(numLength < length){
+            StringBuffer strBuffer = new StringBuffer();
+            while(strBuffer.length() < (length - numLength)){
+                strBuffer.append("0");
+            }
+            return strBuffer.append(num);
+        }else{
+            return new StringBuffer().append(num);
+        }
+    }
+
+    public static StringBuffer getTime(){
+        Calendar calendar = Calendar.getInstance();
+        return new StringBuffer()
+                .append(calendar.get(Calendar.YEAR))
+                .append(withZeroPrefix(calendar.get(Calendar.MONTH) + 1, 2))
+                .append(withZeroPrefix(calendar.get(Calendar.DAY_OF_MONTH), 2))
+                .append(withZeroPrefix(calendar.get(Calendar.HOUR_OF_DAY), 2))
+                .append(withZeroPrefix(calendar.get(Calendar.MINUTE), 2))
+                .append(withZeroPrefix(calendar.get(Calendar.SECOND), 2));
+    }
+}

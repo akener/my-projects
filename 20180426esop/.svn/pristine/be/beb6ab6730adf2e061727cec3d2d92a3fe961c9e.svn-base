@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectAllPayIncomeList"  parameterType="String" resultType="com.esop.workbench.dto.AllPayIncomeDto" >
+        select round(sum(a.extax_unify_fee),2) extax_unify_fee ,a.eff_date,
+        <if test="region_code != ''">
+            town_name,town_code
+        </if>
+        <if test="region_code == ''">
+            region_name,region_code
+        </if>
+        from ep_group_income a
+        where 1 = 1
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        and region_code != '00'
+        group by a.eff_date,
+        <if test="region_code == ''">
+            a.region_name,a.region_code
+        </if>
+        <if test="region_code != ''">
+            town_name,town_code
+        </if>
+        <if test="eff_date ==''">
+            having eff_date = (select eff_date from (select eff_date from ep_group_income group by eff_date order by to_date(eff_date,'yyyy-MM') Desc) where rownum = 1)
+        </if>
+        <if test="eff_date !=''">
+            having eff_date = #{eff_date}
+        </if>
+        order by extax_unify_fee DESC
+    </select>
+</mapper>

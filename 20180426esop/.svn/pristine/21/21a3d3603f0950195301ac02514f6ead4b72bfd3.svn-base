@@ -1,0 +1,53 @@
+package com.esop.busiAnalysis.controller;
+
+import com.esop.busiAnalysis.dto.BroadbandDepStatementDto;
+import com.esop.busiAnalysis.service.BroadbandDepStatementService;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+
+/**
+ * Created by liuxiao on 2017/5/29.
+ */
+@RestController
+public class BroadbandDepStatementController {
+    @Autowired
+    BroadbandDepStatementService broadbandDepStatementService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @RequestMapping(value="/BroadbandDepStatement")
+    public Result getMemberStatementList(BroadbandDepStatementDto broadbandDepStatementDto, HttpServletRequest request, boolean flag){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            // requestStrB.append("&"+paramName+" = " + request.getParameter(paramName));
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        //String option = request.getParameter("action")==null?"":request.getParameter("action");
+        //int resultnum=0;//记录增加\修改\删除操作结果
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        broadbandDepStatementDto.setPage(page);
+        /*String region_name = request.getParameter("region_name");
+        String town_name = request.getParameter("town_name");
+        String unit_id = request.getParameter("unit_id");
+        String manager_name = request.getParameter("manager_name");
+        String start_time = request.getParameter("start_time");
+        String end_time = request.getParameter("end_time");
+        broadbandDepStatementDto.setRegion_name(region_name);
+        broadbandDepStatementDto.setTown_name(town_name);
+        broadbandDepStatementDto.setUnit_id(unit_id);
+        broadbandDepStatementDto.setManager_name(manager_name);
+        broadbandDepStatementDto.setStart_time(start_time);
+        broadbandDepStatementDto.setEnd_time(end_time);*/
+        result = broadbandDepStatementService.getBroadbandDepStatementList(broadbandDepStatementDto);
+        return result;
+    }
+}

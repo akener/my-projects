@@ -1,0 +1,62 @@
+package com.esop.newVip.service;
+
+import com.esop.common.dataBase.SqlE;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.esop.newVip.dto.regionDto;
+import com.esop.newVip.dto.managerDto;
+
+import java.util.List;
+
+/**
+ * Created by zuoyue on 2017/8/3.
+ */
+@Repository
+public class ManaAndRegionTreeService {
+    @Autowired
+    SqlE sqlE;
+    //根据工号查询地市
+    public List getRegion(regionDto param){
+        System.out.println("成功");
+        List list = sqlE.selectM("selectOrgCode",param);
+        System.out.println("list长度"+list.size());
+        System.out.println("-----------------查询地市代码---------------"+list);
+        return list;
+    }
+
+    //查询地市树
+    public List getRegion2(regionDto param){
+        String selectRegion = "";
+        System.out.println("orgCode="+param.getOrg_code());
+        System.out.println("loginNO="+param.getLogin_no());
+        if(param.getOrg_code().equals("1")){
+            selectRegion = "selectRegionTree1";
+        }else {
+            if(param.getLogin_type().equals("A")){
+                if(param.getLogin_no().substring(2,4).equals("vg")){
+                    selectRegion="selectRegionTree2";
+                }else{
+                    selectRegion="selectRegionTree3";
+                }
+            }else {
+                selectRegion="selectRegionTree4";
+            }
+        }
+        System.out.println("成功");
+        List list =sqlE.selectM(selectRegion,param);
+        return list;
+
+    }
+
+    //根据地市代码查询经理树
+    public List getManager(managerDto param){
+        System.out.println("--------------查询经理树----------------");
+        System.out.println("group_id="+param.getGroup_id());
+        List list = sqlE.selectM("selectManager",param);
+        return list;
+    }
+
+
+}

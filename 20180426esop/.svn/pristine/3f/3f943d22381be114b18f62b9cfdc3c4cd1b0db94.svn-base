@@ -1,0 +1,31 @@
+package test;
+
+import com.esop.base.dto.SessionDto;
+import okhttp3.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URLEncoder;
+import java.util.*;
+
+/**
+ * Created by Administrator on 2017/6/2.
+ */
+public class Te {
+
+    public static void main(String args[]){
+        try {
+            String name=URLEncoder.encode("安全考试答案.docx", "UTF-8");
+            System.out.println(name);
+            //System.out.println(java.net.URLDecoder.decode("%E7%80%B9%E5%A4%8A%E5%8F%8F%E9%91%B0%E5%86%AD%E7%98%AF%E7%BB%9B%E6%97%80%EE%94%8D.docx", "GB2312"));
+            System.out.println(URLEncoder.encode(name, "UTF-8"));
+            System.out.println(URLEncoder.encode("安全考试答案.docx", "UTF-8"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+}

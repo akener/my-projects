@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectWorkFlowInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowQueryDto" >
+        select
+            b.link_name as node_role_name,
+            t.node_role_id,
+            t.node_id
+        from
+            ep_work_flow_rel t,ep_work_flow_dict b
+        where
+            t.step_id = IFNULL((select cast(b.step_id as unsigned int)+1 from ep_work_flow_rel b where b.node_id = #{node_id} and ind_type = #{ind_type}),1)
+        and t.ind_type = #{ind_type}
+        and t.node_id = b.link_id
+    </select>
+    <!--查询下一步处理人-->
+    <select id="qryNextDealPerson" parameterType="com.esop.cqDevelopment.capitalManage.dto.SystemUserInfoDto" resultType="com.esop.cqDevelopment.capitalManage.dto.SystemUserInfoDto">
+        SELECT
+        u.staff_code,
+        CONCAT(u.login_name,'-->',u.staff_code) as login_name
+        FROM
+        bs_role_dict a,
+        bs_systemuser_info u,
+        bs_staff_role_rel b
+        <if test="hangye_zhongxin != '' and hangye_zhongxin !=null and hangye_zhongxin != 'null'">
+            ,se_business_center_staff_rel c
+        </if>
+        <if test="org_id != '' and org_id !=null and org_id != 'null'">
+            ,bs_staff_info n
+        </if>
+        WHERE
+        b.system_user_id = u.system_user_id
+        AND b.role_id = a.role_id
+        AND a.role_id = #{role_id}
+        <if test="hangye_zhongxin != '' and hangye_zhongxin !=null and hangye_zhongxin != 'null'">
+            AND u.staff_code = c.staff_code
+            AND c.bak1 = '2'
+            AND c.center_code = #{hangye_zhongxin}
+        </if>
+        <if test="org_id != '' and org_id !=null and org_id != 'null'">
+            and n.staff_id=u.staff_id
+            and SUBSTR(n.org_id,1,8)=#{org_id}
+            and n.state='Y'
+        </if>
+    </select>
+    <!--查询下一步处理人-->
+    <select id="qryNextDealPerson_new" parameterType="com.esop.cqDevelopment.capitalManage.dto.SystemUserInfoDto" resultType="com.esop.cqDevelopment.capitalManage.dto.SystemUserInfoDto">
+        SELECT
+        u.staff_code,
+        CONCAT(u.login_name,'-->',u.staff_code) as login_name
+        FROM
+        bs_role_dict a,
+        bs_systemuser_info u,
+        bs_staff_role_rel b
+        <if test="union_code != '' and union_code !=null and union_code != 'null'">
+            ,se_business_center_staff_rel c
+        </if>
+        <if test="org_id != '' and org_id !=null and org_id != 'null'">
+            ,bs_staff_info n
+        </if>
+        WHERE
+        b.system_user_id = u.system_user_id
+        AND b.role_id = a.role_id
+        AND a.role_id = #{role_id}
+        <if test="union_code != '' and union_code !=null and union_code != 'null'">
+            AND u.staff_code = c.staff_code
+            AND c.bak1 = '2'
+            AND c.center_code = (select g.center_code from ct_union_info h,se_business_center_staff_rel g where h.service_no = g.staff_code and union_code = #{union_code} limit 1)
+        </if>
+        <if test="org_id != '' and org_id !=null and org_id != 'null'">
+            and n.staff_id=u.staff_id
+            and SUBSTR(n.org_id,1,8)=#{org_id}
+            and n.state='Y'
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectMenusShow"  parameterType="com.esop.menus.dto.MenusShowDto" resultType="com.esop.menus.dto.MenusShowDto" >
+        select *
+        from (select unique t1.function_code,
+        t1.parent_code,
+        t1.pop_type,
+        t1.jsp_url as jsp_name,
+        t1.function_name,
+        t1.out_sys_id,
+        t4.out_sys_url,
+        t1.brief
+        from ep_sys_funccode_new     t1,
+        ep_sys_rolefunc_rel_new t2,
+        ep_sys_loginmsg_new     t3,
+        ep_sys_outsystem_dict   t4,
+        ep_sys_rolecode_rel     t5
+        where t1.vilid_flag = '1'
+        and t2.role_code = t5.role_code_small
+        and t3.login_no = t5.login_no
+        and t1.function_code = t2.function_code
+        and t1.out_sys_id = t4.out_sys_id
+        <if test="landing_no != ''">
+            and t3.login_no = #{landing_no}
+        </if>
+                   ) f
+        <if test="parent_code != ''">
+            start with  f.parent_code = #{parent_code}
+        </if>
+        connect by prior f.function_code = f.parent_code
+    </select>
+    <select id="selectMenusShowOpcode"  parameterType="com.esop.menus.dto.MenusShowDto" resultType="com.esop.menus.dto.MenusShowDto" >
+        select replace(WM_CONCAT(function_code),',','|')||'|' as function_code
+        from (select unique t1.function_code,
+        t1.parent_code
+        from ep_sys_funccode_new     t1,
+        ep_sys_rolefunc_rel_new t2,
+        ep_sys_loginmsg_new     t3,
+        ep_sys_outsystem_dict   t4,
+        ep_sys_rolecode_rel     t5
+        where t1.vilid_flag = '1'
+        and t2.role_code = t5.role_code_small
+        and t3.login_no = t5.login_no
+        and t1.function_code = t2.function_code
+        and t1.out_sys_id = t4.out_sys_id
+        <if test="landing_no != ''">
+            and t3.login_no = #{landing_no}
+        </if>
+        ) f
+        <if test="parent_code != ''">
+            start with  f.parent_code = #{parent_code}
+        </if>
+        connect by prior f.function_code = f.parent_code
+    </select>
+    <select id="selectMenusFirstShow"  parameterType="com.esop.menus.dto.MenusShowDto" resultType="com.esop.menus.dto.MenusShowDto" >
+        select unique t1.function_code, t1.function_name
+        from ep_sys_funccode_new  t1,
+        ep_sys_rolefunc_rel_new t2,
+        ep_sys_loginmsg_new     t3,
+        ep_sys_outsystem_dict   t4,
+        ep_sys_rolecode_rel     t5
+        where t1.vilid_flag = '1'
+        and t2.role_code = t5.role_code_small
+        and t3.login_no = t5.login_no
+        and t1.function_code = t2.function_code
+        and t1.out_sys_id = t4.out_sys_id
+        <if test="landing_no != ''">
+            and t3.login_no = #{landing_no}
+        </if>
+        and t1.parent_code = '4100'
+        and t1.function_code not in ('4108','4110','4133','4114')
+    </select>
+</mapper>

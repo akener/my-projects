@@ -1,0 +1,441 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<%@ include file="../../pub/public_include.jsp"%>
+
+<%
+    String grpfundacctid = request.getParameter("grpfundacctid");
+    String grpcustid = request.getParameter("grpcustid");
+    String grpcustname = request.getParameter("grpcustname");
+    String bankacctid = request.getParameter("bankacctid");
+    String bankname = request.getParameter("bankname");
+    String ownerorgid = request.getParameter("ownerorgid");
+    String ownerorgname = request.getParameter("ownerorgname");
+    String status = request.getParameter("status");
+    String balance = request.getParameter("balance");
+    String nowbalance = request.getParameter("nowbalance");
+    String holdbalance = request.getParameter("holdbalance");
+    String freezefee = request.getParameter("freezefee");
+    String newBalance = request.getParameter("newBalance");
+    String newNowbalance = request.getParameter("newNowbalance");
+    String newHoldbalance = request.getParameter("newHoldbalance");
+    String newFreezefee = request.getParameter("newFreezefee");
+    String groupID = request.getParameter("groupID");
+    String login_no = request.getParameter("login_no");
+    String login_name = request.getParameter("login_name");
+    String center_code_ep = (String) session.getAttribute("center_code_ep");//拥有的行业中心串
+%>
+<head>
+    <title>回退申请</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金回退申请单</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th colspan="4" style="text-align: center;font-size: medium">申请信息</th>
+                        </tr>
+                        <tr>
+                           <%--<th>申请单流水号</th>
+                            <td>
+                                <input id="refund_id" disabled="disabled" style="width:200px;text-align:left" class="input-sty04 form-ipt">
+                            </td>--%>
+                            <th>申请人</th>
+                            <td>
+                                <input id="applicant_name" disabled="disabled" style="width:200px;text-align:left" class="input-sty04 form-ipt">
+                                <input type="hidden" id="refund_applicant" />
+                            </td>
+                           <th>申请日期</th>
+                           <td>
+                               <input type=text id="apply_date" disabled="disabled" style="width:200px;text-align:left" class="input-sty04 form-ipt" maxlength="11" readonly="true">
+                           </td>
+                        </tr>
+                        <tr>
+                            <th>出账集团</th>
+                            <td>
+                                <input id="out_group" style="width:200px;text-align:left" disabled="disabled" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团编号</th>
+                            <td>
+                                <input id="out_grp_no" type="text" style="width:200px;text-align:left" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>资金联系人</th>
+                            <td>
+                                <input id="capital_contact" type="text" style="width:200px;text-align:left" disabled="disabled" class="input-sty04 form-ipt">
+                                <button type="button" class="ui-btn" onclick="group_connect_choose()">选择</button>
+                            </td>
+                            <th>联系电话</th>
+                            <td>
+                                <input id="telphone" type="text" style="width:200px;text-align:left" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>联系人类型</th>
+                            <td>
+                                <input id="contact_type" type="text" style="width:200px;text-align:left" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                            <th>账户余额(元)</th>
+                            <td>
+                                <input id="balance_yuan" type="text" style="width:200px;text-align:left" class="input-sty04 form-ipt" disabled="disabled">
+                                <input type="hidden" id="balance" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>可用余额(元)</th>
+                            <td>
+                                <input id="newNowbalance" type="text" style="width:200px;text-align:left" class="input-sty04 form-ipt" disabled="disabled">
+                                <input type="hidden" id="now_balance" />
+                            </td>
+                            <th>归属分公司</th>
+                            <td>
+                                <input id="ownerorgname" type="text" style="width:200px;text-align:left" class="input-sty04 form-ipt" disabled="disabled">
+                                <input type="hidden" id="ownerorgid" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="4" style="text-align: center;font-size: medium">退款信息</th>
+                        </tr>
+                        <tr>
+                            <th>退款账号<span style="color: red">*</span></th>
+                            <td>
+                                <input id="refund_account" type="text" style="width:200px;text-align:left" class="input-sty04 form-ipt">
+                            </td>
+                            <th>退款户名<span style="color: red">*</span></th>
+                            <td>
+                                <input id="refund_account_name" type="text" style="width:200px;text-align:left" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>退款开户行<span style="color: red">*</span></th>
+                            <td>
+                                <input id="refund_opening_bank" type="text" style="width:200px;text-align:left" class="input-sty04 form-ipt">
+                            </td>
+                            <th>退款金额(元)<span style="color: red">*</span></th>
+                            <td>
+                                <input id="refund_amount_yuan" type="number"  onkeyup="clearNoNum(this)"  style="width:200px;text-align:left" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>附件信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table-infor-7" width="100%;">
+                        <tbody>
+                        <tr>
+                            <th>附件<span style="color: red">*</span></th>
+                            <td style="border:none">
+                                <form id="uploadFile" action="uploadFile" method="post"  enctype="multipart/form-data">
+                                    <input type="file" class="ui-text" id="file" name="file" style="width: 240px" onchange="uploadFile()"/>
+                                </form>
+                            </td>
+                            <input id="attach_file_id" name="" type="hidden" value="">
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>下一环节</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color: #fff;">
+                <div class="row">
+                    <input style="width:200px;" type="hidden" id="first_node_id" value="">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <jsp:include page="../workFlowQuery.jsp"></jsp:include>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="saveRefundApply()">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input id="lineNum" name="" type="hidden" value="">
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no = "<%=login_no%>";
+    var login_name = "<%=login_name%>";
+
+    $(document).ready(function() {
+        init("<%=grpfundacctid%>","<%=grpcustid%>","<%=grpcustname%>","<%=bankacctid%>","<%=bankname%>","<%=ownerorgid%>","<%=ownerorgname%>","<%=status%>","<%=balance%>","<%=nowbalance%>","<%=holdbalance%>","<%=freezefee%>","<%=newBalance%>","<%=newNowbalance%>","<%=newHoldbalance%>","<%=newFreezefee%>","<%=groupID%>");
+        getNextLink("7","0");
+    });
+    //申请时间
+    var currentDate= getNowFormatTime();
+    //初始化申请页面
+    function init(grpfundacctid,grpcustid,grpcustname,bankacctid,bankname,ownerorgid,ownerorgname,status,balance,nowbalance,holdbalance,freezefee,newBalance,newNowbalance,newHoldbalance,newFreezefee,groupID) {
+        $("#refund_applicant").val(login_no);
+        $("#applicant_name").val(login_name);
+        $("#ownerorgid").val(ownerorgid);
+        $("#ownerorgname").val(decodeURI(ownerorgname));
+        var currentNewDate = currentDate.substring(0, 10);
+        $("#apply_date").val(currentNewDate);
+        getGroupInfo(groupID);
+        $("#out_grp_no").val(groupID);
+        //入库的金额,保存分
+        $("#balance").val(balance);
+        $("#now_balance").val(nowbalance);
+        //页面金额显示元
+        $("#balance_yuan").val(newBalance);
+        $("#newNowbalance").val(newNowbalance);
+    }
+    function clearNoNum(obj){
+        obj.value = obj.value.replace(/[^\d.]/g,"");  //清除“数字”和“.”以外的字符
+        obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个. 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3');//只能输入两个小数
+        if(obj.value.indexOf(".")< 0 && obj.value !=""){//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
+            obj.value= parseFloat(obj.value);
+        }
+    }
+    //提交申请
+    function saveRefundApply(){
+        $("#qu_reset").attr('disabled',true);//不允许重复提交
+        var newNowbalance = $("#newNowbalance").val();//可用余额(元)
+        var refund_account = $("#refund_account").val();//退款账号
+        var refund_account_name = $("#refund_account_name").val();//退款户名
+        var refund_opening_bank = $("#refund_opening_bank").val();//退款开户行
+        var refund_amount_yuan = $("#refund_amount_yuan").val();//回退金额(元)
+        var fileId = $("#attach_file_id").val();//用于判断是否提交了附件文件
+        if(refund_account == null || refund_account == ""){
+            alert("请填写退款账号!");
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        if(refund_account_name == null || refund_account_name == ""){
+            alert("请填写退款户名!");
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        if(refund_opening_bank == null || refund_opening_bank == ""){
+            alert("请填写退款开户行!");
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        if(refund_amount_yuan == null || refund_amount_yuan == ""){
+            alert("请填写退款金额!");
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        if(Number(refund_amount_yuan) <= 0){
+            alert('请正确填入回退金额!');
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        if(Number(refund_amount_yuan) > Number(newNowbalance)){
+            alert('回退金额超过可用余额,请重新填写回退金额!');
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        if(fileId == ""){
+            alert("请上传附件！");
+            $("#qu_reset").attr('disabled',false);
+            return false;
+        }
+        //审批信息
+        var nextStepDealPerson = $("#nextStepDealPerson").val();//下一步处理人
+        var applicantNo = login_no;//申请人
+        var nodeId = $("#first_node_id").val();//下一环节ID
+        $.ajax({
+            type: "post",
+            url: "getRefundInfo",
+            data: {
+                "refund_id":	$("#refund_id").val(),
+                refund_applicant:	$("#refund_applicant").val(),
+                "expenditure_presentation_group"   : $("#out_group").val(),
+                "group_num" :	$("#out_grp_no").val(),
+                "capital_contact":	$("#capital_contact").val(),
+                "contact_number"  :	$("#telphone").val(),
+                "contact_type":   $("#contact_type").val(),
+                "book_balance" :	$("#balance").val( ),
+                "available_balance" :	$("#now_balance").val(),
+                "refund_account"   :	$("#refund_account").val(),
+                "refund_account_name"  :	$("#refund_account_name").val(),
+                "refund_opening_bank":	$("#refund_opening_bank").val(),
+                refund_amount_yuan: refund_amount_yuan,
+                "file": $("#attach_file_id").val(),
+                nextDealPerson: nextStepDealPerson,
+                "applicantNo"   : applicantNo,
+                nodeId: nodeId,
+                ownerorgid: $("#ownerorgid").val()
+
+            },
+            success: function (result) {
+                var return_code = result.split(",")[0];
+                var return_msg = result.split(",")[1];
+                if(return_code==1){
+                    alert(return_msg);
+                    window.close();
+                }else{
+                    alert(return_msg);
+                    $("#qu_reset").attr("disabled", false);
+                    if(window.confirm("是否关闭页面") == true){
+                        window.close();
+                    }
+                }
+            },
+            error: function () {
+                $("#qu_reset").attr('disabled',false);
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+    function goback(){
+        window.close();
+    }
+    function getNowFormatTime() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+        return currentdate;
+
+    }
+    //出账集团--查询集团账号缴费联系人
+    function group_connect_choose() {
+        var jituan_bianhao = $("#out_grp_no").val();
+        var url="/esop/jtlxrcx?jituan_bianhao=" + jituan_bianhao;
+        var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+        if(ret!=undefined){
+            var data=ret.split("#");
+            $("#capital_contact").val(data[0]);
+            $("#telphone").val(data[1]);
+            $("#contact_type").val(data[2]);
+        }
+    }
+    //集团账号查询账号名称
+    function getGroupInfo(groupNo) {
+        $.ajax({
+            url:"custInfoQuery",
+            type:"POST",
+            data:{union_code:groupNo},
+            success:function (data) {
+                $("#out_group").val(data.data[0].union_name);
+            }
+        })
+    }
+
+    function getNextLink(ind_type,node_id) {
+        //带入审批信息
+        $.ajax({
+            type: "POST",
+            url: "workFlowQuery",
+            data:{
+                ind_type:ind_type,
+                node_id:node_id
+            },
+            cache: false,
+            success: function (result) {
+                if(result.length > 0) {
+                    $("#nextLink").html(result[0].node_role_name);
+                    getNextDealPerson(result[0].node_role_id);
+                    $("#first_node_id").val(result[0].node_id);
+                }else{
+                    document.getElementById("appove_show").style.display='none';
+                }
+            },
+            error: function () {
+                bootStrapAlert('请求超时，请重试！');
+            }
+        });
+    }
+    //获取下一环节处理人
+    function getNextDealPerson(role_id) {
+        var hangye_zhongxin = "<%=center_code_ep%>";
+        if((role_id!='23064')){//33104
+            hangye_zhongxin = "";
+        }
+        var root_org_id="<%=ownerorgid%>";
+        var org_id;
+        if(root_org_id!=null&&root_org_id!=""){
+            org_id = root_org_id.substring(0,8);
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'qryNextDealPerson',
+            cache: false,
+            data: {
+                role_id:role_id,
+                hangye_zhongxin:hangye_zhongxin,
+                org_id:org_id
+            },
+            success: function (data) {
+                var type_data="";
+                $.each(data, function (i, field) {
+                    //拼接json数据集字符串
+                    type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                    type_data += ">" + field.login_name + "</option>";
+                });
+                $("#nextStepDealPerson").empty();
+                $("#nextStepDealPerson").append(type_data);
+            },
+            error: function (resp) {
+                alert('获取下一步处理人失败!');
+                return false;
+
+            },
+        });
+    }
+
+</script>
+</html>

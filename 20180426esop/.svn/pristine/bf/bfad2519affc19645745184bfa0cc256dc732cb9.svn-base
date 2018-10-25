@@ -1,0 +1,58 @@
+package com.esop.workflow.dto;
+
+public class GetFirstStepsInDTO extends InDTO {
+    private String procTypeCode;//流程大类
+    private String branchCode;//分公司编码
+    private String keyValue;//关键值
+    private String actionId;//初始化连线id
+    private String loginCode;//工号
+    private String loginName;//姓名
+
+    public String getProcTypeCode() {
+        return procTypeCode;
+    }
+
+    public void setProcTypeCode(String procTypeCode) {
+        this.procTypeCode = procTypeCode;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public String getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
+
+    public String getLoginCode() {
+        return loginCode;
+    }
+
+    public void setLoginCode(String loginCode) {
+        this.loginCode = loginCode;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+}

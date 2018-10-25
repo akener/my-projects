@@ -1,0 +1,84 @@
+package com.esop.capAdjustApply.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.capAdjustApply.dto.EpCapOneTimeExpenseInfo;
+import com.esop.capAdjustApply.service.OneTimeExpenseSrv;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+/**
+ * Created by user on 2017/11/22.
+ */
+    //充值缴费之-一次性费用（资金管理下资金使用申请的子业务）
+@RestController
+public class SubmitOneTimeExpenseCtrl {
+
+    @Autowired
+    OneTimeExpenseSrv tjService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @RequestMapping(value="/submitOneTimeExpenseApply")
+    public String tijiaoSQ(EpCapOneTimeExpenseInfo parameter, HttpServletRequest request, boolean flag){
+        System.out.println("一次性费用使用申请页面传来参数是="+parameter);
+
+        int i = tjService.insertEpCapOneTimeExpenseApplyInfo(parameter);
+        String json= "";
+        Map<String,Object> mapN = new HashMap<>();
+        mapN.put("succ_msg",i);
+        List< Map<String,Object> > list = new ArrayList<>();
+        list.add(mapN);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        json =  JSONObject.toJSONString(map);
+        System.out.println("申请返回json="+json);
+        return  json;
+    }
+
+    //一次性费用资金使用申请列表查询
+    @RequestMapping(value="/qryOneTimeExpenseApplyList")
+    public Result qryDepositApplyList(EpCapOneTimeExpenseInfo parameter, HttpServletRequest request){
+        System.out.println("一次性费用申请使用列表查询参数="+parameter.toString());
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = tjService.qryOneTimeExpenseApplyList(parameter);
+        return result;
+    }
+
+    //查询一次性费用使用申请详细信息
+    @RequestMapping(value="/getOneTimeExpenseApplyDealInfo")
+    public String getDepositApplyDealInfo(EpCapOneTimeExpenseInfo parameter, HttpServletRequest request, boolean flag){
+        System.out.println("一次性费用使用申请详情页面传来参数是="+parameter);
+        List OneTimeExpenseList = tjService.getOneTimeExpenseApplyDealInfo(parameter);
+        String json= "";
+       /* Map<String,Object> mapN = new HashMap<>();
+        mapN.put("succ_msg",i);
+        List< Map<String,Object> > list = new ArrayList<>();
+        list.add(mapN);*/
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",OneTimeExpenseList);
+        json =  JSONObject.toJSONString(map);
+        System.out.println("查询一次性费用使用申请详细信息--返回json="+json);
+        return  json;
+    }
+
+
+
+
+
+
+}

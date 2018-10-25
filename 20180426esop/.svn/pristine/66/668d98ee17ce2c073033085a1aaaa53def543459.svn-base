@@ -1,0 +1,85 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+public class ContractDetailInfoDto {
+    private Integer id;
+    private String contract_id;//合同号
+    private String contract_template_id;//合同模板ID
+    private Integer attr_id;//属性ID
+    private String attr_code;//属性code
+    private String attr_value;//属性值
+    private String bak1;
+    private String bak2;
+    private String bak3;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getContract_template_id() {
+        return contract_template_id;
+    }
+
+    public void setContract_template_id(String contract_template_id) {
+        this.contract_template_id = contract_template_id;
+    }
+
+    public Integer getAttr_id() {
+        return attr_id;
+    }
+
+    public void setAttr_id(Integer attr_id) {
+        this.attr_id = attr_id;
+    }
+
+    public String getAttr_code() {
+        return attr_code;
+    }
+
+    public void setAttr_code(String attr_code) {
+        this.attr_code = attr_code;
+    }
+
+    public String getAttr_value() {
+        return attr_value;
+    }
+
+    public void setAttr_value(String attr_value) {
+        this.attr_value = attr_value;
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1;
+    }
+
+    public String getBak2() {
+        return bak2;
+    }
+
+    public void setBak2(String bak2) {
+        this.bak2 = bak2;
+    }
+
+    public String getBak3() {
+        return bak3;
+    }
+
+    public void setBak3(String bak3) {
+        this.bak3 = bak3;
+    }
+}

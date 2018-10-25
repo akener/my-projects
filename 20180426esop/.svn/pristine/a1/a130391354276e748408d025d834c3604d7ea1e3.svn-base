@@ -1,0 +1,229 @@
+package com.esop.visitInfo.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.esop.common.util.ParameterConversion;
+import com.esop.productInfo.dto.PromptInformationDto;
+import com.esop.visitInfo.dto.TestFormDto;
+import com.esop.visitInfo.service.VisitProcessService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by subt on 2017/6/10 0010.
+ * 测试流程表单
+ */
+@RestController
+public class TestFormController {
+    private static Logger logger = Logger.getLogger(VisitDetailController.class);
+    @Autowired
+    VisitProcessService visitProcessService;
+    @RequestMapping(value = "/getTestForm",produces = {"application/xml", "application/json"})
+    public List getTestForm(TestFormDto param, HttpServletRequest request){
+        List list = new ArrayList();
+        PromptInformationDto dto=new PromptInformationDto();
+        //将HttpServletRequest中传入的参数转换存放到map集合中
+        Map paramMap = ParameterConversion.intoParameterConversion(request);
+        StringBuffer info = new StringBuffer();
+        if (paramMap.get("parameter")==null){
+            info.append("请输入parameter字段值！");
+        }else{
+            param = JSON.parseObject(paramMap.get("parameter").toString(),TestFormDto.class);
+        }
+        /*if (param.getCustomer_name().equals("")){
+            info.append("请输入客户名称信息！");
+        }
+        if (param.getCustomer_address().equals("")){
+            info.append("请输入客户地址信息！");
+        }
+        if (param.getBusiness_attribute().equals("")){
+            info.append("请输入业务属性信息！");
+        }
+        if (param.getRelevant_licenses().equals("")){
+            info.append("请输入相关证照信息！");
+        }
+        if (param.getIdc_basics().equals("")){
+            info.append("请输入IDC基础信息！");
+        }
+        if (param.getCustomer_people().equals("")){
+            info.append("请输入客户侧联系人信息！");
+        }
+        if (param.getCustomer_phone().equals("")){
+            info.append("请输入联系电话（客户侧）信息！");
+        }
+        if (param.getCustomer_mail().equals("")){
+            info.append("请输入联系邮箱（客户侧）信息！");
+        }
+        if (param.getAccount_manager().equals("")){
+            info.append("请输入客户经理信息！");
+        }
+        if (param.getManager_phone().equals("")){
+            info.append("请输入联系电话（客户经理）信息！");
+        }
+        if (param.getManager_mail().equals("")){
+            info.append("请输入联系邮箱（客户经理）信息！");
+        }*/
+//        if (param.getUndertake_unit().equals("")){
+//            info.append("请输入承接单位信息！");
+//        }
+//        if (param.getUndertake_address().equals("")){
+//            info.append("请输入承接地点信息！");
+//        }
+//        if (param.getUndertake_man().equals("")){
+//            info.append("请输入接口人（承接方）信息！");
+//        }
+//        if (param.getUndertake_phone().equals("")){
+//            info.append("请输入联系电话（承接方）信息！");
+//        }
+        /*if (param.getTest_start_time().equals("")){
+            info.append("请输入测试开始时间信息！");
+        }
+        if (param.getTest_end_time().equals("")){
+            info.append("请输入测试结束时间信息！");
+        }
+        if (param.getThis_whether_delay_test().equals("")){
+            info.append("请输入本次是否是延期测试信息！");
+        }
+        if (param.getLast_delay_end_time().equals("")){
+            info.append("请输入上次延期结束时间信息！");
+        }*/
+//        if (param.getDistribution_time().equals("")){
+//            info.append("请输入分配时间信息！");
+//        }
+//        if (param.getRecovery_time().equals("")){
+//            info.append("请输入回收时间信息！");
+//        }
+//        if (param.getDelay_recovery_time().equals("")){
+//            info.append("请输入延期回收时间信息！");
+//        }
+//        if (param.getCpu_hanan().equals("")){
+//            info.append("请输入CPU物理机（哈南）信息！");
+//        }
+//        if (param.getMemory_hanan().equals("")){
+//            info.append("请输入内存物理机（哈南）信息！");
+//        }
+//        if (param.getStorage_hanan().equals("")){
+//            info.append("请输入存储物理机（哈南）信息！");
+//        }
+//        if (param.getDry_bandwidth_hanan().equals("")){
+//            info.append("请输入国干带宽物理机（哈南）信息！");
+//        }
+//        if (param.getProvince_bandwidth_hanan().equals("")){
+//            info.append("请输入省干带宽物理机（哈南）信息！");
+//        }
+//        if (param.getOperating_system_hanan().equals("")){
+//            info.append("请输入操作系统物理机（哈南）信息！");
+//        }
+//        if (param.getNetwork_ip_hanan().equals("")){
+//            info.append("请输入公网IP物理机（哈南）信息！");
+//        }
+//        if (param.getPort_hanan().equals("")){
+//            info.append("请输入端口物理机（哈南）信息！");
+//        }
+//        if (param.getCpu_village().equals("")){
+//            info.append("请输入CPU物理机（进乡）信息！");
+//        }
+//        if (param.getMemory_village().equals("")){
+//            info.append("请输入内存物理机（进乡）信息！");
+//        }
+//        if (param.getStorage_village().equals("")){
+//            info.append("请输入存储物理机（进乡）信息！");
+//        }
+//        if (param.getBandwidth_village().equals("")){
+//            info.append("请输入带宽物理机（进乡）信息！");
+//        }
+//        if (param.getOperating_system_village().equals("")){
+//            info.append("请输入操作系统物理机（进乡）信息！");
+//        }
+//        if (param.getNetwork_ip_village().equals("")){
+//            info.append("请输入公网IP物理机（进乡）信息！");
+//        }
+//        if (param.getPort_village().equals("")){
+//            info.append("请输入端口物理机（进乡）信息！");
+//        }
+//        if (param.getCpu_vm_ha().equals("")){
+//            info.append("请输入CPU虚拟机（哈南）信息！");
+//        }
+//        if (param.getMemory_vm_ha().equals("")){
+//            info.append("请输入内存虚拟机（哈南）信息！");
+//        }
+//        if (param.getStorage_vm_ha().equals("")){
+//            info.append("请输入存储虚拟机（哈南）信息！");
+//        }
+//        if (param.getDry_bandwidth_vm_ha().equals("")){
+//            info.append("请输入国干带宽虚拟机（哈南）信息！");
+//        }
+//        if (param.getProvince_bandwidth_vm_ha().equals("")){
+//            info.append("请输入省干带宽虚拟机（哈南）信息！");
+//    }
+//        if (param.getOperating_system_vm_ha().equals("")){
+//            info.append("请输入操作系统虚拟机（哈南）信息！");
+//        }
+//        if (param.getIp_vm_ha().equals("")){
+//            info.append("请输入IP虚拟机（哈南）信息！");
+//        }
+//        if (param.getPort_vm_ha().equals("")){
+//            info.append("请输入端口虚拟机（哈南）信息！");
+//        }
+//        if (param.getCpu_vm_jin().equals("")){
+//            info.append("请输入CPU虚拟机（进乡）信息！");
+//        }
+//        if (param.getMemory_vm_jin().equals("")){
+//            info.append("请输入内存虚拟机（进乡）信息！");
+//        }
+//        if (param.getStorage_vm_jin().equals("")){
+//            info.append("请输入存储虚拟机（进乡）信息！");
+//        }
+//        if (param.getBandwidth_vm_jin().equals("")){
+//            info.append("请输入带宽虚拟机（进乡）信息！");
+//        }
+//        if (param.getOperating_system_vm_jin().equals("")){
+//            info.append("请输入操作系统虚拟机（进乡）信息！");
+//        }
+//        if (param.getIp_vm_jin().equals("")){
+//            info.append("请输入IP虚拟机（进乡）信息！");
+//        }
+//        if (param.getPort_vm_jin().equals("")){
+//            info.append("请输入端口虚拟机（进乡）信息！");
+//        }
+//        if (param.getOther().equals("")){
+//            info.append("请输入其他信息！");
+//        }
+
+
+
+        //如果提示信息长度大于0，则返回提示信息
+        if(info.length()>0){
+            dto.setInfo(info.toString());
+            list.add(dto);
+            return list;
+        }
+        List visit = visitProcessService.getTestForm(param);
+        if (visit.size()>0) {
+            if (visitProcessService.updatTestForm(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+
+        }else{
+            if(visitProcessService.insertTestForm(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+        }
+
+        return list;
+    }
+}

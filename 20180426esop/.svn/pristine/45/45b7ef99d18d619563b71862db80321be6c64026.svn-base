@@ -1,0 +1,481 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <title>产品-资费</title>
+
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+
+    <link href="/esop/static/cqDevelopment/assets/css/ui-dialog.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-ff">
+    <!-- main S -->
+    <div class="main pd-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box overh">
+            <!--标题-->
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>产品资费信息</span>
+                </div>
+            </div>
+            <!--详情-->
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row pdb-10 border-ed">
+                        <h1 class="head-title">产品选择</h1>
+                        <div class="row">
+                            <table class="table-infor-7" width="100%">
+                                <tbody>
+                                    <tr>
+                                        <th>一级产品名称：</th>
+                                        <td>
+                                            <input type="text" id="search_catalog_name" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>二级产品编码：</th>
+                                        <td>
+                                            <input type="text" id="search_prod_id" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>二级产品名称：</th>
+                                        <td>
+                                            <input type="text" id="search_prod_name" class="input-sty04 form-ipt">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row mgt-20">
+                                <div class="btn-box">
+                                    <button class="ui-btn mgr-10" style="min-width:100px;" onclick="qryProductChargeInfo()">查询</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mgt-10 pdb-10 border-ed">
+                        <h1 class="head-title">产品选择</h1>
+                        <div class="row">
+                            <div class="row col-12">
+                                <div class="pd-20 pos-rel" style="background-color:#fff;">
+                                    <div class="active-cost-box" style="padding-bottom:0;">
+                                        <table id="productCharge" class="cost-table" width="100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>一级产品名称</th>
+                                                    <th>二级产品编码</th>
+                                                    <th>二级产品名称</th>
+                                                    <th>产品主资费</th>
+                                                    <th>产品经理姓名</th>
+                                                    <th>资费描述</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                           <%-- <div class="row col-12">
+                                <div class="tr pdr-10">
+                                    <ul class="in-page pagination mgt-0 mgb-5">
+                                        <li class="disabled"><a href="#" class="mgl-5">首页</a></li>
+                                        <li class="disabled"><a href="#" class="mgl-5">上一页</a></li>
+                                        <li class="active"><a href="#" class="mgl-5">1</a></li>
+                                        <li><a href="#" class="mgl-5">2</a></li>
+                                        <li><a href="#" class="mgl-5">3</a></li>
+                                        <li><a href="#" class="mgl-5">下一页</a></li>
+                                        <li><a href="#" class="mgl-5">末页</a></li>
+                                    </ul>
+                                </div>
+                            </div>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--POP-->
+    <div id="login-box" class="row col-12" style="display:none;">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table table-bordered" width="100%">
+                        <tbody>
+                            <tr style="background-color:#ededed;">
+                                <th>一级产品名称：</th>
+                                <td style="color:#1792CD;" id="catalog_name_info"></td>
+                                <th>二级产品编码：</th>
+                                <td style="color:#1792CD;" id="prod_id_info"></td>
+                            </tr>
+                            <tr style="background-color:#ededed;">
+                                <th>二级产品名称：</th>
+                                <td style="color:#1792CD;" id="prod_name_info"></td>
+                                <th>产品主资费：</th>
+                                <td style="color:#1792CD;" id="addprodname_info"></td>
+                                <input type="hidden" id="appprod_id" class="input-sty04 form-ipt">
+                            </tr>
+                            <tr style="background-color:#ededed;">
+                                <th>产品经理：</th>
+                                <td colspan="3" style="color:#1792CD;" id="prodmgr_name_info">王晓</td>
+                            </tr>
+                            <tr>
+                                <th>价格（元）：</th>
+                                <td>
+                                    <input type="text" id="price" class="input-sty04 form-ipt" onblur="checkMoney(this)">元
+                                </td>
+                                <th class="content">内容：</th>
+                                <td class="content">
+                                    <input type="text" id="content" class="input-sty04 form-ipt">
+                                </td>
+
+                                <th class="bandwidth">带宽(M)：</th>
+                                <td class="bandwidth">
+                                    <select id="bandwidth" class="select-style-1">
+                                        <option value="10">10</option>
+                                        <option value="20">20</option>
+                                        <option value="30">30</option>
+                                        <option value="40">40</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </td>
+                            </tr><tr>
+                                <th class="numbers">数量：</th>
+                                <td>
+                                    <input type="text" id="number" value="1" class="input-sty04 form-ipt" onblur="checkNumber(this)">
+                                </td>
+
+                                <%--<th>审批路径：</th>
+                                <td>
+                                    <input type="text" id="toCQ" class="input-sty04 form-ipt">
+                                </td>--%>
+                            </tr>
+
+                            <tr>
+                                <th>备注：</th>
+                                <td colspan="3">
+                                    <textarea rows="3" id="charge_desc" class="ui-text form-ctrl" style="width:100%;" placeholder="请根据需要输入改资费的相关信息，如流量使用范围等"></textarea>
+                                </td>
+                            </tr>
+                            <%--<tr>
+                                <th>是否启用：</th>
+                                <td>
+                                    <select id="state" class="select-style-1">
+                                        <option value="1">是</option>
+                                        <option value="0">否</option>
+                                    </select>
+                                </td>
+                            </tr>--%>
+
+
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <input type="hidden" id="pro_type" value="">
+                            <input type="button" id="btn-login-submit" class="ui-btn mgr-10" value="确定"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="notice">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <label class="control-label" id="noticeInfo"></label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/esop/static/cqDevelopment/pub-ui/plugins/artDialog/dialog-plus.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function qryProductChargeInfo() {
+            table =  $('#productCharge').DataTable( {
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bPaginate": true,
+                "bFilter": false,
+                //"iDisplayLength": 10,
+                //"aLengthMenu": [10, 50, 100 ],
+                destroy:true,
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url:"/getProductChargeList",
+                    type:"get",
+                    dataType:"json",
+                    data:{
+                        prod_name: $("#search_prod_name").val(),
+                        prod_id:$("#search_prod_id").val(),
+                        catalog_name:$("#search_catalog_name").val()
+                    }
+
+                },
+                columns: [
+                    { data: "productInfo.catalog_name",
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            if(row.productInfo != null && row.productInfo != ""){
+                                return row.productInfo.catalog_name;
+                            }else{
+                                return " ";
+                            }
+                        }
+                    },
+                    { data: "productInfo.prod_id",
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            if(row.productInfo != null && row.productInfo != ""){
+                                return row.productInfo.prod_id;
+                            }else{
+                                return " ";
+                            }
+                        }
+                    },
+                    { data: "productInfo.prod_name" ,
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            if(row.productInfo != null && row.productInfo != ""){
+                                return row.productInfo.prod_name;
+                            }else{
+                                return " ";
+                            }
+                        }
+                    },
+                    { data: "bsProductSelectProdInfoDto.addprodname" ,
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            if(row.bsProductSelectProdInfoDto != null && row.bsProductSelectProdInfoDto != ""){
+                                return row.bsProductSelectProdInfoDto.addprodname;
+                            }else{
+                                return " ";
+                            }
+                        }
+                    },
+                    { data: "prodmgr_name" ,
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            if(row.prodmgr_name != null && row.prodmgr_name != ""){
+                                return row.prodmgr_name;
+                            }else{
+                                return " ";
+                            }
+                        }
+                    },
+                    { data: "charge_desc" ,
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            if(row.charge_desc != null && row.charge_desc != ""){
+                                return row.charge_desc;
+                            }else{
+                                return " ";
+                            }
+                        }
+                    },
+                    { data: null,
+                        "bSortable": false,
+                        "render":function (data, type,row){
+                            var id =data.add_prod_id;
+                            var catalog_name;
+                            var addprodname;
+                            var prod_id;
+                            var prod_name;
+                            var prodmgr_name = row.prodmgr_name;
+                            var addprodid;
+                            var content = row.content;
+                            var charge_desc = row.charge_desc;
+                            var price = row.price;
+                            var number = row.number;
+                            var state = row.state;
+                            var bandwidth = row.bandwidth;
+
+                            var pro_type ;
+                            if(row.bsProductSelectProdInfoDto != null && row.bsProductSelectProdInfoDto !=""){
+                                addprodname = row.bsProductSelectProdInfoDto.addprodname ;
+                                addprodid = row.bsProductSelectProdInfoDto.addprodid;
+                            }
+                            if(row.productInfo != null && row.productInfo != ""){
+                                catalog_name = row.productInfo.catalog_name;
+                            }
+                            if(row.productInfo != null && row.productInfo != ""){
+                                prod_id = row.productInfo.prod_id;
+                                prod_name = row.productInfo.prod_name;
+                                pro_type = row.productInfo.pro_type;
+                            }
+                            var html = '<button type="button"  state="' + state + '" number="' + number + '" price="' + price + '" charge_desc="' + charge_desc + '"   content="' + content + '" addprodid = "' + addprodid + '" prodmgr_name="' + prodmgr_name + '" prod_name="' + prod_name + '" addprodname = "' + addprodname + '" prod_id="' + prod_id + '" catalog_name = "' + catalog_name + '"  pro_type = "' + pro_type + '" class="ui-btn btn-success fs-12 btn-login">编辑</button>';
+                            return html;
+                        }
+                    }
+                ],
+                select: true,
+                buttons: [
+                ]
+            } );
+        }
+        qryProductChargeInfo();
+    $(function(){
+        $("#productCharge").on("click",".btn-login",function(){
+            dialog({
+                title:"产品资费-合同描述",
+                content:document.getElementById('login-box'),
+                width:800,
+                height:500,
+                padding:0
+            }).showModal();
+            $("#addprodname_info").html($(this).attr("addprodname"));
+            $("#catalog_name_info").html($(this).attr("catalog_name"));
+            $("#prod_id_info").html($(this).attr("prod_id"));
+            $("#prod_name_info").html($(this).attr("prod_name"));
+            $("#prodmgr_name_info").html($(this).attr("prodmgr_name"));
+            $("#appprod_id").val($(this).attr("addprodid"));
+            $("#charge_desc").val($(this).attr("charge_desc"));//资费信息
+            $("#content").val($(this).attr("content"));//内容
+            $("#price").val($(this).attr("price"));//价格
+            $("#state").val($(this).attr("state"));//是否启用
+            $("#bandwidth").val($(this).attr("content"));
+            var pro_type = $(this).attr("pro_type");//合同类型
+            $("#pro_type").val(pro_type);
+            var numbers = $(this).attr("number");
+            if (numbers != null && numbers != ''){
+                $("#number").val(numbers);//数量
+            }else {
+                $("#number").val(1);//数量
+            }
+            if (pro_type == 1){
+                $(".bandwidth").css("display","none");
+                $(".content").show();
+            }else if (pro_type == 2){
+                $(".content").css("display","none");
+                $(".bandwidth").show();
+                $(".numbers").html("数量(条)：");
+            }
+
+        });
+
+        $("#btn-login-submit").click(function(event) {
+            var add_prod_code = $("#appprod_id").val();//主资费编码
+            if(add_prod_code == null || $.trim(add_prod_code) == ''){
+                alert("请输入主资费编码！");
+                $("#appprod_id").focus();
+                return;
+            }
+            var add_prod_name = $("#addprodname_info").html();//主资费名称
+            if(add_prod_name == null || $.trim(add_prod_name) == ''){
+                alert("请输入主资费名称！");
+                $("#addprodname_info").focus();
+                return;
+            }
+            var charge_desc = $("#charge_desc").val();//资费信息
+            if(charge_desc == null || $.trim(charge_desc) == ''){
+                alert("请输入资费信息！");
+                $("#charge_desc").focus();
+                return;
+            }
+            var price = $("#price").val();//价格
+            if(price == null || $.trim(price) == ''){
+                alert("请输入价格！");
+                return;
+            }
+            var state = $("#state").val();//是否启用
+            var content ;//内容
+            var number = $("#number").val();//数量
+            if(number == null || $.trim(number) == ''){
+                alert("请输入数量！");
+                $("#number").focus();
+                return;
+            }
+            var pro_type = $("#pro_type").val();//合同类型
+            if(pro_type == 1){//流量合同
+                content = $("#content").val();//内容
+                if(content == null || $.trim(content) == ''){
+                    alert("请输入内容！");
+                    $("#content").focus();
+                    return;
+                }
+            }else if (pro_type == 2){//专线合同
+                content = $("#bandwidth").val();//带宽
+                if(content == null || $.trim(content) == ''){
+                    alert("请输入带宽！");
+                    $("#bandwidth").focus();
+                    return;
+                }
+            }
+
+            $.ajax({
+                type:"post",
+                url:"/updateOrSaveProductCharge",
+                data:{
+                    add_prod_code:add_prod_code,
+                    add_prod_name:add_prod_name,
+                    charge_desc:charge_desc,
+                    price:price,
+                    content:content,
+                    number: number,
+                    state: state
+                },
+                success:function(data){
+                    if(data > 0){
+                        $("#noticeInfo").text("保存成功");
+                        $("#fault").modal('show');
+                        qryProductChargeInfo();
+                        dialog.getCurrent().close().remove();
+                    }
+                },
+                error:function(){
+                    $("#noticeInfo").text("保存失败");
+                    $("#fault").modal('show');
+                    dialog.getCurrent().close().remove();
+                }
+            });
+
+        });
+    })
+    //检查资费
+    function checkMoney(ob) {
+        if(ob.value.length == 0){
+            alert("请输入价格！");
+            return;
+        }
+        if(isNaN(ob.value)){
+            alert("请输入一个正数！");
+            ob.value = '';
+            return;
+        }
+        if(!(ob.value>0)){
+            alert("请输入一个正数!!");
+            ob.value = '';
+            return;
+        }
+    }
+    //检查数量
+    function checkNumber(ob) {
+
+        if(!/^\d+$/.test(ob.value)){
+            alert("请输入一个正整数");
+            ob.value = 1;
+            ob.focus();
+            return;
+        }
+    }
+    </script>
+</body>
+
+</html>

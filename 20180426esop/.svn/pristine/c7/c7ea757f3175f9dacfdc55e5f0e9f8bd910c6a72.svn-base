@@ -1,0 +1,52 @@
+package com.esop.invoice.dto;
+
+import com.esop.common.page.BaseDto;
+
+public class ReviewerInfo extends BaseDto {
+
+    private String region_code;//组织机构
+    private String staff_code;//工号
+    private String staff_name;//姓名
+    private String group_pay_name;//分公司名称
+    private String root_org_id;//分公司编码
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getStaff_code() {
+        return staff_code;
+    }
+
+    public void setStaff_code(String staff_code) {
+        this.staff_code = staff_code;
+    }
+
+    public String getStaff_name() {
+        return staff_name;
+    }
+
+    public void setStaff_name(String staff_name) {
+        this.staff_name = staff_name;
+    }
+
+    public String getGroup_pay_name() {
+        return group_pay_name;
+    }
+
+    public void setGroup_pay_name(String group_pay_name) {
+        this.group_pay_name = group_pay_name;
+    }
+
+    public String getRoot_org_id() {
+        return root_org_id;
+    }
+
+    public void setRoot_org_id(String root_org_id) {
+        this.root_org_id = root_org_id;
+    }
+}

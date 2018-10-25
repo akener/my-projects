@@ -1,0 +1,265 @@
+
+package com.esop.busiAnalysis.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Shinelon on 2017/5/25.
+ */
+
+public class EpBusiDepDto extends BaseDto{
+    String DT_RowId = "";     //dataTables.editor使用参数,如果没有此参数,编辑功能不可用.
+    String region_code="";//地市代码
+    String region_name="";//地市名称
+    String day_inc="";// 4G客户日新增数
+    String year_inc="";//4G客户年累计数
+    String goal="";//4G客户二季度目标值
+    String comp_rate="";// 4G客户二季度完成进度
+    String wid_day_inc="";//宽带客户日新增数
+    String wid_month_inc="";//宽带客户月累计数
+    String wid_year_inc="";// 宽带客户年累计数
+    String wid_goal="";//宽带二季度目标值
+    String wid_comp_rate="";//宽带二季度完成进度
+    String unit_day_inc="";//集团专线日新增数
+    String unit_mon_inc="";//集团专线月新增数
+    String unit_year_inc="";//集团专线年累计数
+    String unit_goal="";//集团专线目标值
+    String uint_comp_rate="";//集团专线完成进度
+    String shool_day_inc = "";//和校园日新增
+    String school_month_inc = "";//和校园月净增
+    String school_year_inc = "";//和校园年累计
+    String shool_goal = "";//和校园目标值
+    String school_comp_rate = "";//和校园完成进度
+    String net_day_inc="";//物联网日新增数
+    String net_mon_inc="";//物联网月新增数
+    String net_total_inc="";//物联网年累计数
+    String net_goal="";//物联网目标值
+    String net_comp_rate="";//物联网完成进度
+    String eff_date = "";//
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getDay_inc() {
+        return day_inc;
+    }
+
+    public void setDay_inc(String day_inc) {
+        this.day_inc = day_inc;
+    }
+
+    public String getYear_inc() {
+        return year_inc;
+    }
+
+    public void setYear_inc(String year_inc) {
+        this.year_inc = year_inc;
+    }
+
+    public String getGoal() {
+        return goal;
+    }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
+
+    public String getComp_rate() {
+        return comp_rate;
+    }
+
+    public void setComp_rate(String comp_rate) {
+        this.comp_rate = comp_rate;
+    }
+
+    public String getWid_day_inc() {
+        return wid_day_inc;
+    }
+
+    public void setWid_day_inc(String wid_day_inc) {
+        this.wid_day_inc = wid_day_inc;
+    }
+
+    public String getWid_year_inc() {
+        return wid_year_inc;
+    }
+
+    public void setWid_year_inc(String wid_year_inc) {
+        this.wid_year_inc = wid_year_inc;
+    }
+
+    public String getWid_goal() {
+        return wid_goal;
+    }
+
+    public void setWid_goal(String wid_goal) {
+        this.wid_goal = wid_goal;
+    }
+
+    public String getWid_comp_rate() {
+        return wid_comp_rate;
+    }
+
+    public void setWid_comp_rate(String wid_comp_rate) {
+        this.wid_comp_rate = wid_comp_rate;
+    }
+
+    public String getUnit_day_inc() {
+        return unit_day_inc;
+    }
+
+    public void setUnit_day_inc(String unit_day_inc) {
+        this.unit_day_inc = unit_day_inc;
+    }
+
+    public String getUnit_mon_inc() {
+        return unit_mon_inc;
+    }
+
+    public void setUnit_mon_inc(String unit_mon_inc) {
+        this.unit_mon_inc = unit_mon_inc;
+    }
+
+    public String getUnit_year_inc() {
+        return unit_year_inc;
+    }
+
+    public void setUnit_year_inc(String unit_year_inc) {
+        this.unit_year_inc = unit_year_inc;
+    }
+
+    public String getUnit_goal() {
+        return unit_goal;
+    }
+
+    public void setUnit_goal(String unit_goal) {
+        this.unit_goal = unit_goal;
+    }
+
+    public String getUint_comp_rate() {
+        return uint_comp_rate;
+    }
+
+    public void setUint_comp_rate(String uint_comp_rate) {
+        this.uint_comp_rate = uint_comp_rate;
+    }
+
+    public String getNet_day_inc() {
+        return net_day_inc;
+    }
+
+    public void setNet_day_inc(String net_day_inc) {
+        this.net_day_inc = net_day_inc;
+    }
+
+    public String getNet_mon_inc() {
+        return net_mon_inc;
+    }
+
+    public void setNet_mon_inc(String net_mon_inc) {
+        this.net_mon_inc = net_mon_inc;
+    }
+
+    public String getNet_total_inc() {
+        return net_total_inc;
+    }
+
+    public void setNet_total_inc(String net_total_inc) {
+        this.net_total_inc = net_total_inc;
+    }
+
+    public String getNet_goal() {
+        return net_goal;
+    }
+
+    public void setNet_goal(String net_goal) {
+        this.net_goal = net_goal;
+    }
+
+    public String getNet_comp_rate() {
+        return net_comp_rate;
+    }
+
+    public void setNet_comp_rate(String net_comp_rate) {
+        this.net_comp_rate = net_comp_rate;
+    }
+
+    public String getWid_month_inc() {
+        return wid_month_inc;
+    }
+
+    public void setWid_month_inc(String wid_month_inc) {
+        this.wid_month_inc = wid_month_inc;
+    }
+
+    public String getShool_day_inc() {
+        return shool_day_inc;
+    }
+
+    public void setShool_day_inc(String shool_day_inc) {
+        this.shool_day_inc = shool_day_inc;
+    }
+
+    public String getSchool_month_inc() {
+        return school_month_inc;
+    }
+
+    public void setSchool_month_inc(String school_month_inc) {
+        this.school_month_inc = school_month_inc;
+    }
+
+    public String getSchool_year_inc() {
+        return school_year_inc;
+    }
+
+    public void setSchool_year_inc(String school_year_inc) {
+        this.school_year_inc = school_year_inc;
+    }
+
+    public String getShool_goal() {
+        return shool_goal;
+    }
+
+    public void setShool_goal(String shool_goal) {
+        this.shool_goal = shool_goal;
+    }
+
+    public String getSchool_comp_rate() {
+        return school_comp_rate;
+    }
+
+    public void setSchool_comp_rate(String school_comp_rate) {
+        this.school_comp_rate = school_comp_rate;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}
+

@@ -1,0 +1,61 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.service.CustBusiReqService;
+import com.esop.cqDevelopment.capitalManage.dto.CustBusiReqDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class CustBusiReqRC {
+    @Autowired
+    CustBusiReqService custBusiReqService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    private static Logger logger = Logger.getLogger(CustBusiReqRC.class);
+
+    //集团业务申请单统计表
+    @RequestMapping(value="/CustBusiReqList")
+    public Result getCustBusiReqRC(CustBusiReqDto parameter, HttpServletRequest request, boolean flag){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = custBusiReqService.getCustBusiReqSvc(parameter);
+        //JSONObject js = new
+        return result;
+    }
+
+    //集团类保证金缴纳统计报表
+    @RequestMapping(value="/CustBondPayList")
+    public Result getCustBondPayRC(CustBusiReqDto parameter, HttpServletRequest request, boolean flag){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = custBusiReqService.getCustBondPaySvc(parameter);
+        //JSONObject js = new
+        return result;
+    }
+}

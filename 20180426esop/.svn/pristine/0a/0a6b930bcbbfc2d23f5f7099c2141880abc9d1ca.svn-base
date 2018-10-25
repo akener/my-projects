@@ -1,0 +1,324 @@
+<%
+    String path = request.getContextPath();
+%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<%
+    String ctxPath = request.getContextPath();
+    String login_no = "112900001";
+    String login_name = "思特奇员工";
+    String root_org_id = "CQ.CQ";
+    String root_org_name = (String) session.getAttribute("root_org_name");//分公司名称
+    String org_id = (String) session.getAttribute("org_id");//组织机构ID
+    String org_name = (String) session.getAttribute("org_name");//组织机构名称
+    String blogin_code = (String) session.getAttribute("blogin_code");//经分工号
+    String clogin_code = (String) session.getAttribute("clogin_code");//boss工号
+    String mobile_phone = (String) session.getAttribute("mobile_phone");//手机号码
+    String role_codes = (String) session.getAttribute("role_codes");//拥有的角色串
+%>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>合同协审详情</title>
+    <script src="<%=path %>/static/cqDevelopment/pub-ui/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <link href="/esop/static/cqDevelopment/assets/css/bootstrap.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/assets/css/style.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/pub-ui/css/component.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/pub-ui/css/common.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/pub-ui/css/list.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/pub-ui/css/reset.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/pub-ui/css/table.css" type="text/css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/pub-ui/css/basic.css" type="text/css" rel="stylesheet">
+
+    <!-- dataTbale -->
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+    <script type="text/javascript" src="/esop/static/layer-v2.3/layer/layer.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+
+    <script src="/esop/static/js/workbench/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript"
+            src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <%--合同上传--%>
+    <script src="<%=path %>/static/cqDevelopment/pub-ui/js/jquery.form.js" type="text/javascript"></script>
+    <script src="<%=path %>/static/cqDevelopment/pub-ui/js/common.js" type="text/javascript"></script>
+
+    <%--<%@ include file="../../pub/cqDevelopment.jsp"%>--%>
+    <style type="text/css">
+
+        .row {
+            overflow: visible;
+        }
+    </style>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3> 合同协审 </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>合同信息</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <div class="row pd-10 bor-cc pos-rel">
+                        <h1 class="head-postl">1、集团客户信息</h1>
+                        <form id="contract">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody>
+                                <tr>
+                                    <th style="border-top: 1px dashed #999;border-left: 1px dashed #999"></th>
+                                    <td style="border-top: 1px dashed #999;border-right: 1px dashed #999">甲方集团信息</td>
+                                    <th style="border-top: 1px dashed #999"></th>
+                                    <td style="border-top: 1px dashed #999;border-right: 1px dashed #999">乙方集团信息</td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 集团名称：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party" name="first_party" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.first_party}" disabled>
+                                        <%--<button type="button" class="ui-btn fs-14 btn-login" style="height:34px;">集团信息</button>--%>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 乙方单位：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <select class="select-style-1" id="yf_first_party" style="width:auto" disabled>
+                                            <%--<option selected="selected" value="0">请选择</option>--%>
+                                            <option
+                                                    <c:if test="${contract.second_party == '中国移动通信集团重庆有限公司'}">selected="selected"</c:if>>
+                                                中国移动通信集团重庆有限公司
+                                            </option>
+                                            <option
+                                                    <c:if test="${contract.second_party == qddwDto.fullName}">selected="selected"</c:if>>${qddwDto.fullName}</option>
+                                        </select>
+                                        <%--<input id="yf_first_party" name="yf_first_party" type="text" class="input-sty04 form-ipt" value="${contract.second_party}">--%>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 集团编码：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_code" name="first_party_code" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.first_party_code}"
+                                               disabled>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 法定代表人/负责人：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_charge" name="yf_first_party_charge" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.second_party_charge}"
+                                               disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 法定代表人/负责人：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_charge" name="first_party_charge" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.first_party_charge}"
+                                               disabled>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_address" name="yf_first_party_address" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.second_party_address}"
+                                               disabled>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_address" name="first_party_address" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.first_party_address}"
+                                               disabled>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_phone" name="yf_first_party_phone" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.second_party_phone}"
+                                               disabled>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_phone" name="first_party_phone" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.first_party_phone}"
+                                               disabled>
+                                    </td>
+                                    <th>
+                                        邮编：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_post_code" name="yf_first_party_post_code" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.second_party_post_code}"
+                                               disabled>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999;border-bottom: 1px dashed #999">
+                                        邮编：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999;;border-bottom: 1px dashed #999">
+                                        <input id="first_party_post_code" name="first_party_post_code" type="text"
+                                               class="input-sty04 form-ipt" value="${contract.first_party_post_code}"
+                                               disabled>
+                                    </td>
+                                    <th style="border-bottom: 1px dashed #999"></th>
+                                    <td style="border-right: 1px dashed #999;border-bottom: 1px dashed #999"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel" id="chargesInfo">
+
+                    </div>
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel">
+                        <h1 class="head-postl">3、合同信息</h1>
+                        <div class="row">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody id="tbody_contract"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mgt-20">
+                        <div class="tl mgl-30">
+                            <a href="downloadFile?attach_file_id=${contract.attach_file_id}" class="ui-linka down-a">PDF文件下载</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>合同流程处理轨迹</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table id="trancesTb" class="cost-table" width="100%;">
+                        <tbody>
+                        <tr>
+                            <th>任务编号</th>
+                            <th>任务名称</th>
+                            <th>处理人</th>
+                            <th>处理时间</th>
+                            <th>处理意见</th>
+                            <th>处理备注</th>
+                            <th></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>审核意见</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr class="tr-data-cc">
+                            <th>协审处理人：</th>
+                            <td colspan="3">
+                                <select id="dealLoginNo">
+                                    <option selected="selected" value="">请选择</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注：</th>
+                            <td colspan="3">
+                                <textarea rows="3" class="ui-text form-ctrl" style="width:60%;" id="remark"></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="dealTask();" id="dealTaskId">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="taskInstId" type="hidden" value="${task_inst_id}"/><%--每做一部要变--%>
+<input id="taskId" type="hidden" value="${task_id}"/>
+<input id="source_id" type="hidden" value=""/>
+<input id="loginCode" type="hidden" value="<%=login_no%>"/>
+<input id="loginName" name="" type="hidden" value="<%=login_name%>">
+<input id="attach_file_id" name="" type="hidden" value=""><%--合同上传返回值--%>
+
+<input id="isRisk" type="hidden" value="0"><%--是否有风险 默认为0--%>
+<input id="regionId" type="hidden" value="CQ.CQ"/><%--登录人分公司组织ID--%>
+<input id="procInstId" type="hidden" value="${proc_inst_id}"/><%--流程实例ID--%>
+<input id="bizRecordId" type="hidden" value="${contract_id}"/><%--主键ID--%>
+<input id="stepId" type="hidden" value="${step_id}"/><%--当前步骤--%>
+<input id="procNameEn" type="hidden" value="elec_contract_bzv1.00"/><%--英文名--%>
+<input id="procId" type="hidden" value="30816"/><%--流程ID号--%>
+<input id="toCQ" type="hidden" value="${toCQ}"><%--折扣，9折以上0,9折以下1--%>
+<input id="contract_id" type="hidden" value="${contract_id}"><%--原合同ID--%>
+<input id="elecpack_id" type="hidden" value="${contract.elecpack_id}"><%--模板id--%>
+</body>
+<script type="text/javascript" src="/esop/view/cqDevelopment/elecPack/contractAssist.js"></script>
+</html>

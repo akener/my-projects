@@ -1,0 +1,19 @@
+package com.esop.invoice.dto;
+
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.workflow.dto.OutDTO;
+
+import java.util.List;
+
+public class QryInvAppNoOutDTO extends OutDTO{
+
+    private List<EpInvPreprintAppInfo> actInfos;
+
+    public List<EpInvPreprintAppInfo> getActInfos() {
+        return actInfos;
+    }
+
+    public void setActInfos(List<EpInvPreprintAppInfo> actInfos) {
+        this.actInfos = actInfos;
+    }
+}

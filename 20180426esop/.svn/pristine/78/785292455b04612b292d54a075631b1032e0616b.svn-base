@@ -1,0 +1,38 @@
+package com.esop.Interface.controller;
+
+import com.esop.cust.service.MarketingPolicyService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//营销政策
+@RestController
+public class MarketingPolicyController {
+    private static Logger logger = Logger.getLogger(MarketingPolicyController.class);
+    @Autowired
+    MarketingPolicyService marketingPolicyService;
+    //营销查询
+    @RequestMapping(value = "/qryMarketing")
+    public Map qryMarketing(HttpServletRequest request){
+        Map<String,Object> map = new HashMap<String,Object>();
+        List list = marketingPolicyService.qryMarketing();
+        if(list.size()>0){
+            map.put("return_code","0");
+            map.put("return_msg","查询成功");
+            map.put("policy_list",list);
+        }else {
+            map.put("return_code","-1");
+            map.put("return_msg","查询失败");
+        }
+        return map;
+    }
+}

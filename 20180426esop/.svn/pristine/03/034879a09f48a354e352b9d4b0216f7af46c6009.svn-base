@@ -1,0 +1,398 @@
+package com.esop.invoice.model;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class EpInvPreprintAppInfo {
+    private Integer recSerialNo;
+
+    private String applicationNo;
+
+    private String branchNo;
+
+    private String branchName;
+
+    private String industryCenterNo;
+
+    private String industryCenterName;
+
+    private String groupId;
+
+    private String groupName;
+
+    private String invoiceType;
+
+    private String invoiceMode;
+
+    private String printMode;
+
+    private String isRed;
+
+    private BigDecimal invoiceSumValue;
+
+    @JsonFormat(pattern = "yyyy-MM", timezone = "GMT+8")
+    private Date startAccountPeriod;
+
+    @JsonFormat(pattern = "yyyy-MM", timezone = "GMT+8")
+    private Date endAccountPeriod;
+
+    private String pushMethod;
+
+    private String pushEmail;
+
+    private String pushPhone;
+
+    private String invoiceSpeModel;
+
+    private String invoiceUnit;
+
+    private Integer invoiceNumber;
+
+    private String bankSubAccount;
+
+    private String bankSubAccountBank;
+
+    private String remarks;
+
+    private String applicantEsopNo;
+
+    private String applicantBossNo;
+
+    private String applicantName;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date applicationTime;
+    private String workState;
+    private String originalApplicationNo;
+    private String redWay;
+    private String invoiceNo; //发票号码
+    private String payeeId;//收款人编号
+    private String payeeName;//收款人姓名
+    private String reviewerId;//复核人编号
+    private String reviewerName;//复核人姓名
+    private String opennerId;//开票人编号
+    private String opennerName;//开票人姓名
+    private String operRemarks;//操作备注
+    private String itemProperty;//打印项目属性
+
+    public String getItemProperty() {
+        return itemProperty;
+    }
+
+    public void setItemProperty(String itemProperty) {
+        this.itemProperty = itemProperty;
+    }
+
+    public String getPayeeId() {
+        return payeeId;
+    }
+
+    public void setPayeeId(String payeeId) {
+        this.payeeId = payeeId;
+    }
+
+    public String getReviewerId() {
+        return reviewerId;
+    }
+
+    public void setReviewerId(String reviewerId) {
+        this.reviewerId = reviewerId;
+    }
+
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public void setReviewerName(String reviewerName) {
+        this.reviewerName = reviewerName;
+    }
+
+    public String getOpennerId() {
+        return opennerId;
+    }
+
+    public void setOpennerId(String opennerId) {
+        this.opennerId = opennerId;
+    }
+
+    public String getOpennerName() {
+        return opennerName;
+    }
+
+    public void setOpennerName(String opennerName) {
+        this.opennerName = opennerName;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+
+    public Integer getRecSerialNo() {
+        return recSerialNo;
+    }
+
+    public void setRecSerialNo(Integer recSerialNo) {
+        this.recSerialNo = recSerialNo;
+    }
+
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getBranchNo() {
+        return branchNo;
+    }
+
+    public void setBranchNo(String branchNo) {
+        this.branchNo = branchNo;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public String getIndustryCenterNo() {
+        return industryCenterNo;
+    }
+
+    public void setIndustryCenterNo(String industryCenterNo) {
+        this.industryCenterNo = industryCenterNo;
+    }
+
+    public String getIndustryCenterName() {
+        return industryCenterName;
+    }
+
+    public void setIndustryCenterName(String industryCenterName) {
+        this.industryCenterName = industryCenterName;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceMode() {
+        return invoiceMode;
+    }
+
+    public void setInvoiceMode(String invoiceMode) {
+        this.invoiceMode = invoiceMode;
+    }
+
+    public String getPrintMode() {
+        return printMode;
+    }
+
+    public void setPrintMode(String printMode) {
+        this.printMode = printMode;
+    }
+
+    public String getIsRed() {
+        return isRed;
+    }
+
+    public void setIsRed(String isRed) {
+        this.isRed = isRed;
+    }
+
+    public BigDecimal getInvoiceSumValue() {
+        return invoiceSumValue;
+    }
+
+    public void setInvoiceSumValue(BigDecimal invoiceSumValue) {
+        this.invoiceSumValue = invoiceSumValue;
+    }
+
+    public Date getStartAccountPeriod() {
+        return startAccountPeriod;
+    }
+
+    public void setStartAccountPeriod(Date startAccountPeriod) {
+        this.startAccountPeriod = startAccountPeriod;
+    }
+
+    public Date getEndAccountPeriod() {
+        return endAccountPeriod;
+    }
+
+    public void setEndAccountPeriod(Date endAccountPeriod) {
+        this.endAccountPeriod = endAccountPeriod;
+    }
+
+    public String getPushMethod() {
+        return pushMethod;
+    }
+
+    public void setPushMethod(String pushMethod) {
+        this.pushMethod = pushMethod;
+    }
+
+    public String getPushEmail() {
+        return pushEmail;
+    }
+
+    public void setPushEmail(String pushEmail) {
+        this.pushEmail = pushEmail;
+    }
+
+    public String getPushPhone() {
+        return pushPhone;
+    }
+
+    public void setPushPhone(String pushPhone) {
+        this.pushPhone = pushPhone;
+    }
+
+    public String getInvoiceSpeModel() {
+        return invoiceSpeModel;
+    }
+
+    public void setInvoiceSpeModel(String invoiceSpeModel) {
+        this.invoiceSpeModel = invoiceSpeModel;
+    }
+
+    public String getInvoiceUnit() {
+        return invoiceUnit;
+    }
+
+    public void setInvoiceUnit(String invoiceUnit) {
+        this.invoiceUnit = invoiceUnit;
+    }
+
+    public Integer getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(Integer invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public String getBankSubAccount() {
+        return bankSubAccount;
+    }
+
+    public void setBankSubAccount(String bankSubAccount) {
+        this.bankSubAccount = bankSubAccount;
+    }
+
+    public String getBankSubAccountBank() {
+        return bankSubAccountBank;
+    }
+
+    public void setBankSubAccountBank(String bankSubAccountBank) {
+        this.bankSubAccountBank = bankSubAccountBank;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getApplicantEsopNo() {
+        return applicantEsopNo;
+    }
+
+    public void setApplicantEsopNo(String applicantEsopNo) {
+        this.applicantEsopNo = applicantEsopNo;
+    }
+
+    public String getApplicantBossNo() {
+        return applicantBossNo;
+    }
+
+    public void setApplicantBossNo(String applicantBossNo) {
+        this.applicantBossNo = applicantBossNo;
+    }
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getPayeeName() {
+        return payeeName;
+    }
+
+    public void setPayeeName(String payeeName) {
+        this.payeeName = payeeName;
+    }
+
+    public Date getApplicationTime() {
+        return applicationTime;
+    }
+
+    public void setApplicationTime(Date applicationTime) {
+        this.applicationTime = applicationTime;
+    }
+
+    public String getWorkState() {
+        return workState;
+    }
+
+    public void setWorkState(String workState) {
+        this.workState = workState;
+    }
+
+    public String getOriginalApplicationNo() {
+        return originalApplicationNo;
+    }
+
+    public void setOriginalApplicationNo(String originalApplicationNo) {
+        this.originalApplicationNo = originalApplicationNo;
+    }
+
+    public String getRedWay() {
+        return redWay;
+    }
+
+    public void setRedWay(String redWay) {
+        this.redWay = redWay;
+    }
+
+    public String getOperRemarks() {
+        return operRemarks;
+    }
+
+    public void setOperRemarks(String operRemarks) {
+        this.operRemarks = operRemarks;
+    }
+}

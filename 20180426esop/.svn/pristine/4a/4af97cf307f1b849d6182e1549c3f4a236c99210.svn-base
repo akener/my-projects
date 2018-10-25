@@ -1,0 +1,160 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>地市监控单</title>
+
+</head>
+<body>
+    <table class="table table-bordered" id="order" style="margin-top: 30px;">
+        <thead>
+            <tr bgcolor="#C7EDCC" id="thRegion">
+                <!--<th class="col-lg-1" id="regionCode">地市编码</th>-->
+                <th class="col-lg-1">地市</th>
+                <th class="col-lg-1">4G套餐变更办理量</th>
+                <th class="col-lg-1">4G套餐变更完成率</th>
+                <th class="col-lg-1">4G终端销售量</th>
+                <th class="col-lg-1">4G终端销售完成率</th>
+                <th class="col-lg-1">开户量</th>
+                <th class="col-lg-1">开户完成率</th>
+                <th class="col-lg-1">4G上网客户数</th>
+                <th class="col-lg-1">4G上网客户完成率</th>
+                <th class="col-lg-1">宽带发展量</th>
+                <th class="col-lg-1">宽带完成率</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+
+    <table class="table table-bordered" id="extra" style="margin-top: 60px;">
+        <thead>
+        <tr bgcolor="#C7EDCC" >
+            <th class="col-lg-1">地市</th>
+            <th class="col-lg-1">现场办公次数</th>
+            <th class="col-lg-1">现场办公完成率</th>
+            <th class="col-lg-1">签约(家)</th>
+            <th class="col-lg-1">签约完成率</th>
+            <th class="col-lg-1">欠费回收</th>
+            <th class="col-lg-1">欠费回收完成率</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+
+
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var orderTable;
+    var extraTable;
+    window.onload=function () {
+            //查询地市任务完成量
+            orderTable = $('#order').DataTable({
+                dom: "Bfrtip",
+                bLengthChange: true,
+                "bFilter": false,
+                "pageLength": 5,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    url: "/getRegionWorkCnt",
+                    type: "POST",
+                    data: {
+
+                    }
+                },
+                columns: [
+                    /*{data: "group_id","fnCreatedCell":function (td) {
+                        //$(td).attr("name","region_code");
+                        //$("td[name='region_code']").css("display","none");
+                    }},*/
+                    {data: "group_name"},
+                    {data: "change_amount"},
+                    {data: "packPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }},
+                    {data: "termi_amount"},
+                    {data: "termiPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }},
+                    {data: "open_amount"},
+                    {data: "openPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }},
+                    {data: "web_amount"},
+                    {data: "custPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }},
+                    {data: "broad_dep_amount"},
+                    {data: "broadPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }}
+                ],
+                select: true,
+                buttons: [],
+                "initComplete": function(settings,json) {//dataTable初始化完成回调函数 settings,json两个参数不可少
+                    //$("#regionCode").css("display","none");
+                    //$("td[name='region_code']").css("display","none");
+
+                }
+            });
+
+
+            //地市现场办公,签约,欠费回收
+            extraTable = $('#extra').DataTable({
+                dom: "Bfrtip",
+                bLengthChange: true,
+                "bFilter": false,
+                "pageLength": 5,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    url: "/getRegionExtra",
+                    type: "POST",
+                    data: {
+
+                    }
+                },
+                columns: [
+                    {data: "region_name"},
+                    {data: "work"},
+                    {data: "workPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }},
+                    {data: "sign"},
+                    {data: "signPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }},
+                    {data: "recover"},
+                    {data: "recoverPercent","fnCreatedCell":function (td) {
+                        $(td).text($(td).text()+"%");
+                    }}
+                ],
+                select: true,
+                buttons: []
+        });
+
+
+    }
+
+</script>
+</html>

@@ -1,0 +1,144 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Administrator on 2017/7/7.
+ */
+public class EpProductHallDto extends BaseDto {
+    String show_content = "";//展示内容
+    String product_id = "";//产品id
+    String product_name = "";//产品名称
+    String region_code = "";//地市编码
+    String region_name = "";//地市名称
+    String product_fee = "";//产品资费
+    String create_date = "";//创建时间
+    String related_id = "";//附件关联id
+    String id = "";//附件id
+    String fee_desc = "";
+    String relate_path="";
+    String relate_name="";
+    String manager_name = "";
+    String manager_no = "";
+    String operator_str ="";
+
+    public String getOperator_str() {
+        return operator_str;
+    }
+
+    public void setOperator_str(String operator_str) {
+        this.operator_str = operator_str;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getRelate_path() {
+        return relate_path;
+    }
+
+    public void setRelate_path(String relate_path) {
+        this.relate_path = relate_path;
+    }
+
+    public String getRelate_name() {
+        return relate_name;
+    }
+
+    public void setRelate_name(String relate_name) {
+        this.relate_name = relate_name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFee_desc() {
+        return fee_desc;
+    }
+
+    public void setFee_desc(String fee_desc) {
+        this.fee_desc = fee_desc;
+    }
+
+    public String getShow_content() {
+        return show_content;
+    }
+
+    public void setShow_content(String show_content) {
+        this.show_content = show_content;
+    }
+
+    public String getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getProduct_fee() {
+        return product_fee;
+    }
+
+    public void setProduct_fee(String product_fee) {
+        this.product_fee = product_fee;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+}

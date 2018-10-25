@@ -1,0 +1,325 @@
+package com.esop.common.jaxb;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
+
+/**
+ * Created by wangbl on 2017/3/15.
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
+public class IBody {
+    @XmlElement(name = "MsgHeader")
+    MsgHeader msgHeader;
+    //存放附件信息
+    @XmlElement(name = "FileInfos")
+    FileInfos fileInfos;
+
+    String batch_id       ;//'批次id';//自己取
+    String prod_id        ;//'产品id'; //OA
+    String link_id        ;//'产品环节id';//OA
+    String main_depart    ;//'主办部门';//OA
+    String apply_person   ;//'申请人';//OA
+    String apply_date     ;//'申请日期';//OA
+    String file_no        ;//'文件编号';//OA
+    String file_title     ;//'文件标题';//OA
+    String review_opinion ;//'结论意见';//OA
+    String review_file_id ;//'审批单上传';//OA 上传附件 存储值为ep_upload_file_info表中的related_id字段值，对应附件信息
+    String review_file_name;  //审批单上传附件真实名称
+    String create_login   ;//'创建工号';//OA
+    String prod_plan      ;//'产品方案';//OA 上传附件 存储文件的名称为编码名称
+    String prod_plan_name ;//'产品方案前台可见的真实名称'
+    String si_material    ;//'si申请材料';//OA 上传附件
+    String si_material_name;//'si申请材料前台可见的真实名称'
+    String project_basis  ;//'立项依据';//OA
+    String accept_report  ;//'验收报告';//OA 上传附件
+    String file_added     ;//'补充说明附件';//OA 上传附件
+    String work_log       ;//'工作日志';//OA 上传附件
+    String work_load      ;//'工作日志及工作量明细表';//OA 上传附件
+    String prod_ass       ;//'产品评估数据';//OA 上传附件
+    String colusion_opinion;  //结论意见
+    String result;         //出参结果信息0表示失败，1表示成功
+    String result_info;    //出参结果描述信息，当失败时，返回失败详细描述信息
+    String ass_points;     //评估分，SI引入工单、SI及支撑方考核工单、信息化产品后评估工单这三个环节为评审分或考核分数或后评估分数'
+
+    String RETURN_CODE = "";
+    String RETURN_MSG = "";
+    String prepay_fee = "";
+    String s_RetCode = "";
+    String s_RetMsg = "";
+    String s_SysDate = "";
+    public MsgHeader getMsgHeader() {
+        return msgHeader;
+    }
+
+    public void setMsgHeader(MsgHeader msgHeader) {
+        this.msgHeader = msgHeader;
+    }
+
+    public FileInfos getFileInfos() {
+        return fileInfos;
+    }
+
+    public void setFileInfos(FileInfos fileInfos) {
+        this.fileInfos = fileInfos;
+    }
+
+    public String getBatch_id() {
+        return batch_id;
+    }
+
+    public void setBatch_id(String batch_id) {
+        this.batch_id = batch_id;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getLink_id() {
+        return link_id;
+    }
+
+    public void setLink_id(String link_id) {
+        this.link_id = link_id;
+    }
+
+    public String getMain_depart() {
+        return main_depart;
+    }
+
+    public void setMain_depart(String main_depart) {
+        this.main_depart = main_depart;
+    }
+
+    public String getApply_person() {
+        return apply_person;
+    }
+
+    public void setApply_person(String apply_person) {
+        this.apply_person = apply_person;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getFile_no() {
+        return file_no;
+    }
+
+    public void setFile_no(String file_no) {
+        this.file_no = file_no;
+    }
+
+    public String getFile_title() {
+        return file_title;
+    }
+
+    public void setFile_title(String file_title) {
+        this.file_title = file_title;
+    }
+
+    public String getReview_opinion() {
+        return review_opinion;
+    }
+
+    public void setReview_opinion(String review_opinion) {
+        this.review_opinion = review_opinion;
+    }
+
+    public String getReview_file_id() {
+        return review_file_id;
+    }
+
+    public void setReview_file_id(String review_file_id) {
+        this.review_file_id = review_file_id;
+    }
+
+    public String getReview_file_name() {
+        return review_file_name;
+    }
+
+    public void setReview_file_name(String review_file_name) {
+        this.review_file_name = review_file_name;
+    }
+
+    public String getCreate_login() {
+        return create_login;
+    }
+
+    public void setCreate_login(String create_login) {
+        this.create_login = create_login;
+    }
+
+    public String getProd_plan() {
+        return prod_plan;
+    }
+
+    public void setProd_plan(String prod_plan) {
+        this.prod_plan = prod_plan;
+    }
+
+    public String getProd_plan_name() {
+        return prod_plan_name;
+    }
+
+    public void setProd_plan_name(String prod_plan_name) {
+        this.prod_plan_name = prod_plan_name;
+    }
+
+    public String getSi_material() {
+        return si_material;
+    }
+
+    public void setSi_material(String si_material) {
+        this.si_material = si_material;
+    }
+
+    public String getProject_basis() {
+        return project_basis;
+    }
+
+    public void setProject_basis(String project_basis) {
+        this.project_basis = project_basis;
+    }
+
+    public String getAccept_report() {
+        return accept_report;
+    }
+
+    public void setAccept_report(String accept_report) {
+        this.accept_report = accept_report;
+    }
+
+    public String getFile_added() {
+        return file_added;
+    }
+
+    public void setFile_added(String file_added) {
+        this.file_added = file_added;
+    }
+
+    public String getWork_log() {
+        return work_log;
+    }
+
+    public void setWork_log(String work_log) {
+        this.work_log = work_log;
+    }
+
+    public String getWork_load() {
+        return work_load;
+    }
+
+    public void setWork_load(String work_load) {
+        this.work_load = work_load;
+    }
+
+    public String getProd_ass() {
+        return prod_ass;
+    }
+
+    public void setProd_ass(String prod_ass) {
+        this.prod_ass = prod_ass;
+    }
+
+    public String getColusion_opinion() {
+        return colusion_opinion;
+    }
+
+    public void setColusion_opinion(String colusion_opinion) {
+        this.colusion_opinion = colusion_opinion;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getResult_info() {
+        return result_info;
+    }
+
+    public void setResult_info(String result_info) {
+        this.result_info = result_info;
+    }
+
+    public String getSi_material_name() {
+        return si_material_name;
+    }
+
+    public void setSi_material_name(String si_material_name) {
+        this.si_material_name = si_material_name;
+    }
+
+    public String getAss_points() {
+        return ass_points;
+    }
+
+    public void setAss_points(String ass_points) {
+        this.ass_points = ass_points;
+    }
+
+    public String getRETURN_CODE() {
+        return RETURN_CODE;
+    }
+
+    public void setRETURN_CODE(String RETURN_CODE) {
+        this.RETURN_CODE = RETURN_CODE;
+    }
+
+    public String getRETURN_MSG() {
+        return RETURN_MSG;
+    }
+
+    public void setRETURN_MSG(String RETURN_MSG) {
+        this.RETURN_MSG = RETURN_MSG;
+    }
+
+    public String getPrepay_fee() {
+        return prepay_fee;
+    }
+
+    public void setPrepay_fee(String prepay_fee) {
+        this.prepay_fee = prepay_fee;
+    }
+
+    public String getS_RetCode() {
+        return s_RetCode;
+    }
+
+    public void setS_RetCode(String s_RetCode) {
+        this.s_RetCode = s_RetCode;
+    }
+
+    public String getS_RetMsg() {
+        return s_RetMsg;
+    }
+
+    public void setS_RetMsg(String s_RetMsg) {
+        this.s_RetMsg = s_RetMsg;
+    }
+
+    public String getS_SysDate() {
+        return s_SysDate;
+    }
+
+    public void setS_SysDate(String s_SysDate) {
+        this.s_SysDate = s_SysDate;
+    }
+}

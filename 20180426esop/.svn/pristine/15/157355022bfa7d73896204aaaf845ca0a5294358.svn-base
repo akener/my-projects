@@ -1,0 +1,43 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/7/6.
+ */
+public class VisitReminderInfoDto {
+    String unit_id = "";// 集团id
+    String unit_name = "";//集团名
+    String interview_type = "";//集团id 和集团类型
+    String visit_type = "";//集团是否已访问 0 是未拜访 1 是已拜访
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getInterview_type() {
+        return interview_type;
+    }
+
+    public void setInterview_type(String interview_type) {
+        this.interview_type = interview_type;
+    }
+
+    public String getVisit_type() {
+        return visit_type;
+    }
+
+    public void setVisit_type(String visit_type) {
+        this.visit_type = visit_type;
+    }
+}

@@ -1,0 +1,277 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: wangbl
+  Date: 16/8/4
+  Time: 上午9:04
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>稽核节点管理</title>
+
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./assets/js/ie-emulation-modes-warning.js"></script>
+    <style type="text/css">
+        th,td{
+            text-align:center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<!--<hr />-->
+<body>
+<!--添加结果提示窗口-->
+<div class="modal fade" id="alertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">稽核节点设置</h4>
+            </div>
+            <html:hidden id="refuse_ledger_id" />
+            <div class="modal-body">
+                <label class="control-label" id="alertLabel">请选择待设置的节点信息!</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box">
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <div class="form-horizontal">
+                        <div class="box-body">
+                            <html:hidden id="selgroup_id" />
+                            <html:hidden id="parent_group_id" />
+                            <html:hidden id="status_name" />
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">节点编码</label>
+
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="group_id">
+                                </div>
+                                <label class="col-sm-1 control-label">节点名称</label>
+
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="group_name">
+                                </div>
+                                <label class="col-sm-1 control-label">选择条件</label>
+                                <div class="col-sm-2">
+                                <select id="node_status" name="node_status" class="selectpicker show-tick form-control-hall">
+                                    <option value="0">新增待审核</option>
+                                    <option value="1">正常状态</option>
+                                    <option value="2">不参与稽核</option>
+                                </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <button type="submit" class="btn btn-info pull-right" id="queryAuditNodeInfo">查询</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="border:0.5px solid #0f0f0f"></div>
+                        <div id="editLedgerInfo" class="box box-solid box-default">
+                            <div class="box-body table-responsive" >
+                                <table id="auditNodeTable" class="display" cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>节点编码</th>
+                                        <th>节点名称</th>
+                                        <th>状态</th>
+                                        <th>属性</th>
+                                        <th>有账日期</th>
+                                        <th>参与日期</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>节点编码</th>
+                                        <th>节点名称</th>
+                                        <th>状态</th>
+                                        <th>属性</th>
+                                        <th>有账日期</th>
+                                        <th>参与日期</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div style="border:0.5px solid #0f0f0f"></div>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">开始参与稽核日期</label>
+                                    <div class="col-sm-2">
+                                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                            <input readonly class="form-control" id="partake_date" name="partake_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button class="btn btn-info" id="yesAudit">允许参与稽核</button>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <button class="btn btn-info" id="noAudit">不允许参与稽核</button>
+                                    </div>
+                                    <div class="col-sm-1 "></div>
+                                    <div class="col-sm-2 ">
+                                        <select id="node_property" name="node_property" class="selectpicker show-tick form-control">
+                                            <option value="0">一般扎帐点</option>
+                                            <option value="1">被代理扎帐点</option>
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-2">
+                                        <button type="submit" class="btn btn-info pull-right" id="setnode_property">设置扎帐属性</button>
+                                    </label>
+                                </div>
+                                </div>
+                            </div><!-- /.box-body -->
+                            <!-- /.box-body -->
+                        </div><!-- /.box -->
+                        <!-- /.box-footer -->
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    //加载登陆信息
+    $.ajax({
+        type:"GET",
+        url: "getSessionInfo",
+        data:"&uid="+$("#uid").val()
+    }).then(function(data){
+        //$('#group_name').val(data.group_name);
+        $('#ledger_date').val(data.yesterday);
+        //$('#group_id').val(data.group_id);
+        $('#parent_group_id').val(data.group_id);
+        $('#submit_login').val(data.login_no);
+        queryAuditNodeInfo();
+    });
+    $("#queryAuditNodeInfo").click(function () {
+        queryAuditNodeInfo();
+    });
+    var ltable;
+    //获取稽核节点信息
+    function queryAuditNodeInfo() {
+        ltable=$('#auditNodeTable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            dom: 'T<"clear">lfrtip',
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                "url": "/auditNodeList",
+                "type": "POST",
+                "data":{
+                    group_id:$('#group_id').val(),
+                    parent_group_id: $('#parent_group_id').val(),
+                    group_name:$('#group_name').val(),
+                    node_status:$('#node_status').val()
+                }
+            },
+            "columns": [
+                {"data": "group_id"},
+                {"data": "group_name"},
+                {"data": "status_name"},
+                {"data": "property_name"},
+                {"data": "accounts_date"},
+                {"data": "partake_date"}
+            ],
+            tableTools: {
+                "sRowSelect": "multi",
+                "aButtons": [ "select_all", "select_none" ]
+            }
+        });
+    }
+    $("#queryAuditNodeInfo").click(function () {
+        queryAuditNodeInfo();
+    });
+    $("#yesAudit").click(function () {
+        $('#node_status').val("1");
+        $('#status_name').val("正常状态");
+        updateAuditNodeInfo($('#node_status').val(),$('#status_name').val(),"","",$('#partake_date').val());
+    });
+    $("#noAudit").click(function () {
+        $('#node_status').val("2");
+        $('#status_name').val("不参与稽核");
+        updateAuditNodeInfo($('#node_status').val(),$('#status_name').val(),"","","");
+    });
+    $("#setnode_property").click(function () {
+        updateAuditNodeInfo("","",$('#node_property').val(),jQuery("#node_property  option:selected").text(),"");
+    });
+    //更新稽核节点信息
+    function updateAuditNodeInfo(node_status,status_name,node_property,property_name,partake_date){
+        ltable.rows('.selected').data().each(function(data,index){
+            $('#selgroup_id').val($('#selgroup_id').val()+",'"+data.group_id+"'");
+        });
+        $('#selgroup_id').val($('#selgroup_id').val().substr(1));
+        if($('#selgroup_id').val()==""){
+            //$('#alertLabel').html("请选择待设置的节点信息");
+            $('#alertInfo').modal('show');
+        }else {
+            $.ajax({
+                url: "updateAuditNodeInfo",
+                "type": "POST",
+                "data": {
+                    group_id: $('#selgroup_id').val(),
+                    node_status: $('#node_status').val(),
+                    status_name: $('#status_name').val(),
+                    node_property: $('#node_property').val(),
+                    property_name: jQuery("#node_property  option:selected").text(),
+                    partake_date: $('#partake_date').val()
+                }
+            }).then(function (data) {
+                $('#selgroup_id').val("");
+                queryAuditNodeInfo();
+            });
+        }
+    }
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+    $('.form_time').datetimepicker({
+        format: "hh:ii:ss", //format: "HH:ii P",
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        forceParse: 0
+    });
+</script>
+</html>

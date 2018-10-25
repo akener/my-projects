@@ -1,0 +1,121 @@
+package com.esop.pub;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.apache.log4j.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.*;
+
+/**
+ * Created by wangbl on 2017/2/18.
+ */
+@RestController
+public class InvokeServiceController {
+    private static Logger logger = Logger.getLogger(InvokeServiceController.class);
+
+    @Autowired
+    ServiceUrlBean serviceUrlBean ;
+    @RequestMapping(value="/invokeService",produces="application/json;charset=UTF-8")
+    //public Map<String, Object> invokeService(HttpServletRequest request) {
+    public String invokeService(HttpSession session,HttpServletRequest request) {
+        try{
+            logger.debug("InvokeServiceController{"+"http://"+serviceUrlBean.getServiceUrl()+"/"+request.getParameter("serviceRequestMapping")+"}");
+            URL wsUrl = new URL("http://"+serviceUrlBean.getServiceUrl()+"/"+request.getParameter("serviceRequestMapping"));
+            logger.debug("request="+requestParameterConversion(request));
+            String sessionInfo="&landing_no="+session.getAttribute("login_no")
+                    +"&grp_staff_number="+session.getAttribute("grp_staff_number")
+                    +"&is_grp_staff="+session.getAttribute("is_grp_staff");
+            logger.debug("session信息="+session.getAttribute("login_no"));
+            HttpURLConnection conn = (HttpURLConnection) wsUrl.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            //传入参数
+            OutputStream os = conn.getOutputStream();
+            os.write((requestParameterConversion(request)+sessionInfo).getBytes("utf8"));
+            //解析返回结果，通过JSONObject将返回结果转换为Map<String, Object>
+            InputStream is = conn.getInputStream();
+            //JSONObject json = new JSONObject(inputStreamReadConversion(is));
+            //return json.toMap();
+            //System.out.println("返回结果="+is);
+            //return "Object [{first_type:P_1,first_name:外部引入标准化产品,secondary_type:'',secondary_name:'',prod_id:PD_010,prod_name:后视镜,del_flag:1},{first_type:P_1,first_name:外部引入标准化产品,secondary_type:'',secondary_name:'',prod_id:PD_001,prod_name:云办公,del_flag:1}]";
+            return inputStreamReadConversion(is);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        //Map map =new HashMap<String, Object>();
+        //map.put("error","服务端无响应");
+        //return map;
+        return "{error:服务端无响应}";
+    }
+    //request入参格式化
+    private String requestParameterConversion(HttpServletRequest request){
+        Enumeration en = request.getParameterNames();
+        StringBuffer requestStrBuffer=new StringBuffer();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            requestStrBuffer.append("&"+paramName+"=" + request.getParameter(paramName));
+        }
+        logger.debug("requestParameterConversion : "+requestStrBuffer.toString());
+        return requestStrBuffer.toString();
+    }
+    //InputStream返回结果byte字节转换
+    private String inputStreamReadConversion(InputStream response){
+        byte[] b = new byte[256];
+        byte[] c;
+        String result="";
+        ArrayList ar=new ArrayList();
+        int len = 0;
+        int length=0;
+        int num=0;
+        try {
+            //从输入流中读取的数据分为两段，第一段28个字节，具体原因不明
+            while ((len = response.read(b)) != -1) {
+                ar.add(new ByteArray(len,b.clone()));
+                length += len;
+            }
+            c = new byte[length];
+            for(Object ba:ar){
+                ByteArray byteArray=(ByteArray)ba;
+                byte[] value=byteArray.getBy();
+                for(int i=0;i<byteArray.getNum();i++){
+                    c[num] = value[i];
+                    num++;
+                }
+            }
+            result=new String(c, 0, num, "UTF-8");
+            //针对返回结果是list类型
+            //if(result.substring(0,1).equals("[")) result= result.substring(1,result.length()-1);
+            logger.debug("requestParameterConversion : "+result);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    private class ByteArray{
+        int num=0;
+        byte[] by;
+        private ByteArray(int len,byte[] byt){
+            num=len;
+            by=byt;
+        }
+
+        public int getNum() {
+            return num;
+        }
+
+        public byte[] getBy() {
+            return by;
+        }
+
+    }
+}

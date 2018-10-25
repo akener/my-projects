@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <!-- 查询营销活动 -->
+    <select id="selectMarketingActivities"  parameterType="String" resultType="com.esop.workbench.dto.MarketingActivitiesDto" >
+        select market_name,market_content,eff_date,'&lt;button class="ui-btn" onclick="editTable('''||market_no||''',this)" >修改&lt;/button>' as opt
+        from ep_market_imp
+        where 1=1
+        <if test="market_name!=''">
+            and  market_name like '%'||#{market_name}||'%'
+        </if>
+        <if test="start_time !=''">
+            and to_date(eff_date,'yyyy-mm-dd') >= to_date(#{start_time},'yyyy-mm-dd')
+        </if>
+        <if test="end_time != ''">
+            and to_date(eff_date,'yyyy-mm-dd') &lt;= to_date(#{end_time},'yyyy-mm-dd')
+        </if>
+    </select>
+    <!-- 录入营销活动 -->
+    <select id="insertMarketingActivities"  parameterType="com.esop.workbench.dto.MarketingActivitiesDto" resultType="int" >
+        insert into ep_market_imp(market_name,market_content,eff_date,market_no) values( #{market_name},#{market_content},#{eff_date},#{market_no})
+    </select>
+    <!-- 修改营销活动 -->
+    <select id="updateMarketingActivities"  parameterType="com.esop.workbench.dto.MarketingActivitiesDto" resultType="int" >
+        update ep_market_imp
+        set market_name=#{market_name},market_content = #{market_content},eff_date = #{eff_date}
+        where market_no=#{market_no}
+    </select>
+    <select id="selectMaxMarkeNo"  parameterType="com.esop.workbench.dto.MarketingActivitiesDto" resultType="int" >
+       select max(to_number(market_no)) max_num from ep_market_imp
+    </select>
+
+</mapper>

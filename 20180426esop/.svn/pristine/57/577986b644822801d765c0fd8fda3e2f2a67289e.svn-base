@@ -1,0 +1,515 @@
+package com.esop.invoice.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.invoice.dto.InvPreprintDTO;
+import com.esop.invoice.dto.NonReturnInDTO;
+import com.esop.invoice.dto.QryInvAppNoOutDTO;
+import com.esop.invoice.dto.QryInvApprListInDTO;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.model.EpInvSpeBossInfo;
+import com.esop.invoice.model.EpInvSpeBossInfoMonth;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import com.esop.invoice.service.PreprintInvListQryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+@RestController
+@RequestMapping("invoice")
+public class PreprintInvListQryController {
+    @Autowired
+    private PrePrintInvoiceService invoiceService;
+    @Autowired
+    private PreprintInvListQryService preprintInvListQryService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    /**
+     * 查询发票明细
+     * @param parameter
+     * @param request
+     * @param flag
+     * @return
+     */
+    @RequestMapping(value = "qryInvDetaSta")
+    public Result qryInvDetaSta(EpInvSpeBossInfo parameter, HttpServletRequest request, boolean flag) {
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = preprintInvListQryService.selectInvDetaSta(parameter);
+        return result;
+    }
+
+    /**
+     * 查询已回款发票统计
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "qryBackSta")
+    public Result qryBackSta( HttpServletRequest request,EpInvSpeBossInfo parameter) {
+        /*
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = preprintInvListQryService.selectBackSta(parameter);*/
+
+//        EpInvSpeBossInfo req1=new EpInvSpeBossInfo();//查询开票金额，开票数量
+        List<EpInvSpeBossInfo> res1= preprintInvListQryService.selectBackSta(parameter);
+        EpInvSpeBossInfo req2=new EpInvSpeBossInfo();//查询回款金额，回款发票数量
+        req2.setPaymentState("1");
+        List<EpInvSpeBossInfo> res2= preprintInvListQryService.selectBackSta(req2);
+        EpInvSpeBossInfo req3=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量
+        req3.setPaymentState("0");
+        List<EpInvSpeBossInfo> res3= preprintInvListQryService.selectBackSta(req3);
+        //计算时间一个月和三个月，与回款期限比较
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format =new SimpleDateFormat("yyyyMMdd");
+        String now=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -1);
+        String onemonth=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -2);
+        String threemonth=format.format(cal.getTime());
+
+        EpInvSpeBossInfo req4=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量-一个月（含）以内
+        req4.setPaymentState("0");
+        req4.setPaymentLimitDateEnd(now);
+        req4.setPaymentLimitDateStart(onemonth);
+        List<EpInvSpeBossInfo> res4= preprintInvListQryService.selectBackSta(req4);
+
+        EpInvSpeBossInfo req5=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量-一个月至三个月（含）
+        req5.setPaymentState("0");
+        req5.setPaymentLimitDateEnd(onemonth);
+        req5.setPaymentLimitDateStart(threemonth);
+        List<EpInvSpeBossInfo> res5= preprintInvListQryService.selectBackSta(req5);
+
+        EpInvSpeBossInfo req6=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量-三个月以上
+        req6.setPaymentState("0");
+        req6.setPaymentLimitDateEnd(threemonth);
+        List<EpInvSpeBossInfo> res6= preprintInvListQryService.selectBackSta(req6);
+        List<Map<String,Object>> reslist=new ArrayList<>();
+        for(EpInvSpeBossInfo inv1:res1){
+            Map<String,Object> tjxx=new HashMap<>();
+            String invoiceType=inv1.getInvoiceType();
+            String invoiceMode=inv1.getInvoiceMode();
+            String appOrg=inv1.getApplicantOrg();
+            String kpje=inv1.getInvoiceTotalMoney();
+            Short kpsl=inv1.getInvoiceSheetNum();
+            tjxx.put("invoiceType",invoiceType);
+            tjxx.put("invoiceMode",invoiceMode);
+            tjxx.put("appOrg",appOrg);
+            tjxx.put("kpje",kpje);
+            tjxx.put("kpsl",kpsl);
+            String hkje="-";
+            Short hksl=0;
+            String whkje="-";
+            Short whksl=0;
+            String whkjey="-";
+            Short whksly=0;
+            String whkjeys="-";
+            Short whkslys=0;
+            String whkjes="-";
+            Short whksls=0;
+            for (EpInvSpeBossInfo inv2:res2){
+                if(invoiceType.equals(inv2.getInvoiceType())&&invoiceMode.equals(inv2.getInvoiceMode())&&appOrg.equals(inv2.getApplicantOrg()))
+                {
+                    hkje=inv2.getInvoiceTotalMoney();
+                    hksl=inv2.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfo inv3:res3){
+                if(invoiceType.equals(inv3.getInvoiceType())&&invoiceMode.equals(inv3.getInvoiceMode())&&appOrg.equals(inv3.getApplicantOrg()))
+                {
+                    whkje=inv3.getInvoiceTotalMoney();
+                    whksl=inv3.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfo inv4:res4){
+                if(invoiceType.equals(inv4.getInvoiceType())&&invoiceMode.equals(inv4.getInvoiceMode())&&appOrg.equals(inv4.getApplicantOrg()))
+                {
+                    whkjey=inv4.getInvoiceTotalMoney();
+                    whksly=inv4.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfo inv5:res5){
+                if(invoiceType.equals(inv5.getInvoiceType())&&invoiceMode.equals(inv5.getInvoiceMode())&&appOrg.equals(inv5.getApplicantOrg()))
+                {
+                    whkjeys=inv5.getInvoiceTotalMoney();
+                    whkslys=inv5.getInvoiceSheetNum();
+                               }
+            }
+            for (EpInvSpeBossInfo inv6:res6){
+                if(invoiceType.equals(inv6.getInvoiceType())&&invoiceMode.equals(inv6.getInvoiceMode())&&appOrg.equals(inv6.getApplicantOrg()))
+                {
+                    whkjes=inv6.getInvoiceTotalMoney();
+                    whksls=inv6.getInvoiceSheetNum();
+                }
+            }
+            tjxx.put("hkje",hkje);
+            tjxx.put("hksl",hksl);
+            tjxx.put("whkje",whkje);
+            tjxx.put("whksl",whksl);
+            tjxx.put("whkjey",whkjey);
+            tjxx.put("whksly",whksly);
+            tjxx.put("whkjeys",whkjeys);
+            tjxx.put("whkslys",whkslys);
+            tjxx.put("whkjes",whkjes);
+            tjxx.put("whksls",whksls);
+            reslist.add(tjxx);
+        }
+        result.setRecordsTotal(reslist.size());
+        result.setRecordsFiltered(reslist.size());
+        result.setDraw(0);
+        result.setData(reslist);
+        return result;
+    }
+
+    /**
+     * 发票未回款统计
+     * @param parameter
+     * @param request
+     * @return
+     */
+    @RequestMapping("/queryUnbackSta")
+    public Result queryUnbackSta(EpInvSpeBossInfo parameter, HttpServletRequest request){
+        parameter.setPaymentState("0");//查询所有未回款发票
+        List<EpInvSpeBossInfo> res3= preprintInvListQryService.selectBackSta(parameter);
+        //计算时间一个月和三个月，与回款期限比较
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format =new SimpleDateFormat("yyyyMMdd");
+        String now=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -1);
+        String onemonth=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -2);
+        String threemonth=format.format(cal.getTime());
+
+        EpInvSpeBossInfo req4=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量-一个月（含）以内
+        req4.setPaymentState("0");
+        req4.setPaymentLimitDateEnd(now);
+        req4.setPaymentLimitDateStart(onemonth);
+        List<EpInvSpeBossInfo> res4= preprintInvListQryService.selectBackSta(req4);
+
+        EpInvSpeBossInfo req5=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量-一个月至三个月（含）
+        req5.setPaymentState("0");
+        req5.setPaymentLimitDateEnd(onemonth);
+        req5.setPaymentLimitDateStart(threemonth);
+        List<EpInvSpeBossInfo> res5= preprintInvListQryService.selectBackSta(req5);
+
+        EpInvSpeBossInfo req6=new EpInvSpeBossInfo();//查询未回款金额，未回款发票数量-三个月以上
+        req6.setPaymentState("0");
+        req6.setPaymentLimitDateEnd(threemonth);
+        List<EpInvSpeBossInfo> res6= preprintInvListQryService.selectBackSta(req6);
+        List<Map<String,Object>> reslist=new ArrayList<>();
+        for(EpInvSpeBossInfo inv3:res3){
+            Map<String,Object> tjxx=new HashMap<>();
+            String invoiceType=inv3.getInvoiceType();
+            String invoiceMode=inv3.getInvoiceMode();
+            String appOrg=inv3.getApplicantOrg();
+
+            tjxx.put("invoiceType",invoiceType);
+            tjxx.put("invoiceMode",invoiceMode);
+            tjxx.put("appOrg",appOrg);
+
+            String whkjey="0";
+            Short whksly=0;
+            String whkjeys="0";
+            Short whkslys=0;
+            String whkjes="0";
+            Short whksls=0;
+
+            for (EpInvSpeBossInfo inv4:res4){
+                if(invoiceType.equals(inv4.getInvoiceType())&&invoiceMode.equals(inv4.getInvoiceMode())&&appOrg.equals(inv4.getApplicantOrg()))
+                {
+                    whkjey=inv4.getInvoiceTotalMoney();
+                    whksly=inv4.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfo inv5:res5){
+                if(invoiceType.equals(inv5.getInvoiceType())&&invoiceMode.equals(inv5.getInvoiceMode())&&appOrg.equals(inv5.getApplicantOrg()))
+                {
+                    whkjeys=inv5.getInvoiceTotalMoney();
+                    whkslys=inv5.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfo inv6:res6){
+                if(invoiceType.equals(inv6.getInvoiceType())&&invoiceMode.equals(inv6.getInvoiceMode())&&appOrg.equals(inv6.getApplicantOrg()))
+                {
+                    whkjes=inv6.getInvoiceTotalMoney();
+                    whksls=inv6.getInvoiceSheetNum();
+                }
+            }
+            tjxx.put("whkjey",whkjey);
+            tjxx.put("whksly",whksly);
+            tjxx.put("whkjeys",whkjeys);
+            tjxx.put("whkslys",whkslys);
+            tjxx.put("whkjes",whkjes);
+            tjxx.put("whksls",whksls);
+            reslist.add(tjxx);
+        }
+        result.setRecordsTotal(reslist.size());
+        result.setRecordsFiltered(reslist.size());
+        result.setDraw(0);
+        result.setData(reslist);
+        return result;
+    }
+    /**
+     * 预开发票未回款情况月报表统计查询
+     * @param parameter
+     * @param request
+     * @return
+     */
+    @RequestMapping("/queryUnbackStaHis")
+    public Result queryUnbackStaHis(EpInvSpeBossInfoMonth parameter, HttpServletRequest request){
+        parameter.setPaymentState("0");//查询所有未回款发票
+        List<EpInvSpeBossInfoMonth> res3= preprintInvListQryService.selectUnBackHisSta(parameter);
+        //计算时间一个月和三个月，与回款期限比较
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format =new SimpleDateFormat("yyyyMMdd");
+        String now=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -1);
+        String onemonth=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -2);
+        String threemonth=format.format(cal.getTime());
+
+        EpInvSpeBossInfoMonth req4=new EpInvSpeBossInfoMonth();//查询未回款金额，未回款发票数量-一个月（含）以内
+        req4.setPaymentState("0");
+        req4.setPaymentLimitDateEnd(now);
+        req4.setPaymentLimitDateStart(onemonth);
+        List<EpInvSpeBossInfoMonth> res4= preprintInvListQryService.selectUnBackHisSta(req4);
+
+        EpInvSpeBossInfoMonth req5=new EpInvSpeBossInfoMonth();//查询未回款金额，未回款发票数量-一个月至三个月（含）
+        req5.setPaymentState("0");
+        req5.setPaymentLimitDateEnd(onemonth);
+        req5.setPaymentLimitDateStart(threemonth);
+        List<EpInvSpeBossInfoMonth> res5= preprintInvListQryService.selectUnBackHisSta(req5);
+
+        EpInvSpeBossInfoMonth req6=new EpInvSpeBossInfoMonth();//查询未回款金额，未回款发票数量-三个月以上
+        req6.setPaymentState("0");
+        req6.setPaymentLimitDateEnd(threemonth);
+        List<EpInvSpeBossInfoMonth> res6= preprintInvListQryService.selectUnBackHisSta(req6);
+        List<Map<String,Object>> reslist=new ArrayList<>();
+        for(EpInvSpeBossInfoMonth inv3:res3){
+            Map<String,Object> tjxx=new HashMap<>();
+            String invoiceType=inv3.getInvoiceType();
+            String invoiceMode=inv3.getInvoiceMode();
+            String appOrg=inv3.getApplicantOrg();
+
+            tjxx.put("invoiceType",invoiceType);
+            tjxx.put("invoiceMode",invoiceMode);
+            tjxx.put("appOrg",appOrg);
+
+            String whkjey="0";
+            Short whksly=0;
+            String whkjeys="0";
+            Short whkslys=0;
+            String whkjes="0";
+            Short whksls=0;
+
+            for (EpInvSpeBossInfoMonth inv4:res4){
+                if(invoiceType.equals(inv4.getInvoiceType())&&invoiceMode.equals(inv4.getInvoiceMode())&&appOrg.equals(inv4.getApplicantOrg()))
+                {
+                    whkjey=inv4.getInvoiceTotalMoney();
+                    whksly=inv4.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfoMonth inv5:res5){
+                if(invoiceType.equals(inv5.getInvoiceType())&&invoiceMode.equals(inv5.getInvoiceMode())&&appOrg.equals(inv5.getApplicantOrg()))
+                {
+                    whkjeys=inv5.getInvoiceTotalMoney();
+                    whkslys=inv5.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfoMonth inv6:res6){
+                if(invoiceType.equals(inv6.getInvoiceType())&&invoiceMode.equals(inv6.getInvoiceMode())&&appOrg.equals(inv6.getApplicantOrg()))
+                {
+                    whkjes=inv6.getInvoiceTotalMoney();
+                    whksls=inv6.getInvoiceSheetNum();
+                }
+            }
+            tjxx.put("whkjey",whkjey);
+            tjxx.put("whksly",whksly);
+            tjxx.put("whkjeys",whkjeys);
+            tjxx.put("whkslys",whkslys);
+            tjxx.put("whkjes",whkjes);
+            tjxx.put("whksls",whksls);
+            reslist.add(tjxx);
+        }
+        result.setRecordsTotal(reslist.size());
+        result.setRecordsFiltered(reslist.size());
+        result.setDraw(0);
+        result.setData(reslist);
+        return result;
+    }
+
+    //发票未回款统计报表-历史数据
+    //发票未回款统计报表-历史数据
+    @RequestMapping("/exportUnbackHisReport")
+    public String exportUnbackHisReport(EpInvSpeBossInfoMonth parameter, HttpServletResponse response){
+        String message = "1";
+        String[] tableHeader = {"组织机构","发票种类","开票类型","一个月（含）以内未回款金额（元）","一个月（含）以内未回款发票数量","一个月至三个月（含）未回款金额（元）","一个月至三个月（含）未回款发票数量","三个月以上未回款金额（元）","三个月以上未回款发票数量"};
+        String[] methods = {"getAppOrg","getInvoiceType","getInvoiceMode","getWhkjey","getWhksly","getWhkjeys","getWhkslys","getWhkjes","getWhksls"};
+        //开始查询
+        parameter.setPaymentState("0");//查询所有未回款发票
+        List<EpInvSpeBossInfoMonth> res3= preprintInvListQryService.selectUnBackHisSta(parameter);
+        //计算时间一个月和三个月，与回款期限比较
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat format =new SimpleDateFormat("yyyyMMdd");
+        String now=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -1);
+        String onemonth=format.format(cal.getTime());
+        cal.add(Calendar.MONTH, -2);
+        String threemonth=format.format(cal.getTime());
+
+        EpInvSpeBossInfoMonth req4=new EpInvSpeBossInfoMonth();//查询未回款金额，未回款发票数量-一个月（含）以内
+        req4.setPaymentState("0");
+        req4.setPaymentLimitDateEnd(now);
+        req4.setPaymentLimitDateStart(onemonth);
+        List<EpInvSpeBossInfoMonth> res4= preprintInvListQryService.selectUnBackHisSta(req4);
+
+        EpInvSpeBossInfoMonth req5=new EpInvSpeBossInfoMonth();//查询未回款金额，未回款发票数量-一个月至三个月（含）
+        req5.setPaymentState("0");
+        req5.setPaymentLimitDateEnd(onemonth);
+        req5.setPaymentLimitDateStart(threemonth);
+        List<EpInvSpeBossInfoMonth> res5= preprintInvListQryService.selectUnBackHisSta(req5);
+
+        EpInvSpeBossInfoMonth req6=new EpInvSpeBossInfoMonth();//查询未回款金额，未回款发票数量-三个月以上
+        req6.setPaymentState("0");
+        req6.setPaymentLimitDateEnd(threemonth);
+        List<EpInvSpeBossInfoMonth> res6= preprintInvListQryService.selectUnBackHisSta(req6);
+        List<NonReturnInDTO> qrylist=new ArrayList<NonReturnInDTO>();
+        Double money1=0.00;
+        Integer num1=0;
+        Double money2=0.00;
+        Integer num2=0;
+        Double money3=0.00;
+        Integer num3=0;
+        for(EpInvSpeBossInfoMonth inv3:res3){
+            /* Map<String,Object> tjxx=new HashMap<>();*/
+            NonReturnInDTO dto=new NonReturnInDTO();
+            String invoiceType=inv3.getInvoiceType();
+            String invoiceMode=inv3.getInvoiceMode();
+            String appOrg=inv3.getApplicantOrg();
+            dto.setInvoiceType(invoiceType);
+            dto.setInvoiceMode(invoiceMode);
+            dto.setAppOrg(appOrg);
+           /* tjxx.put("invoiceType",invoiceType);
+            tjxx.put("invoiceMode",invoiceMode);
+            tjxx.put("appOrg",appOrg);*/
+
+            String whkjey="0";
+            Short whksly=0;
+            String whkjeys="0";
+            Short whkslys=0;
+            String whkjes="0";
+            Short whksls=0;
+
+            for (EpInvSpeBossInfoMonth inv4:res4){
+                if(invoiceType.equals(inv4.getInvoiceType())&&invoiceMode.equals(inv4.getInvoiceMode())&&appOrg.equals(inv4.getApplicantOrg()))
+                {
+                    whkjey=inv4.getInvoiceTotalMoney();
+                    whksly=inv4.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfoMonth inv5:res5){
+                if(invoiceType.equals(inv5.getInvoiceType())&&invoiceMode.equals(inv5.getInvoiceMode())&&appOrg.equals(inv5.getApplicantOrg()))
+                {
+                    whkjeys=inv5.getInvoiceTotalMoney();
+                    whkslys=inv5.getInvoiceSheetNum();
+                }
+            }
+            for (EpInvSpeBossInfoMonth inv6:res6){
+                if(invoiceType.equals(inv6.getInvoiceType())&&invoiceMode.equals(inv6.getInvoiceMode())&&appOrg.equals(inv6.getApplicantOrg()))
+                {
+                    whkjes=inv6.getInvoiceTotalMoney();
+                    whksls=inv6.getInvoiceSheetNum();
+                }
+            }
+            money1+=Double.valueOf(whkjey);
+            money2+=Double.valueOf(whkjeys);
+            money3+=Double.valueOf(whkjes);
+            num1+=whksly;
+            num2+=whkslys;
+            num3+=whksls;
+            dto.setWhkjey(whkjey);
+            dto.setWhksly(whksly);
+            dto.setWhkjeys(whkjeys);
+            dto.setWhkslys(whkslys);
+            dto.setWhkjes(whkjes);
+            dto.setWhksls(whksls);
+
+            qrylist.add(dto);
+        }
+        try{
+            String title = "预开发票未回款情况月报表";
+            String[] qryCheckInfo=null;
+            //qryCheckInfo = new String[]{"分公司："+parameter.getBranch_name(),"行业中心："+parameter.getIndustry_center_name(),"开始时间："+parameter.getStarttime(),"结束时间："+parameter.getEndtime()};
+            String[] foot =new String[]{"合计：","","",money1.toString(),num1.toString(),money2.toString(),num2.toString(),money3.toString(),num3.toString()};
+            invoiceService.getExportAddTitle(title,qryCheckInfo,foot,tableHeader,methods,qrylist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+        return  message;
+    }
+
+
+
+    //分页查询 预打发票申请工单查询
+    @RequestMapping(value = "finpageInvPreprint" )
+    public Result finpageInvPreprint(InvPreprintDTO invPreprintDTO, HttpServletRequest request, boolean flag){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        invPreprintDTO.setPage(page);
+        Result result = preprintInvListQryService.finpageInvPreprint(invPreprintDTO);
+        return  result;
+    }
+    //分页查询 预打发票申请审核列表查询
+    @RequestMapping(value = "verifyApprList", method = RequestMethod.POST)
+    public Result qryInvApprList(QryInvApprListInDTO inDTO,HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        inDTO.setPage(page);
+        Result result = preprintInvListQryService.qryInvApprList(inDTO);
+        return  result;
+    }
+
+
+
+    /**
+     * 根据集团编号查询发票申请信息
+     * @param ep
+     * @return
+     */
+
+    @RequestMapping(value = "queryAppNoList", method = RequestMethod.POST)
+    public QryInvAppNoOutDTO queryAppNoListByGroupId(EpInvSpeBossInfo ep,HttpServletRequest request){
+
+        QryInvAppNoOutDTO result = preprintInvListQryService.queryAppNoListByGroupId(ep.getGroupId());
+        return  result;
+    }
+
+
+
+
+    /**
+     * 冲红根据原始订单号获取单账户,多账户,以及待开具状态的发票信息提示
+     * @param epa 入参dto
+     * @return  预打发票工单信息
+     */
+
+    @RequestMapping(value = "queryCheckRedInvoice", method = RequestMethod.POST)
+    public String queryCheckRedInvoice( EpInvPreprintAppInfo epa, HttpServletRequest request){
+
+        String  result = preprintInvListQryService.queryCheckRedInvoice(epa);
+        return  result;
+    }
+
+}

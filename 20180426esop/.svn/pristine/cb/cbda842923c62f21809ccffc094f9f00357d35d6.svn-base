@@ -1,0 +1,210 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2018/1/5.
+ */
+public class GroupHistoryShortFeeDto extends BaseDto{
+    private  String  branch_company ;//分公司
+    private  String  business_center ;//行业中心
+    private  String  groupNo ;//集团编号
+    private  String  groupName ;//集团名称
+    private  String  shortFee ;//历史短款金额
+    private  String  shortDate ;//历史短款发生日期
+    private  String  taskOrderId ;//历史短款冲销申请单号
+    private  String  status ;//状态
+    private  String  offsetAmount ;//本次冲销金额
+    private  String  afterOffsetAmount ;//本次冲销后余额
+    private  String  dealTime ;//工单办结日期
+    private  String  applicantNo ;//申请人
+    private  String  applicant ;//申请人姓名
+    private  String  applyDate ;//申请日期
+    private  String  applyAmount ;//申请金额(元)
+    private  String  start_time;//开始时间
+    private  String  end_time;//结束时间
+    private  String  name;//分公司名称
+
+    //临时字段
+    private String org_id;
+    private String center_code;
+    private String login_name;
+    private String login_name2;
+
+    public String getLogin_name2() {
+        return login_name2;
+    }
+
+    public void setLogin_name2(String login_name2) {
+        this.login_name2 = login_name2;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
+    }
+
+    public String getBranch_company() {
+        return branch_company;
+    }
+
+    public void setBranch_company(String branch_company) {
+        this.branch_company = branch_company;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getGroupNo() {
+        return groupNo;
+    }
+
+    public void setGroupNo(String groupNo) {
+        this.groupNo = groupNo;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getShortFee() {
+        return shortFee;
+    }
+
+    public void setShortFee(String shortFee) {
+        this.shortFee = shortFee;
+    }
+
+    public String getShortDate() {
+        return shortDate;
+    }
+
+    public void setShortDate(String shortDate) {
+        this.shortDate = shortDate;
+    }
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getOffsetAmount() {
+        return offsetAmount;
+    }
+
+    public void setOffsetAmount(String offsetAmount) {
+        this.offsetAmount = offsetAmount;
+    }
+
+    public String getAfterOffsetAmount() {
+        return afterOffsetAmount;
+    }
+
+    public void setAfterOffsetAmount(String afterOffsetAmount) {
+        this.afterOffsetAmount = afterOffsetAmount;
+    }
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public String getApplyAmount() {
+        return applyAmount;
+    }
+
+    public void setApplyAmount(String applyAmount) {
+        this.applyAmount = applyAmount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

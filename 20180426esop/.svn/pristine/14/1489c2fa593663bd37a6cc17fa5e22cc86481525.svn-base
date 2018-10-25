@@ -1,0 +1,95 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var table;
+
+
+        function init4(taskOrderId) {
+            table = $('#example_apprPros4').DataTable({
+                "scrollX": true,
+                "processing": true,
+                "serverSide": true,
+                destroy: true,
+                "bFilter": false,
+                "pageLength": 10,//设置每页显示多少条记录
+                //"bSort":false,
+                "bLengthChange": false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                "ajax": {
+                    url: "/approveProcessQuery",
+                    type: "POST",
+                    data:{
+                        taskOrderId:taskOrderId
+                    }
+                },
+                "columns": [
+                    {data: "applicantNo"},
+                    {data: "login_name"},
+                    {data: "nextDealPerson"},
+                    {data: "login_name"},
+                    {data: "nodeId"},
+                    {data: "link_name"},
+                    {data: "dealTime"},
+                    {
+                        render: function ( data, type, row, meta ) {
+                            if(row.approveOpinion == "1"){
+                                return data = "是";
+                            }else if(row.approveOpinion == "2"){
+                                return data = "否";
+                            }else{
+                                return data = row.approveOpinion;
+                            }
+                        }
+                    },
+                    {data: "memo"}
+                ],
+                select: true
+            });
+        }
+
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>审批轨迹查询</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="example_apprPros4" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">操作工号</th>
+                            <th class="text-center">操作人</th>
+                            <th class="text-center">下一步处理人工号</th>
+                            <th class="text-center">下一步处理人</th>
+                            <th class="text-center">下一环节ID</th>
+                            <th class="text-center">下一环节名称</th>
+                            <th class="text-center">处理时间</th>
+                            <th class="text-center">是否同意</th>
+                            <th class="text-center">审批意见</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

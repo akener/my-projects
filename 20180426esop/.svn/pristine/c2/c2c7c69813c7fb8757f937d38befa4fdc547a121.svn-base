@@ -1,0 +1,16 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtProcessDict;
+import java.util.List;
+
+public interface CtProcessDictMapper {
+    int deleteByPrimaryKey(String procId);
+
+    int insert(CtProcessDict record);
+
+    CtProcessDict selectByPrimaryKey(String procId);
+
+    List<CtProcessDict> selectAll();
+
+    int updateByPrimaryKey(CtProcessDict record);
+}

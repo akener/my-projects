@@ -1,0 +1,609 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/7/8
+  Time: 14:40
+  To change this template use File | Settings | File Templates.
+
+  集团专线暂停销户台帐
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <title>集团专线暂停销户台帐</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/common.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/component.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/list.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/reset.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/table.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/basic.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/assets/bootstrap.css">
+
+    <script src="/esop/static/js/workbench/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">开始时间结束时间应属同一个月份</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">无数据</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice4">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo4">稽核意见操作成功</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">稽核意见操作失败</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="close1()"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="detail1">专线暂停销户稽核信息</h4>
+            </div>
+            <div class="modal-body">
+                <div id="myTabContent" class="tab-content bg-ff">
+                    <div class="tab-pane fade in active" id="tj">
+                        <div id='tbs1' class="box-in">
+                            <table class="table-infor-7 width-th" width="100%">
+                                <input type="hidden" id="OpTime_hide">
+                                <tbody>
+                                <tr>
+                                    <th style="width: 150px;height: auto" align="tight">地市</th>
+                                    <td id="RegionName"></td>
+                                    <th height="15" align="tight">区县</th>
+                                    <td id="DistrictName"></td>
+                                </tr>
+                                <tr>
+                                    <th height="15" align="tight">集团编码</th>
+                                    <td id="UnitId"></td>
+                                    <th height="15" align="tight">操作类型</th>
+                                    <td id="OpType">123</td>
+                                </tr>
+                                <tr>
+                                    <th height="15" align="tight">产品账号</th>
+                                    <td id="GrpAccountId"></td>
+                                    <th height="15" align="tight">专线项目名称</th>
+                                    <td id="HlProName"></td>
+                                </tr>
+                                <tr>
+                                    <th height="15" align="tight">客户经理工号</th>
+                                    <td id="ManagerLoginNo"></td>
+                                    <th height="15" align="tight">客户经理姓名</th>
+                                    <td id="ManagerName"></td>
+                                </tr>
+                                <tr>
+                                    <th height="15" align="tight">操作人员工号</th>
+                                    <td id="OpLogin"></td>
+                                    <th height="15" align="tight">操作人员姓名</th>
+                                    <td id="OpName"></td>
+                                </tr>
+                                <tr>
+                                    <th height="15" align="tight">操作时间</th>
+                                    <td id="OpTime">123</td>
+                                    <th height="15" align="tight">稽核时间</th>
+                                    <td id="">
+                                        <input type=text id="ck_time" class="input-sty04 form-ipt"
+                                               maxlength="11" readonly="true">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th height="15" align="tight">稽核意见</th>
+                                    <td>
+                                        <select id="ck_info" onchange="set()">
+                                            <option value="无问题" selected>无问题</option>
+                                            <option value="有问题">有问题</option>
+                                        </select>
+                                    </td>
+                                    <th height="15" align="tight">问题描述</th>
+                                    <td hidden id="des">
+                                        <textarea id="pro_des"></textarea>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-box">
+                    <button class="btn btn-info" id="add_button" name="add_printsub" onmouseup="add_button()">提交</button>
+                    <button type="button" class="btn btn-default" onmouseup="goback()">返回</button>
+                </div>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">集团专线暂停销户台帐</h3>
+    </div>
+    <div class="row col-12">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <table class="table-infor-7" width="100%">
+                    <tbody>
+                    <tr>
+                        <th>地区：</th>
+                        <td>
+                            <select id="group_id" class="input-sty04 form-ipt">
+
+                            </select>
+                        </td>
+                        <th>集团编码ID：</th>
+                        <td>
+                            <input type=text id="cust_id" class="input-sty04 form-ipt" maxlength="11">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>开始时间：</th>
+                        <td>
+                            <input type=text id="start_date" class="input-sty04 form-ipt"
+                                   maxlength="11" readonly="true">
+                            <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                 style="width: 25px;" width="25" height="21"
+                                 onclick="WdatePicker({el:'start_date',dateFmt:'yyyyMMdd'})"
+                                 title="开始时间" />
+                        </td>
+                        <th>结束时间：</th>
+                        <td>
+                            <input type=text id="end_date" class="input-sty04 form-ipt"
+                                   maxlength="11" readonly="true">
+                            <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                 style="width: 25px;" width="25" height="21"
+                                 onclick="WdatePicker({el:'end_date',dateFmt:'yyyyMMdd'})"
+                                 title="结束时间" />
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="row mgt-20">
+                    <div class="btn-box">
+                        <button class="ui-btn mgr-10" id="query" >查询</button>
+                        <%-- <button class="ui-btn">返回</button>--%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="thisLedgerInfo" class="box box-solid box-default">
+    <div class="box-body">
+        <table id="example" class="table table-hover table-bordered">
+            <tr>
+                <th class="text-center">地市</th>
+                <th class="text-center">区县</th>
+                <th class="text-center">集团编码</th>
+                <th class="text-center">操作类型</th>
+                <th class="text-center">产品账号</th>
+                <th class="text-center">专线项目名称</th>
+                <th class="text-center">客户经理工号</th>
+                <th class="text-center">客户经理姓名</th>
+                <th class="text-center">操作人员工号</th>
+                <th class="text-center">操作人员姓名</th>
+                <th class="text-center">操作时间</th>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+
+    $(document).ready(function() {
+
+        $.ajax({
+            type: "GET",
+            url: "getGroupMsg",
+            data:{
+                service_no:service_no,
+                org_code:org_code
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                $("#group_id").append("<option value='"+item.group_id+"'>"+item.group_id+""+item.group_name+"</option>");
+            });
+        });
+    });
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+
+    var myDate = new Date();
+    var d = myDate.getDate();
+
+    if(d.length==1){
+        d = "0"+d;
+    }
+    var date = myDate.getFullYear()+""+add_zero(myDate.getMonth()+1)+""+d;
+    var date1 = myDate.getFullYear()+"-"+add_zero(myDate.getMonth()+1)+"-"+d;
+
+    $("#start_date").val(date);
+    $("#end_date").val(date);
+
+    function add_zero(t){
+        if(t<10){
+            return "0"+t;
+        }else{
+            return t;
+        }
+    }
+
+    $("#query").click(function () {
+        var start_date = $("#start_date").val();
+        var end_date = $("#end_date").val();
+        var group_id = $("#group_id").val();
+        var cust_id = $("#cust_id").val();
+
+        var s = start_date.substring(4,6);
+        var e = end_date.substring(4,6);
+        if(s != e){
+            $("#fault1").modal('show');
+            return;
+        }
+        $("#example").find("tr[id='tr']").remove();
+        $.ajax({
+            type: "GET",
+            url: "queryDlineCtaAss",
+            data:{
+                start_date:start_date,
+                end_date:end_date,
+                group_id:group_id,
+                cust_id:cust_id
+            }
+        }).then(function (data) {
+            if(data.ROOT.RETURN_CODE != '000000'){
+                $("#noticeInfo3").text(data.ROOT.RETURN_MSG);
+                $("#fault3").modal('show');
+                return;
+            }else{
+                var list = data.ROOT.OUT_DATA.PRODUCT_LIST;
+                //alert(list);
+                if(list == ""){
+                    $("#fault2").modal('show');
+                    return ;
+                }
+                var list = data.ROOT.OUT_DATA.PRODUCT_LIST.PRODUCT_INFO;
+                var json = JSON.stringify(list);
+                var jsonobj=eval('('+json+')');
+                if(jsonobj.length==undefined){
+                    $("#example").append("<tr id='tr' onclick='detail1(this)'><td id='rn'>" + jsonobj.RegionName + "</a></td>" +
+                        "<td id='dn'>" + jsonobj.DistrictName + "</td><td  id='ui'>" + jsonobj.UnitId + "</td><td  id='ot'>" + jsonobj.OpType + "</td><td id='ga'>" + jsonobj.GrpAccountId + "</td><td  id='hn'>" + jsonobj.HlProName + "</td>" +
+                        "<td id='ml'>"+jsonobj.ManagerLoginNo +"</td><td id='mn'>"+jsonobj.ManagerName+"</td><td  id='ol'>"+jsonobj.OpLogin+"</td><td id='one'>"+jsonobj.OpName+"</td><td id='n'></td><input id='hide' type='hidden' value='"+jsonobj.OpTime+"'></tr>");
+                    $.ajax({
+                        type: "GET",
+                        url: "getDate",
+                        data:{
+                            OpTime:jsonobj.OpTime
+                        }
+                    }).then(function (data1) {
+                        $("#n").text(data1.time);
+                    })
+                }else{
+                    $.each(list, function (index, item) {
+                        $("#example").append("<tr id='tr' onclick='detail(this,"+index+")'><td id='rn'>" + item.RegionName + "</a></td>" +
+                            "<td id='dn'>" + item.DistrictName + "</td><td id='ui'>" + item.UnitId + "</td><td id='ot'>" + item.OpType + "</td><td id='ga'>" + item.GrpAccountId + "</td><td id='hn'>" + item.HlProName + "</td>"+
+                            "<td id='ml'>"+item.ManagerLoginNo +"</td><td id='mn'>"+item.ManagerName+"</td><td id='ol'>"+item.OpLogin+"</td><td id='one'>"+item.OpName+"</td><td id="+index+"></td><input id='hide' type='hidden' value='"+item.OpTime+"'></tr>");
+                        $.ajax({
+                            type: "GET",
+                            url: "getDate",
+                            data:{
+                                OpTime:item.OpTime
+                            }
+                        }).then(function (data1) {
+                            $("#"+index).text(data1.time);
+                        })
+
+                    });
+                }
+
+            }
+
+        });
+
+    });
+
+    function detail(obj,index){
+        var RegionName = $(obj).children("td[id='rn']").text();
+        var DistrictName = $(obj).children("td[id='dn']").text();
+        var UnitId = $(obj).children("td[id='ui']").text();
+        var OpType = $(obj).children("td[id='ot']").text();
+        var GrpIdNo = $(obj).children("td[id='gi']").text();
+        var UserName = $(obj).children("td[id='un']").text();
+        var HlProName = $(obj).children("td[id='hn']").text();
+        var OfferName = $(obj).children("td[id='on']").text();
+        var BillCircel = $(obj).children("td[id='bc']").text();
+        var ManagerLoginNo = $(obj).children("td[id='ml']").text();
+        var ManagerName = $(obj).children("td[id='mn']").text();
+        var ChnOfferName = $(obj).children("td[id='cn']").text();
+        var OpLogin = $(obj).children("td[id='ol']").text();
+        var OpName = $(obj).children("td[id='one']").text();
+        var OpTime_hide = $(obj).children("input[id='hide']").val();
+        var OpTime = $(obj).children("td[id='"+index+"']").text();
+        var GrpAccountId = $(obj).children("td[id='ga']").text();
+
+        $("#RegionName").text(RegionName);
+        $("#DistrictName").text(DistrictName);
+        $("#UnitId").text(UnitId);
+        $("#OpType").text(OpType);
+        $("#GrpIdNo").text(GrpIdNo);
+        $("#UserName").text(UserName);
+        $("#HlProName").text(HlProName);
+        $("#OfferName").text(OfferName);
+        $("#BillCircel").text(BillCircel);
+        $("#ManagerLoginNo").text(ManagerLoginNo);
+        $("#ManagerName").text(ManagerName);
+        $("#ChnOfferName").text(ChnOfferName);
+        $("#OpLogin").text(OpLogin);
+        $("#OpName").text(OpName);
+        $("#OpTime_hide").val(OpTime_hide);
+        $("#OpTime").text(OpTime);
+        $("#GrpAccountId").text(GrpAccountId);
+
+        $.ajax({
+            type: "GET",
+            url: "queryDlineCtaAssDetail",
+            data:{
+                OpTime:OpTime_hide,
+                UnitId:UnitId,
+                GrpAccountId:GrpAccountId
+            }
+        }).then(function (data) {
+            if(data.ck_time != ''){
+                $("#add_button").hide();
+                $("#ck_time").val(data.ck_time);
+            }else{
+                $("#ck_time").val(date1);
+            }
+            if(data.ck_info == '有问题'){
+                $("#ck_info").find("option[value='有问题']").attr("selected",true);
+                $("#des").show();
+                $("#pro_des").text(data.pro_des);
+            }
+        })
+
+
+        $('#detail').modal({backdrop: 'static', keyboard: false});
+    }
+    function detail1(obj){
+        var RegionName = $(obj).children("td[id='rn']").text();
+        var DistrictName = $(obj).children("td[id='dn']").text();
+        var UnitId = $(obj).children("td[id='ui']").text();
+        var OpType = $(obj).children("td[id='ot']").text();
+        var GrpIdNo = $(obj).children("td[id='gi']").text();
+        var UserName = $(obj).children("td[id='un']").text();
+        var HlProName = $(obj).children("td[id='hn']").text();
+        var OfferName = $(obj).children("td[id='on']").text();
+        var BillCircel = $(obj).children("td[id='bc']").text();
+        var ManagerLoginNo = $(obj).children("td[id='ml']").text();
+        var ManagerName = $(obj).children("td[id='mn']").text();
+        var ChnOfferName = $(obj).children("td[id='cn']").text();
+        var OpLogin = $(obj).children("td[id='ol']").text();
+        var OpName = $(obj).children("td[id='one']").text();
+        var OpTime_hide = $(obj).children("input[id='hide']").val();
+        var OpTime = $(obj).children("td[id='n']").text();
+        var GrpAccountId = $(obj).children("td[id='ga']").text();
+
+        $("#RegionName").text(RegionName);
+        $("#DistrictName").text(DistrictName);
+        $("#UnitId").text(UnitId);
+        $("#OpType").text(OpType);
+        $("#GrpIdNo").text(GrpIdNo);
+        $("#UserName").text(UserName);
+        $("#HlProName").text(HlProName);
+        $("#OfferName").text(OfferName);
+        $("#BillCircel").text(BillCircel);
+        $("#ManagerLoginNo").text(ManagerLoginNo);
+        $("#ManagerName").text(ManagerName);
+        $("#ChnOfferName").text(ChnOfferName);
+        $("#OpLogin").text(OpLogin);
+        $("#OpName").text(OpName);
+        $("#OpTime_hide").val(OpTime_hide);
+        $("#OpTime").text(OpTime);
+        $("#GrpAccountId").text(GrpAccountId);
+
+        $.ajax({
+            type: "GET",
+            url: "queryDlineCtaAssDetail",
+            data:{
+                OpTime:OpTime_hide,
+                UnitId:UnitId,
+                GrpAccountId:GrpAccountId
+            }
+        }).then(function (data) {
+            if(data.ck_time != ''){
+                $("#add_button").hide();
+                $("#ck_time").val(data.ck_time);
+            }else{
+                $("#ck_time").val(date1);
+            }
+
+            if(data.ck_info == '有问题'){
+                $("#ck_info").find("option[value='有问题']").attr("selected",true);
+                $("#des").show();
+                $("#pro_des").text(data.pro_des);
+            }
+        })
+        //$("#detail").modal('show');
+
+        $('#detail').modal({backdrop: 'static', keyboard: false});
+    }
+
+    function set(){
+        if($("#ck_info").val() == '有问题'){
+            $("#des").show();
+        }else{
+            $("#des").hide();
+        }
+    }
+
+    function close1(){
+        $("#pro_des").text("");
+        $("#des").hide();
+        $("#add_button").show();
+        $("#ck_time").val("");
+        $("#ck_info").find("option[value='有问题']").attr("selected",false);
+        $("#ck_info").find("option[value='无问题']").attr("selected",false);
+
+    }
+
+    function goback(){
+        $("#pro_des").text("");
+        $("#des").hide();
+        $("#add_button").show();
+        $("#ck_time").val("");
+        $("#ck_info").find("option[value='有问题']").attr("selected",false);
+        $("#ck_info").find("option[value='无问题']").attr("selected",false);
+        $("#detail").modal('hide');
+    }
+
+    function add_button(){
+        var ck_time = $("#ck_time").val();
+        var ck_info = $("#ck_info").val();
+        var pro_des = $("#pro_des").text();
+
+        var UnitId = $("#UnitId").text();
+        var GrpAccountId = $("#GrpAccountId").text();
+        var UserName = $("#UserName").text();
+        var OpTime = $("#OpTime_hide").val();
+        var OpLogin = $("#OpLogin").text();
+
+        $.ajax({
+            type: "GET",
+            url: "updateDlineCtaAssDetail",
+            data:{
+                ck_time:ck_time,
+                ck_info:ck_info,
+                pro_des:pro_des,
+                UnitId:UnitId,
+                GrpAccountId:GrpAccountId,
+                UserName:GrpAccountId,
+                OpTime:OpTime,
+                OpLogin:OpLogin
+            }
+        }).then(function (data) {
+            if(data == 1){
+                $("#detail").modal('hide');
+                $("#fault4").modal('show');
+            }else{
+                $("#detail").modal('hide');
+                $("#fault5").modal('show');
+            }
+        })
+    }
+
+
+
+
+</script>
+</html>

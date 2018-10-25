@@ -1,0 +1,54 @@
+package com.esop.workbench.service;
+
+import com.esop.workbench.dto.menusListDto;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+
+/**
+ * Created by dinghl on 2017/6/23.
+ * 查询快捷入口的内容。
+ */
+@Repository
+public class menusListService {
+    @Autowired
+    private static Logger logger = Logger.getLogger( menusListService.class );
+    @Autowired
+    protected SqlSessionTemplate  sqlSessionTemplate;
+
+    public List<menusListDto> getMenusList(menusListDto indto){
+
+        String sqlSelectId = "selectMenusList";
+        List list = sqlSessionTemplate.selectList(sqlSelectId , indto);
+        return list;
+    }
+
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int setMenusList(menusListDto menusListDto,String str){
+        int num = 0;
+        String strlist[] = str.split("\\|");
+        String sqlDeleteId =  "deleteMenusList";
+        logger.info(menusListDto.getLanding_no());
+        sqlSessionTemplate.delete(sqlDeleteId , menusListDto);
+        String sqlUpdateId = "setMenusList";
+        for(int i = 0 ; i < (strlist.length + 1)/2 ; i++ ){
+            logger.info(strlist[2*i]);
+            menusListDto.setFunction_code(strlist[2*i]);
+            menusListDto.setFunction_name(strlist[2*i+1]);
+            logger.info(strlist[2*i+1]);
+            sqlSessionTemplate.update(sqlUpdateId , menusListDto);
+            num++;
+        }
+        return num;
+    }
+
+
+
+
+}

@@ -1,0 +1,288 @@
+package com.esop.workbench.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Shinelon on 2017/5/26.
+ */
+public class EpTradeMedicineDto extends BaseDto {
+    String eff_date="";
+    String region_code="";
+    String region_name="";
+    String ex_wid_day_inc="";
+    String ex_wid_mon_inc  ="";
+    String ex_wid_total_inc  ="";
+    String ex_wid_goal ="";
+    String ex_wid_comp_rate ="";
+    String ex_day_inc ="";
+    String ex_mon_inc="";
+    String ex_total_inc ="";
+    String ex_goal="";
+    String ex_comp_rate ="";
+    String ex_unit_day_inc="";
+    String ex_unit_mon_inc="";
+    String ex_unit_total_inc  ="";
+    String ex_unit_goal ="";
+    String ex_unit_comp_rate="";
+    String md_wid_day_inc="";
+    String md_wid_total_inc="";
+    String md_wid_goal="";
+    String md_wid_comp_rate="";
+    String md_day_inc="";
+    String md_wid_inc="";
+    String md_goal="";
+    String md_comp_rate ="";
+    String md_unit_day_inc="";
+    String md_unit_mon_inc="";
+    String md_unit_total_inc="";
+    String md_unit_goal ="";
+    String md_unit_comp_rate="";
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getEx_wid_day_inc() {
+        return ex_wid_day_inc;
+    }
+
+    public void setEx_wid_day_inc(String ex_wid_day_inc) {
+        this.ex_wid_day_inc = ex_wid_day_inc;
+    }
+
+    public String getEx_wid_mon_inc() {
+        return ex_wid_mon_inc;
+    }
+
+    public void setEx_wid_mon_inc(String ex_wid_mon_inc) {
+        this.ex_wid_mon_inc = ex_wid_mon_inc;
+    }
+
+    public String getEx_wid_total_inc() {
+        return ex_wid_total_inc;
+    }
+
+    public void setEx_wid_total_inc(String ex_wid_total_inc) {
+        this.ex_wid_total_inc = ex_wid_total_inc;
+    }
+
+    public String getEx_wid_goal() {
+        return ex_wid_goal;
+    }
+
+    public void setEx_wid_goal(String ex_wid_goal) {
+        this.ex_wid_goal = ex_wid_goal;
+    }
+
+    public String getEx_wid_comp_rate() {
+        return ex_wid_comp_rate;
+    }
+
+    public void setEx_wid_comp_rate(String ex_wid_comp_rate) {
+        this.ex_wid_comp_rate = ex_wid_comp_rate;
+    }
+
+    public String getEx_day_inc() {
+        return ex_day_inc;
+    }
+
+    public void setEx_day_inc(String ex_day_inc) {
+        this.ex_day_inc = ex_day_inc;
+    }
+
+    public String getEx_mon_inc() {
+        return ex_mon_inc;
+    }
+
+    public void setEx_mon_inc(String ex_mon_inc) {
+        this.ex_mon_inc = ex_mon_inc;
+    }
+
+    public String getEx_total_inc() {
+        return ex_total_inc;
+    }
+
+    public void setEx_total_inc(String ex_total_inc) {
+        this.ex_total_inc = ex_total_inc;
+    }
+
+    public String getEx_goal() {
+        return ex_goal;
+    }
+
+    public void setEx_goal(String ex_goal) {
+        this.ex_goal = ex_goal;
+    }
+
+    public String getEx_comp_rate() {
+        return ex_comp_rate;
+    }
+
+    public void setEx_comp_rate(String ex_comp_rate) {
+        this.ex_comp_rate = ex_comp_rate;
+    }
+
+    public String getEx_unit_day_inc() {
+        return ex_unit_day_inc;
+    }
+
+    public void setEx_unit_day_inc(String ex_unit_day_inc) {
+        this.ex_unit_day_inc = ex_unit_day_inc;
+    }
+
+    public String getEx_unit_mon_inc() {
+        return ex_unit_mon_inc;
+    }
+
+    public void setEx_unit_mon_inc(String ex_unit_mon_inc) {
+        this.ex_unit_mon_inc = ex_unit_mon_inc;
+    }
+
+    public String getEx_unit_total_inc() {
+        return ex_unit_total_inc;
+    }
+
+    public void setEx_unit_total_inc(String ex_unit_total_inc) {
+        this.ex_unit_total_inc = ex_unit_total_inc;
+    }
+
+    public String getEx_unit_goal() {
+        return ex_unit_goal;
+    }
+
+    public void setEx_unit_goal(String ex_unit_goal) {
+        this.ex_unit_goal = ex_unit_goal;
+    }
+
+    public String getEx_unit_comp_rate() {
+        return ex_unit_comp_rate;
+    }
+
+    public void setEx_unit_comp_rate(String ex_unit_comp_rate) {
+        this.ex_unit_comp_rate = ex_unit_comp_rate;
+    }
+
+    public String getMd_wid_day_inc() {
+        return md_wid_day_inc;
+    }
+
+    public void setMd_wid_day_inc(String md_wid_day_inc) {
+        this.md_wid_day_inc = md_wid_day_inc;
+    }
+
+    public String getMd_wid_total_inc() {
+        return md_wid_total_inc;
+    }
+
+    public void setMd_wid_total_inc(String md_wid_total_inc) {
+        this.md_wid_total_inc = md_wid_total_inc;
+    }
+
+    public String getMd_wid_goal() {
+        return md_wid_goal;
+    }
+
+    public void setMd_wid_goal(String md_wid_goal) {
+        this.md_wid_goal = md_wid_goal;
+    }
+
+    public String getMd_wid_comp_rate() {
+        return md_wid_comp_rate;
+    }
+
+    public void setMd_wid_comp_rate(String md_wid_comp_rate) {
+        this.md_wid_comp_rate = md_wid_comp_rate;
+    }
+
+    public String getMd_day_inc() {
+        return md_day_inc;
+    }
+
+    public void setMd_day_inc(String md_day_inc) {
+        this.md_day_inc = md_day_inc;
+    }
+
+    public String getMd_wid_inc() {
+        return md_wid_inc;
+    }
+
+    public void setMd_wid_inc(String md_wid_inc) {
+        this.md_wid_inc = md_wid_inc;
+    }
+
+    public String getMd_goal() {
+        return md_goal;
+    }
+
+    public void setMd_goal(String md_goal) {
+        this.md_goal = md_goal;
+    }
+
+    public String getMd_comp_rate() {
+        return md_comp_rate;
+    }
+
+    public void setMd_comp_rate(String md_comp_rate) {
+        this.md_comp_rate = md_comp_rate;
+    }
+
+    public String getMd_unit_day_inc() {
+        return md_unit_day_inc;
+    }
+
+    public void setMd_unit_day_inc(String md_unit_day_inc) {
+        this.md_unit_day_inc = md_unit_day_inc;
+    }
+
+    public String getMd_unit_mon_inc() {
+        return md_unit_mon_inc;
+    }
+
+    public void setMd_unit_mon_inc(String md_unit_mon_inc) {
+        this.md_unit_mon_inc = md_unit_mon_inc;
+    }
+
+    public String getMd_unit_total_inc() {
+        return md_unit_total_inc;
+    }
+
+    public void setMd_unit_total_inc(String md_unit_total_inc) {
+        this.md_unit_total_inc = md_unit_total_inc;
+    }
+
+    public String getMd_unit_goal() {
+        return md_unit_goal;
+    }
+
+    public void setMd_unit_goal(String md_unit_goal) {
+        this.md_unit_goal = md_unit_goal;
+    }
+
+    public String getMd_unit_comp_rate() {
+        return md_unit_comp_rate;
+    }
+
+    public void setMd_unit_comp_rate(String md_unit_comp_rate) {
+        this.md_unit_comp_rate = md_unit_comp_rate;
+    }
+}

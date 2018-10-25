@@ -1,0 +1,273 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>预打发票>>预打发票申请工单查询</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预打发票>>预打发票申请工单查询</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>申请单编号：</th>
+                            <td>
+                                <input id="application_no" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>集团单位：</th>
+                            <td>
+                                <input id="group_name" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>发票类型：</th>
+                            <td>
+                                <select id="invoice_type" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">增值税电子发票</option>
+                                    <option value="2">增值税专用发票</option>
+                                </select>
+                            </td>
+                            <th>发票模式：</th>
+                            <td>
+                                <select id="invoice_mode" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">实收</option>
+                                    <option value="2">月结</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>打印方式：</th>
+                            <td>
+                                <select id="print_mode" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">一般打印</option>
+                                    <option value="2">发票合打</option>
+                                    <option value="3">发票分打</option>
+                                </select>
+                            </td>
+                            <th>筛选冲红申请：</th>
+                            <td>
+                                <select id="is_red" class="select-style-1">
+                                    <option></option>
+                                    <option value="2">开具</option>
+                                    <option value="1">冲红</option>
+                                    <option value="0">作废</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>工单状态：</th>
+                            <td>
+                                <select id="work_state" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">审批中</option>
+                                    <option value="2">待开票</option>
+                                    <option value="3">开票成功</option>
+                                    <option value="4">已回款</option>
+                                    <option value="5">已冲红</option>
+                                    <option value="6">已作废</option>
+                                </select>
+                            </td>
+                            <th>申请人：</th>
+                            <td>
+                                <input id="applicant_name" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>申请时间:</th>
+                            <td>
+                                <input type=text id="starttime" class="input-sty04 form-ipt" maxlength="11" readonly="readonly">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png" onclick="WdatePicker({el:'starttime',dateFmt:'yyyy-MM-dd'})" title="开始时间"/>
+                                至
+                                <input type=text id="endtime" class="input-sty04 form-ipt" maxlength="11" readonly="readonly">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png" onclick="WdatePicker({el:'endtime',dateFmt:'yyyy-MM-dd'})" title="结束时间"/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="display: none">
+                        <form action="" name="exportExcel" id="exportExcel" target="export"
+                              method="post" accept-charset="utf-8"></form>
+                        <iframe name="export" id="export"></iframe>
+                    </div>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <input type="button" class="ui-btn mgr-10" value="查询" onclick="finpageInvPreprint()"/>
+                            <input type="button" class="ui-btn btn-success mgr-10" onclick="excelExport()" value="导出"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预打发票申请工单列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="example" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th>申请单编号</th>
+                            <th>组织机构</th>
+                            <th>行业中心</th>
+                            <th>集团单位名称</th>
+                            <th>集团单位编码</th>
+                            <th>发票类型</th>
+                            <th>发票模式</th>
+                            <th>打印方式</th>
+                            <th>是否冲红</th>
+                            <th>发票金额（元）</th>
+                            <th>申请人</th>
+                            <th>申请时间</th>
+                            <th>工单状态</th>
+                            <th>查看</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript" language="javascript" class="init">
+    var table;
+    $(document).ready(function () {
+
+    });
+
+    /**
+     * 预存发票打印情况查询明细
+     */
+    function finpageInvPreprint() {
+        table = $('#example').DataTable({
+            "scrollX": true,
+            ordering:false,
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                url: "invoice/finpageInvPreprint",
+                type: "POST",
+                data: {
+                    "application_no": $("#application_no").val(),
+                    "group_name": $("#group_name").val(),
+                    "is_red": $("#is_red").val(),
+                    "invoice_mode": $("#invoice_mode").val(),
+                    "print_mode": $("#print_mode").val(),
+                    "invoice_type": $("#invoice_type").val(),
+                    "applicant_name": $("#applicant_name").val(),
+                    "work_state": $("#work_state").val(),
+                    "start_login_no":'<%=login_no %>',
+                    "starttime": $("#starttime").val(),
+                    "endtime": $("#endtime").val(),
+                }
+            },
+            "columns": [
+                {data: "application_no"},
+                {data: "branch_no"},
+                {data: "industry_center_name"},
+                {data: "group_name"},
+                {data: "group_id"},
+                {data: "invoice_type"},
+                {data: "invoice_mode"},
+                {data: "print_mode"},
+                {data: "is_red"},
+                {data: "invoice_sum_value"},
+                {data: "applicant_name"},
+                {data: "application_time"},
+                {data: "work_state"},
+                {
+                    data: null,
+                    //"orderable": false,
+                    "width": "8%",
+                    render: function (data, type, row, meta) {
+                        return data = "<button type='button'    style='width: 50px' onclick=showInvAppMsg('" + row.application_no + "')>查看</button>";
+                    }
+                }
+            ],
+            select: false
+        });
+    }
+
+    function showInvAppMsg(applicationNo) {
+        var url = "<%=request.getContextPath()%>/inv_app_show" + "?applicationNo=" + applicationNo;
+        openDialogView("查询详情", url, "900px", "500px");
+    }
+
+    function openDialogView(title, url, width, height) {
+        if (navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)) {//如果是移动端，就使用自适应大小弹窗
+            width = 'auto';
+            height = 'auto';
+        } else {//如果是PC端，根据用户设置的width和height显示。
+
+        }
+        layer.open({
+            type: 2,
+            area: [width, height],
+            title: title,
+            maxmin: true, //开启最大化最小化按钮
+            content: url,
+            btn: ['关闭'],
+            cancel: function (index) {
+            }
+        });
+    }
+    /**
+     * 导出Excel表格
+     */
+    function excelExport() {
+        var application_no = $("#application_no").val();
+        var group_name = $("#group_name").val();
+        var is_red=$("#is_red").val();
+        var invoice_mode = $("#invoice_mode").val();
+        var print_mode = $("#print_mode").val();
+        var invoice_type=$("#invoice_type").val();
+        var applicant_name = $("#applicant_name").val();
+        var work_state = $("#work_state").val();
+        var start_login_no='<%=login_no %>';
+        var starttime = $("#starttime").val();
+        var endtime = $("#endtime").val();
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='invoice/exportApplicationFormReport?application_no='+application_no
+            +'&group_name='+group_name
+            +'&is_red='+is_red
+            +'&invoice_mode='+invoice_mode
+            +'&print_mode='+print_mode
+            +'&invoice_type='+invoice_type
+            +'&applicant_name='+applicant_name
+            +'&work_state='+work_state
+            +'&start_login_no='+start_login_no
+            +'&starttime='+starttime
+            +'&endtime='+endtime;
+        f.action = actionUrl;
+        f.submit();
+    }
+</script>
+</html>

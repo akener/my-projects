@@ -1,0 +1,112 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.OrRequestTemplateProcDto;
+import com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class OrRequestinstInfoService {
+
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    /**
+     * 写入订单主表数据
+     * @param orRequestinstInfoDto
+     * @return
+     */
+    public int insertOrRequestinstInfoDto(OrRequestinstInfoDto orRequestinstInfoDto) {
+        int  i =sqlSessionTemplate.insert("insertOrRequestinstInfoDto",orRequestinstInfoDto);
+        return i;
+    }
+
+    /**
+     * 查询订单信息
+     * @param orRequestinstInfoDto
+     * @return
+     */
+    public Result queryOrderInfos(OrRequestinstInfoDto orRequestinstInfoDto) {
+        Result result =sqlE.selectPage("queryOrderInfos",orRequestinstInfoDto);
+        return result;
+    }
+
+    /**
+     * 查询某一条订单信息
+     * @param request_num
+     * @return
+     */
+    public OrRequestinstInfoDto queryOneRequestInfo(String request_num) {
+        OrRequestinstInfoDto result =sqlSessionTemplate.selectOne("queryOneRequestInfo",request_num);
+        return result;
+    }
+
+    /**
+     * 查询订单待办信息
+     * @param orRequestinstInfoDto
+     * @return
+     */
+    public Result queryOrderInfotodo(OrRequestinstInfoDto orRequestinstInfoDto) {
+        Result result=new Result();
+        if(orRequestinstInfoDto.getState().equals("2")) {
+            result = sqlE.selectPage("queryOrderInfotodo2", orRequestinstInfoDto);
+        }else {
+            result = sqlE.selectPage("queryOrderInfotodo", orRequestinstInfoDto);
+        }
+        return result;
+    }
+    /**
+     * 查询订单待办详情并进行页面跳转
+     * @param orRequestinstInfoDto
+     * @return
+     */
+    public OrRequestinstInfoDto queryOrdertodo(OrRequestinstInfoDto orRequestinstInfoDto) {
+
+        OrRequestinstInfoDto   result = sqlSessionTemplate.selectOne("queryOrderInfotodo", orRequestinstInfoDto);
+
+        return result;
+    }
+
+    /**
+     * 根据业务代码和步骤id查询跳转页面
+     * @param reqdto
+     * @return
+     */
+    public OrRequestTemplateProcDto queryOderPathtodo(OrRequestTemplateProcDto reqdto) {
+        OrRequestTemplateProcDto result =sqlSessionTemplate.selectOne("queryOderPathtodo",reqdto);
+        return result;
+    }
+
+    public int upOrRequestinstInfoDto(OrRequestinstInfoDto instDto) {
+        int i =sqlSessionTemplate.update("upOrRequestinstInfoDto",instDto);
+        return i;
+    }
+
+    /**
+     * 查询订单路径list
+     * @param reqdto
+     * @return
+     */
+    public List<OrRequestTemplateProcDto> queryOderPathtodos(OrRequestTemplateProcDto reqdto) {
+        List<OrRequestTemplateProcDto> result =sqlSessionTemplate.selectList("queryOderPathtodos",reqdto);
+        return result;
+    }
+
+    /**
+     * 查询订单模板和代码下拉列表
+     * @param reqdto
+     * @return
+     */
+    public List<OrRequestinstInfoDto> queryTemplateDomain(OrRequestinstInfoDto reqdto) {
+        List<OrRequestinstInfoDto> result =sqlSessionTemplate.selectList("queryTemplateDomain",reqdto);
+        return result;
+    }
+
+}

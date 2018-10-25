@@ -1,0 +1,40 @@
+package com.esop.capAdjustApply.service;
+
+import com.esop.capAdjustApply.dto.EpCapGrpPayFeeInfo;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by user on 2017/11/20.
+ */
+//集团缴费业务-资金管理-使用申请子业务
+@Repository
+public class GrpPayFeeApplySvr {
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Transactional
+    public int insertEpCapGrpPayFeeApplyInfo(EpCapGrpPayFeeInfo parameter) {
+        //插入一条 集团缴费使用申请 的信息
+        return sqlE.insertM("insertEpCapGrpPayFeeApplyInfo",parameter);
+    }
+    //查询集团缴费申请信息列表
+    public List getGrpPayFeeApplyDealInfo(EpCapGrpPayFeeInfo parameter) {
+
+        List list = sqlE.selectM("getGrpPayFeeApplyDealInfo",parameter);
+        return list;
+
+    }
+    //查询集团缴费申请详细（基本/流程轨迹）等信息
+    public Result qryGrpPayFeeApplyList(EpCapGrpPayFeeInfo parameter) {
+        Result result = sqlE.selectPage("qryGrpPayFeeApplyList", parameter);
+        return result;
+    }
+}

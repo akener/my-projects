@@ -1,0 +1,8 @@
+package test.jaxb;
+
+/**
+ * Created by wangbl on 2017/3/17.
+ */
+public class TestMain {
+    public static void main(String args[]){}
+}

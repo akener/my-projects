@@ -1,0 +1,43 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/13.
+ */
+//客户经理信息查询出参
+public class CustManagerInfoDto {
+    String service_no = "";//客户经理工号
+    String contact_phone = "";//联系电话
+    String cust_name = "";//姓名
+    String name = "";//客户经理姓名
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getContact_phone() {
+        return contact_phone;
+    }
+
+    public void setContact_phone(String contact_phone) {
+        this.contact_phone = contact_phone;
+    }
+
+    public String getCust_name() {
+        return cust_name;
+    }
+
+    public void setCust_name(String cust_name) {
+        this.cust_name = cust_name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

@@ -1,0 +1,7 @@
+@XmlSchema(
+        namespace = "http://nm.cmc.com/CSCS/BW/BWMethod/BW00001/",
+        elementFormDefault = XmlNsForm.QUALIFIED)
+package com.esop.productInfo.dto;
+
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

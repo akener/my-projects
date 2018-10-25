@@ -1,0 +1,187 @@
+package com.esop.workflow.util;
+
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.IndexedColors;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
+/**
+ * Created by liwj on 2017/12/13.
+ */
+public class ExportExcelUtil {
+    /**
+     * 导出报表
+     * @param tableHeader  表头集合
+     * @param methods   方法集合
+     * @param obj
+     * @return
+     */
+    public static HSSFWorkbook exportExcel(String[] tableHeader, String methods[], Object obj) {
+        HSSFWorkbook workBook = new HSSFWorkbook();
+        HSSFSheet sheet = workBook.createSheet();
+        //生成表格表头
+        HSSFRow rowTitle = sheet.createRow(0);
+
+        for (int i = 0; i < tableHeader.length; i++) {
+            rowTitle.createCell(i).setCellValue(tableHeader[i]);
+        }
+
+        for (int i = 0; i < ((List)obj).size(); i++) {
+            HSSFRow row = sheet.createRow(i + 1);
+            Object r = ((List)obj).get(i);
+            for (int j = 0; j < methods.length; j++) {
+                try {
+                    Method m = r.getClass().getDeclaredMethod(methods[j]);
+
+                    row.createCell(j).setCellValue(m.invoke(r).toString());
+                } catch (Exception e) {
+
+                }
+            }
+        }
+        return workBook;
+    }
+
+
+
+
+    /**
+     * 导出报表增加表头表尾以及样式
+     * @param tableHeader  表头集合
+     * @param methods   方法集合
+     * @param obj
+     * @return
+     */
+
+    public static HSSFWorkbook exportExcelAddTitle(String Title,String[]searchStr,String[] footer, String[] tableHeader, String methods[], Object obj) {
+        HSSFWorkbook workBook = new HSSFWorkbook();
+        HSSFSheet sheet = workBook.createSheet();
+
+        //生成Title
+        HSSFRow rowTitle1 = sheet.createRow(0);
+
+        int size=((List)obj).size();
+
+        //获取到中间单元格
+        int len=methods.length/2;
+
+        //生成单元格式
+        HSSFCellStyle cellStyle = workBook.createCellStyle();
+        //字体样式
+        HSSFFont hssfFont = workBook.createFont();
+
+        //字体大小
+        hssfFont.setFontHeightInPoints((short)22);
+        hssfFont.setFontName("微软雅黑");
+        //粗体
+        // hssfFont.setBold(true);
+
+        cellStyle.setFont(hssfFont);
+
+        HSSFCell hssfCell = rowTitle1.createCell(len);
+
+        hssfCell.setCellStyle(cellStyle);
+        hssfCell.setCellValue(Title);
+
+
+
+
+        //生成单元格式
+        HSSFCellStyle cellStyleSearch = workBook.createCellStyle();
+        //字体样式
+        HSSFFont hssfSerach = workBook.createFont();
+
+        //字体颜色
+        hssfSerach.setColor(IndexedColors.ROYAL_BLUE.index);//字体颜色
+
+        cellStyleSearch.setFont(hssfSerach);
+
+
+        //制表条件
+        HSSFRow rowTitle2 = sheet.createRow(1);
+
+        if(searchStr!=null&&searchStr.length>0)
+        {
+            for(int k=0;k<searchStr.length;k++)
+            {
+                HSSFCell hssfCellSearch=  rowTitle2.createCell(k);
+
+                hssfCellSearch.setCellStyle(cellStyleSearch);
+                hssfCellSearch.setCellValue(searchStr[k]);
+            }
+        }
+
+
+        //生成表格表头
+        HSSFRow rowTitle = sheet.createRow(2);
+
+        //生成单元内容格式
+        HSSFCellStyle cellStyleHead = workBook.createCellStyle();
+
+        HSSFFont hssfFontHead = workBook.createFont();
+
+        //字体颜色
+        hssfFontHead.setColor(IndexedColors.WHITE.index);//字体颜色
+
+        cellStyleHead.setFont(hssfFontHead);
+
+        cellStyleHead.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyleHead.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.index);
+
+
+        for (int i = 0; i < tableHeader.length; i++) {
+            HSSFCell hssfCellHead=  rowTitle.createCell(i);
+            hssfCellHead.setCellStyle(cellStyleHead);
+            hssfCellHead.setCellValue(tableHeader[i]);
+        }
+
+
+
+        for (int i = 0; i < size; i++) {
+            HSSFRow row = sheet.createRow(i + 3);
+            Object r = ((List)obj).get(i);
+            for (int j = 0; j < methods.length; j++) {
+                try {
+                    Method m = r.getClass().getDeclaredMethod(methods[j]);
+
+                    row.createCell(j).setCellValue(m.invoke(r).toString());
+                } catch (Exception e) {
+
+                }
+            }
+        }
+
+        //生成表尾
+        HSSFRow foot = sheet.createRow(size + 3);
+
+
+        //生成单元格式
+        HSSFCellStyle cellStyleFooter = workBook.createCellStyle();
+        //字体样式
+        HSSFFont hssfFontFooter = workBook.createFont();
+
+        //字体颜色
+        hssfFontFooter.setColor(IndexedColors.RED.index);//字体颜色
+
+        cellStyleFooter.setFont(hssfFontFooter);
+
+        if(footer!=null&&footer.length>0) {
+            for (int g = 0; g < footer.length; g++) {
+
+
+                HSSFCell hssfCellFooter = foot.createCell(methods.length - 1 - g);
+                hssfCellFooter.setCellStyle(cellStyleFooter);
+                hssfCellFooter.setCellValue(footer[footer.length - 1 - g]);
+
+            }
+        }
+
+        return workBook;
+    }
+
+
+
+
+}

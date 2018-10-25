@@ -1,0 +1,198 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.LogInfoDto;
+import com.esop.base.dto.SessionDto;
+import com.esop.common.date.DateFunc;
+import com.esop.pub.ServiceUrlBean;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.MultipartProperties;
+import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import okhttp3.*;
+import org.springframework.web.client.RestTemplate;
+
+/**
+ * Created by wangbl on 2017/6/19.
+ */
+@RestController
+public class LoginRestController {
+    @Autowired
+    ServiceUrlBean serviceUrlBean;
+    private RestTemplate restTemplate;
+    private static Logger logger = Logger.getLogger(LoginRestController.class);
+
+    public LoginRestController() {
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setBufferRequestBody(false);
+        this.restTemplate = new RestTemplate(requestFactory);
+    }
+
+    //系统登陆
+    @RequestMapping(value = "/setSessionInfo")
+    public String setSessionInfo(HttpSession session, SessionDto param) {
+        SessionDto obj = new SessionDto();
+
+        System.out.println("------------########-------------username="+session.getAttribute("username"));
+        System.out.println("------------########-------------password="+session.getAttribute("password"));
+        session.getAttributeNames();
+        Enumeration en = session.getAttributeNames();
+        StringBuffer requestStrBuffer=new StringBuffer();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            requestStrBuffer.append("&"+paramName+"=" + session.getAttribute(paramName));
+        }
+        System.out.println("@@@@session中值="+requestStrBuffer.toString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.MULTIPART_FORM_DATA);
+        MultiValueMap<String, String> mapinsert = new LinkedMultiValueMap<String, String>();
+        String[] tokenInfo = param.getLogin_no().split("@");
+        session.setAttribute("login_no_4a", "test001");
+        if(tokenInfo.length>2){
+            param.setLogin_no(tokenInfo[1]);
+            session.setAttribute("login_no_4a", tokenInfo[3]);
+        }
+        mapinsert.add("login_no", param.getLogin_no());
+        HttpEntity<MultiValueMap<String, String>> requestparam = new HttpEntity<MultiValueMap<String, String>>(mapinsert, headers);
+        SessionDto sessionDto = restTemplate.postForObject("http://" + serviceUrlBean.getServiceUrl() + "/selectLoginNoInfo", requestparam, SessionDto.class);
+        session.setAttribute("login_no", sessionDto.getLogin_no());
+        session.setAttribute("login_name", sessionDto.getLogin_name());
+        session.setAttribute("role_code", sessionDto.getRole_code());
+        session.setAttribute("role_name", sessionDto.getRole_name());
+        session.setAttribute("region_code", sessionDto.getRegion_code());
+        session.setAttribute("boss_org_code", sessionDto.getBoss_org_code());
+        session.setAttribute("group_id", sessionDto.getGroup_id());
+        session.setAttribute("group_name", sessionDto.getGroup_name());
+        session.setAttribute("busi_boss_no", sessionDto.getBusi_boss_no());//个人业务映射工号
+        session.setAttribute("busi_password", sessionDto.getBusi_password());//个人业务映射工号
+        session.setAttribute("grpusertype", sessionDto.getGrpusertype());
+        session.setAttribute("grp_staff_number", sessionDto.getGrp_staff_number());
+        session.setAttribute("need_remind", sessionDto.getNeed_remind());
+        session.setAttribute("grp_role_code", sessionDto.getGrp_role_code());
+        session.setAttribute("is_grp_staff", sessionDto.getIs_grp_staff());
+        if (session.getAttribute("userMap") == null) {
+            logger.info("设置session中的用户信息");
+            Map userMap = new HashMap();
+            userMap.put("login_no", sessionDto.getLogin_no());
+            userMap.put("login_name", sessionDto.getLogin_name());
+            session.setAttribute("userMap", userMap);
+        }
+        OkHttpClient client = new OkHttpClient();
+        System.out.println("session信息已加载完毕，欢迎测试！");
+        String href_url = "";
+        try {//"aavg38"
+
+            RequestBody body = new FormBody.Builder()
+                    .add("login_no", param.getLogin_no())
+                    .build();
+            Request okrequest = new Request.Builder()
+                    .url("http://" + serviceUrlBean.getServiceUrl() + "/selectWorkAreaUrl")
+                    //.url("http://localhost:8082/esop/selectWorkAreaUrl")
+                    .post(body)
+                    .build();
+            Response okresponse = client.newCall(okrequest).execute();
+            href_url = okresponse.body().string();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return href_url;
+    }
+
+    //获得用户的session信息
+    @RequestMapping(value = "/getSessionInfo")
+    public SessionDto getSessionInfo(HttpSession session) {
+        SessionDto obj = new SessionDto();
+        if (session.getAttribute("userMap") == null) {
+            logger.info("设置session中的用户信息");
+            Map userMap = new HashMap();
+            userMap.put("login_no", session.getAttribute("login_no").toString());
+            userMap.put("login_name", "测试工号");
+            userMap.put("group_id", "HB.WH.01");
+            userMap.put("group_name", "哈尔滨市");
+            userMap.put("contact_phone", "13812345678");
+            userMap.put("region_group_id", "001");
+            userMap.put("identity_code", "1");
+            session.setAttribute("userMap", userMap);
+        }
+        Map user = (Map) session.getAttribute("userMap");
+        obj.setLogin_no(session.getAttribute("login_no").toString());
+        obj.setLogin_name(user.get("login_name").toString());
+        obj.setGroup_id("");
+        obj.setGroup_name(user.get("group_name").toString());
+        obj.setContact_phone(user.get("contact_phone").toString());
+        obj.setRegion_group_id(user.get("region_group_id").toString());
+        obj.setSys_date(new DateFunc().getDate("yyyy-MM-dd"));
+        obj.setYesterday(new DateFunc().dateAS(-1));
+        obj.setIdentity_code(user.get("identity_code").toString());
+        logger.info(obj.getGroup_name());
+        logger.info(obj.getLogin_name());
+        logger.info(obj.getLogin_no());
+        return obj;
+    }
+
+    //获得用户的登录信息
+    @RequestMapping(value = "/getLandingInfo")
+    public Map getLandingInfo(HttpServletRequest request, HttpSession session) {
+        Map map = new HashMap();
+        map.put("code", "0000000");
+        map.put("message", "Rest Request Success");
+        map.put("promptMsg", "User Operate Success");
+        Map entity = new HashMap();
+        entity.put("loginNo", session.getAttribute("login_no"));
+        entity.put("loginName",session.getAttribute("login_name"));
+        entity.put("groupId", session.getAttribute("group_id"));
+        entity.put("groupName", session.getAttribute("group_name"));
+        entity.put("loginTime", new DateFunc().getDate("yyyy-MM-dd HH:mm:ss"));
+        entity.put("ip",request.getRemoteAddr());
+        entity.put("sendTime",System.currentTimeMillis());
+        Map data = new HashMap();
+        data.put("entity", entity);
+        map.put("data", data);
+        return map;
+    }
+    //操作日志记录
+    @RequestMapping(value = "/opLog")
+    public String getLandingInfo(HttpServletRequest request, HttpSession session,LogInfoDto param) {
+
+        param.setLogin_no_4a(session.getAttribute("login_no_4a").toString());
+        param.setLogin_no(session.getAttribute("login_no").toString());
+        param.setIp_addr(request.getRemoteHost().toString());
+        OkHttpClient client = new OkHttpClient();
+        String returnInfo="";
+        try {//"aavg38"
+            System.out.println("获取IP地址真实信息======"+request.getHeader("x-forwarded-for"));
+            String remoteAddr="";
+            if (request.getHeader("x-forwarded-for") == null) {
+                remoteAddr=request.getRemoteAddr();
+            }else {
+                remoteAddr = request.getHeader("x-forwarded-for");
+            }
+            RequestBody body = new FormBody.Builder()
+                    .add("op_code",param.getOp_code())
+                    .add("ip_addr",remoteAddr)
+                    .add("login_no", session.getAttribute("login_no").toString())
+                    .add("login_no_4a",session.getAttribute("login_no_4a").toString())
+                    .build();
+            Request okrequest = new Request.Builder()
+                    .url("http://"+serviceUrlBean.getServiceUrl() + "/insertLogInfo")
+                    //.url("http://localhost:8082/esop/setSessionInfo")
+                    .post(body)
+                    .build();
+            Response okresponse = client.newCall(okrequest).execute();
+            returnInfo=okresponse.body().string();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return returnInfo;
+    }
+}

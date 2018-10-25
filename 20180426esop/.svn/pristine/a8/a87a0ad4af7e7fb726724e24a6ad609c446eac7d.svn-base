@@ -1,0 +1,54 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by lilei on 2017/6/27
+ */
+public class SendMsgDto extends BaseDto{
+    private String login_no;
+    private String contract_phone;
+    private String role_code;
+    private String group_id;
+    private String DT_RowId ="";
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getContract_phone() {
+        return contract_phone;
+    }
+
+    public void setContract_phone(String contract_phone) {
+        this.contract_phone = contract_phone;
+    }
+
+    public String getRole_code() {
+        return role_code;
+    }
+
+    public void setRole_code(String role_code) {
+        this.role_code = role_code;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+}

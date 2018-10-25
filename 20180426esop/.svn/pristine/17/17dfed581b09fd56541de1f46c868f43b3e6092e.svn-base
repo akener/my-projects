@@ -1,0 +1,584 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%
+    String group_pay_code=request.getParameter("group_pay_code");
+    String center_code=request.getParameter("center_code");
+    String dateTime=request.getParameter("dateTime");
+    String branchCompany=request.getParameter("branchCompany");
+    String industryCenter=request.getParameter("industryCenter");
+%>
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+    <%--<%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>--%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>集团资金调账日报表</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <%--<input type="text" id="branch_company" value="" class="input-sty04 form-ipt">--%>
+                                <%--<select id="org_id" class="input-sty04 form-ipt" onchange="getBusinessCenter(this.value)">
+                                    &lt;%&ndash;<option value="">请选择</option>&ndash;%&gt;
+                                </select>--%>
+                                    <input type="hidden" id="org_id"/>
+                                    <input  id="branchCompany" class="input-sty04 form-ipt" readonly="true"/>
+                            </td>
+                            <th>行业中心：</th>
+                            <td>
+                                <%--<input type="text" id="bus_org" value="" class="input-sty04 form-ipt">--%>
+                                   <%-- <select id="center_code" class="input-sty04 form-ipt">
+                                        &lt;%&ndash;<option value="">请选择</option>&ndash;%&gt;
+                                    </select>--%>
+                                    <input type="hidden" id="center_code"/>
+                                    <input  id="industryCenter" class="input-sty04 form-ipt" readonly="true"/>
+                            </td>
+                        </tr>
+                      <tr>
+                            <th>查询时间：</th>
+                            <td>
+                                <%--<input type=text id="dealend_date_start" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'dealend_date_start',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />--%>
+                                    <input type=text id="dealend_date_start" class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                            </td>
+                            <%--<th>结束时间：</th>
+                            <td>
+                                <input type=text id="dealend_date_end" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'dealend_date_end',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>--%>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="fundAccountDayQuery()">查询</button>
+                            <button class="ui-btn mgr-10" id="checkAgreement" onclick="checkAgreement()">稽核通过</button>
+                            <button class="ui-btn mgr-10" id="checkBack" onclick="checkBack()">驳回</button>
+                            <button class="ui-btn mgr-10" id="excelExport" onclick="excelExport()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="fundAccountDayReport" width="100%;">
+                        <thead>
+                        <tr>
+                            <%--<th class="text-center"><input type="checkbox" id='regulation_apply_no' onclick="selectAll()"></th>--%>
+                            <%--<th class="text-center">数据查询时间</th>--%>
+                            <th class="text-center">分公司</th>
+                            <th class="text-center">行业中心</th>
+                            <th class="text-center">调出集团单位名称</th>
+                            <th class="text-center">调出集团单位编码</th>
+                            <th class="text-center">调入集团单位名称</th>
+                            <th class="text-center">调入集团单位编码</th>
+                            <th class="text-center">调账金额</th>
+                            <th class="text-center">调账申请单号</th>
+                            <th class="text-center">工单状态</th>
+                            <th class="text-center">工单办结日期</th>
+                            <th class="text-center">申请人</th>
+                            <th class="text-center">申请时间</th>
+                            <%--<th class="text-center">处理状态</th>
+                            <th class="text-center">处理人</th>
+                            <th class="text-center">处理时间</th>--%>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var roleCode = '<%=role_codes %>';
+    var rootOrgId = '<%=root_org_id%>';
+    var group_pay_code="<%=group_pay_code%>";//分公司编码
+    var center_code="<%=center_code%>";//行业中心编码
+
+    var dateTime="<%=dateTime%>";//时间
+    var branchCompany="<%=branchCompany%>";//分公司
+    var industryCenter="<%=industryCenter%>";//行业中心
+
+    $(document).ready(function() {
+        $("#org_id").val(group_pay_code);
+        $("#branchCompany").val(branchCompany);
+
+        $("#center_code").val(center_code);
+        $("#industryCenter").val(industryCenter);
+
+        //var subdateTime=dateTime.substring(0,4)+"-"+dateTime.substring(4,6)+"-"+dateTime.substring(6,8);
+        $("#dealend_date_start").val(dateTime);
+
+        if(rootOrgId=="CQ.CQ.C4"||rootOrgId=="CQ.CQ.0B"||rootOrgId=="CQ.CQ"){
+            $("#checkAgreement").css("display","none");
+            $("#checkBack").css("display","none");
+        }
+
+        fundAccountDayQuery();
+    } );
+ /*   $(document).ready(function() {
+        $("#dealend_date_start").val(getFormatDate(-1));
+        if(roleCode.indexOf('23064') > -1){
+            if(rootOrgId == 'CQ.CQ'){
+                $("#checkAgreement").remove();
+                $("#checkBack").remove();
+            }
+            $.ajax({
+                url:"/getOrgAndCenterByLoginNo",
+                type:"POST",
+                data:{group_pay_code:''},
+                success:function (data) {
+//                    console.log(data.center_code+":"+data.business_center+":"+data.group_pay_code+":"+data.group_pay_name);
+                    $("#org_id").empty();
+                    $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+                    $("#center_code").empty();
+//                    $("#center_code").append("<option value='"+data.center_code+"'>"+data.business_center+"</option>");
+                    var centerStr = "";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").append(centerStr);
+                }
+            })
+        }else{
+            $("#checkAgreement").remove();
+            $("#checkBack").remove();
+            if(rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B'){
+                $.ajax({
+                    url:"/getOrgInfos",
+                    type:"POST",
+                    success:function (data) {
+                        //console.log(data);
+                        var orgStr = "<option value=''>重庆市</option>";
+                        for(var i=0;i<data.length;i++){
+                            orgStr += "<option value='"+data[i].group_pay_code+"'>"+data[i].group_pay_name+"</option>";
+                        }
+                        $("#org_id").empty();
+                        $("#org_id").append(orgStr);
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:"/getOrgAndCenterByLoginNo",
+                    type:"POST",
+                    data:{group_pay_code:'},
+                    success:function (data) {
+//                        console.log(data.center_code+":"+data.business_center+":"+data.group_pay_code+":"+data.group_pay_name);
+                        $("#org_id").empty();
+                        $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+
+                        getBusinessCenter($("#org_id").val());
+                    }
+                });
+            }
+        }
+
+    } );*/
+
+    //根据分公司查询行业中心
+    function getBusinessCenter(code) {
+        if(code != ""){
+            $.ajax({
+                url:"/getBusinessCenterInfos",
+                type:"POST",
+                data:{group_pay_code:code},
+                success:function (data) {
+                    //console.log(data);
+                    var centerStr = "<option value=''>请选择</option>";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").empty();
+                    $("#center_code").append(centerStr);
+                }
+            })
+        }else{
+            $("#center_code").empty();
+            $("#center_code").append("<option value=''>请选择</option>");
+        }
+
+    }
+    //重置
+    function pageReset(){
+        $("input").val("");
+        $("textarea").val("");
+    };
+
+    var checkedData = "";
+    function fundAccountDayQuery() {
+        /*table = $('#fundAccountDayReport').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+
+            ajax: {
+                url:"/groupFundAccountReconciliationDailyReport",
+                type:"POST",
+                data: {
+                    org_id: $("#org_id").val(),
+                    center_code: $("#center_code").val(),
+                    dealend_date_start: $("#dealend_date_start").val(),
+                    dealend_date_end: $("#dealend_date_end").val()
+                }
+            },
+            columns: [
+                {
+                    data: "regulation_apply_no",
+                    render:function (data, type, row, meta) {
+                        if(row.check_status == '0'){
+                            return data = "<input type='checkbox' class='regulation_apply_no' value='"+row.regulation_apply_no+"'>";
+                        }else if(row.check_status == '1'){
+                            return data = "<input type='checkbox' class='regulation_apply_no' disabled='disabled'>";
+                        }
+                    }
+                },
+                { data: "insert_date"},
+                { data: "org_name" },
+                { data: "business_center" },
+                { data: "out_group_name" },
+                { data: "out_group_no" },
+                { data: "into_group_name" },
+                { data: "into_group_no" },
+                { data: "regulation_money" },
+                { data: "regulation_apply_no" },
+                { data: "order_status" },
+                { data: "dealend_date" },
+                { data: "staff_name" },
+                { data: "apply_date" },
+                {
+                    data: "check_status",
+                    render:function (data, type, row, meta) {
+                        if(row.check_status == '0'){
+                            return data = "未稽核";
+                        }else if(row.check_status == '1'){
+                            return data = "已稽核";
+                        }
+                    }
+                },
+                { data: "check_code" },
+                { data: "check_date" }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );*/
+        /*checkedData = "";*/
+        var dealend_date_start = $("#dealend_date_start").val();
+        if(dealend_date_start == null || dealend_date_start == "" ){
+            alert("日期不能为空");
+            return false;
+        }
+        $("html").showLoading();
+        $.ajax({
+            type: "get",
+            url: "/groupFundAccountReconciliationDailyReport",
+            data: {
+                org_id: $("#org_id").val(),
+                center_code: $("#center_code").val(),
+                dealend_date_start: $("#dealend_date_start").val()
+            },
+            cache: false,
+            success: function (result) {
+                $("html").hideLoading();
+                var report_data = "";
+                var checkStatus = result[result.length-1].dealend_date;
+                if( checkStatus == "已稽核" || checkStatus == "已驳回"){
+                    $("#checkAgreement").css("display","none");
+                    $("#checkBack").css("display","none");
+                }
+                $.each(result, function (i, field) {
+                    if(result.length > 2){
+                        if(field.check_status == '0') {
+                            checkedData += field.regulation_apply_no + ',';
+                        }
+                    }
+
+                    //拼接json数据集字符串
+                    report_data += "<tr>";
+//                    if(field.check_status == '0'){
+//                        report_data += "<td nowrap='nowrap'><input type='checkbox' class='regulation_apply_no' value='"+field.regulation_apply_no+"'></td>";
+//                    }else{
+//                        report_data += "<td nowrap='nowrap'></td>";
+//                    }
+//                    report_data += "<td nowrap='nowrap'>" + field.insert_date + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.org_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_center + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.out_group_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.out_group_no + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.into_group_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.into_group_no + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.regulation_money + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.regulation_apply_no + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.order_status + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.dealend_date + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.staff_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.apply_date + "</td>";
+                    /*if(field.check_status == '0'){
+                        report_data += "<td nowrap='nowrap'>未稽核</td>";
+                    }else if(field.check_status == '1'){
+                        report_data += "<td nowrap='nowrap'>已稽核</td>";
+                    }else if(field.check_status == '2'){
+                        report_data += "<td nowrap='nowrap'>已驳回</td>";
+                    }
+                    report_data += "<td nowrap='nowrap'>" + field.check_code + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.check_date + "</td>";*/
+                    report_data += "</tr>";
+                });
+                $("#list_info").empty();
+                $("#list_info").append(report_data);
+            },
+            error: function () {
+                $("html").hideLoading();
+                alert("请求超时，请重试！");
+            }
+        });
+
+    }
+
+    function selectAll() {
+        var allCheck = $("#regulation_apply_no").get(0).checked;
+        var boxs = $(".regulation_apply_no");
+        if(allCheck){
+            for(var i=0;i<boxs.length;i++){
+                boxs[i].checked = true;
+            }
+        }else{
+            for(var i=0;i<boxs.length;i++){
+                boxs[i].checked = false;
+            }
+        }
+
+    }
+
+    function checkAgreement() {
+       /* var checkBoxs = $(".regulation_apply_no");
+        var checkBoxStr = "";
+        for(var i=0;i<checkBoxs.length;i++){
+            if(checkBoxs[i].checked){
+                checkBoxStr += checkBoxs[i].value + ',';
+            }
+        }
+        if(checkBoxStr == null || checkBoxStr == ""){
+            alert("请选择稽核通过的数据");
+            return false;
+        }
+        checkBoxStr = checkBoxStr.substring(0,checkBoxStr.length-1);*/
+//        alert(checkedData);
+//        alert(checkedData.substring(0,checkedData.length-2));
+//        checkedData = checkedData.substring(0,checkedData.length-2);
+
+        /*if (checkedData == null || checkedData == "") {
+            alert("没有数据需要稽核");
+            return false;
+        }*/
+
+        var login_no = '<%=login_no%>';
+        var login_name = '<%=login_name%>';
+        var audit_date = $("#dealend_date_start").val();
+        var org_id = $("#org_id").val();
+        var center_code = $("#center_code").val();
+
+        if(audit_date == null || audit_date == ""){
+            alert("日期不能为空");
+            return false;
+        }
+
+        if(org_id == null || org_id == ""){
+            alert("分公司不能为空");
+            return false;
+        }
+
+        if(center_code == null || center_code == ""){
+            alert("行业中心不能为空");
+            return false;
+        }
+
+        if(window.confirm('确定稽核通过报表数据？')) {
+
+            $.ajax({
+                url: "/updateFundAccountReconciliationDailyCheckNext",
+                type: "POST",
+                data: {
+                    audit_date:audit_date,
+                    org_id:org_id,
+                    center_code:center_code,
+                    login_no:login_no,
+                    login_name:login_name
+                },
+                success: function (data) {
+//                    console.log(data);
+                    if (data == "1") {
+                        alert("稽核通过成功");
+                        fundAccountDayQuery();
+                    }
+                }
+            })
+        }
+    }
+
+    function checkBack() {
+        /*if (checkedData == null || checkedData == "") {
+            alert("没有数据需要驳回");
+            return false;
+        }*/
+
+        var login_no = '<%=login_no%>';
+        var login_name = '<%=login_name%>';
+        var audit_date = $("#dealend_date_start").val();
+        var org_id = $("#org_id").val();
+        var center_code = $("#center_code").val();
+
+        if(audit_date == null || audit_date == ""){
+            alert("日期不能为空");
+            return false;
+        }
+
+        if(org_id == null || org_id == ""){
+            alert("分公司不能为空");
+            return false;
+        }
+
+        if(center_code == null || center_code == ""){
+            alert("行业中心不能为空");
+            return false;
+        }
+
+        if(window.confirm('确定驳回报表数据？')) {
+
+            $.ajax({
+                url: "/updateFundAccountReconciliationDailyCheckBackNext",
+                type: "POST",
+                data: {
+                    audit_date:audit_date,
+                    org_id:org_id,
+                    center_code:center_code,
+                    login_no:login_no,
+                    login_name:login_name
+                },
+                success: function (data) {
+//                    console.log(data);
+                    if (data == "1") {
+                        alert("驳回成功");
+                        fundAccountDayQuery();
+                    }
+                }
+            })
+        }
+    }
+
+    function excelExport() {
+//        $.ajax({
+//            url:"/exportGroupFundAccountReconciliationDailyReport",
+//            type:"POST",
+//            data: {
+//                org_id: $("#org_id").val(),
+//                center_code: $("#center_code").val(),
+//                dealend_date_start: $("#dealend_date_start").val()
+//            },
+//            success:function (result) {
+//                console.log(result);
+//            }
+//        });
+        var dealend_date_start = $("#dealend_date_start").val();
+        if(dealend_date_start == null || dealend_date_start == "" ){
+            alert("日期不能为空");
+            return false;
+        }
+
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='exportGroupFundAccountReconciliationDailyReport?org_id='+$("#org_id").val()
+            +'&org_name='+$("#branchCompany").val()
+            +'&center_code='+$("#center_code").val()
+            +'&business_center='+$("#industryCenter").val()
+            +'&dealend_date_start='+$("#dealend_date_start").val();
+        f.action = actionUrl;
+        f.submit();
+    }
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate()-1;
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+
+    function getFormatDate(index) {
+        var date = new Date();
+        date.setTime(date.getTime() + 24*60*60*1000*index);
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate();
+        if(month >= 1 && month <= 9){
+            month = "0"+month;
+        }
+        if(day >= 0 && day <= 9){
+            day = "0"+day;
+        }
+        var dateStr = year+"-"+month+"-"+day;
+        return dateStr;
+    }
+</script>
+</html>

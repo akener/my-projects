@@ -1,0 +1,119 @@
+package test;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+
+/**
+ * Created by wangbl on 2017/3/14.
+ */
+public class ESBServiceInvoke {
+    public void test(){
+        try {
+            //URL wsUrl = new URL("http://10.149.85.32:51000/esbWS/rest/getProductionAndLink");
+            //URL wsUrl = new URL("http://localhost:8080/service-registry/instance-status");
+            //URL wsUrl = new URL("http://10.149.85.30:8083/getProductionAndLink");
+            //URL wsUrl = new URL("http://10.110.26.27:51000/esbWS/rest/approvalProductionLink");
+            //URL wsUrl = new URL("http://10.110.26.27:51000/esbWS/rest/getGrpStatisticsInfo");
+            //URL wsUrl = new URL("http://10.110.13.52:10088/esbWS/services/getGrpStatisticsInfo");
+            //URL wsUrl = new URL("http://localhost:8082/getProductionAndLink");
+            //URL wsUrl = new URL("http://localhost:8082/esop/unitPayStatistics");
+            //URL wsUrl = new URL("http://10.117.70.40:8081/portal/ticket_login.do");
+            //URL wsUrl = new URL("http://localhost:8082/getProductDict");
+            //URL wsUrl = new URL("http://10.110.26.23:61000/esbWS/services/bs_GetOweWS/callService?params=20210000001");
+            //URL wsUrl = new URL("http://10.110.22.169:8082/esop/unitPayStatistics");
+            //URL wsUrl = new URL("http://10.110.26.27:51000/esbWS/rest/unitAbretentionRate");
+            //URL wsUrl = new URL("http://10.110.22.169:8082/impMemberList");
+
+            URL wsUrl = new URL("http://10.110.13.52:10088/esbWS/rest/qryImpMemberComplaints");
+
+           //URL wsUrl = new URL("http://10.110.13.52:10088/esbWS/rest/getPerformanceInfo");
+            HttpURLConnection conn = (HttpURLConnection) wsUrl.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Accept-Charset", "UTF-8");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+
+            OutputStream os = conn.getOutputStream();
+            //os.write(("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><Message xmlns=\"http://nm.cmcc.com/PCMP/SCMSrv/SCMMethod/SCM00001/\"><Header><AppID>PCMP</AppID><Provide_AppID>ESOP</Provide_AppID></Header><Body><MsgHeader><SOURCE_SYSTEM_ID></SOURCE_SYSTEM_ID><SOURCE_SYSTEM_NAME></SOURCE_SYSTEM_NAME><SUBMIT_DATE></SUBMIT_DATE><PAGE_SIZE></PAGE_SIZE><CURRENT_PAGE>中文</CURRENT_PAGE><TOTAL_RECORD></TOTAL_RECORD></MsgHeader></Body></Message>").getBytes("UTF-8"));
+            //os.write(("OUT_OF_SERVICE").getBytes("UTF-8"));
+            //os.write(("param=重庆百货重庆机场火车站电影院移动公司").getBytes("UTF-8"));
+            //os.write("sys_code=2&prod_id=PD_012&link_id=6&parameter={\"main_depart\":\"南岗集客部第二营业厅\",\"apply_person\":\"李四\",\"apply_date\":\"2017-05-26\",\"file_no\":\"12qqq\",\"file_title\":\"新固化行业终端\",\"colusion_opinion\":\"1\",\"review_opinion\":\"通过\",\"project_basis_save\":\"34ere.doc\",\"project_basis_file\":\"立项依据.doc\",\"review_file_save\":\"asdf.xlsx\",\"review_file\":\"产品立项审批单.xlsx\"}".getBytes("UTF-8"));
+            //os.write("{\"ROOT\": {\"HEADER\":{\"DB_ID\":\"\"}},{\"BODY\":{service_no:\"aavg38\"}}}".getBytes("UTF-8"));
+            //os.write("{\"ROOT\":{service_no:\"aavg38\"}}}".getBytes("UTF-8"));
+            //os.write("<?xml version=\"1.0\" encoding=\"GBK\" ?><xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"><ROOT><PHONE_NO>20210000001</PHONE_NO></ROOT></xs:schema>".getBytes("UTF-8"));
+            //os.write(("?method=ticketlogin&Token=E681C2A10A7991D085FAD219E6FD88371276224172953&IP=10.110.0.204&APP_KEY=8aeeef4231904ef90131904faf7c0001").getBytes("UTF-8"));
+           // os.write("{\"ROOT\": {\"HEADER\":{\"DB_ID\":\"\"}},{\"BODY\":{employee_no:\"20\"},\"RESULT\":{}}}".getBytes("UTF-8"));
+            //os.write("{\"ROOT\": {\"HEADER\":{\"DB_ID\":\"\"}},{\"BODY\":{unit_id:\"4510236211\"},\"RESULT\":{}}}".getBytes("UTF-8"));
+            os.write("{\"ROOT\": {\"HEADER\":{\"DB_ID\":\"\"}},{\"BODY\":{manager_no:\"gavgA5\"},\"RESULT\":{}}}".getBytes("UTF-8"));
+
+            InputStream is = conn.getInputStream();
+
+            byte[] b = new byte[1024];
+            int len = 0;
+            String resp = "";
+            while ((len = is.read(b)) != -1) {
+                String ss = new String(b, 0, len, "UTF-8");
+                resp += ss;
+            }
+            System.out.println("出参-----------" + resp);
+            //System.out.println("出参-----------" + inputStreamReadConversion(is));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    //InputStream返回结果byte字节转换
+    private String inputStreamReadConversion(InputStream response){
+        byte[] b = new byte[256];
+        byte[] c;
+        String result="";
+        ArrayList ar=new ArrayList();
+        int len = 0;
+        int length=0;
+        int num=0;
+        try {
+            //从输入流中读取的数据分为两段，第一段28个字节，具体原因不明
+            while ((len = response.read(b)) != -1) {
+                ar.add(new ByteArray(len,b.clone()));
+                length += len;
+            }
+            c = new byte[length];
+            for(Object ba:ar){
+                ByteArray byteArray=(ByteArray)ba;
+                byte[] value=byteArray.getBy();
+                for(int i=0;i<byteArray.getNum();i++){
+                    c[num] = value[i];
+                    num++;
+                }
+            }
+            result=new String(c, 0, num, "UTF-8");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    private class ByteArray{
+        int num=0;
+        byte[] by;
+        private ByteArray(int len,byte[] byt){
+            num=len;
+            by=byt;
+        }
+
+        public int getNum() {
+            return num;
+        }
+
+        public byte[] getBy() {
+            return by;
+        }
+
+    }
+    public static void main(String args[]){
+        ESBServiceInvoke esbServiceInvoke=new ESBServiceInvoke();
+        esbServiceInvoke.test();
+    }
+}

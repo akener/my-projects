@@ -1,0 +1,316 @@
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>集客业务总收入</title>
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>日期</th>
+                            <td>
+                                <input type=text id="eff_date" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>选择地市</th>
+                            <td>
+                                <select name="region_code" id="region_code" class="selector_region">
+                                    <option value="">
+                                        全省
+                                    </option>
+                                    <option value="10031">哈尔滨</option>
+                                    <option value="10032">齐齐哈尔</option>
+                                    <option value="10033">牡丹江</option>
+                                    <option value="10034">佳木斯</option>
+                                    <option value="10035">双鸭山</option>
+                                    <option value="10036">七台河</option>
+                                    <option value="10037">鸡西</option>
+                                    <option value="10038">鹤岗</option>
+                                    <option value="10039">伊春</option>
+                                    <option value="10040">黑河</option>
+                                    <option value="10041">绥化</option>
+                                    <option value="10042">大兴安岭</option>
+                                    <option value="10043">大庆</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-30">
+                        <div class="btn-box pdb-20">
+                            <button class="ui-btn" onclick="qry()">查询</button>
+                            <button class="ui-btn" onclick="addContributionInfo()">新增</button>
+                            <button class="ui-btn" onclick="reset()">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+
+                <table id="epTotalContribution" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th class="text-center">日期</th>
+                            <th class="text-center">地市名称</th>
+                            <th class="text-center">通话收入</th>
+                            <th class="text-center"> 信息化收入</th>
+                            <th class="text-center">市场份额</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--提示信息-->
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--点击新增弹出框-->
+<div id="alertInfo" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">详细信息</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                            <table class="table-infor-7 width-th" width="100%">
+                                <tbody>
+                                <tr>
+                                    <th>通话收入</th>
+                                    <td>
+                                        <input id="phone_income"  class="input-sty04 form-ipt">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>信息化收入</th>
+                                    <td>
+                                        <input id="info_income" type="text" class="input-sty04 form-ipt">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th>市场份额</th>
+                                    <td>
+                                        <input id="market_income" type="text" class="input-sty04 form-ipt">
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+            <div id="fh_bt" class="modal-footer">
+                <button type="button" class="ui-btn  mgr-10" data-dismiss="modal" onclick="SubmitInfo()">保存</button>
+                <button type="button" class="ui-btn  mgr-10" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    $('.form_datetime').datetimepicker({
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 3,
+        minView: 3,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left",
+        format: 'yyyy-mm',
+        weekStart: 1,
+        language: 'zh-CN'
+    });
+    var editor;
+    var table;
+    var effDate="";
+    function reset(){
+        $("#eff_date").val("");
+    }
+    function qry(){
+        getTable();
+    }
+    function addContributionInfo(){
+/*        var re_market_name = $("#re_market_name").val();
+        var re_market_content = $("#re_market_content").val();*/
+        var re_eff_date = $("#eff_date").val();
+        if(re_eff_date == ""){
+            $("#modal_text").text("时间不能为空");
+            $("#modalInfo").modal('show');
+            return;
+        }
+        $.ajax({
+            url: '/epContributionInfo',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data : {
+                op_time : re_eff_date,
+                group_id: $("#org_code").val()
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                if(data.length == 0){
+                    $("#modal_text").text("没有数据");
+                    $("#modalInfo").modal('show');
+                    $("#alertInfo").modal('hide');
+                }
+                $("#phone_income").val(data[0].phone_income);
+                $("#info_income").val(data[0].info_income);
+                $("#market_income").val(data[0].market_income);
+                $("#alertInfo").modal('show');
+            }
+        });
+    }
+    function SubmitInfo(){
+        var re_eff_date = $("#eff_date").val();
+        $.ajax({
+            url: '/insContributionInfo',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data : {
+                'op_time' : re_eff_date,
+                'info_income': $("#info_income").val(),
+                'phone_income':$("#phone_income").val(),
+                'market_income':$("#market_income").val(),
+                 group_id:$("#org_code").val()
+            },
+            success: function (data) { // 接口调用成功回调函数
+                if(data > 0){
+                    $("#modal_text").text("保存成功");
+                    $("#modalInfo").modal('show');
+                    $("#alertInfo").modal('hide');
+                    getTable();
+                }
+            }
+        });
+    }
+    function getTable() {
+        var re_eff_date = $("#eff_date").val();
+        if(re_eff_date == ""){
+            $("#modal_text").text("时间不能为空");
+            $("#modalInfo").modal('show');
+            return;
+        }
+        table = $('#epTotalContribution').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            destroy:true,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/epTotal",
+                type:"POST",
+                data:{
+                    op_time:$("#eff_date").val(),
+                    group_id:$("#region_code").val()
+                }
+                /*                success:function (data) {
+                 }*/
+            },
+            columns: [
+                { data: "op_time"},
+                { data: "group_name"},
+                { data:"phone_income"},
+                { data: "info_income" },
+                { data: "market_income" }
+
+            ],
+            select: true,
+            buttons: [
+                /*{ extend: "create", editor: editor},*/
+            ]
+        } );
+        /*editor.on('submitSuccess',function ( e, type ) {
+         alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+         } );*/
+    }
+    $(document).ready(function(){
+        $.ajax({
+            type:"GET",
+            url:"/getGroupLevel",
+            data:{
+                org_code:$("#org_code").val()
+            }
+        }).then(function(data){
+            $("#login_type").val(data);
+            if(data=='1'){
+                $(".selector_region").find("option[value='" + $("#org_code").val() + "']").attr("selected", true);
+                $(".selector_region").attr("disabled", true);
+
+            }else if(data=='0'){
+            }else if(data=='2'){
+                $("#modal_text").text("没有查看权限");
+                $("#modalInfo").modal('show');
+                return;
+            }
+        });
+    });
+</script>
+</html>

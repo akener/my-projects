@@ -1,0 +1,19 @@
+package com.esop.menus.dto;
+
+import com.esop.menus.dto.MenusShowDtoLoginpdomlist;
+
+/**
+ * Created by yanhao on 17/6/11.
+ */
+public class MenusShowDtoEntity {
+
+    MenusShowDtoLoginpdomlist entity = new MenusShowDtoLoginpdomlist();
+
+    public MenusShowDtoLoginpdomlist getEntity() {
+        return entity;
+    }
+
+    public void setEntity(MenusShowDtoLoginpdomlist entity) {
+        this.entity = entity;
+    }
+}

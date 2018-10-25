@@ -1,0 +1,29 @@
+package com.esop.capAdjustApply.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cqDevelopment.dto.EpCapAdjustApplyInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by user on 2017/10/20.
+ */
+
+@Repository
+public class QryCapAdjustInfoSvr {
+    @Autowired
+    SqlE sqlE;
+
+    public EpCapAdjustApplyInfo qryEpCapAdjustApplyInfo(EpCapAdjustApplyInfo parameter){
+        EpCapAdjustApplyInfo dto = new EpCapAdjustApplyInfo();
+                List list = sqlE.selectM("qryEpCapAdjustApplyInfo",parameter);
+        if(list.size()>0){
+            dto = (EpCapAdjustApplyInfo)list.get(0);
+        }
+        return dto;
+    }
+
+
+}

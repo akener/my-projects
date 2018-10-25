@@ -1,0 +1,29 @@
+package com.esop.alertClassified.service;
+
+import com.esop.alertClassified.dto.AccountWarnDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class AccountWarnService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getAccountWarnList(AccountWarnDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectAccountWarn";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

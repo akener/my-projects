@@ -1,0 +1,43 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.ServiceNoInfoDto;
+import com.esop.base.service.ServiceNoInfoService;
+import com.esop.common.util.ParameterConversion;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 2017/7/28.
+ */
+@RestController
+public class ServiceNoInfoRC {
+    @Autowired
+    ServiceNoInfoService serviceNoInfoService;
+    //客户经理信息查询
+    @RequestMapping(value="/selectServieNoInfo")
+    public List selectWorkAreaUrl(HttpServletRequest request){
+        ServiceNoInfoDto param = ParameterConversion.jsonToObject(request,ServiceNoInfoDto.class);
+
+       /* Map paramMap = ParameterConversion.intoParameterConversion(request);
+        param.setService_no(paramMap.get("service_no").toString());*/
+
+       /*List list= serviceNoInfoService.selectServieNoInfo(param);
+       Map<String,Object> map = new HashMap<String,Object>();
+       if(list.size()>0){
+           map.put("service_info",list);
+           map.put("return_code","000000");
+           map.put("return_info","查询成功");
+       }else{
+           map.put("return_code","-1");
+           map.put("return_info","没有查询到对应的信息");
+       }*/
+
+        return serviceNoInfoService.selectServieNoInfo(param);
+    }
+}

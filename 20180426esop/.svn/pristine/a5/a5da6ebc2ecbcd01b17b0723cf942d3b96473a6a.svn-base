@@ -1,0 +1,45 @@
+package com.esop.cqDevelopment.groupSuperMemberPayCost.service;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.groupSuperMemberPayCost.dto.GroupSuperMemberDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@Repository
+public class GroupSuperMemPayCostService {
+    private static Logger logger = Logger.getLogger(GroupSuperMemPayCostService.class);
+    @Autowired
+    SqlE sqlE;
+    //保存超大集团成员资金申请信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertGroupSuperMemApplyInfo(GroupSuperMemberDto param){
+        if (sqlE.insertM("insertGroupSuperMemApplyInfo",param)>0){
+            logger.info("insert success！");
+            return true;
+        }
+        logger.info("insert group supper member apply failed！");
+        return false;
+    }
+    //集团超大成员资金申请业务操作列表工单
+    public Result getGSMOListInfo(GroupSuperMemberDto parameter){
+        logger.info("getGSMOListInfo enter"+parameter.toString());
+        Result result = sqlE.selectPage("getGSMOListInfo",parameter);
+        logger.info("getGSMOListInfo"+result);
+        return result;
+    }
+    //根据orderId获取超大集团成员待审批页面信息
+    public GroupSuperMemberDto getGroupSuperMemApproveInfo(GroupSuperMemberDto groupSuperMemberDto){
+        logger.info("查询管理办法入参:"+ groupSuperMemberDto.toString());
+        return (GroupSuperMemberDto)sqlE.selectM("getGroupSuperMemApproveInfo",groupSuperMemberDto).get(0);
+    }
+    //获取附件关联id
+    public String getUploadFileRelatedID() {
+        return sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString();
+    }
+}

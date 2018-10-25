@@ -1,0 +1,92 @@
+$(document).ready(function() {
+    create_no="112900001";
+    create_name="思特奇员工"
+    order_title="集团缴费联系人";
+    region_code="CQ.CQ";
+    seq_relation_info="1111111111";
+    important = "MemberSort03";
+    role_type = "MemberSort0305";
+    contract_id="10002";
+    id=$("#id1").val();
+    $("#order_title1").val("删除集团缴费联系人");
+    $("#notes1").val("需要删除集团缴费联系人！！！！！");
+    loadFirstSteps();
+});
+
+function loadFirstSteps() {
+    $.ajax({
+        type: 'POST',
+        url: '/workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+        },
+        success: loadFirstStepsHandler
+    });
+}
+
+function loadFirstStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    if(data.returnCode=="1"){
+        $("#next_deal1").val("加载下一步环节出错！");
+        $("#subButton1").attr("disabled",true);
+    }
+    console.log(data);
+    if(data.returnCode=="0"){
+        var stepList = data.stepList[0];
+        $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+
+        for (var i = 0; i < 3; i++) {     //循环添加多个值
+            $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+        }
+    }
+
+}
+function  deleteGroupContact() {
+    var ASSIGNEE_1 = $("#ASSIGNEE_1").val();
+    if(ASSIGNEE_1==null||$.trim(ASSIGNEE_1)=='' ){
+        alert('请选择处理人！');
+        $(".ASSIGNEE").focus();
+        return;
+    }
+    $("#subButton1").text('提交中..')
+    $("#subButton1").attr("disabled",true);
+    $.ajax({
+        url: "/checkDeleteContacter",
+        type: "post",
+        "data": {
+            "id":id,
+            "startDept":region_code,
+            "startLoginNo":"112900001",
+            "ASSIGNEE_1":$("#ASSIGNEE_1").val(),
+            "startRegion":region_code,
+            "procTypeCode":"3008",
+            "keyValue":"1",
+            "branchCode":"CQ.CQ",
+
+            "contract_id":contract_id,
+            "order_title":$("#order_title1").val(),
+            "notes":$("#notes").val(),
+            "union_code":$("#union_code1").val(),
+            "union_name":$("#union_name1").val(),
+            "create_no":create_no,
+            "create_name":create_name,
+            "depert_id":region_code,
+            "region_code":region_code
+        },
+        success: function (result) {
+            if(result == "0"){
+                alert("删除流程启动成功！！！");
+                window.close();
+            }
+        },
+        error: function () {
+            alert("删除流程启动失败！！！");
+        }
+    });
+}

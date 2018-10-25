@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="EsopServiceRepository">
+
+    <!--新增历史短款单填写信息-->
+    <select id="insertHistoryOffsetInfo" parameterType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" resultType="int">
+        INSERT INTO ep_short_history_info (taskOrderId,applyDate,applicant,outGroup,outGroupNo,capitalContact,contactNumber,contactType,
+        applyAmount,historyOffsetAmount,file,remark,grpfundacctid,grpcustid,grpcustname,bankacctid,bankname,ownerorgid,status,
+        balance,nowbalance,holdbalance,freezefee,runningWarterNo
+        ) VALUES(#{taskOrderId},#{applyDate},#{applicant},#{outGroup},#{outGroupNo},#{capitalContact},
+        #{contactNumber},#{contactType},#{applyAmount},#{historyOffsetAmount},#{file},#{remark},
+        #{grpfundacctid},#{grpcustid},#{grpcustname},#{bankacctid},#{bankname},#{ownerorgid},#{status},
+        #{balance},#{nowbalance},#{holdbalance},#{freezefee},#{runningWarterNo})
+
+    </select>
+    <!--新增历史短款流程信息-->
+    <select id="insertOffsetWorkFlowInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto" resultType="int">
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{taskOrderId},
+        #{applicantNo},
+        #{nextDealPerson},
+        #{nodeId},
+        #{dealTime},
+        #{approveOpinion},
+        #{memo}
+        )
+
+    </select>
+    <!--历史短款待审批信息查询-->
+     <select id="selectHistoryOffsetListInfo" parameterType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" resultType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" >
+         select
+         a.taskOrderId,
+         a.applyDate,
+         a.applicant,
+         h.login_name as applicantName,
+         a.outGroup,
+         a.outGroupNo,
+         a.capitalContact,
+         a.contactNumber,
+         a.contactType,
+         a.applyAmount,
+         a.historyOffsetAmount,
+         a.file,
+         a.remark,
+         a.grpfundacctid,
+         a.grpcustid,
+         a.grpcustname,
+         a.bankacctid,
+         a.bankname,
+         a.ownerorgid,
+         a. STATUS,
+         a.balance,
+         a.nowbalance,
+         a.holdbalance,
+         a.freezefee,
+         a.runningWarterNo,
+         case b.applicantNo when 'CRM' then 'CRM' else	c.login_name end login_name,
+         b.dealTime,
+         case b.nextDealPerson when 'CRM' then 'CRM' else	g.login_name end nextDealPerson,
+         d.link_name,
+         b.nodeId,
+         f.source_file_name as fileName,
+         t5.business_center,
+         t5.center_code,
+         t2.fen_gongs,
+         t2.group_pay_code,
+         t3.group_pay_name
+         from
+         ep_short_history_info a
+         left join tf_attach_file_info f on a.file = f.attach_file_id
+         left join ep_work_flow_info b on a.taskOrderId = b.taskOrderId
+         left join bs_systemuser_info c on b.applicantNo = c.staff_code
+         left join bs_systemuser_info h on a.applicant = h.staff_code
+         left join bs_systemuser_info g on b.nextDealPerson = g.staff_code
+         left join bs_staff_info t1 on t1.staff_id = c.staff_id
+         left join se_orgid_rel t2 on t2.fen_gongs = substring(t1.org_id, 1, 8)
+         left join se_group_business_code t3 on t3.group_pay_code = t2.group_pay_code
+         left join se_business_center_staff_rel t4 on t4.staff_code = a.applicant
+         left join se_business_center t5 on t5.center_code = t4.center_code
+         left join ep_work_flow_dict d on b.nodeId = d.link_id
+         where
+         str_to_date(
+         b.dealTime,
+         '%Y-%m-%d %H:%i:%s'
+         ) = (
+         select
+         max(
+         str_to_date(
+         e.dealTime,
+         '%Y-%m-%d %H:%i:%s'
+         )
+         )
+         from
+         ep_work_flow_info e
+         where
+         e.taskOrderId = a.taskOrderId
+         )
+        <if test="taskOrderId != '' and taskOrderId !='null'">
+            and a.taskOrderId = #{taskOrderId}
+        </if>
+         <if test="startTime != '' and startTime != 'null'">
+             and substr(a.applyDate,1,10) >= #{startTime}
+         </if>
+         <if test="endTime != '' and endTime != 'null'">
+             and substr(a.applyDate,1,10) &lt;= #{endTime}
+         </if>
+         <if test="applicant != '' and applicant != 'null'">
+             and a.applicant = #{applicant}
+         </if>
+         <if test="login_no2 !='' and login_no2 !=null and login_no2 !='null'">
+             and #{login_no2}=(select nextDealPerson from ep_work_flow_info f where nodeId='13' and f.taskOrderId = a.taskOrderId)
+         </if>
+        <if test="nextDealPerson != '' and nextDealPerson != 'null'">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+         <if test="ownerorgid !='' and ownerorgid !=null and ownerorgid !='null'">
+             and substring(a.ownerorgid, 1, 8)  = #{ownerorgid}
+         </if>
+         <if test="businessCenter !='' and businessCenter !=null and businessCenter !='null'">
+             and t5.center_code = #{businessCenter}
+         </if>
+         <if test="applyAmount_yuan !='' and applyAmount_yuan !=null and applyAmount_yuan !='null'">
+             and a.applyAmount=#{applyAmount_yuan}
+         </if>
+         <if test="file !='' and file !=null and file !='null'">
+             and a.applicant=#{file}
+         </if>
+         <if test="nodeId !='' and nodeId !=null and nodeId !='null'">
+             and b.nodeId=#{nodeId}
+         </if>
+         order by a.applyDate desc
+    </select>
+    <!--历史申请表详情页面信息查询-->
+    <select id="selectHistoryOffsetListInfo2" parameterType="string" resultType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" >
+      select
+        a.taskOrderId,
+        a.applyDate,
+        a.applicant,
+        a.outGroup,
+        a.outGroupNo,
+        a.capitalContact,
+        a.contactNumber,
+        a.contactType,
+        a.applyAmount,
+        a.historyOffsetAmount,
+        a.file,
+        a.remark,
+        a.grpfundacctid,
+        a.grpcustid,
+        a.grpcustname,
+        a.bankacctid,
+        a.bankname,
+        a.ownerorgid,
+        a.STATUS,
+        a.balance,
+        a.nowbalance,
+        a.holdbalance,
+        a.freezefee,
+        a.runningWarterNo,
+        f.source_file_name as fileName,
+        b.org_name as ownerorgname
+        from
+        ep_short_history_info a
+        left join tf_attach_file_info f on a.file = f.attach_file_id
+        left join bs_orgnization_info b on SUBSTR(a.ownerorgid,1,8)=b.org_id
+        where
+        a.taskOrderId =#{taskOrderId}
+    </select>
+    <!--过滤正在审批中的历史短款信息-->
+    <select id="filterOnApproveHistoryOffsetInfo" parameterType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" resultType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" >
+        select
+        GROUP_CONCAT(t1.runningWarterNo SEPARATOR ',') as runningWarterNo
+        from
+        ep_short_history_info t1,
+        ep_work_flow_info t2
+        where
+        t1.taskOrderId = t2.taskOrderId
+        and str_to_date(t2.dealTime,'%Y-%m-%d %H:%i:%s' ) = (select	max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s'))from ep_work_flow_info e where	e.taskOrderId = t1.taskOrderId)
+        and t2.nodeId in (13,10,1);
+    </select>
+    <!--查询CRM处理失败的信息-->
+    <select id="getOffsetNeedReleaseInfo" parameterType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" resultType="com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto" >
+        select
+        a.taskOrderId,
+        a.applyDate,
+        a.applicant,
+        a.outGroup,
+        a.outGroupNo,
+        a.capitalContact,
+        a.contactNumber,
+        a.contactType,
+        a.applyAmount,
+        a.historyOffsetAmount,
+        a.remark,
+        a.grpfundacctid,
+        a.grpcustid,
+        a.grpcustname,
+        a.bankacctid,
+        a.bankname,
+        a.ownerorgid,
+        a. STATUS,
+        a.balance,
+        a.nowbalance,
+        a.holdbalance,
+        a.freezefee,
+        a.runningWarterNo,
+        c.login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        d.link_name,
+        b.nodeId,
+        t5.business_center,
+        t5.center_code,
+        t2.fen_gongs,
+        t2.group_pay_code,
+        t3.group_pay_name
+        from
+        ep_short_history_info a
+        left join ep_work_flow_info b on a.taskOrderId = b.taskOrderId
+        left join bs_systemuser_info c on a.applicant = c.staff_code
+        left join bs_staff_info t1 on t1.staff_id = c.staff_id
+        left join se_orgid_rel t2 on t2.fen_gongs = substring(t1.org_id, 1, 8)
+        left join se_group_business_code t3 on t3.group_pay_code = t2.group_pay_code
+        left join se_business_center_staff_rel t4 on t4.staff_code = a.applicant
+        left join se_business_center t5 on t5.center_code = t4.center_code
+        left join ep_work_flow_dict d on b.nodeId = d.link_id
+        where
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        select
+        max(
+        str_to_date(
+        e.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        from
+        ep_work_flow_info e
+        where
+        e.taskOrderId = a.taskOrderId
+        )
+        <if test="applicant != '' and applicant != 'null'">
+            and a.applicant = #{applicant}
+        </if>
+        <if test="taskOrderId != '' and taskOrderId !='null'">
+            and a.taskOrderId = #{taskOrderId}
+        </if>
+        and b.nodeId = '4'
+        group by  a.taskOrderId
+    </select>
+
+
+</mapper>

@@ -1,0 +1,31 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.InDTO;
+import com.esop.workflow.model.CtTaskInstInfo;
+import com.esop.workflow.vo.Param;
+
+/**
+ * 预打发票流程审批InDTO
+ *
+ * @author daish 2017/11/20
+ */
+public class InvApprInDTO extends InDTO {
+    private CtTaskInstInfo taskInst;
+    private Param[] params;
+
+    public CtTaskInstInfo getTaskInst() {
+        return taskInst;
+    }
+
+    public void setTaskInst(CtTaskInstInfo taskInst) {
+        this.taskInst = taskInst;
+    }
+
+    public Param[] getParams() {
+        return params;
+    }
+
+    public void setParams(Param[] params) {
+        this.params = params;
+    }
+}

@@ -1,0 +1,160 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.GroupMoneyChangeDto;
+import com.esop.cqDevelopment.capitalManage.service.GroupMoneyChangeService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class GroupMoneyChangeRc {
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    GroupMoneyChangeService groupMoneyChangeService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    Result result=new Result();
+    @RequestMapping(value="/groupMoneyChange")
+    public Result getBankDealInfoRC(GroupMoneyChangeDto groupMoneyChangeDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyChangeDto> list= groupMoneyChangeService.groupMoneyChangeSvc(groupMoneyChangeDto);
+        try{
+        for(GroupMoneyChangeDto dto:list){
+           String recorded_money= dto.getRecorded_money();
+           String rebate_money=dto.getRebate_money();
+           String occupy_money=dto.getOccupy_money();
+           String freeze_money=dto.getFreeze_money();
+           String balance_money=dto.getBalance_money();
+           String usable_money=dto.getUsable_money();
+            BigDecimal bigDecimal=new BigDecimal(recorded_money);
+            BigDecimal bigDecimal2=new BigDecimal(rebate_money);
+            BigDecimal bigDecimal3=new BigDecimal(occupy_money);
+            BigDecimal bigDecimal4=new BigDecimal(freeze_money);
+            BigDecimal bigDecimal5=new BigDecimal(balance_money);
+            BigDecimal bigDecimal6=new BigDecimal(usable_money);
+            BigDecimal fenmu=new BigDecimal(100);
+            BigDecimal fenmu1=new BigDecimal(0);
+            String recorded_money_yuan=bigDecimal.divide(fenmu).toString();
+            String rebate_money_yuan=bigDecimal2.divide(fenmu).toString();
+            String occupy_money_yuan=bigDecimal3.divide(fenmu).toString();
+            String freeze_money_yuan=bigDecimal4.divide(fenmu).toString();
+            String balance_money_yuan=bigDecimal5.divide(fenmu).toString();
+            String usable_money_yuan=bigDecimal6.divide(fenmu).toString();
+            if(bigDecimal.compareTo(fenmu1)==1){
+                dto.setLeft_money(bigDecimal5.divide(fenmu).subtract(bigDecimal.divide(fenmu)).toString());
+            }
+            if(bigDecimal2.compareTo(fenmu1)==1){
+                dto.setLeft_money(bigDecimal5.divide(fenmu).add(bigDecimal2.divide(fenmu)).toString());
+            }
+            dto.setRecorded_money_yuan(recorded_money_yuan);
+            dto.setRebate_money_yuan(rebate_money_yuan);
+            dto.setOccupy_money_yuan(occupy_money_yuan);
+            dto.setFreeze_money_yuan(freeze_money_yuan);
+            dto.setBalance_money_yuan(balance_money_yuan);
+            dto.setUsable_money_yuan(usable_money_yuan);
+        }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+
+    @RequestMapping(value="/expertMoneyChange")
+    public String expertApprove(GroupMoneyChangeDto parameter,HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","集团编号","集团名称","客户经理","工单类型","申请单号","上次操作后余额","本次入账金额","本次扣减金额","本次工单占用金额","本次工单冻结金额","本次操作后账户余额","本次操作后可用金额","备注","账务员","申请日期"};
+        String[] methods = {"getName","getBusiness_center","getGroup_id","getGroup_name","getLogin_name", "getRequest_type","getRequest_id" ,"getLeft_money", "getRecorded_money_yuan","getRebate_money_yuan","getOccupy_money_yuan","getFreeze_money_yuan","getBalance_money_yuan","getUsable_money_yuan","getNotes","getLogin_name2","getShenqing_riqi"};
+
+        List<GroupMoneyChangeDto> reslist= groupMoneyChangeService.groupMoneyChangeSvc(parameter);
+        try{
+            for(GroupMoneyChangeDto dto:reslist){
+                String recorded_money= dto.getRecorded_money();
+                String rebate_money=dto.getRebate_money();
+                String occupy_money=dto.getOccupy_money();
+                String freeze_money=dto.getFreeze_money();
+                String balance_money=dto.getBalance_money();
+                String usable_money=dto.getUsable_money();
+                BigDecimal bigDecimal=new BigDecimal(recorded_money);
+                BigDecimal bigDecimal2=new BigDecimal(rebate_money);
+                BigDecimal bigDecimal3=new BigDecimal(occupy_money);
+                BigDecimal bigDecimal4=new BigDecimal(freeze_money);
+                BigDecimal bigDecimal5=new BigDecimal(balance_money);
+                BigDecimal bigDecimal6=new BigDecimal(usable_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                BigDecimal fenmu1=new BigDecimal(0);
+                String recorded_money_yuan=bigDecimal.divide(fenmu).toString();
+                String rebate_money_yuan=bigDecimal2.divide(fenmu).toString();
+                String occupy_money_yuan=bigDecimal3.divide(fenmu).toString();
+                String freeze_money_yuan=bigDecimal4.divide(fenmu).toString();
+                String balance_money_yuan=bigDecimal5.divide(fenmu).toString();
+                String usable_money_yuan=bigDecimal6.divide(fenmu).toString();
+                if(bigDecimal.compareTo(fenmu1)==1){
+                    dto.setLeft_money(bigDecimal5.divide(fenmu).subtract(bigDecimal.divide(fenmu)).toString());
+                }
+                if(bigDecimal2.compareTo(fenmu1)==1){
+                    dto.setLeft_money(bigDecimal5.divide(fenmu).add(bigDecimal2.divide(fenmu)).toString());
+                }
+                dto.setRecorded_money_yuan(recorded_money_yuan);
+                dto.setRebate_money_yuan(rebate_money_yuan);
+                dto.setOccupy_money_yuan(occupy_money_yuan);
+                dto.setFreeze_money_yuan(freeze_money_yuan);
+                dto.setBalance_money_yuan(balance_money_yuan);
+                dto.setUsable_money_yuan(usable_money_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金变化明细表(清单报表)";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"时间："+now};
+            String[] footer={};
+
+            orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

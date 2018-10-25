@@ -1,0 +1,308 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<%
+    String chaxun_riqi=request.getParameter("chaxun_riqi");
+    String name=request.getParameter("name");
+    String business_center=request.getParameter("business_center");
+    String fen_gongs=request.getParameter("fen_gongs");
+    String hangye_zhongxin=request.getParameter("hangye_zhongxin");
+%>
+<head>
+    <title>资金退款日报表</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var root_org_id;
+        var login_name;
+        var login_no;
+        var chaxun_riqi;
+        var name;
+        var business_center;
+        var fen_gongs;
+        var hangye_zhongxin;
+        var role_codes;
+        $(document).ready(function () {
+            login_name="<%=login_name%>";
+            login_no="<%=login_no%>";
+            chaxun_riqi = "<%=chaxun_riqi%>";
+            name = "<%=name%>";
+            business_center = "<%=business_center%>";
+            fen_gongs = "<%=fen_gongs%>";
+            hangye_zhongxin = "<%=hangye_zhongxin%>";
+            root_org_id = "<%=root_org_id%>";
+            role_codes="<%=role_codes%>";
+            if (root_org_id.length > 8) {
+                root_org_id = root_org_id.substr(0, 8);
+            }
+            if (fen_gongs.length > 8) {
+                fen_gongs = fen_gongs.substr(0, 8);
+            }
+            if (root_org_id == "CQ.CQ" || root_org_id == "CQ.CQ.C4" || root_org_id == "CQ.CQ.0B") {
+                $("#button").css("display", "none");
+                $("#button2").css("display", "none");
+            }
+            if(role_codes.indexOf('23073')>-1 || role_codes.indexOf('23075')>-1 || role_codes.indexOf('23077')>-1){
+                $("#button").css("display", "none");
+                $("#button2").css("display", "none");
+            }
+
+            var chaxun_riqi1;
+            if(chaxun_riqi.length==8){
+                chaxun_riqi1=chaxun_riqi.substring(0,4)+"-"+chaxun_riqi.substring(4,6)+"-"+chaxun_riqi.substring(6,8);
+            }else{
+                chaxun_riqi1=chaxun_riqi;
+            }
+            $("#fen_gongs").val(fen_gongs);
+            $("#name").val(name);
+            $("#business_center").val(business_center);
+            $("#hangye_zhongxin").val(hangye_zhongxin);
+            $("#shenqing_shijian_5").val(chaxun_riqi1);
+            capitalClaimApproveQuery();
+        });
+        function capitalClaimApproveQuery() {
+            var fen_gongs;
+            var hangye_zhongxin;
+            var shenqing_shijian_5;
+            fen_gongs=  $("#fen_gongs").val();
+            hangye_zhongxin=  $("#hangye_zhongxin").val();
+            shenqing_shijian_5= $("#shenqing_shijian_5").val();
+            table = $('#example').DataTable({
+                dom: "Bfrtip",
+                "bFilter": false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: false,
+                destroy: true,
+                "bSort":false,
+                "bPaginate":false,
+                "bLengthChange":false,
+                ajax: {
+                    url: "/groupMoneyRefund",
+                    type: "POST",
+                    "data": {
+                        fen_gongs:fen_gongs,
+                        hangye_zhongxin:hangye_zhongxin,
+                        chaxun_riqi:shenqing_shijian_5
+                    }
+                },
+                columns: [
+                    {data: "name"},
+                    {data: "business_center"},
+                    {data: "refund_group_name"},
+                    {data: "refund_group_id"},
+                    {data: "refund_money_yuan"},
+                    {data: "refund_id"},
+                    {data: "order_zhongwen"},
+                    {data: "request_over_date"},
+                    {data: "login_name"},
+                    {data: "apply_date"},
+                    {data: "refund_amount_yuan"},
+                    {data: "is_jihe_zhongwen"},
+                    {data: "jihe_shijian"},
+                    {data: "login_name2"}
+                ],
+                select: true,
+                buttons: [
+
+                ]
+            });
+        }
+        function  jihe() {
+            $.ajax({
+                url:"/jiheruzhang",
+                type:"POST",
+                data:{
+                    process_type:"2",
+                    audit_date:$("#shenqing_shijian_5").val(),
+                    org_id:fen_gongs,
+                    center_code:$("#hangye_zhongxin").val(),
+                    login_no:login_no,
+                    login_name:login_name,
+                    audit_status:"1"
+                },success:function (resut) {
+                    if(resut==1){
+                        alert("稽核成功！");
+                        capitalClaimApproveQuery();
+                    }else if(resut==2){
+                        alert("请勿重复稽核！");
+                    }else if(resut==3){
+                        alert("驳回后不能稽核！");
+                    }else {
+                        alert("系统错误,请联系管理员！");
+                    }
+                },error:function () {
+                    alert("稽核失败！");
+                }
+            })
+        }
+        function  bohui() {
+            $.ajax({
+                url:"/jiheruzhang",
+                type:"POST",
+                data:{
+                    process_type:"2",
+                    audit_date:$("#shenqing_shijian_5").val(),
+                    org_id:fen_gongs,
+                    center_code:$("#hangye_zhongxin").val(),
+                    login_no:login_no,
+                    login_name:login_name,
+                    audit_status:"2"
+                },success:function (resut) {
+                    if(resut==1){
+                        alert("驳回成功！");
+                        capitalClaimApproveQuery();
+                    }else if(resut==2){
+                        alert("稽核后不能驳回！");
+                    }else if(resut==3){
+                        alert("请勿重复驳回！");
+                    }else {
+                        alert("系统错误,请联系管理员！");
+                    }
+
+                },error:function () {
+                    alert("驳回失败！");
+                }
+            })
+        }
+        function exportClaimApproveQuery(){
+            var fen_gongs;
+            var group_pay_name;
+            var hangye_zhongxin;
+            var business_center;
+            var shenqing_shijian_5;
+            fen_gongs=$("#fen_gongs").val();
+            group_pay_name=$("#name").val();
+            hangye_zhongxin=$("#hangye_zhongxin").val();
+            business_center=$("#business_center").val();
+            shenqing_shijian_5=$("#shenqing_shijian_5").val();
+            var f = document.getElementById('exportExcel');
+            var actionUrl ='expertMoneyRefund?fen_gongs='+fen_gongs
+                +'&group_pay_name='+group_pay_name
+                +'&hangye_zhongxin='+hangye_zhongxin
+                +'&business_center='+business_center
+                +'&chaxun_riqi='+shenqing_shijian_5;
+            f.action = actionUrl;
+            f.submit();
+        }
+
+        function getNowFormatDate() {
+            var date = new Date();
+            var seperator1 = "-";
+            var seperator2 = ":";
+            var month = date.getMonth() + 1;
+            var strDate = date.getDate();
+            if (month >= 1 && month <= 9) {
+                month = "0" + month;
+            }
+            if (strDate >= 0 && strDate <= 9) {
+                strDate = "0" + strDate;
+            }
+            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+            return currentdate;
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3> 资金回退日报表 </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <input id="fen_gongs"  class="input-sty04 form-ipt" type="hidden">
+                                <input id="name"  class="input-sty04 form-ipt" disabled="disabled" >
+                            </td>
+                            <th>行业中心：</th>
+                            <td>
+                                <input id="hangye_zhongxin"  class="input-sty04 form-ipt" type="hidden">
+                                <input id="business_center"  class="input-sty04 form-ipt" disabled="disabled"  >
+                            </td>
+                            <th >查询日期：</th>
+                            <td >
+                                <input type=text id="shenqing_shijian_5" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalClaimApproveQuery()">查询</button>
+                            <button class="ui-btn mgr-10" id="button" onclick="jihe()">稽核通过</button>
+                            <button class="ui-btn mgr-10" id="button2" onclick="bohui()">差异回退</button>
+                            <button class="ui-btn btn-success mgr-10" onclick="exportClaimApproveQuery()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="table table-bordered" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>分公司</th>
+                                <th class="text-center" nowrap='nowrap'>行业中心</th>
+                                <th class="text-center" nowrap='nowrap'>退款集团单位名称</th>
+                                <th class="text-center" nowrap='nowrap'>退款集团单位编码</th>
+                                <th class="text-center" nowrap='nowrap'>退款金额</th>
+                                <th class="text-center" nowrap='nowrap'>申请单号</th>
+                                <th class="text-center" nowrap='nowrap'>工单状态</th>
+                                <th class="text-center" nowrap='nowrap'>工单办结日期</th>
+                                <th class="text-center" nowrap='nowrap'>申请人</th>
+                                <th class="text-center" nowrap='nowrap'>申请日期</th>
+                                <th class="text-center" nowrap='nowrap'>申请金额</th>
+                                <th class="text-center" nowrap='nowrap'>稽核状态</th>
+                                <th class="text-center" nowrap='nowrap'>稽核时间</th>
+                                <th class="text-center" nowrap='nowrap'>稽核人</th>
+                            </tr>
+                            </thead>
+                            <tbody id="example2">
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

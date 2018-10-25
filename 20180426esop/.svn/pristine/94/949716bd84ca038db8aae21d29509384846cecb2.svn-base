@@ -1,0 +1,14 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtProcInstParamsInfo;
+import java.util.List;
+
+public interface CtProcInstParamsInfoMapper {
+    int insert(CtProcInstParamsInfo record);
+
+    List<CtProcInstParamsInfo> selectAll();
+
+    void update(CtProcInstParamsInfo record);
+
+    CtProcInstParamsInfo selectByProcInstIdAndParamKey(CtProcInstParamsInfo retrievalCondition);
+}

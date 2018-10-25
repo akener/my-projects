@@ -1,0 +1,35 @@
+package com.esop.base.service;
+
+import com.esop.base.dto.TestDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+/**
+ * Created by wangbl on 2017/2/7.
+ */
+@Repository
+public class TestService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(TestService.class);
+    //查询操作
+    public List<TestDto> select(TestDto parameter){
+        List<TestDto> list= sqlE.selectM("selectTest",parameter);
+        return list;
+    }
+    //新增操作
+    public int insert(TestDto parameter){
+        return sqlE.insertM("insertTest",parameter);
+    }
+    //修改操作
+    public int update(TestDto parameter){
+        return sqlE.updateM("updateTest",parameter);
+    }
+    //删除操作
+    public int delete(TestDto parameter){
+        return sqlE.deleteM("deleteTest",parameter);
+    }
+}

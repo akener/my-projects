@@ -1,0 +1,178 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编号：</th>
+                            <td>
+                                <input type="text" id="GROUPID"  onkeyup="value=value.replace(/[^\d]/g,'')"  placeholder="请输入数字" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="initValidateGroupNo()">查询</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="example" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">操作</th>
+                            <th class="text-center">集团资金账户号</th>
+                            <th class="text-center">集团编号</th>
+                            <th class="text-center">集团名称</th>
+                            <th class="text-center">绑定银行账号</th>
+                            <th class="text-center">开户行</th>
+                            <th class="text-center">归属分公司</th>
+                            <th class="text-center">账号状态</th>
+                            <th class="text-center">资金账户余额(元)</th>
+                            <th class="text-center">资金账户可用余额(元)</th>
+                            <th class="text-center">占用资金(元)</th>
+                            <th class="text-center">冻结资金(元)</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript" class="init">
+    var table = "";
+    $(document).ready(function () {
+    });
+
+    function  initValidateGroupNo() {
+        var login_no = '<%=login_no%>';
+        var groupId = $("#GROUPID").val();
+        if(groupId == "" || groupId == null || groupId == undefined){
+            alert("请输入集团编号!");
+            return false;
+        }
+        $.ajax({
+            url:"/getCustInfo",
+            type:"POST",
+            data:{union_code:groupId,service_no:login_no},
+            success:function (result) {
+                if(result == 1){
+                    alert("该集团为其他客户经理管辖集团");
+                    return false;
+                }else{
+                    getGroupCapitalInfo();
+                }
+            },
+            error:function (result) {
+                alert("校验集团编号出错，请重新查询");
+                return false;
+            }
+        });
+
+
+    }
+    function getGroupCapitalInfo() {
+        var groupId = $("#GROUPID").val();
+        if(groupId == "" || groupId == null || groupId == undefined){
+            alert("请输入集团编号!");
+            return false;
+        }
+
+        table = $('#example').DataTable({
+            "scrollX": true,
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            //"ordering":true,
+            //"scrollX": true,
+            //"bRetrieve": true,
+            "pageLength": 5,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax: {
+                url:"/getGroupCapitalInfoFromBoss",
+                type:"POST",
+                data:{
+                    GROUPID:$("#GROUPID").val()
+                }
+            },
+            columns: [
+                { data: "grpfundacctid",
+                    "width": "6%",
+                    render: function ( data, type, row, meta ) {
+                        return data= "<button type='button' style='width: 80px' class='ui-btn mgr-10'  " +
+                            "onclick=addAdjustApply('"+row.grpfundacctid+"','"+row.grpcustid+"','"+encodeURI(row.grpcustname)+"','"+row.bankacctid+"','"+encodeURI(row.bankname)+"','"+encodeURI(row.ownerorgname)+"','"+row.status+"','"+row.balance+"','"+row.nowbalance+"','"+row.holdbalance+"','"+row.freezefee+"','"+row.newBalance+"','"+row.newNowbalance+"','"+row.newHoldbalance+"','"+row.newFreezefee+"')>回退申请</button>";
+                    }
+                },
+                { data:"grpfundacctid"},
+                { data: "groupid"},
+                { data: "grpcustname"},
+                { data: "bankacctid"},
+                { data: "bankname"},
+                { data: "ownerorgname"},
+                { data: "status",
+                    render: function ( data, type, row, meta ) {
+                        if(row.status == 1){
+                            return data="已绑定";
+                        }else if(row.status == 0){
+                            return data="未绑定";
+                        }
+                    }
+                },
+                { data: "newBalance"},
+                { data: "newNowbalance"},
+                { data: "newHoldbalance"},
+                { data: "newFreezefee"}
+            ],
+            select: true,
+            buttons: [
+            ]
+        });
+    }
+
+    function addAdjustApply(grpfundacctid,grpcustid,grpcustname,bankacctid,bankname,ownerorgid,status,balance,nowbalance,holdbalance,freezefee,newBalance,newNowbalance,newHoldbalance,newFreezefee) {
+        var groupID = $("#GROUPID").val();//获取集团编码
+        var root_org_name = '<%=root_org_name%>';
+        var root_org_id = '<%=root_org_id%>';
+        var url="/esop/htsq?grpfundacctid="+grpfundacctid+"&grpcustid="+grpcustid+"&grpcustname="+encodeURI(grpcustname)+"&bankacctid="+bankacctid+"&bankname="+encodeURI(bankname)+"&ownerorgid="+root_org_id+"&ownerorgname="+encodeURI(root_org_name)+"&status="+status+"&balance="+balance+"&nowbalance="+nowbalance+"&holdbalance="+holdbalance+"&freezefee="+freezefee+"&newBalance="+newBalance+"&newNowbalance="+newNowbalance+"&newHoldbalance="+newHoldbalance+"&newFreezefee="+newFreezefee+"&groupID="+groupID+"&login_no="+"<%=login_no%>"+"&login_name="+"<%=login_name%>";
+        window.open(url);
+    }
+
+</script>

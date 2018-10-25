@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+
+
+  <insert id="insertOrRequestinstInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+    insert into or_requestinst_info (sequence_num, request_num, request_template_id, 
+      op_code, order_title, union_code, 
+      union_name, create_no, create_name, 
+      create_date, modify_no, modify_date, 
+      manage_grade, invali_date, eff_date, 
+      audit_no, audit_date, oper_no, 
+      state, state_date, finish_date, 
+      depert_id, region_code, notes,source_id,contract_id
+      )
+    values (#{sequence_num,jdbcType=BIGINT}, #{request_num,jdbcType=VARCHAR}, #{request_template_id,jdbcType=INTEGER}, 
+      #{op_code,jdbcType=VARCHAR}, #{order_title,jdbcType=VARCHAR}, #{union_code,jdbcType=VARCHAR}, 
+      #{union_name,jdbcType=VARCHAR}, #{create_no,jdbcType=VARCHAR}, #{create_name,jdbcType=VARCHAR}, 
+      #{create_date,jdbcType=TIMESTAMP}, #{modify_no,jdbcType=VARCHAR}, #{modify_date,jdbcType=TIMESTAMP},
+      #{manage_grade,jdbcType=VARCHAR}, #{invali_date,jdbcType=TIMESTAMP}, #{eff_date,jdbcType=TIMESTAMP},
+      #{audit_no,jdbcType=VARCHAR}, #{audit_date,jdbcType=TIMESTAMP}, #{oper_no,jdbcType=VARCHAR},
+      #{state,jdbcType=VARCHAR}, #{state_date,jdbcType=TIMESTAMP}, #{finish_date,jdbcType=TIMESTAMP},
+      #{depert_id,jdbcType=VARCHAR}, #{region_code,jdbcType=VARCHAR}, #{notes},#{source_id,jdbcType=VARCHAR},#{contract_id}
+      )
+  </insert>
+  <sql id="Base_Column_List">
+    sequence_num, request_num, request_template_id, op_code, order_title, union_code,
+    union_name, create_no, create_name, create_date, modify_no, modify_date, manage_grade,
+    invali_date, eff_date, audit_no, audit_date, oper_no, state, state_date, finish_date,
+    depert_id, region_code,contract_id,source_id
+  </sql>
+  <select id="queryOrderInfos" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+    select
+    sequence_num, request_num, request_template_id,t.op_code,order_title, union_code,
+    union_name, create_no, create_name, t.create_date, modify_no, t.modify_date, manage_grade,
+    t.invali_date, eff_date, audit_no, audit_date, oper_no,
+    case when t.state='0' then '审批中' when t.state='1' then '受理中' when t.state='2' then '已受理' when t.state='3' then '驳回' else '作废' end  state
+    , state_date, finish_date,
+    depert_id, region_code,contract_id,source_id,t1.notes op_name
+    from  or_requestinst_info t,or_request_template_domain t1
+    where 1=1
+    and t.op_code=t1.op_code
+    <if test="request_num !=null and request_num !=''">
+      AND request_num like CONCAT('%','${request_num}','%')
+    </if>
+    <if test="order_title !=null and order_title !=''">
+      AND order_title like CONCAT('%','${order_title}','%')
+    </if>
+    <if test="union_code !=null and union_code !=''">
+      AND union_code like CONCAT('%','${union_code}','%')
+    </if>
+    <if test="union_name !=null and union_name !=''">
+      AND union_name like CONCAT('%','${union_name}','%')
+    </if>
+    <if test="create_date_start !=null and create_date_start !=''">
+        AND str_to_date(t.create_date,'%Y-%m-%d %H:%i:%s') &gt;=  #{create_date_start}
+    </if>
+    <if test="create_date_end !=null and create_date_end !=''">
+       and str_to_date(t.create_date,'%Y-%m-%d %H:%i:%s') &lt;= #{create_date_end}
+    </if>
+    <if test="state !=null and state !=''">
+      AND t.state=#{state}
+    </if>
+    <if test="op_code !=null and op_code !=''">
+      AND t.op_code=#{op_code}
+    </if>
+  </select>
+  <select id="queryOneRequestInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+    select *
+    from  or_requestinst_info
+    where request_num=#{request_num}
+  </select>
+
+  <select id="queryOrderInfotodo" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+    select
+    t1.sequence_num,t1.request_num,t1.request_template_id,t1.op_code,t6.notes op_name,t1.order_title,t1.union_code,
+    union_name,t1.create_no,t1.create_name,t1.create_date,t1.modify_no,t1.modify_date,t1.manage_grade,
+    invali_date,t1.eff_date,t1.audit_no,t1.audit_date,t1.oper_no,t1.state,t1.state_date,t1.finish_date,
+    depert_id,t1.region_code,t1.source_id,t3.biz_record_id,t3.proc_id, t3.proc_name_ch ,t5.step_id, t5.step_name,t3.proc_inst_id, t4.task_inst_id,t5.next_flag, t4.task_id, t3.proc_name_en
+    from  or_requestinst_info t1,ct_proc_inst_info t3,ct_task_inst_info t4,ct_proc_step_rel t5,or_request_template_domain t6
+    where 1=1 and
+    t3.proc_type_code = '3008'
+    and t6.op_code=t1.op_code
+    and t1.request_num=t3.biz_record_id
+    and t3.proc_inst_id=t4.proc_inst_id
+    and t3.proc_id = t5.proc_id and t4.step_id = t5.step_id
+    and t4.STATUS='0'
+    and t4.deal_login_no=#{deal_login_no}
+    <if test="request_num !=null and request_num !=''">
+      AND t1.request_num like CONCAT('%','${request_num}','%')
+    </if>
+    <if test="source_id !=null and source_id !=''">
+      AND t1.source_id=#{source_id}
+    </if>
+    <if test="order_title !=null and order_title !=''">
+      AND t1.order_title like CONCAT('%','${order_title}','%')
+    </if>
+    <if test="union_code !=null and union_code !=''">
+      AND union_code like CONCAT('%','${union_code}','%')
+    </if>
+    <if test="create_date !=null and create_date !=''">
+      AND t1.create_date=#{create_date}
+    </if>
+    <if test="state !=null and state !=''">
+      AND t1.state=#{state}
+    </if>
+  </select>
+  <select id="queryOrderInfotodo2" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+  select   t1.sequence_num,t1.request_num,t1.request_template_id,t1.op_code,t2.notes op_name,t1.order_title,t1.union_code,
+    union_name,t1.create_no,t1.create_name,t1.create_date,t1.modify_no,t1.modify_date,t1.manage_grade,
+    invali_date,t1.eff_date,t1.audit_no,t1.audit_date,t1.oper_no,t1.state,t1.state_date,t1.finish_date,
+    depert_id,t1.region_code,t1.source_id
+  from or_requestinst_info t1,or_request_template_domain t2
+  where t1.state=#{state}  and t2.op_code=t1.op_code
+  </select>
+
+
+
+  <select id="queryOderPathtodo" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestTemplateProcDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestTemplateProcDto">
+    select *
+    from  or_request_template_proc
+    where step_id=#{step_id} and op_code=#{op_code}
+  </select>
+  <update id="updateQueryOneRequest"  parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" >
+    update or_requestinst_info
+    <trim prefix="set" suffixOverrides=",">
+      <if test="notes!=null">
+         notes=#{notes},
+      </if>
+      <if test="state !=null">
+        state=#{state},
+      </if>
+    </trim>
+    where request_num=#{request_num}
+  </update>
+  <update id="upOrRequestinstInfoDto"  parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" >
+    update or_requestinst_info
+    set
+      request_num = #{request_num,jdbcType=VARCHAR},
+      request_template_id = #{request_template_id,jdbcType=INTEGER},
+      op_code = #{op_code,jdbcType=VARCHAR},
+      order_title = #{order_title,jdbcType=VARCHAR},
+      union_code = #{union_code,jdbcType=VARCHAR},
+      union_name = #{union_name,jdbcType=VARCHAR},
+      create_no = #{create_no,jdbcType=VARCHAR},
+      create_name = #{create_name,jdbcType=VARCHAR},
+      create_date = #{create_date,jdbcType=VARCHAR},
+      modify_no = #{modify_no,jdbcType=VARCHAR},
+      modify_date = #{modify_date,jdbcType=VARCHAR},
+      manage_grade = #{manage_grade,jdbcType=VARCHAR},
+      invali_date = #{invali_date,jdbcType=VARCHAR},
+      eff_date = #{eff_date,jdbcType=VARCHAR},
+      audit_no = #{audit_no,jdbcType=VARCHAR},
+      audit_date = #{audit_date,jdbcType=VARCHAR},
+      oper_no = #{oper_no,jdbcType=VARCHAR},
+      state = #{state,jdbcType=VARCHAR},
+      state_date = #{state_date,jdbcType=VARCHAR},
+      finish_date = #{finish_date,jdbcType=VARCHAR},
+      depert_id = #{depert_id,jdbcType=VARCHAR},
+      region_code = #{region_code,jdbcType=VARCHAR},
+      contract_id = #{contract_id,jdbcType=VARCHAR},
+      source_id = #{source_id,jdbcType=VARCHAR},
+      notes = #{notes,jdbcType=LONGVARCHAR}
+    where request_num=#{request_num}
+  </update>
+
+
+
+  <select id="queryOderPathtodos" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestTemplateProcDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestTemplateProcDto">
+    select t.*,t1.notes op_name
+    from  or_request_template_proc t,or_request_template_domain t1
+    where 1=1 and t.op_code=t1.op_code
+    <if test="step_id !=null and step_id !=''">
+      and t.step_id=#{step_id}
+    </if>
+    <if test="op_code !=null and op_code !=''">
+      and t.op_code=#{op_code}
+    </if>
+  </select>
+
+  <select id="queryTemplateDomain" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+    select op_code,notes op_name
+    from  or_request_template_domain
+    where 1=1
+    <if test="op_code !=null and op_code !=''">
+      and op_code=#{op_code}
+    </if>
+  </select>
+
+
+</mapper>

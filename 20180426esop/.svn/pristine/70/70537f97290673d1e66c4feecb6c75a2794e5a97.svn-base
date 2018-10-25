@@ -1,0 +1,96 @@
+package com.esop.busiAnalysis.controller;
+
+import com.esop.busiAnalysis.dto.ExcellentCaseDto;
+import com.esop.busiAnalysis.dto.epCompeteInfoDto;
+import com.esop.busiAnalysis.dto.getCaseRelateNumDto;
+import com.esop.busiAnalysis.service.epCompeteInfoService;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.busiAnalysis.service.ExcellentCaseService;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.common.uploadFile.UploadFileInfoService;
+import com.esop.common.util.ParameterConversion;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Administrator on 2017/6/29.
+ */
+@RestController
+public class ExcellentCaseController {
+    @Autowired
+    ExcellentCaseService excellentCaseService;
+    @Autowired
+    UploadFileInfoService uploadFileInfoService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result=new Result();
+    @RequestMapping(value="/qryExcellentInfo")
+    public Result qryExcellentCase(ExcellentCaseDto parameter, HttpServletRequest request){
+        System.out.println("--------------------打印--------------------------");
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = excellentCaseService.getExcellentInfo(parameter);
+        return result;
+    }
+    @RequestMapping(value="/insExcellentCaseInfo")
+    public int insExcellentCase(ExcellentCaseDto param,HttpServletRequest request){
+        return excellentCaseService.insert(param);
+    }
+    @RequestMapping(value="/updExcellentCaseInfo")
+    public int updCaseInfo(ExcellentCaseDto param){
+        return excellentCaseService.updCaseInfo(param);
+    }
+    @RequestMapping(value="/delExcellentCaseInfo")
+    public int delExcellentCase(ExcellentCaseDto param){
+        return excellentCaseService.delete(param);
+    }
+    @RequestMapping(value="/getCaseInfoByNo")
+    public List<ExcellentCaseDto> getCaseInfoByNo(ExcellentCaseDto param){
+        return excellentCaseService.getCaseInfoByNo(param);
+    }
+    //app端优秀案例查询接口
+    @RequestMapping(value="/qryExcellentCaseInfo")
+    public Map qryExcellentCaseInfo(HttpServletRequest request){
+        ExcellentCaseDto param = ParameterConversion.jsonToObject(request, ExcellentCaseDto.class);
+       /* ExcellentCaseDto param = new ExcellentCaseDto();
+        param.setExcellent_no("20");
+        param.setRelated_id("524");*/
+        List list = excellentCaseService.qryExcellentCaseInfo(param);
+        Map<String,Object>retMap = new HashMap<String, Object>();
+        Map<String,Object> rootMap = new HashMap<String,Object>();
+        Map<String,Object> bodyMap = new HashMap<String,Object>();
+        if(list != null && list.size()>0) {
+            if(param.getRelated_id() != ""){
+                UploadFileInfoDto parameter = new UploadFileInfoDto();
+                parameter.setRelated_id(param.getRelated_id());
+                List relateList = uploadFileInfoService.select(parameter);
+                bodyMap.put("related_list", relateList);
+            }
+            bodyMap.put("excellentcaseList", list);
+            bodyMap.put("return_kmsg","000000");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }else{
+            bodyMap.put("return_kmsg","查询失败");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }
+        return retMap;
+    }
+}

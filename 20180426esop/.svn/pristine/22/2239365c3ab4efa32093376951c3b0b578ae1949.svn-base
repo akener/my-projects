@@ -1,0 +1,56 @@
+package com.esop.base.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class LogisticsCompanyDto extends BaseDto{
+    String DT_RowId = "";     //dataTables.editor使用参数,如果没有此参数,编辑功能不可用.
+    String lc_id = "";        //物流公司ID
+    String lc_name = "";      //物流公司名称
+    String create_login = ""; //创建工号
+    String create_date = "";  //创建时间
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getLc_id() {
+        return lc_id;
+    }
+
+    public void setLc_id(String lc_id) {
+        this.lc_id = lc_id;
+    }
+
+    public String getLc_name() {
+        return lc_name;
+    }
+
+    public void setLc_name(String lc_name) {
+        this.lc_name = lc_name;
+    }
+
+    public String getCreate_login() {
+        return create_login;
+    }
+
+    public void setCreate_login(String create_login) {
+        this.create_login = create_login;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+}

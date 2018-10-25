@@ -1,0 +1,446 @@
+package com.esop.cqDevelopment.refund.controller;
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimApproveQueryService;
+import com.esop.cqDevelopment.refund.controller.CallBossServiceUtils.CallBossServiceUtils;
+import com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo;
+import com.esop.cqDevelopment.refund.service.AnnulService;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by user on 2017/11/29.
+ */
+    //入账反撤流程
+@EnableTransactionManagement
+@RestController
+public class AnnulController {
+    @Autowired
+    AnnulService annulService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @Autowired
+    CallBossServiceUtils callBossServiceUtils;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    @Autowired
+    CapitalClaimApproveQueryService capitalClaimApproveQueryService;
+    @Autowired
+    private static Logger logger = Logger.getLogger(AnnulController.class);
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+    //反撤申请单基本信息录入、并发起流程
+    @Transactional
+    @RequestMapping(value = "/getAnnulInfo")
+    public String getAnnulInfo(EpCapAnnulInfo param, HttpServletRequest request){
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+        try {
+            // 数据插入业务表ep_cap_annul_info
+            Date date =new Date();
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf1=new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            String apply_order_status = "1";//初始化工单状态
+            param.setApply_order_status(apply_order_status);
+            param.setTaskOrderId(sdf1.format(date));
+            param.setApply_date(sdf2.format(date));
+            //流程发起并插入操作日志到记录表ep_work_flow_info
+            String approveOpinion = "";
+            String memo = "流程发起";
+            WorkFlowInfoDto wf = new WorkFlowInfoDto();
+            wf.setTaskOrderId(sdf1.format(date));//申请单流水号
+            wf.setApplicantNo(param.getApplicant());//申请人
+            wf.setDealTime(sdf2.format(date));
+            wf.setNextDealPerson(param.getNextDealPerson());//下一环节处理人
+            wf.setNodeId(param.getNodeId());//下一环节ID
+            wf.setApproveOpinion(approveOpinion);//审批意见
+            wf.setMemo(memo);//备注
+
+            int result1 = annulService.insertAnnulInfo(param);
+            int  result2 = annulService.insertWorkFlowInfos(wf);
+            result1=result1+result2-1;
+        if(result1 == 1){
+            Map map = new HashMap();
+            map.put("ORDERID",param.getTaskOrderId());//工单流水号
+            map.put("GROUPID",param.getOut_grp_no());
+            map.put("OPERTYPE","0");//0-占用；1-释放；2-冻结；3-解冻
+            map.put("OPERFEE",param.getAnnul_balance());
+            map.put("APPLYOPERID",param.getApplicant());
+            String reqResult = callBossServiceUtils.changeGroupFundAccountStatus(map);
+            org.json.JSONObject object = new org.json.JSONObject(reqResult);
+            res_code = object.getString("res_code");
+            res_desc = object.getString("res_desc");
+            if("0".equals(res_code)){
+                retrun_msg = "1|操作成功！";
+            }else{
+                retrun_msg = res_code+"|"+res_desc;
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+        }else {
+            retrun_msg = "998|数据库执行出错，请联系系统管理员！";
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            retrun_msg = "997|系统错误，请联系系统管理员！";
+        }
+
+        return retrun_msg;
+    }
+    //待审批列表信息查询
+    @RequestMapping(value="/getAnnulDoApproveQuery")
+    public Result getAnnulDoApproveQuery(EpCapAnnulInfo parameter, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = annulService.getAnnulDoApproveQuery(parameter);
+        List<EpCapAnnulInfo> list = result.getData();
+        BigDecimal yuan = new BigDecimal(100);//将分转化为元
+        for(EpCapAnnulInfo dto:list){
+            if(!dto.getArrival_amount().equals("")){
+                BigDecimal arrival_amount = new BigDecimal(dto.getArrival_amount());
+                dto.setArrival_amount_yuan(arrival_amount.divide(yuan).toString());
+            }else{
+                dto.setArrival_amount_yuan("");
+            }
+            if(!dto.getOut_balance().equals("")){
+                BigDecimal out_balance = new BigDecimal(dto.getOut_balance());
+                dto.setOut_balance_yuan(out_balance.divide(yuan).toString());
+            }else{
+                dto.setOut_balance_yuan("");
+            }
+            if(!dto.getOut_usable_balance().equals("")){
+                BigDecimal out_usable_balance = new BigDecimal(dto.getOut_usable_balance());
+                dto.setOut_usable_balance_yuan(out_usable_balance.divide(yuan).toString());
+            }else{
+                dto.setOut_usable_balance_yuan("");
+            }
+            if(!dto.getAnnul_balance().equals("")){
+                BigDecimal annul_balance = new BigDecimal(dto.getAnnul_balance());
+                dto.setAnnul_balance_yuan(annul_balance.divide(yuan).toString());
+            }else{
+                dto.setAnnul_balance_yuan("");
+            }
+        }
+        result.setData(list);
+        return result;
+    }
+    //查看反撤申请数据根据taskOrderId
+    @RequestMapping(value = "/getDoAnnulApproveInfo")
+    public EpCapAnnulInfo getDoAnnulApproveInfo(EpCapAnnulInfo epCapAnnulInfo , HttpServletRequest request){
+        String taskOrderId = epCapAnnulInfo.getTaskOrderId();
+        if(null!=taskOrderId && taskOrderId !=""){
+            epCapAnnulInfo.setTaskOrderId(taskOrderId);
+        }
+        EpCapAnnulInfo lsst=annulService.getAnnulInfoByTaskOrderId(epCapAnnulInfo);
+        //将分转化为元
+        BigDecimal yuan = new BigDecimal(100);//将分转化为元
+        BigDecimal arrival_amount = new BigDecimal(lsst.getArrival_amount());
+        BigDecimal out_balance = new BigDecimal(lsst.getOut_balance());
+        BigDecimal out_usable_balance = new BigDecimal(lsst.getOut_usable_balance());
+        BigDecimal annul_balance = new BigDecimal(lsst.getAnnul_balance());
+        lsst.setArrival_amount_yuan(arrival_amount.divide(yuan).toString());
+        lsst.setOut_balance_yuan(out_balance.divide(yuan).toString());
+        lsst.setOut_usable_balance_yuan(out_usable_balance.divide(yuan).toString());
+        lsst.setAnnul_balance_yuan(annul_balance.divide(yuan).toString());
+        return  lsst;
+    }
+    //查询反撤当前环节nodeId流程
+    @RequestMapping(value = "/getWorkFlowNodeIdByTaskOrderId")
+    public  String getWorkFlowNodeIdByTaskOrderId(WorkFlowInfoDto parameter, HttpServletRequest request, boolean flag){
+        List list = annulService.getWorkFlowNodeIdByTaskOrderId(parameter);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json =  JSONObject.toJSONString(map);
+        return  json;
+    }
+    //提交审批
+    @Transactional
+    @RequestMapping(value="/getDoApproveAnnulInfo")
+    public String getDoApproveAnnulInfo(WorkFlowFirstDto parameter, HttpServletRequest request, boolean flag){
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+
+        String OPERFEE = request.getParameter("annul_balance");//反撤金额
+        String BANKFORMNUM = request.getParameter("BANKFORMNUM");//银行交易流水
+        String GROUPID = request.getParameter("group_num");//集团编码
+        String taskOrderId = request.getParameter("taskOrderId");//工单流水号
+        Date d4 = new Date();
+        SimpleDateFormat sdf4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        parameter.setDealTime(sdf4.format(d4));//用后台获取的时间，从前段JS获取会出问题
+        try{
+
+        if(parameter.getApproveOpinion().equals("1")){
+            logger.info("一级审批>>>>>>>>>>>>>");
+            parameter.setNodeId("1");//工单发起--推送给CRM,
+            parameter.setNextDealPerson("CRM");
+        }else{//申请单作废,资金解锁
+            parameter.setNodeId("2");
+            parameter.setNextDealPerson("");//清空下一步处理人
+        }
+        if(parameter.getApproveOpinion().equals("1")){
+            Map map = new HashMap();
+            map.put("ORDERID",taskOrderId);
+            map.put("BANKFORMNUM",BANKFORMNUM);
+            map.put("GROUPID",GROUPID);
+            map.put("OPTYPE","1");//1：反撤；2：回退
+            map.put("APPLYOPERID",parameter.getApplicantNo());
+            map.put("REASON",parameter.getMemo());
+            String backResult = callBossServiceUtils.getReturnOrCallBackCapital(map);//调用资金反撤或回退接口
+            org.json.JSONObject object = new org.json.JSONObject(backResult);
+             res_code = object.getString("res_code");
+             res_desc = object.getString("res_desc");
+            if(res_code.equals("0")){
+                //记录到流程信息表中
+                parameter.setNodeId("3");//CRM业务办理成功
+                parameter.setApplicantNo("CRM");
+                parameter.setNextDealPerson("");//清空下一步处理人
+                //处理时间
+                Date d = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Long l2= d.getTime()+5000;
+                Date date3=new Date(l2);
+                parameter.setDealTime(sdf.format(date3));
+                parameter.setMemo("CRM已处理成功");
+               int  result =  annulService.insertAnnulDoApproveInfo(parameter);
+               if(result==1){
+                   retrun_msg="1|操作成功！";
+               }else{
+                   retrun_msg="4|入账反撤同步成功，流程插入失败！";
+               }
+            }else{
+                logger.info("调用资金入账反撤或回退接口失败！>>>>>>>>>>>>" + res_desc);
+                //资金释放
+                Map map3 = new HashMap();
+                map3.put("ORDERID",taskOrderId);//集团编号
+                map3.put("GROUPID",GROUPID);//集团编号
+                map3.put("OPERTYPE","1");//0-占用；1-释放；2-冻结；3-解冻
+                map3.put("OPERFEE",OPERFEE);//资金操作金额
+                map3.put("APPLYOPERID",parameter.getApplicantNo());//申请操作员
+                String reqResult = callBossServiceUtils.changeGroupFundAccountStatus(map3);
+                org.json.JSONObject object1 = new org.json.JSONObject(reqResult);
+                String res_code1 = object1.getString("res_code");
+                String res_desc1 = object1.getString("res_desc");
+                if(res_code1.equals("0")){
+                    //记录到流程信息表中
+                    parameter.setNodeId("6");//CRM业务办理失败(资金已释放)
+                    parameter.setApplicantNo("CRM");
+                    parameter.setNextDealPerson("");//清空下一步处理人
+                    //处理时间
+                    Date d1 = new Date();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Long l3= d1.getTime()+5000;
+                    Date date3=new Date(l3);
+                    parameter.setDealTime(sdf.format(date3));
+                    parameter.setMemo("CRM处理失败");
+                    int result = annulService.insertAnnulDoApproveInfo(parameter);
+                    if(result==1){
+                        retrun_msg="2|入账反撤失败，资金已释放！";
+                    }else{
+                        retrun_msg="5|入账反撤失败，插入流程失败！";
+                    }
+                }else{
+                    retrun_msg="3|入账反撤失败，资金释放失败！";
+                }
+
+                logger.info("记录信息失败>>>>>>");
+            }
+        }else if(parameter.getNodeId().equals("2")){//申请单作废,资金释放
+            Map map1 = new HashMap();
+            map1.put("ORDERID",taskOrderId);//集团编号
+            map1.put("GROUPID",GROUPID);//集团编号
+            map1.put("OPERTYPE","1");//0-占用；1-释放；2-冻结；3-解冻
+            map1.put("OPERFEE",OPERFEE);//资金操作金额
+            map1.put("APPLYOPERID",parameter.getApplicantNo());//申请操作员
+            String reqResult = callBossServiceUtils.changeGroupFundAccountStatus(map1);//调用资金解锁接口
+            org.json.JSONObject object = new org.json.JSONObject(reqResult);
+             res_code = object.getString("res_code");
+             res_desc = object.getString("res_desc");
+            if(res_code.equals("0")){
+                //保存审批信息
+              int  result =  annulService.insertAnnulDoApproveInfo(parameter);
+              retrun_msg="1|操作成功！";
+
+            }else{
+                retrun_msg=res_code+"|"+res_desc;
+            }
+        }else{
+            //保存审批信息
+           int result =  annulService.insertAnnulDoApproveInfo(parameter);
+        }
+        }catch (Exception e){
+            e.printStackTrace();
+            retrun_msg = "997|系统错误，请联系系统管理员！";
+        }
+        return retrun_msg;
+    }
+    //审批信息查询
+    @RequestMapping(value="/getAnnulApproveQuery")
+    public Result getAnnulApproveQuery(EpCapAnnulInfo parameter, HttpServletRequest request, boolean flag){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        if(!parameter.getRole_codes().contains("21242")){//判断当前登录人是否是为客户经理角色,如果是,客户经理只能查看自己发起的流程的审批轨迹信息
+            parameter.setApplicant("");
+        }
+        if(!parameter.getRole_codes().contains("23064")){
+            //账务员角色,查看当前审批流程
+            parameter.setLogin_no2("");//审批人
+        }else if(parameter.getRole_codes().contains("23064")&&parameter.getRoot_org_id().equals("CQ.CQ")){
+            //账务员角色,分公司id是CQ.CQ则清空申请人和审批人的入参查询条件
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        if(parameter.getRoot_org_id().equals("CQ.CQ")||parameter.getRoot_org_id().equals("CQ.CQ.C4")||parameter.getRoot_org_id().equals("CQ.CQ.0B")){
+            parameter.setApplicant("");
+            parameter.setLogin_no2("");
+        }
+        //资金管理员（23073），财务人员（23075），财务管理员（23077）查看全市的数据
+        if(parameter.getRole_codes().contains("23073") || parameter.getRole_codes().contains("23075") || parameter.getRole_codes().contains("23077")){
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        result = annulService.getAnnulApproveQuery(parameter);
+        List<EpCapAnnulInfo> list = result.getData();
+        BigDecimal yuan = new BigDecimal(100);//将分转化为元
+        for(EpCapAnnulInfo dto:list){
+            if(!dto.getArrival_amount().equals("")){
+                BigDecimal arrival_amount = new BigDecimal(dto.getArrival_amount());
+                dto.setArrival_amount_yuan(arrival_amount.divide(yuan).toString());
+            }else{
+                dto.setArrival_amount_yuan("");
+            }
+            if(!dto.getOut_balance().equals("")){
+                BigDecimal out_balance = new BigDecimal(dto.getOut_balance());
+                dto.setOut_balance_yuan(out_balance.divide(yuan).toString());
+            }else{
+                dto.setOut_balance_yuan("");
+            }
+            if(!dto.getOut_usable_balance().equals("")){
+                BigDecimal out_usable_balance = new BigDecimal(dto.getOut_usable_balance());
+                dto.setOut_usable_balance_yuan(out_usable_balance.divide(yuan).toString());
+            }else{
+                dto.setOut_usable_balance_yuan("");
+            }
+            if(!dto.getAnnul_balance().equals("")){
+                BigDecimal annul_balance = new BigDecimal(dto.getAnnul_balance());
+                dto.setAnnul_balance_yuan(annul_balance.divide(yuan).toString());
+            }else{
+                dto.setAnnul_balance_yuan("");
+            }
+            String nextDealPerson=dto.getNextDealPerson();
+            String applicant=dto.getApplicant();
+            String nextDealPerson_zhongwen=capitalClaimApproveQueryService.selectLoginNameByStaffCode(nextDealPerson);
+            String applicant_zhongwen=capitalClaimApproveQueryService.selectLoginNameByStaffCode(applicant);
+            dto.setNextDealPerson_zhongwen(nextDealPerson_zhongwen);
+            dto.setApplicant_zhongwen(applicant_zhongwen);
+
+        }
+        result.setData(list);
+        return result;
+    }
+    //导出审批信息查询
+    @RequestMapping(value="/exportannulApproveQuery")
+    public String exportannulApproveQuery(EpCapAnnulInfo parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"申请工单流水","操作人","操作时间","下一步处理人","环节","反撤申请人","申请时间","出账集团","出账集团编号","资金联系人","联系人电话","联系人类型","到账金额(元)","账本余额(元)","可用金額(元)","反撤金额(元)","来款账号","来款户名","到账账号","到账户名","到账日期","银行交易流水号","反撤说明"};
+        String[] methods = {"getTaskOrderId","getLogin_name","getDealTime","getNextDealPerson_zhongwen","getLink_name", "getApplicant_zhongwen", "getApply_date", "getOut_group","getOut_grp_no","getOut_linkman","getOut_link_phone","getOut_link_type","getArrival_amount_yuan","getOut_balance_yuan","getOut_usable_balance_yuan","getAnnul_balance_yuan","getAccount","getUserid","getArrive_account","getArrive_account_name","getArrive_date","getBankformnum","getAnnul_explain"};
+
+        PageParameter page=new PageParameter();
+        page.setPageRecords(99999);
+        parameter.setPage(page);
+        if(!parameter.getRole_codes().contains("21242")){//判断当前登录人是否是为客户经理角色,如果是,客户经理只能查看自己发起的流程的审批轨迹信息
+            parameter.setApplicant("");
+        }
+        if(!parameter.getRole_codes().contains("23064")){
+            //账务员角色,查看当前审批流程
+            parameter.setLogin_no2("");//审批人
+        }else if(parameter.getRole_codes().contains("23064")&&parameter.getRoot_org_id().equals("CQ.CQ")){
+            //账务员角色,分公司id是CQ.CQ则清空申请人和审批人的入参查询条件
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        if(parameter.getRoot_org_id().equals("CQ.CQ")||parameter.getRoot_org_id().equals("CQ.CQ.C4")||parameter.getRoot_org_id().equals("CQ.CQ.0B")){
+            parameter.setApplicant("");
+            parameter.setLogin_no2("");
+        }
+        //资金管理员（23073），财务人员（23075），财务管理员（23077）查看全市的数据
+        if(parameter.getRole_codes().contains("23073") || parameter.getRole_codes().contains("23075") || parameter.getRole_codes().contains("23077")){
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        result = annulService.getAnnulApproveQuery(parameter);
+        List<EpCapAnnulInfo> list = result.getData();
+        BigDecimal yuan = new BigDecimal(100);//将分转化为元
+        for(EpCapAnnulInfo dto:list){
+            if(!dto.getArrival_amount().equals("")){
+                BigDecimal arrival_amount = new BigDecimal(dto.getArrival_amount());
+                dto.setArrival_amount_yuan(arrival_amount.divide(yuan).toString());
+            }else{
+                dto.setArrival_amount_yuan("");
+            }
+            if(!dto.getOut_balance().equals("")){
+                BigDecimal out_balance = new BigDecimal(dto.getOut_balance());
+                dto.setOut_balance_yuan(out_balance.divide(yuan).toString());
+            }else{
+                dto.setOut_balance_yuan("");
+            }
+            if(!dto.getOut_usable_balance().equals("")){
+                BigDecimal out_usable_balance = new BigDecimal(dto.getOut_usable_balance());
+                dto.setOut_usable_balance_yuan(out_usable_balance.divide(yuan).toString());
+            }else{
+                dto.setOut_usable_balance_yuan("");
+            }
+            if(!dto.getAnnul_balance().equals("")){
+                BigDecimal annul_balance = new BigDecimal(dto.getAnnul_balance());
+                dto.setAnnul_balance_yuan(annul_balance.divide(yuan).toString());
+            }else{
+                dto.setAnnul_balance_yuan("");
+            }
+            String nextDealPerson=dto.getNextDealPerson();
+            String applicant=dto.getApplicant();
+
+            String nextDealPerson_zhongwen=capitalClaimApproveQueryService.selectLoginNameByStaffCode(nextDealPerson);
+            String applicant_zhongwen=capitalClaimApproveQueryService.selectLoginNameByStaffCode(applicant);
+            dto.setNextDealPerson_zhongwen(nextDealPerson_zhongwen);
+            dto.setApplicant_zhongwen(applicant_zhongwen);
+
+        }
+        List <EpCapAnnulInfo> reslist=result.getData();
+        try {
+            orderWorkFlowService.getExport(tableHeader, methods, reslist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+
+
+}

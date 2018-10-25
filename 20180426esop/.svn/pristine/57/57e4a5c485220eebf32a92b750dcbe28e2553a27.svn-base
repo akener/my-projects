@@ -1,0 +1,892 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/12/4.
+ */
+public class SeNewContractInfoDto {
+    private int id;
+    private String product_id = "";//二级产品ID
+    private String product_name = "";//产品名称
+    private String contract_id = "";//合同编号
+    private String contract_name = "";//合同名称
+    private String contract_desc= "";//合同描述
+    private String first_party_code = "";//甲方编号
+    private String first_party = "";//甲方
+    private String first_party_charge = "";//甲方负责人
+    private String first_party_address = "";//甲方地址
+    private String first_party_post_code = "";//甲方邮编
+    private String first_party_phone = "";//甲方电话
+    private String second_party = "";//乙方
+    private String second_party_code = "";//乙方编号
+    private String second_party_charge = "";//乙方负责人
+    private String second_party_address = "";//乙方地址
+    private String second_party_post_code = "";//邮编
+    private String second_party_phone = "";//乙方电话
+    private String discount = "";//折扣
+    private String total_amount = "";//总金额
+    private String bond = "";//保证金
+    private String invoice_type = "";//发票种类
+    private String first_invoice_name = "";//甲方名称（发票）
+    private String first_taxpayer_code = "";//甲方国税纳税人识别号
+    private String first_invoice_band = "";//甲方开户行（发票）
+    private String first_invoice_username = "";//甲方户名（发票）
+    private String first_invoice_number = "";//甲方开户账号（发票）
+    private String first_invoice_address = "";//甲方地址（发票）
+    private String first_invoice_phone = "";//甲方联系方式（发票）
+    private String second_invoice_name = "";//乙方名称（发票）
+    private String second_taxpayer_code = "";//乙方国税纳税人识别号
+    private String second_invoice_band = "";//乙方开户行（发票）
+    private String second_invoice_address = "";//乙方地址（发票）
+    private String second_invoice_phone = "";//乙方联系方式（发票）
+    private String second_invoice_username = "";//乙方户名（发票）
+    private String second_invoice_number = "";//y乙方开户账号（发票）
+    private String first_party_username = "";//甲方户名
+    private String first_party_band = "";//甲方开户银行
+    private String first_party_account_number = "";//甲方开户账号
+    private String second_party_username = "";//乙方方用户名
+    private String second_party_band = "";//乙方开户银行
+    private String second_party_account_number = "";//乙方账号
+    private String first_contacts_name = "";//甲方联系人姓名
+    private String first_contacts_id_card = "";//甲方联系人身份证
+    private String first_contacts_phone = "";//甲方联系人电话
+    private String first_contacts_email = "";//甲方联系人邮箱
+    private String first_contacts_address = "";//甲方联系人地址
+    private String safe_client = "";//安全承诺书-委托人
+    private String safe_address = "";//安全承诺书-地址
+    private String safe_contacts = "";//安全承诺书-联系人
+    private String safe_phone = "";//安全联系人电话
+    private String pay_cycle = "";//支付周期
+    private String elecpack_id = "";//模板ID
+    private String contract_pdf_name = "";//合同导出PDF名称
+
+
+    private String subs_prod_attr_list;//附加属性
+
+    private String oper_name = "";//编辑人姓名
+    private String oper_no = "";//编辑人工号
+    private Date oper_date ;//编辑时间
+    private List<SeContractChargesInfo> contractChargeList;//资费列表
+    private String chargeIds = "";//用于存放多个资费id
+    private String elecPackName = "";//存放合同模板名称
+    private String catalog_name = "";//合同名称
+    private String contract_status = "";//状态
+    private String bak1 = "";//合同bak1号，用于显示在pdf中
+    private String bak3 = "";//流水号
+    private String pay_main_body = "";//付费主体
+    private String business_type = "";//甲方业务类型及资费模式
+    private String penalty = "";//违约金
+    private String payment = "";//付费方式
+    private String open_time = "";//开通时间
+    private String use_area = "";//使用区域
+    private String used_in = "";//用于
+    private String oppor_id = "";//商机号(number)
+    private String attach_file_id = "";//对应对象存储服务器文件id
+    private String attach_type_code = "";//存储对象存储的文件种类
+    private String prod_name = "";//产品名称
+    private String group_id = "";//
+    private String group_name = "";//分公司名字
+    private String region_code = "";//
+    private String attachment_id_list = "";//上传附件，存储服务器文件id列表，以'|'分割
+
+    //专线合同
+    private String dedicated_amount = "";//专线条数
+    private String bandwidth = "";//带宽
+    private String lease_term = "";//租用期限
+    private String interface_type = "";//接口类型
+    private String first_access_address = "";//，甲方接入点地址
+    private String interface_in = "";//接口界面
+    private String a_access_address = "";//A端接入地址
+    private String a_interface_type = "";//A端接口类型
+    private String z_access_address = "";//Z端接入地址
+    private String z_interface_type = "";//Z端接口类型
+    private String first_connection_interface = "";//甲方连接接口
+    private String second_connection_interface = "";//乙方连接接口
+
+    private String isOpenGrpProd;//是否已开户 1 已开户 2 未开户
+    private String effecttype;//生效方式 2:立即 3:次月 4:次日
+    private String optype;//PCOpRec:开通 PCOpDel:关闭  优惠变更：先删除优惠对应的增值产品，再重新订购增值产品优惠
+    private String grp_subs_id;//用户编号
+    private String gl_sj_zxfy;//专项费用
+
+    public String getGl_sj_zxfy() {
+        return gl_sj_zxfy;
+    }
+
+    public void setGl_sj_zxfy(String gl_sj_zxfy) {
+        this.gl_sj_zxfy = gl_sj_zxfy;
+    }
+
+    public String getAttachment_id_list() {
+        return attachment_id_list;
+    }
+
+    public void setAttachment_id_list(String attachment_id_list) {
+        this.attachment_id_list = attachment_id_list;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getOper_no() {
+        return oper_no;
+    }
+
+    public void setOper_no(String oper_no) {
+        this.oper_no = oper_no;
+    }
+
+    public String getGrp_subs_id() {
+        return grp_subs_id;
+    }
+
+    public void setGrp_subs_id(String grp_subs_id) {
+        this.grp_subs_id = grp_subs_id;
+    }
+
+    public String getEffecttype() {
+        return effecttype;
+    }
+
+    public void setEffecttype(String effecttype) {
+        this.effecttype = effecttype;
+    }
+
+    public String getOptype() {
+        return optype;
+    }
+
+    public void setOptype(String optype) {
+        this.optype = optype;
+    }
+
+    public String getAttach_type_code() {
+        return attach_type_code;
+    }
+
+
+
+    public void setAttach_type_code(String attach_type_code) {
+        this.attach_type_code = attach_type_code;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+
+    public String getIsOpenGrpProd() {
+        return isOpenGrpProd;
+    }
+
+    public void setIsOpenGrpProd(String isOpenGrpProd) {
+        this.isOpenGrpProd = isOpenGrpProd;
+    }
+
+    public String getDedicated_amount() {
+        return dedicated_amount;
+    }
+
+    public void setDedicated_amount(String dedicated_amount) {
+        this.dedicated_amount = dedicated_amount;
+    }
+
+    public String getBandwidth() {
+        return bandwidth;
+    }
+
+    public void setBandwidth(String bandwidth) {
+        this.bandwidth = bandwidth;
+    }
+
+    public String getLease_term() {
+        return lease_term;
+    }
+
+    public void setLease_term(String lease_term) {
+        this.lease_term = lease_term;
+    }
+
+    public String getInterface_type() {
+        return interface_type;
+    }
+
+    public void setInterface_type(String interface_type) {
+        this.interface_type = interface_type;
+    }
+
+    public String getFirst_access_address() {
+        return first_access_address;
+    }
+
+    public void setFirst_access_address(String first_access_address) {
+        this.first_access_address = first_access_address;
+    }
+
+    public String getInterface_in() {
+        return interface_in;
+    }
+
+    public void setInterface_in(String interface_in) {
+        this.interface_in = interface_in;
+    }
+
+    public String getA_access_address() {
+        return a_access_address;
+    }
+
+    public void setA_access_address(String a_access_address) {
+        this.a_access_address = a_access_address;
+    }
+
+    public String getA_interface_type() {
+        return a_interface_type;
+    }
+
+    public void setA_interface_type(String a_interface_type) {
+        this.a_interface_type = a_interface_type;
+    }
+
+    public String getZ_access_address() {
+        return z_access_address;
+    }
+
+    public void setZ_access_address(String z_access_address) {
+        this.z_access_address = z_access_address;
+    }
+
+    public String getZ_interface_type() {
+        return z_interface_type;
+    }
+
+    public void setZ_interface_type(String z_interface_type) {
+        this.z_interface_type = z_interface_type;
+    }
+
+    public String getFirst_connection_interface() {
+        return first_connection_interface;
+    }
+
+    public void setFirst_connection_interface(String first_connection_interface) {
+        this.first_connection_interface = first_connection_interface;
+    }
+
+    public String getSecond_connection_interface() {
+        return second_connection_interface;
+    }
+
+    public void setSecond_connection_interface(String second_connection_interface) {
+        this.second_connection_interface = second_connection_interface;
+    }
+
+    public String getBak3() {
+        return bak3;
+    }
+
+    public void setBak3(String bak3) {
+        this.bak3 = bak3;
+    }
+
+    public String getSubs_prod_attr_list() {
+        return subs_prod_attr_list;
+    }
+
+    public void setSubs_prod_attr_list(String subs_prod_attr_list) {
+        this.subs_prod_attr_list = subs_prod_attr_list;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public String getAttach_file_id() {
+        return attach_file_id;
+    }
+
+    public void setAttach_file_id(String attach_file_id) {
+        this.attach_file_id = attach_file_id;
+    }
+
+    public String getOppor_id() {
+        return oppor_id;
+    }
+
+    public void setOppor_id(String oppor_id) {
+        this.oppor_id = oppor_id;
+    }
+
+    public String getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(String penalty) {
+        this.penalty = penalty;
+    }
+
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
+
+    public String getBusiness_type() {
+        return business_type;
+    }
+
+    public void setBusiness_type(String business_type) {
+        this.business_type = business_type;
+    }
+
+    public String getPay_main_body() {
+        return pay_main_body;
+    }
+
+    public void setPay_main_body(String pay_main_body) {
+        this.pay_main_body = pay_main_body;
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1;
+    }
+
+    public String getContract_status() {
+        return contract_status;
+    }
+
+    public void setContract_status(String contract_status) {
+        this.contract_status = contract_status;
+    }
+
+    public String getCatalog_name() {
+        return catalog_name;
+    }
+
+    public void setCatalog_name(String catalog_name) {
+        this.catalog_name = catalog_name;
+    }
+
+    public Date getOper_date() {
+        return oper_date;
+    }
+
+    public void setOper_date(Date oper_date) {
+        this.oper_date = oper_date;
+    }
+
+    public String getOper_name() {
+        return oper_name;
+    }
+
+    public void setOper_name(String oper_name) {
+        this.oper_name = oper_name;
+    }
+
+    public String getContract_pdf_name() {
+        return contract_pdf_name;
+    }
+
+    public void setContract_pdf_name(String contract_pdf_name) {
+        this.contract_pdf_name = contract_pdf_name;
+    }
+
+    public String getSecond_invoice_address() {
+        return second_invoice_address;
+    }
+
+    public void setSecond_invoice_address(String second_invoice_address) {
+        this.second_invoice_address = second_invoice_address;
+    }
+
+    public String getSecond_invoice_phone() {
+        return second_invoice_phone;
+    }
+
+    public void setSecond_invoice_phone(String second_invoice_phone) {
+        this.second_invoice_phone = second_invoice_phone;
+    }
+
+    public String getElecPackName() {
+        return elecPackName;
+    }
+
+    public void setElecPackName(String elecPackName) {
+        this.elecPackName = elecPackName;
+    }
+
+    public String getElecpack_id() {
+        return elecpack_id;
+    }
+
+    public void setElecpack_id(String elecpack_id) {
+        this.elecpack_id = elecpack_id;
+    }
+
+    public String getChargeIds() {
+        return chargeIds;
+    }
+
+    public void setChargeIds(String chargeIds) {
+        this.chargeIds = chargeIds;
+    }
+
+    public String getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public String getFirst_invoice_name() {
+        return first_invoice_name;
+    }
+
+    public void setFirst_invoice_name(String first_invoice_name) {
+        this.first_invoice_name = first_invoice_name;
+    }
+
+    public String getFirst_taxpayer_code() {
+        return first_taxpayer_code;
+    }
+
+    public void setFirst_taxpayer_code(String first_taxpayer_code) {
+        this.first_taxpayer_code = first_taxpayer_code;
+    }
+
+    public String getFirst_invoice_band() {
+        return first_invoice_band;
+    }
+
+    public void setFirst_invoice_band(String first_invoice_band) {
+        this.first_invoice_band = first_invoice_band;
+    }
+
+    public String getFirst_invoice_username() {
+        return first_invoice_username;
+    }
+
+    public void setFirst_invoice_username(String first_invoice_username) {
+        this.first_invoice_username = first_invoice_username;
+    }
+
+    public String getFirst_invoice_number() {
+        return first_invoice_number;
+    }
+
+    public void setFirst_invoice_number(String first_invoice_number) {
+        this.first_invoice_number = first_invoice_number;
+    }
+
+    public String getFirst_invoice_address() {
+        return first_invoice_address;
+    }
+
+    public void setFirst_invoice_address(String first_invoice_address) {
+        this.first_invoice_address = first_invoice_address;
+    }
+
+    public String getFirst_invoice_phone() {
+        return first_invoice_phone;
+    }
+
+    public void setFirst_invoice_phone(String first_invoice_phone) {
+        this.first_invoice_phone = first_invoice_phone;
+    }
+
+    public String getSecond_invoice_name() {
+        return second_invoice_name;
+    }
+
+    public void setSecond_invoice_name(String second_invoice_name) {
+        this.second_invoice_name = second_invoice_name;
+    }
+
+    public String getSecond_taxpayer_code() {
+        return second_taxpayer_code;
+    }
+
+    public void setSecond_taxpayer_code(String second_taxpayer_code) {
+        this.second_taxpayer_code = second_taxpayer_code;
+    }
+
+    public String getSecond_invoice_band() {
+        return second_invoice_band;
+    }
+
+    public void setSecond_invoice_band(String second_invoice_band) {
+        this.second_invoice_band = second_invoice_band;
+    }
+
+    public String getSecond_invoice_username() {
+        return second_invoice_username;
+    }
+
+    public void setSecond_invoice_username(String second_invoice_username) {
+        this.second_invoice_username = second_invoice_username;
+    }
+
+    public String getSecond_invoice_number() {
+        return second_invoice_number;
+    }
+
+    public void setSecond_invoice_number(String second_invoice_number) {
+        this.second_invoice_number = second_invoice_number;
+    }
+
+    public String getFirst_party_code() {
+        return first_party_code;
+    }
+
+    public void setFirst_party_code(String first_party_code) {
+        this.first_party_code = first_party_code;
+    }
+
+    public String getContract_name() {
+        return contract_name;
+    }
+
+    public void setContract_name(String contract_name) {
+        this.contract_name = contract_name;
+    }
+
+    public String getContract_desc() {
+        return contract_desc;
+    }
+
+    public void setContract_desc(String contract_desc) {
+        this.contract_desc = contract_desc;
+    }
+
+    public String getFirst_contacts_address() {
+        return first_contacts_address;
+    }
+
+    public void setFirst_contacts_address(String first_contacts_address) {
+        this.first_contacts_address = first_contacts_address;
+    }
+
+    public String getSecond_party_code() {
+        return second_party_code;
+    }
+
+    public void setSecond_party_code(String second_party_code) {
+        this.second_party_code = second_party_code;
+    }
+
+    public List<SeContractChargesInfo> getContractChargeList() {
+        return contractChargeList;
+    }
+
+    public void setContractChargeList(List<SeContractChargesInfo> contractChargeList) {
+        this.contractChargeList = contractChargeList;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getFirst_party() {
+        return first_party;
+    }
+
+    public void setFirst_party(String first_party) {
+        this.first_party = first_party;
+    }
+
+    public String getFirst_party_charge() {
+        return first_party_charge;
+    }
+
+    public void setFirst_party_charge(String first_party_charge) {
+        this.first_party_charge = first_party_charge;
+    }
+
+    public String getFirst_party_address() {
+        return first_party_address;
+    }
+
+    public void setFirst_party_address(String first_party_address) {
+        this.first_party_address = first_party_address;
+    }
+
+    public String getFirst_party_post_code() {
+        return first_party_post_code;
+    }
+
+    public void setFirst_party_post_code(String first_party_post_code) {
+        this.first_party_post_code = first_party_post_code;
+    }
+
+    public String getFirst_party_phone() {
+        return first_party_phone;
+    }
+
+    public void setFirst_party_phone(String first_party_phone) {
+        this.first_party_phone = first_party_phone;
+    }
+
+    public String getSecond_party() {
+        return second_party;
+    }
+
+    public void setSecond_party(String second_party) {
+        this.second_party = second_party;
+    }
+
+    public String getSecond_party_charge() {
+        return second_party_charge;
+    }
+
+    public void setSecond_party_charge(String second_party_charge) {
+        this.second_party_charge = second_party_charge;
+    }
+
+    public String getSecond_party_address() {
+        return second_party_address;
+    }
+
+    public void setSecond_party_address(String second_party_address) {
+        this.second_party_address = second_party_address;
+    }
+
+    public String getSecond_party_post_code() {
+        return second_party_post_code;
+    }
+
+    public void setSecond_party_post_code(String second_party_post_code) {
+        this.second_party_post_code = second_party_post_code;
+    }
+
+    public String getSecond_party_phone() {
+        return second_party_phone;
+    }
+
+    public void setSecond_party_phone(String second_party_phone) {
+        this.second_party_phone = second_party_phone;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
+    public String getTotal_amount() {
+        return total_amount;
+    }
+
+    public void setTotal_amount(String total_amount) {
+        this.total_amount = total_amount;
+    }
+
+    public String getBond() {
+        return bond;
+    }
+
+    public void setBond(String bond) {
+        this.bond = bond;
+    }
+
+    public String getInvoice_type() {
+        return invoice_type;
+    }
+
+    public void setInvoice_type(String invoice_type) {
+        this.invoice_type = invoice_type;
+    }
+
+    public String getFirst_party_username() {
+        return first_party_username;
+    }
+
+    public void setFirst_party_username(String first_party_username) {
+        this.first_party_username = first_party_username;
+    }
+
+    public String getFirst_party_band() {
+        return first_party_band;
+    }
+
+    public void setFirst_party_band(String first_party_band) {
+        this.first_party_band = first_party_band;
+    }
+
+    public String getFirst_party_account_number() {
+        return first_party_account_number;
+    }
+
+    public void setFirst_party_account_number(String first_party_account_number) {
+        this.first_party_account_number = first_party_account_number;
+    }
+
+    public String getSecond_party_username() {
+        return second_party_username;
+    }
+
+    public void setSecond_party_username(String second_party_username) {
+        this.second_party_username = second_party_username;
+    }
+
+    public String getSecond_party_band() {
+        return second_party_band;
+    }
+
+    public void setSecond_party_band(String second_party_band) {
+        this.second_party_band = second_party_band;
+    }
+
+    public String getSecond_party_account_number() {
+        return second_party_account_number;
+    }
+
+    public void setSecond_party_account_number(String second_party_account_number) {
+        this.second_party_account_number = second_party_account_number;
+    }
+
+    public String getFirst_contacts_name() {
+        return first_contacts_name;
+    }
+
+    public void setFirst_contacts_name(String first_contacts_name) {
+        this.first_contacts_name = first_contacts_name;
+    }
+
+    public String getFirst_contacts_id_card() {
+        return first_contacts_id_card;
+    }
+
+    public void setFirst_contacts_id_card(String first_contacts_id_card) {
+        this.first_contacts_id_card = first_contacts_id_card;
+    }
+
+    public String getFirst_contacts_phone() {
+        return first_contacts_phone;
+    }
+
+    public void setFirst_contacts_phone(String first_contacts_phone) {
+        this.first_contacts_phone = first_contacts_phone;
+    }
+
+    public String getFirst_contacts_email() {
+        return first_contacts_email;
+    }
+
+    public void setFirst_contacts_email(String first_contacts_email) {
+        this.first_contacts_email = first_contacts_email;
+    }
+
+    public String getUsed_in() {
+        return used_in;
+    }
+
+    public void setUsed_in(String used_in) {
+        this.used_in = used_in;
+    }
+
+    public String getSafe_client() {
+        return safe_client;
+    }
+
+    public void setSafe_client(String safe_client) {
+        this.safe_client = safe_client;
+    }
+
+    public String getSafe_address() {
+        return safe_address;
+    }
+
+    public void setSafe_address(String safe_address) {
+        this.safe_address = safe_address;
+    }
+
+    public String getSafe_contacts() {
+        return safe_contacts;
+    }
+
+    public void setSafe_contacts(String safe_contacts) {
+        this.safe_contacts = safe_contacts;
+    }
+
+    public String getSafe_phone() {
+        return safe_phone;
+    }
+
+    public void setSafe_phone(String safe_phone) {
+        this.safe_phone = safe_phone;
+    }
+
+    public String getPay_cycle() {
+        return pay_cycle;
+    }
+
+    public void setPay_cycle(String pay_cycle) {
+        this.pay_cycle = pay_cycle;
+    }
+
+    public String getOpen_time() {
+        return open_time;
+    }
+
+    public void setOpen_time(String open_time) {
+        this.open_time = open_time;
+    }
+
+    public String getUse_area() {
+        return use_area;
+    }
+
+    public void setUse_area(String use_area) {
+        this.use_area = use_area;
+    }
+}

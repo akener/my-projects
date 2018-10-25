@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.invoice.mapper.EpInvPreprintAppInfoMapper">
+  <resultMap id="BaseResultMap" type="com.esop.invoice.model.EpInvPreprintAppInfo">
+    <id column="rec_serial_no" jdbcType="INTEGER" property="recSerialNo" />
+    <result column="application_no" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="branch_no" jdbcType="VARCHAR" property="branchNo" />
+    <result column="branch_name" jdbcType="VARCHAR" property="branchName" />
+    <result column="industry_center_no" jdbcType="VARCHAR" property="industryCenterNo" />
+    <result column="industry_center_name" jdbcType="VARCHAR" property="industryCenterName" />
+    <result column="group_id" jdbcType="CHAR" property="groupId" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="invoice_type" jdbcType="CHAR" property="invoiceType" />
+    <result column="invoice_mode" jdbcType="CHAR" property="invoiceMode" />
+    <result column="print_mode" jdbcType="CHAR" property="printMode" />
+    <result column="is_red" jdbcType="CHAR" property="isRed" />
+    <result column="invoice_sum_value" jdbcType="DECIMAL" property="invoiceSumValue" />
+    <result column="start_account_period" jdbcType="DATE" property="startAccountPeriod" />
+    <result column="end_account_period" jdbcType="DATE" property="endAccountPeriod" />
+    <result column="push_method" jdbcType="CHAR" property="pushMethod" />
+    <result column="push_email" jdbcType="VARCHAR" property="pushEmail" />
+    <result column="push_phone" jdbcType="VARCHAR" property="pushPhone" />
+    <result column="invoice_spe_model" jdbcType="VARCHAR" property="invoiceSpeModel" />
+    <result column="invoice_unit" jdbcType="VARCHAR" property="invoiceUnit" />
+    <result column="invoice_number" jdbcType="INTEGER" property="invoiceNumber" />
+    <result column="bank_sub_account" jdbcType="VARCHAR" property="bankSubAccount" />
+    <result column="bank_sub_account_bank" jdbcType="VARCHAR" property="bankSubAccountBank" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="applicant_esop_no" jdbcType="VARCHAR" property="applicantEsopNo" />
+    <result column="applicant_boss_no" jdbcType="VARCHAR" property="applicantBossNo" />
+    <result column="applicant_name" jdbcType="VARCHAR" property="applicantName" />
+    <result column="payee_name" jdbcType="VARCHAR" property="payeeName" />
+    <result column="application_time" jdbcType="TIMESTAMP" property="applicationTime" />
+    <result column="work_state" jdbcType="CHAR" property="workState" />
+    <result column="original_application_no" jdbcType="VARCHAR" property="originalApplicationNo" />
+    <result column="red_way" jdbcType="CHAR" property="redWay" />
+    <result column="invoice_no" jdbcType="VARCHAR" property="invoiceNo" />
+    <result column="payee_id" jdbcType="VARCHAR" property="payeeId" />
+    <result column="reviewer_id" jdbcType="VARCHAR" property="reviewerId" />
+    <result column="reviewer_name" jdbcType="VARCHAR" property="reviewerName" />
+    <result column="openner_id" jdbcType="VARCHAR" property="opennerId" />
+    <result column="openner_name" jdbcType="VARCHAR" property="opennerName" />
+    <result column="oper_remarks" jdbcType="VARCHAR" property="operRemarks" />
+    <result column="item_property" jdbcType="VARCHAR" property="itemProperty" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ep_inv_preprint_app_info
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.esop.invoice.model.EpInvPreprintAppInfo">
+    <selectKey keyProperty="recSerialNo" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ep_inv_preprint_app_info (application_no, branch_no, branch_name,
+      industry_center_no, industry_center_name, group_id, 
+      group_name, invoice_type, invoice_mode, 
+      print_mode, is_red, invoice_sum_value, 
+      start_account_period, end_account_period, push_method, 
+      push_email, push_phone, invoice_spe_model, 
+      invoice_unit, invoice_number, bank_sub_account, 
+      bank_sub_account_bank, remarks, applicant_esop_no, 
+      applicant_boss_no, applicant_name, payee_name, 
+      application_time, work_state, original_application_no, 
+      red_way,invoice_no,payee_id,reviewer_id,reviewer_name,openner_id,openner_name, oper_remarks,item_property)
+    values (#{applicationNo,jdbcType=VARCHAR}, #{branchNo,jdbcType=VARCHAR}, #{branchName,jdbcType=VARCHAR}, 
+      #{industryCenterNo,jdbcType=VARCHAR}, #{industryCenterName,jdbcType=VARCHAR}, #{groupId,jdbcType=CHAR}, 
+      #{groupName,jdbcType=VARCHAR}, #{invoiceType,jdbcType=CHAR}, #{invoiceMode,jdbcType=CHAR}, 
+      #{printMode,jdbcType=CHAR}, #{isRed,jdbcType=CHAR}, #{invoiceSumValue,jdbcType=DECIMAL}, 
+      #{startAccountPeriod,jdbcType=DATE}, #{endAccountPeriod,jdbcType=DATE}, #{pushMethod,jdbcType=CHAR}, 
+      #{pushEmail,jdbcType=VARCHAR}, #{pushPhone,jdbcType=VARCHAR}, #{invoiceSpeModel,jdbcType=VARCHAR}, 
+      #{invoiceUnit,jdbcType=VARCHAR}, #{invoiceNumber,jdbcType=INTEGER}, #{bankSubAccount,jdbcType=VARCHAR}, 
+      #{bankSubAccountBank,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{applicantEsopNo,jdbcType=VARCHAR}, 
+      #{applicantBossNo,jdbcType=VARCHAR}, #{applicantName,jdbcType=VARCHAR}, #{payeeName,jdbcType=VARCHAR}, 
+      #{applicationTime,jdbcType=TIMESTAMP}, #{workState,jdbcType=CHAR}, #{originalApplicationNo,jdbcType=VARCHAR}, 
+      #{redWay,jdbcType=CHAR} ,#{invoiceNo,jdbcType=VARCHAR},#{payeeId ,jdbcType=VARCHAR},#{reviewerId ,jdbcType=VARCHAR},
+      #{reviewerName ,jdbcType=VARCHAR}, #{opennerId ,jdbcType=VARCHAR},#{opennerName ,jdbcType=VARCHAR},#{operRemarks,jdbcType=VARCHAR},#{itemProperty,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.invoice.model.EpInvPreprintAppInfo">
+    update ep_inv_preprint_app_info
+    set application_no = #{applicationNo,jdbcType=VARCHAR},
+      branch_no = #{branchNo,jdbcType=VARCHAR},
+      branch_name = #{branchName,jdbcType=VARCHAR},
+      industry_center_no = #{industryCenterNo,jdbcType=VARCHAR},
+      industry_center_name = #{industryCenterName,jdbcType=VARCHAR},
+      group_id = #{groupId,jdbcType=CHAR},
+      group_name = #{groupName,jdbcType=VARCHAR},
+      invoice_type = #{invoiceType,jdbcType=CHAR},
+      invoice_mode = #{invoiceMode,jdbcType=CHAR},
+      print_mode = #{printMode,jdbcType=CHAR},
+      is_red = #{isRed,jdbcType=CHAR},
+      invoice_sum_value = #{invoiceSumValue,jdbcType=DECIMAL},
+      start_account_period = #{startAccountPeriod,jdbcType=DATE},
+      end_account_period = #{endAccountPeriod,jdbcType=DATE},
+      push_method = #{pushMethod,jdbcType=CHAR},
+      push_email = #{pushEmail,jdbcType=VARCHAR},
+      push_phone = #{pushPhone,jdbcType=VARCHAR},
+      invoice_spe_model = #{invoiceSpeModel,jdbcType=VARCHAR},
+      invoice_unit = #{invoiceUnit,jdbcType=VARCHAR},
+      invoice_number = #{invoiceNumber,jdbcType=INTEGER},
+      bank_sub_account = #{bankSubAccount,jdbcType=VARCHAR},
+      bank_sub_account_bank = #{bankSubAccountBank,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      applicant_esop_no = #{applicantEsopNo,jdbcType=VARCHAR},
+      applicant_boss_no = #{applicantBossNo,jdbcType=VARCHAR},
+      applicant_name = #{applicantName,jdbcType=VARCHAR},
+      payee_name = #{payeeName,jdbcType=VARCHAR},
+      application_time = #{applicationTime,jdbcType=TIMESTAMP},
+      work_state = #{workState,jdbcType=CHAR},
+      original_application_no = #{originalApplicationNo,jdbcType=VARCHAR},
+      red_way = #{redWay,jdbcType=CHAR},
+      invoice_no = #{invoiceNo,jdbcType=VARCHAR},
+      payee_id = #{payeeId,jdbcType=VARCHAR},
+      reviewer_id = #{reviewerId,jdbcType=VARCHAR},
+      reviewer_name = #{reviewerName,jdbcType=VARCHAR},
+      openner_id = #{opennerId,jdbcType=VARCHAR},
+      openner_name = #{opennerName,jdbcType=VARCHAR},
+      oper_remarks = #{operRemarks,jdbcType=VARCHAR},
+      item_property = #{itemProperty,jdbcType=VARCHAR},
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, branch_no, branch_name, industry_center_no, 
+    industry_center_name, group_id, group_name, invoice_type, invoice_mode, print_mode, 
+    is_red, invoice_sum_value, start_account_period, end_account_period, push_method, 
+    push_email, push_phone, invoice_spe_model, invoice_unit, invoice_number, bank_sub_account, 
+    bank_sub_account_bank, remarks, applicant_esop_no, applicant_boss_no, applicant_name, 
+    payee_name, application_time, work_state, original_application_no, red_way, invoice_no,
+    payee_id,reviewer_id,reviewer_name,openner_id,openner_name, oper_remarks,item_property
+    from ep_inv_preprint_app_info
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </select>
+  <select id="selectByAppNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, branch_no, branch_name, industry_center_no,
+    industry_center_name, group_id, group_name, invoice_type, invoice_mode, print_mode,
+    is_red, invoice_sum_value, start_account_period, end_account_period, push_method,
+    push_email, push_phone, invoice_spe_model, invoice_unit, invoice_number, bank_sub_account,
+    bank_sub_account_bank, remarks, applicant_esop_no, applicant_boss_no, applicant_name,
+    payee_name, application_time, work_state, original_application_no, red_way, invoice_no,
+    payee_id,reviewer_id,reviewer_name,openner_id,openner_name, oper_remarks,item_property
+    from ep_inv_preprint_app_info
+    where application_no = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectForRed" parameterType="com.esop.invoice.model.EpInvPreprintAppInfo" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, branch_no, branch_name, industry_center_no,
+    industry_center_name, group_id, group_name, invoice_type, invoice_mode, print_mode,
+    is_red, invoice_sum_value, start_account_period, end_account_period, push_method,
+    push_email, push_phone, invoice_spe_model, invoice_unit, invoice_number, bank_sub_account,
+    bank_sub_account_bank, remarks, applicant_esop_no, applicant_boss_no, applicant_name,
+    payee_name, application_time, work_state, original_application_no, red_way, invoice_no,
+    payee_id,reviewer_id,reviewer_name,openner_id,openner_name, oper_remarks,item_property
+    from ep_inv_preprint_app_info
+    where application_no = #{applicationNo,jdbcType=VARCHAR}
+    and work_state ='3'
+    <if test="invoiceType != null and invoiceType != ''">
+      and invoice_type = #{invoiceType}
+    </if>
+    <if test="invoiceMode != null and invoiceMode != ''">
+      and invoice_mode = #{invoiceMode}
+    </if>
+    <if test="printMode != null and printMode != ''">
+      and print_mode = #{printMode}
+    </if>
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, branch_no, branch_name, industry_center_no,
+    industry_center_name, group_id, group_name, invoice_type, invoice_mode, print_mode,
+    is_red, invoice_sum_value, start_account_period, end_account_period, push_method,
+    push_email, push_phone, invoice_spe_model, invoice_unit, invoice_number, bank_sub_account,
+    bank_sub_account_bank, remarks, applicant_esop_no, applicant_boss_no, applicant_name,
+    payee_name, application_time, work_state, original_application_no, red_way, invoice_no,
+    payee_id,reviewer_id,reviewer_name,openner_id,openner_name, oper_remarks,item_property
+    from ep_inv_preprint_app_info
+  </select>
+
+  <resultMap id="ApprListResultMap" type="com.esop.invoice.vo.InvApprListVo">
+    <result column="application_no" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="branch_name" jdbcType="VARCHAR" property="branchName" />
+    <result column="industry_center_name" jdbcType="VARCHAR" property="industryCenterName" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="invoice_type" jdbcType="CHAR" property="invoiceType" />
+    <result column="invoice_mode" jdbcType="VARCHAR" property="invoiceMode" />
+    <result column="print_mode" jdbcType="CHAR" property="printMode" />
+    <result column="is_red" jdbcType="CHAR" property="isRed" />
+    <result column="invoice_sum_value" jdbcType="CHAR" property="invoiceSumValue" />
+    <result column="applicant_name" jdbcType="CHAR" property="applicantName" />
+    <result column="application_time" jdbcType="TIMESTAMP" property="applicationTime" />
+    <result column="proc_inst_id" jdbcType="VARCHAR" property="instDealVo.procInstId" />
+    <result column="proc_id" jdbcType="VARCHAR" property="instDealVo.procId" />
+    <result column="proc_name_en" jdbcType="VARCHAR" property="instDealVo.procNameEn" />
+    <result column="proc_name_ch" jdbcType="VARCHAR" property="instDealVo.procNameCh" />
+    <result column="task_inst_id" jdbcType="VARCHAR" property="instDealVo.taskInstId" />
+    <result column="task_id" jdbcType="VARCHAR" property="instDealVo.taskId" />
+    <result column="step_id" jdbcType="VARCHAR" property="instDealVo.stepId" />
+    <result column="step_name" jdbcType="VARCHAR" property="instDealVo.stepName" />
+    <result column="jsp_path" jdbcType="VARCHAR" property="instDealVo.jspPath" />
+    <result column="next_flag" jdbcType="VARCHAR" property="instDealVo.nextFlag" />
+    <result column="work_state" jdbcType="VARCHAR" property="workstate" />
+  </resultMap>
+  <select id="selectInvApprList" parameterType="com.esop.invoice.dto.QryInvApprListInDTO" resultMap="ApprListResultMap">
+    select invapp.application_no, invapp.branch_name, invapp.industry_center_name, invapp.group_id, invapp.group_name,
+    if(invapp.invoice_type=1, '普票', '专票') as invoice_type,
+    if(invapp.invoice_mode=1, '实收', '月结') as invoice_mode,
+    case invapp.print_mode when '1' then '一般' when '2' then '合打'  else '分打' end as print_mode,
+    case invapp.work_state when '0' then '驳回' when '1' then '审批中' when '2' then '待开票' when '3' then '待回款' when '4' then '已回款' when '5' then '已冲红' when '6' then '已作废' when '7' then '开票失败' else '' end as work_state,
+    case when invapp.is_red=0 then '作废' when invapp.is_red=1 then '冲红' else '开具' end as is_red,
+    invapp.invoice_sum_value, invapp.applicant_name, invapp.application_time,
+    procinst.proc_inst_id, procinst.proc_id, procinst.proc_name_en, procinst.proc_name_ch,
+    taskinst.task_inst_id, taskinst.task_id, taskinst.step_id,
+    procstep.step_name, procstep.jsp_path, procstep.next_flag
+    from ep_inv_preprint_app_info invapp, ct_proc_inst_info procinst, ct_task_inst_info taskinst, ct_proc_step_rel procstep
+    where invapp.application_no = procinst.biz_record_id and procinst.proc_inst_id = taskinst.proc_inst_id
+    and taskinst.status = '0' and procinst.proc_id = procstep.proc_id and taskinst.step_id = procstep.step_id
+    and taskinst.deal_login_no = #{dealLoginNo,jdbcType=VARCHAR}
+    <if test="applicationNo != null and applicationNo != ''">
+      and invapp.application_no = #{applicationNo,jdbcType=VARCHAR}
+    </if>
+    <if test="grpIdOrName != null and grpIdOrName != ''">
+
+      and (invapp.group_id = #{grpIdOrName,jdbcType=CHAR} or invapp.group_name like concat('%',#{grpIdOrName,jdbcType=CHAR},'%'))
+    </if>
+    <if test="invoiceType != null and invoiceType != ''">
+      and invapp.invoice_type = #{invoiceType,jdbcType=CHAR}
+    </if>
+    <if test="applicantName != null and applicantName != ''">
+      and invapp.applicant_name    LIKE    CONCAT('%',#{applicantName},'%')
+    </if>
+    <if test="invoiceMode != null and invoiceMode != ''">
+      and invapp.invoice_mode = #{invoiceMode,jdbcType=CHAR}
+    </if>
+    <if test="printMode != null and printMode != ''">
+      and invapp.print_mode = #{printMode,jdbcType=CHAR}
+    </if>
+    <if test="isRed != null and isRed != ''">
+      and invapp.is_red = #{isRed,jdbcType=CHAR}
+    </if>
+    <if test="starttime != '' and starttime !=null  ">
+      AND  date_format(invapp.application_time,'%Y-%m-%d')  >= #{starttime}
+    </if>
+    <if test="endtime != '' and endtime !=null ">
+      AND   #{endtime} >=  date_format(invapp.application_time ,'%Y-%m-%d')
+    </if>
+    ORDER BY invapp.application_time DESC
+  </select>
+  <select id="selectInvAppList" parameterType="com.esop.invoice.dto.QryInvApprListInDTO" resultMap="ApprListResultMap">
+      select invapp.application_no, invapp.branch_name, invapp.industry_center_name, invapp.group_id, invapp.group_name,
+      if(invapp.invoice_type=1, '普票', '专票') as invoice_type,
+      if(invapp.invoice_mode=1, '实收', '月结') as invoice_mode,
+      case invapp.print_mode when '1' then '一般' when '2' then '合打' else '分打' end as print_mode,
+      case when invapp.is_red=0 then '作废' when invapp.is_red=1 then '冲红' else '开具' end as is_red,
+    invapp.invoice_sum_value, invapp.applicant_name, invapp.application_time,
+      case invapp.work_state when '0' then '驳回' when '1' then '审批中' when '2' then '待开票' when '3' then '待回款' when '4' then '已回款' when '5' then '已冲红' when '6' then '已作废' when '7' then '开票失败' else '' end as work_state
+      from ep_inv_preprint_app_info invapp
+      <where>
+          <if test="applicationNo != null and applicationNo != ''">
+              invapp.application_no = #{applicationNo,jdbcType=VARCHAR}
+          </if>
+          <if test="grpIdOrName != null and grpIdOrName != ''">
+              <bind name="grpName" value="'%' + grpIdOrName +'%'"/>
+              and (invapp.group_id = #{grpIdOrName,jdbcType=CHAR} or invapp.group_name like #{grpName,jdbcType=VARCHAR})
+          </if>
+          <if test="invoiceType != null and invoiceType != ''">
+              and invapp.invoice_type = #{invoiceType,jdbcType=CHAR}
+          </if>
+          <if test="invoiceMode != null and invoiceMode != ''">
+              and invapp.invoice_mode = #{invoiceMode,jdbcType=CHAR}
+          </if>
+          <if test="printMode != null and printMode != ''">
+              and invapp.print_mode = #{printMode,jdbcType=CHAR}
+          </if>
+          <if test="isRed != null and isRed != ''">
+              and invapp.is_red = #{isRed,jdbcType=CHAR}
+          </if>
+      </where>
+  </select>
+  <select id="finPageInvPreprint"   parameterType="com.esop.invoice.dto.InvPreprintDTO"  resultType="com.esop.invoice.dto.InvPreprintDTO"  >
+    select t1.rec_serial_no, t1.application_no, t1.branch_no, t1.branch_name, t1.industry_center_no,
+    t1.industry_center_name, t1.group_id, t1.group_name,
+    if(t1.invoice_type=1, '普票', '专票') as invoice_type,
+    if(t1.invoice_mode=1, '实收', '月结') as invoice_mode,
+    case t1.print_mode when '1' then '一般' when '2' then '合打' else '分打' end as print_mode,
+    case when t1.is_red=0 then '作废' when t1.is_red=1 then '冲红' else '开具' end as is_red,
+    t1.invoice_sum_value, t1.start_account_period, t1.end_account_period, t1.push_method,
+    t1.push_email, t1.push_phone, t1.invoice_spe_model, t1.invoice_unit, t1.invoice_number, t1.bank_sub_account,
+    t1.bank_sub_account_bank, t1.remarks, t1.applicant_esop_no, t1.applicant_boss_no, t1.applicant_name,
+    t1.payee_name, t1.application_time,
+    case t1.work_state when '0' then '驳回' when '1' then '审批中' when '2' then '待开票' when '3' then '开票成功' when '4' then '已回款' when '5' then '已冲红' when '6' then '已作废' when '7' then '开票失败' else '' end as work_state,
+    t1.original_application_no, t1.red_way from ep_inv_preprint_app_info t1
+   <where>
+     <if test="application_no != null and application_no != ''">
+      AND t1.application_no =#{application_no}
+     </if>
+     <if test="group_name != null and group_name != ''">
+      AND t1.group_name LIKE   CONCAT('%',#{group_name},'%')
+     </if>
+     <if test="invoice_type != null and invoice_type != ''">
+      AND t1.invoice_type =#{invoice_type}
+     </if>
+     <if test="invoice_mode != null and invoice_mode != ''">
+       AND t1.invoice_mode =#{invoice_mode}
+     </if>
+     <if test="print_mode != null and print_mode != ''">
+       AND t1.print_mode =#{print_mode}
+     </if>
+     <if test="red_way != null and red_way != ''">
+       AND t1.red_way =#{red_way}
+     </if>
+     <if test="work_state != null and work_state != ''">
+       AND  t1.work_state =#{work_state}
+     </if>
+     <if test="is_red != null and is_red != ''">
+       AND t1.is_red =#{is_red}
+     </if>
+     <if test="applicant_name != null and applicant_name != ''">
+       AND t1.applicant_name LIKE   CONCAT('%',#{applicant_name},'%')
+     </if>
+     AND
+     (
+     exists (select 1 from ct_proc_inst_info t2 where t1.application_no = t2.biz_record_id and t2.start_login_no =
+     #{start_login_no}
+
+     <if test="starttime != null and starttime != ''">
+       AND date_format(t1.application_time,'%Y-%m-%d') >= #{starttime}
+     </if>
+     <if test="endtime != null and endtime != ''">
+       AND #{endtime} >= date_format(t1.application_time,'%Y-%m-%d')
+     </if>
+     <if test="application_no != null and application_no != ''">
+       AND t1.application_no =#{application_no}
+     </if>
+     <if test="group_name != null and group_name != ''">
+       AND t1.group_name LIKE CONCAT('%',#{group_name},'%')
+     </if>
+     <if test="invoice_type != null and invoice_type != ''">
+       AND t1.invoice_type =#{invoice_type}
+     </if>
+     <if test="invoice_mode != null and invoice_mode != ''">
+       AND t1.invoice_mode =#{invoice_mode}
+     </if>
+     <if test="print_mode != null and print_mode != ''">
+       AND t1.print_mode =#{print_mode}
+     </if>
+     <if test="red_way != null and red_way != ''">
+       AND t1.red_way =#{red_way}
+     </if>
+     <if test="work_state != null and work_state != ''">
+       AND t1.work_state =#{work_state}
+     </if>
+     <if test="applicant_name != null and applicant_name != ''">
+       AND t1.applicant_name LIKE CONCAT('%',#{applicant_name},'%')
+     </if>)
+     or (
+     select 1 from ct_proc_inst_info t3, ct_task_inst_info_his t4 where t3.proc_inst_id = t4.proc_inst_id and
+     t1.application_no = t3.biz_record_id and t4.deal_login_no = #{start_login_no}
+     <if test="starttime != null and starttime != ''">
+         AND  date_format(t1.application_time,'%Y-%m-%d') >= #{starttime}
+       </if>
+       <if test="endtime != null and endtime != ''">
+         AND   #{endtime} >=  date_format(t1.application_time,'%Y-%m-%d')
+       </if>
+     <if test="application_no != null and application_no != ''">
+       AND t1.application_no =#{application_no}
+     </if>
+     <if test="group_name != null and group_name != ''">
+       AND t1.group_name LIKE   CONCAT('%',#{group_name},'%')
+     </if>
+     <if test="invoice_type != null and invoice_type != ''">
+       AND t1.invoice_type =#{invoice_type}
+     </if>
+     <if test="invoice_mode != null and invoice_mode != ''">
+       AND t1.invoice_mode =#{invoice_mode}
+     </if>
+     <if test="print_mode != null and print_mode != ''">
+       AND t1.print_mode =#{print_mode}
+     </if>
+     <if test="red_way != null and red_way != ''">
+       AND t1.red_way =#{red_way}
+     </if>
+     <if test="work_state != null and work_state != ''">
+       AND  t1.work_state =#{work_state}
+     </if>
+     <if test="applicant_name != null and applicant_name != ''">
+       AND t1.applicant_name LIKE   CONCAT('%',#{applicant_name},'%')
+     </if>
+
+     )
+      or(select 1 from ct_proc_inst_info t5, ct_task_inst_info t6 where t5.proc_inst_id = t6.proc_inst_id and t1.application_no = t5.biz_record_id and t6.deal_login_no = #{start_login_no}
+
+     <if test="starttime != null and starttime != ''">
+       AND  date_format(t1.application_time,'%Y-%m-%d') >= #{starttime}
+     </if>
+     <if test="endtime != null and endtime != ''">
+       AND   #{endtime} >=  date_format(t1.application_time,'%Y-%m-%d')
+     </if>
+
+     <if test="application_no != null and application_no != ''">
+       AND t1.application_no =#{application_no}
+     </if>
+     <if test="group_name != null and group_name != ''">
+       AND t1.group_name LIKE   CONCAT('%',#{group_name},'%')
+     </if>
+     <if test="invoice_type != null and invoice_type != ''">
+       AND t1.invoice_type =#{invoice_type}
+     </if>
+     <if test="invoice_mode != null and invoice_mode != ''">
+       AND t1.invoice_mode =#{invoice_mode}
+     </if>
+     <if test="print_mode != null and print_mode != ''">
+       AND t1.print_mode =#{print_mode}
+     </if>
+     <if test="red_way != null and red_way != ''">
+       AND t1.red_way =#{red_way}
+     </if>
+     <if test="work_state != null and work_state != ''">
+       AND  t1.work_state =#{work_state}
+     </if>
+     <if test="applicant_name != null and applicant_name != ''">
+       AND t1.applicant_name LIKE   CONCAT('%',#{applicant_name},'%')
+     </if>
+     )
+     <if test="starttime != null and starttime != ''">
+       AND  date_format(t1.application_time,'%Y-%m-%d') >= #{starttime}
+     </if>
+     <if test="endtime != null and endtime != ''">
+       AND   #{endtime} >=  date_format(t1.application_time,'%Y-%m-%d')
+     </if>
+     )
+     ORDER  by t1.application_time DESC
+    </where>
+  </select>
+
+  <update id="updateWorkState" parameterType="com.esop.invoice.model.EpInvPreprintAppInfo">
+    update ep_inv_preprint_app_info set work_state = #{workState,jdbcType=CHAR} where application_no = #{applicationNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAcctPeriod" parameterType="com.esop.invoice.model.EpInvPreprintActInfo" resultMap="BaseResultMap">
+      SELECT t1.start_account_period,t1.end_account_period
+      FROM ep_inv_preprint_act_info t,ep_inv_preprint_app_info t1
+      WHERE t.application_no=t1.application_no AND t1.is_red='2' AND t1.invoice_mode='2'
+      AND t1.work_state not IN ('0','5','6','7')
+      AND t.group_account_id=#{groupAccountId}
+      and date_format(t1.start_account_period,'%Y%m')>=#{arrearsAccountPeriod}
+      order by t1.start_account_period
+  </select>
+  <!--通过申请单号查询在途的冲红订单-->
+  <select id="qryRedExistUnPrint" parameterType="com.esop.invoice.model.EpInvPreprintAppInfo" resultMap="BaseResultMap">
+    SELECT *
+    FROM ep_inv_preprint_app_info
+    WHERE original_application_no=#{originalApplicationNo} AND work_state not IN ('0','5','6','7')
+  </select>
+  <!--通过账号、账期查询在途的发票订单-->
+  <select id="qryHdAcctExistUnPrint" parameterType="com.esop.invoice.model.EpInvPreprintActInfo" resultMap="BaseResultMap">
+    SELECT t1.*
+    FROM ep_inv_preprint_app_info t1,ep_inv_preprint_act_info t2
+    WHERE t1.application_no=t2.application_no and t1.is_red='2' AND t2.group_account_id=#{groupAccountId}
+    AND #{arrearsAccountPeriod} &lt;= date_format(t1.end_account_period,'%Y-%m') AND t1.work_state NOT IN ('0','5','6','7');
+  </select>
+
+
+
+  <!--集团编号查询发票订单-->
+  <select id="queryAppNoListByGroupId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT *
+    FROM ep_inv_preprint_app_info
+    where group_id=#{groupId,jdbcType=VARCHAR}
+    AND work_state ='3'
+    and is_red='2'
+  </select>
+
+  <insert id="saveCrmInvLog" parameterType="Map">
+    insert into ep_inv_crm_log (application_no,op_port,req_url, req_method,req_xml,resp_xml)
+    values (#{applicationNo,jdbcType=VARCHAR}, #{opPort,jdbcType=VARCHAR},#{reqUrl,jdbcType=LONGVARCHAR}, #{reqMethod,jdbcType=LONGVARCHAR}, #{reqXml,jdbcType=LONGVARCHAR},#{respXml,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <select id="queryAppInfoListByAppNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT *
+    FROM ep_inv_preprint_app_info
+    where application_no=#{applicationNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="georGanizationInfos"  parameterType="com.esop.invoice.dto.SeContractQddwOutDTO" resultType="com.esop.invoice.dto.SeContractQddwOutDTO">
+    select id ,name from se_contract_qddw
+    <where>
+      <if test="id != null and id != ''">
+        AND id =#{id}
+      </if>
+    </where>
+    order by id,levelid
+  </select>
+
+  <select id="getInvoiceManagerId"  resultType="java.lang.String">
+    select reflect_id from ct_id_map_cfg
+    where code_id='fpgly'
+  </select>
+
+  <!--查询复核人列表-->
+  <select id="selectReviewerList"  parameterType="com.esop.invoice.dto.Reviewer" resultType="com.esop.invoice.dto.Reviewer">
+    select t1.id,t1.login_no,t1.login_name,t1.root_org_id,t1.root_org_name,t1.update_time
+    from ep_inv_reviewer_info t1,se_contract_qddw t2
+    where t1.root_org_id=t2.id
+    <if test="root_org_id != null and root_org_id != ''">
+      AND t1.root_org_id =#{root_org_id}
+    </if>
+    <if test="login_no != null and login_no != ''">
+      AND t1.login_no =#{login_no}
+    </if>
+    <if test="login_name != null and login_name != ''">
+      AND t1.login_name like concat(concat('%',#{login_name}),'%')
+    </if>
+    ORDER BY t1.id
+  </select>
+
+  <!--增加复核人-->
+  <insert id="addReviewerInfo" parameterType="com.esop.invoice.dto.Reviewer">
+    insert into ep_inv_reviewer_info (login_no,login_name,root_org_id,root_org_name,update_time)
+    values (#{login_no,jdbcType=VARCHAR}, #{login_name,jdbcType=VARCHAR},#{root_org_id,jdbcType=VARCHAR}, #{root_org_name,jdbcType=VARCHAR},now())
+  </insert>
+
+  <!--删除复核人-->
+  <delete id="deleteReviewerInfo" parameterType="com.esop.invoice.dto.Reviewer">
+    DELETE FROM ep_inv_reviewer_info WHERE id=#{id}
+  </delete>
+
+
+  <!--生产记得改role_id 、本地role_id 21677、UAT21677-->
+  <select id="selectAllReviewerInfo" parameterType="com.esop.invoice.dto.ReviewerInfo" resultType="com.esop.invoice.dto.ReviewerInfo">
+    select b.staff_name,c.staff_code,d.name AS group_pay_name,d.id AS root_org_id
+    from bs_staff_info b,bs_systemuser_info c,se_contract_qddw d
+    where SUBSTR(b.org_id,1,8)=d.id
+    and b.staff_id=c.staff_id
+    and c.state='Y'
+    and c.staff_code not in(select login_no from ep_inv_reviewer_info)
+    <if test="root_org_id !=null and root_org_id !=''">
+      and d.id=#{root_org_id}
+    </if>
+    <if test="staff_code !=null and staff_code !=''">
+      and c.staff_code=#{staff_code}
+    </if>
+    <if test="staff_name !=null and staff_name !=''">
+      and b.staff_name like concat(concat('%',#{staff_name}),'%')
+    </if>
+  </select>
+
+
+  <select id="getReviewerInfos"  parameterType="com.esop.invoice.dto.Reviewer" resultType="com.esop.invoice.dto.Reviewer">
+    select t1.id,t1.login_no,t1.login_name,t1.root_org_id,t1.root_org_name,t1.update_time from ep_inv_reviewer_info t1
+    <where>
+      <if test="root_org_id != null and root_org_id != ''">
+        AND t1.root_org_id =#{root_org_id}
+      </if>
+    </where>
+    order by t1.id
+  </select>
+
+</mapper>

@@ -1,0 +1,35 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.workbench.dto.GroupProfileDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/27.
+ */
+@Repository
+public class GroupProfileService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(GroupProfileService.class);
+    public List getGroupNum(GroupProfileDto groupProfileDto){
+        List ls = sqlE.selectM("selectGroupNum",groupProfileDto);
+        return ls;
+    }
+    public List getGrpMemNum(GroupProfileDto groupProfileDto){
+        List ls = sqlE.selectM("selectMemNum",groupProfileDto);
+        return ls;
+    }
+    public List getGrpImpMemNum(GroupProfileDto groupProfileDto){
+        List ls = sqlE.selectM("selectImpMemNum",groupProfileDto);
+        return ls;
+    }
+    public List getAllIncomeNum(GroupProfileDto groupProfileDto){
+        List ls = sqlE.selectM("selectAllIncome",groupProfileDto);
+        return ls;
+    }
+}

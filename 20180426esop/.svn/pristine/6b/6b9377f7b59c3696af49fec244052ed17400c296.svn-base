@@ -1,0 +1,75 @@
+package com.esop.workbench.controller;
+
+import com.esop.base.dto.TestDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.AmountPaymentDto;
+import com.esop.workbench.dto.MarketingActivitiesDto;
+import com.esop.workbench.service.MarketingActivitiesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/21.
+ */
+@RestController
+public class MarketingActivitesController {
+    @Autowired
+    MarketingActivitiesService marketingActivitiesService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    //查询量酬情况排名
+    @RequestMapping(value = "/getMarketingActivitiesList")
+    public Result getAmountPaymentRank(MarketingActivitiesDto marketingActivitiesDto, HttpServletRequest request, boolean flag) {
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        marketingActivitiesDto.setPage(page);
+        result = marketingActivitiesService.getMarketingActivitiesList(marketingActivitiesDto);
+        return result;
+    }
+    //添加操作
+    @RequestMapping(value="/insertMarketingActivities")
+    public int insertTest(MarketingActivitiesDto parameter, HttpServletRequest request){
+        String market_name = request.getParameter("market_name");
+        String start_time = request.getParameter("start_time");
+        String end_time = request.getParameter("end_time");
+        parameter.setMarket_name(market_name);
+        parameter.setStart_time(start_time);
+        parameter.setEnd_time(end_time);
+        int maxMarketNo = marketingActivitiesService.selectMaxMarketNo(parameter);
+        //System.out.println("_________________"+maxMarketNo);
+        String market_no = String.valueOf(maxMarketNo+1);
+        parameter.setMarket_no(market_no);
+        int num = marketingActivitiesService.insertMarketingActivities(parameter);
+        //System.out.println("后端接口="+parameter.getMarket_name());
+        return num;
+    }
+    //修改操作
+    @RequestMapping(value="/updateMarketingActivities")
+    public int updateTest(MarketingActivitiesDto parameter, HttpServletRequest request){
+        String market_no = request.getParameter("market_no");
+        String market_name = request.getParameter("market_name");
+        String market_content = request.getParameter("market_content");
+        String eff_date = request.getParameter("eff_date");
+        parameter.setMarket_name(market_name);
+        parameter.setMarket_content(market_content);
+        parameter.setEff_date(eff_date);
+        parameter.setMarket_no(market_no);
+        //System.out.println(market_name+"&"+market_content+"&"+eff_date+"&"+market_no);
+        int num = marketingActivitiesService.updateMarketingActivities(parameter);
+        return num;
+    }
+}

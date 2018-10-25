@@ -1,0 +1,199 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * @Description:
+ * @Date: Created by yuansp on 2017/6/13.
+ * @Modify by:
+ */
+public class MngMonitorDto extends BaseDto {
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    String DT_RowId         = "";
+
+    private String manager_name = "";//客户经理姓名
+    private String manager_no = "";//客户经理工号
+    private int change_amount = 0;//4G套餐变更量
+    private int termi_amount = 0;//4G终端销售量
+    private int open_amount = 0;//开户量
+    private int web_amount = 0;//4G上网客户数
+    private int broad_dep_amount = 0;//宽带发展量
+    private int pack = 0;//4G套餐变更任务量
+    private int termi = 0;//4G终端销售任务量
+    private int open_amout = 0;//开户任务量
+    private int cust = 0;//4G上网客户任务数
+    private int broad = 0;//宽带发展任务量
+
+    private int packPercent = 0;//4G套餐变更完成率
+    private int termiPercent = 0;//4G终端销售完成率
+    private int openPercent = 0;//开户完成率
+    private int custPercent = 0;//4G上网客户完成率
+    private int broadPercent = 0;//宽带完成率
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public int getChange_amount() {
+        return change_amount;
+    }
+
+    public void setChange_amount(int change_amount) {
+        this.change_amount = change_amount;
+    }
+
+    public int getTermi_amount() {
+        return termi_amount;
+    }
+
+    public void setTermi_amount(int termi_amount) {
+        this.termi_amount = termi_amount;
+    }
+
+    public int getOpen_amount() {
+        return open_amount;
+    }
+
+    public void setOpen_amount(int open_amount) {
+        this.open_amount = open_amount;
+    }
+
+    public int getWeb_amount() {
+        return web_amount;
+    }
+
+    public void setWeb_amount(int web_amount) {
+        this.web_amount = web_amount;
+    }
+
+    public int getBroad_dep_amount() {
+        return broad_dep_amount;
+    }
+
+    public void setBroad_dep_amount(int broad_dep_amount) {
+        this.broad_dep_amount = broad_dep_amount;
+    }
+
+    public int getPack() {
+        return pack;
+    }
+
+    public void setPack(int pack) {
+        this.pack = pack;
+    }
+
+    public int getTermi() {
+        return termi;
+    }
+
+    public void setTermi(int termi) {
+        this.termi = termi;
+    }
+
+    public int getOpen_amout() {
+        return open_amout;
+    }
+
+    public void setOpen_amout(int open_amout) {
+        this.open_amout = open_amout;
+    }
+
+    public int getCust() {
+        return cust;
+    }
+
+    public void setCust(int cust) {
+        this.cust = cust;
+    }
+
+    public int getBroad() {
+        return broad;
+    }
+
+    public void setBroad(int broad) {
+        this.broad = broad;
+    }
+
+    public int getPackPercent() {
+        return packPercent;
+    }
+
+    public void setPackPercent(int packPercent) {
+        this.packPercent = packPercent;
+    }
+
+    public int getTermiPercent() {
+        return termiPercent;
+    }
+
+    public void setTermiPercent(int termiPercent) {
+        this.termiPercent = termiPercent;
+    }
+
+    public int getOpenPercent() {
+        return openPercent;
+    }
+
+    public void setOpenPercent(int openPercent) {
+        this.openPercent = openPercent;
+    }
+
+    public int getCustPercent() {
+        return custPercent;
+    }
+
+    public void setCustPercent(int custPercent) {
+        this.custPercent = custPercent;
+    }
+
+    public int getBroadPercent() {
+        return broadPercent;
+    }
+
+    public void setBroadPercent(int broadPercent) {
+        this.broadPercent = broadPercent;
+    }
+
+    @Override
+    public String toString() {
+        return "MngMonitorDto{" +
+                "manager_name='" + manager_name + '\'' +
+                ", manager_no='" + manager_no + '\'' +
+                ", change_amount=" + change_amount +
+                ", termi_amount=" + termi_amount +
+                ", open_amount=" + open_amount +
+                ", web_amount=" + web_amount +
+                ", broad_dep_amount=" + broad_dep_amount +
+                ", pack=" + pack +
+                ", termi=" + termi +
+                ", open_amout=" + open_amout +
+                ", cust=" + cust +
+                ", broad=" + broad +
+                ", packPercent=" + packPercent +
+                ", termiPercent=" + termiPercent +
+                ", openPercent=" + openPercent +
+                ", custPercent=" + custPercent +
+                ", broadPercent=" + broadPercent +
+                '}';
+    }
+}

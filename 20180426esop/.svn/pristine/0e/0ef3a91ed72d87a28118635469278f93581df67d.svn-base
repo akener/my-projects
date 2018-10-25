@@ -1,0 +1,210 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<head>
+    <title>资金使用(集团缴费)申请</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金使用</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>工单业务类型</th><td><input style="width:200px;text-align:left" value="集团缴费" id="yewu_leixing" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>申请时间</th><td><input style="width:200px;text-align:left" value="" id="shenqing_shijian" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>分公司名称</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="fengongsiname" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="fengongsi">
+                            </td>
+                            <th>行业中心</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="hangye_zhongxin" type="hidden" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input style="width:200px;text-align:left" value="" id="hangye_zhongxin_name" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团编码</th><td><input style="width:200px;text-align:left" value="" id="jituan_bianhao" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                            <th>集团名称</th><td><input style="width:200px;text-align:left" value="" id="jituan_mingcheng" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                        </tr>
+                        <tr id="zhanghao_xinxi">
+                            <th>集团账号</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="jituan_zhanghao" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                            </td>
+                            <th>集团账号名称</th><td><input style="width:200px;text-align:left" value="" id="zhanghao_mingcheng" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>申请人</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="shenqingrenname" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="shenqingren">
+                            </td>
+                            <th>申请使用金额（元）</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="shiyong_jine_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="shiyong_jine">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注信息</th><td colspan="3"><textarea style="text-align:left" rows="3" cols="60" id="beizhu_xinxi" disabled="disabled"></textarea></td>
+                        </tr>
+                        <tr id="jituan_jiaofei_1_2">
+                            <th>发票代码</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="fapiao_daima" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                            </td>
+                            <th>发票号码</th><td><input style="width:200px;text-align:left" value="" id="fapiao_haoma" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                        </tr>
+                        <tr id="jituan_jiaofei_1_3">
+                            <th>发票订单号</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="esop_orderId" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <button id='btnEsopOrderId' class='ui-btn btn-default mgr-5' onclick="viewInvoice()">发票详情</button>
+                                <button id='btnEsopOrderAccountId' class='ui-btn btn-default mgr-5' onclick="viewInvoiceGroupAccount()">集团账号信息</button>
+                            </td>
+                            <th>发票金额（元）</th>
+                            <td >
+                                <input style="width:200px;text-align:left" value="" id="fapiao_jine_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="fapiao_jine">
+                            </td>
+                        </tr>
+                        <tr id="jituan_jiaofei_1_1">
+                            <th>是否冲销预打发票</th>
+                            <td colspan="3">
+                                <select id="shifou_yuda" class="selector_region input-sty04 form-ipt" disabled="disabled">
+                                    <option value="1" selected>是</option>
+                                    <option value="2">否</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <input type="hidden" id="dongjie_jine" value="">
+                        <input type="hidden" id="kaishi_zhangqi" value="">
+                        <input type="hidden" id="jieshu_zhangqi" value="">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="gongdan_bianhao" value="">
+
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <%@ include file="../approveProcessQuery.jsp"%>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no= "<%=login_no%>";
+
+    function showInfo(gongdan_bianhao) {
+        //带入银行交易明细信息
+//        $("#gongdan_bianhao").val(gongdan_bianhao);
+
+        $.ajax({
+            type: "POST",
+            url: "capitalUseApproveQuery",
+            data:{
+                chanpin_leixing:"1",
+                gongdan_bianhao:gongdan_bianhao
+            },
+            cache: false,
+            success: function (result) {
+                var result=result.data;
+//                console.log(result);
+                if(result.length > 0) {
+                    $("#fengongsi").val(result[0].fengongsi);
+                    $("#shenqingren").val(result[0].shenqingren);
+                    $("#hangye_zhongxin").val(result[0].hangye_zhongxin);
+                    $("#hangye_zhongxin_name").val(result[0].hangye_zhongxin_name);
+                    $("#jituan_bianhao").val(result[0].jituan_bianhao);
+                    $("#jituan_mingcheng").val(result[0].jituan_mingcheng);
+                    $("#jituan_zhanghao").val(result[0].jituan_zhanghao);
+                    $("#zhanghao_mingcheng").val(result[0].zhanghao_mingcheng);
+                    $("#shiyong_jine").val(result[0].shiyong_jine);
+                    $("#shenqing_shijian").val(result[0].shenqing_shijian);
+                    $("#beizhu_xinxi").val(result[0].beizhu_xinxi);
+                    $("#shifou_yuda").val(result[0].shifou_yuda);
+                    $("#fapiao_daima").val(result[0].fapiao_daima);
+                    $("#fapiao_haoma").val(result[0].fapiao_haoma);
+                    $("#fapiao_jine").val(result[0].fapiao_jine);
+                    $("#esop_orderId").val(result[0].esop_orderId);
+
+                    $("#dongjie_jine").val(result[0].dongjie_jine);
+                    $("#kaishi_zhangqi").val(result[0].kaishi_zhangqi);
+                    $("#jieshu_zhangqi").val(result[0].jieshu_zhangqi);
+
+                    $("#shiyong_jine_yuan").val(result[0].shiyong_jine_yuan);
+                    $("#fapiao_jine_yuan").val(result[0].fapiao_jine_yuan);
+
+                    $("#fengongsiname").val(result[0].fengongsiname);
+                    $("#shenqingrenname").val(result[0].shenqingrenname);
+
+                    init(gongdan_bianhao);
+                }else{
+                    alert('信息不存在！');
+                }
+            },
+            error: function () {
+                alert('请求超时，请重试！');
+            }
+        });
+    }
+
+    function viewInvoice() {
+        var groupId = $("#jituan_bianhao").val();
+        var applicationNo = $("#esop_orderId").val();
+        if(groupId == null || groupId == ""){
+            alert("集团编号不能为空！");
+            return false;
+        }
+        if(applicationNo == null || applicationNo == ""){
+            alert("发票订单号不能为空");
+            return false;
+        }
+        var url="/esop/fpxqcx?groupId="+groupId+"&applicationNo="+applicationNo;
+        window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+    }
+
+    function viewInvoiceGroupAccount() {
+        var applicationNo = $("#esop_orderId").val();
+        if(applicationNo == null || applicationNo == ""){
+            alert("发票订单号不能为空");
+            return false;
+        }
+        var url="/esop/fpjtzhcx?applicationNo="+applicationNo;
+        window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+    }
+</script>
+</html>

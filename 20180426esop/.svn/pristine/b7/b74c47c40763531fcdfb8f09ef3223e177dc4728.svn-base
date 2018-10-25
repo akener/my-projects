@@ -1,0 +1,140 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.GetCustConnectInfoDto;
+import com.esop.cqDevelopment.capitalManage.dto.GetCustNameQueryDto;
+import com.esop.cqDevelopment.capitalManage.dto.PutCustConnectInfoDto;
+import com.esop.cqDevelopment.capitalManage.dto.PutCustNameQueryDto;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@RestController
+public class GetHuaweiService {
+    private static Logger logger =  LoggerFactory.getLogger(GetHuaweiService.class);
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    CallBossServiceUtilsCapitalClaim callBossServiceUtilsCapitalClaim;
+    Result result=new Result();
+
+    //获取模糊集团信息dataTable
+    @RequestMapping(value = "/getCustNameQueryBoss")
+    public Result getCustNameQueryBoss(PutCustNameQueryDto param, GetCustNameQueryDto param1, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+//        while (en.hasMoreElements()){
+//            String paramName = (String) en.nextElement();
+//            System.out.println(paramName + " = " + request.getParameter(paramName));
+//        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param1.setPage(page);
+        //明细请求参数
+        Integer currPages = page.getPageNumber()+1;//当前页
+        Integer pageRecordNum = page.getPageRecords();//每页显示记录数
+        param.setPage(page);
+        param.setPAGES(currPages.toString());
+        param.setPAGERECS(pageRecordNum.toString());
+        //调用华为接口数据
+        String bankDealDetailInfo = callBossServiceUtilsCapitalClaim.getCustNameQuery(param);
+        JSONObject obj=JSONObject.parseObject(bankDealDetailInfo);//获取jsonobject对象
+        String resultJson= obj.getString("result");
+        JSONObject jsonObject=JSONObject.parseObject(resultJson);
+        String jsonStr= jsonObject.getString("BANKDETAILLIST");
+        List<GetCustNameQueryDto> bankList = JSON.parseArray(jsonStr, GetCustNameQueryDto.class);
+        //设置列表分页展示
+        Integer currPage = page.getPageNumber();//当前页
+        pageRecordNum = page.getPageRecords();//每页显示记录数默认为20条数据
+        List newList = null;
+        if(bankList.size()>0 && bankList.size()<20){
+            newList = bankList.subList(currPage*pageRecordNum,bankList.size());
+        }else{
+            newList = bankList.subList(currPage*pageRecordNum,pageRecordNum);
+        }
+        result.setData(newList);
+        //设置查询结果的总记录数
+        if(bankList.size()>0){
+            result.setRecordsTotal(bankList.size());
+        }else {
+            //若没有返回数据，则总记录数设置为0条
+            result.setRecordsTotal(0);
+        }
+        result.setRecordsFiltered(bankList.size());
+        return result;
+    }
+
+   /* @RequestMapping(value = "/getCusConnectInfoBoss")
+    public List getCusConnectInfoBoss(PutCustConnectInfoDto param, GetCustConnectInfoDto param1, HttpServletRequest request){
+        //调用华为接口数据
+        String bankDealDetailInfo = callBossServiceUtilsCapitalClaim.getCustConnectInfo(param);
+        JSONObject obj=JSONObject.parseObject(bankDealDetailInfo);//获取jsonobject对象
+        String resultJson= obj.getString("result");
+        JSONObject jsonObject=JSONObject.parseObject(resultJson);
+        String jsonStr= jsonObject.getString("LINKMANINFO");
+        //logger.info("【msg】>>>>" + jsonStr);
+        List<GetCustConnectInfoDto> bankList = JSON.parseArray(jsonStr, GetCustConnectInfoDto.class);
+        //logger.info("【msg】>>>>" + bankList);
+        return bankList;
+    }*/
+
+    // 查询集团账号缴费联系人
+    @RequestMapping(value = "/getCusConnectInfoBoss")
+    public Result getCustNameQueryBoss(PutCustConnectInfoDto param, GetCustConnectInfoDto param1, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param1.setPage(page);
+        //明细请求参数
+        //调用华为接口数据
+        String bankDealDetailInfo = callBossServiceUtilsCapitalClaim.getCustConnectInfo(param);
+        JSONObject obj=JSONObject.parseObject(bankDealDetailInfo);//获取jsonobject对象
+        String resultJson= obj.getString("result");
+        JSONObject jsonObject=JSONObject.parseObject(resultJson);
+        String jsonStr= jsonObject.getString("LINKMANINFO");
+        //logger.info("【msg】>>>>" + jsonStr);
+        List<GetCustConnectInfoDto> bankList = JSON.parseArray(jsonStr, GetCustConnectInfoDto.class);
+        //logger.info("【msg】>>>>" + bankList);
+        //设置列表分页展示
+        for(GetCustConnectInfoDto temp:bankList){
+            String important=temp.getImportant();
+            String roletype=temp.getRoletype();
+            if("MemberSort03".equals(important)){
+                temp.setImportant_zhongwen("联系人");
+            }if("MemberSort0305".equals(roletype)){
+                temp.setRoletype_zhongwen("集团缴费联系人");
+            }
+        }
+
+        Integer currPage = page.getPageNumber();//当前页
+        Integer pageRecordNum = page.getPageRecords();//每页显示记录数默认为20条数据
+       /* List newList = null;
+        if(bankList.size()>0 && bankList.size()<20){
+            newList = bankList.subList(currPage*pageRecordNum,bankList.size());
+        }else{
+            newList = bankList.subList(currPage*pageRecordNum,pageRecordNum);
+        }*/
+        result.setData(bankList);
+        //设置查询结果的总记录数
+        if(bankList.size()>0){
+            result.setRecordsTotal(bankList.size());
+        }else {
+            //若没有返回数据，则总记录数设置为0条
+            result.setRecordsTotal(0);
+        }
+        result.setRecordsFiltered(bankList.size());
+        return result;
+    }
+}

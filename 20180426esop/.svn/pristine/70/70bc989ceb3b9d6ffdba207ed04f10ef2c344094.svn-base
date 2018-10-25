@@ -1,0 +1,87 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+public class GroupFundReportCheckDto extends BaseDto {
+    private String process_type;
+    private String audit_date;
+    private String org_id;
+    private String center_code;
+    private String business_center;
+    private String audit_status;
+    private String login_no;
+    private String login_name;
+    private String opt_date;
+
+    public String getProcess_type() {
+        return process_type;
+    }
+
+    public void setProcess_type(String process_type) {
+        this.process_type = process_type;
+    }
+
+    public String getAudit_date() {
+        return audit_date;
+    }
+
+    public void setAudit_date(String audit_date) {
+        this.audit_date = audit_date;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getAudit_status() {
+        return audit_status;
+    }
+
+    public void setAudit_status(String audit_status) {
+        this.audit_status = audit_status;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getOpt_date() {
+        return opt_date;
+    }
+
+    public void setOpt_date(String opt_date) {
+        this.opt_date = opt_date;
+    }
+}

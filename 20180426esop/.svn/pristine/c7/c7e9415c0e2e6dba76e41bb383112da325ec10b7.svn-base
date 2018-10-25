@@ -1,0 +1,250 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRefundDto;
+import com.esop.cqDevelopment.capitalManage.service.GroupMoneyRefundService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class GroupMoneyRefundRc {
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    GroupMoneyRefundService groupMoneyRefundService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    Result result=new Result();
+    @RequestMapping(value="/groupMoneyRefund")
+    public Result getBankDealInfoRC(GroupMoneyRefundDto groupMoneyRefundDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyRefundDto> list= groupMoneyRefundService.groupMoneyRefundSvc(groupMoneyRefundDto);
+        try{
+            for(GroupMoneyRefundDto dto:list){
+                String refund_money=dto.getRefund_money();
+                String refund_amount=dto.getRefund_amount();
+                BigDecimal bigDecimal2=new BigDecimal(refund_amount);
+                BigDecimal bigDecimal=new BigDecimal(refund_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                String refund_amount_yuan=bigDecimal2.divide(fenmu).toString();
+                String refund_money_yuan=bigDecimal.divide(fenmu).toString();
+                dto.setRefund_money_yuan(refund_money_yuan);
+                dto.setRefund_amount_yuan(refund_amount_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+    @RequestMapping(value="/groupMoneyAllRefund")
+    public Result groupMoneyAllRefund(GroupMoneyRefundDto groupMoneyRefundDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyRefundDto> list= groupMoneyRefundService.groupMoneyAllRefund(groupMoneyRefundDto);
+        try{
+            for(GroupMoneyRefundDto dto:list){
+                String refund_money=dto.getRefund_money();
+                BigDecimal bigDecimal=new BigDecimal(refund_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                String refund_money_yuan=bigDecimal.divide(fenmu).toString();
+                dto.setRefund_money_yuan(refund_money_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+    @RequestMapping(value="/groupMoneyMonthRefund")
+    public Result groupMoneyMonthRefund(GroupMoneyRefundDto groupMoneyRefundDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyRefundDto> list= groupMoneyRefundService.groupMoneyMonthRefund(groupMoneyRefundDto);
+        try{
+            for(GroupMoneyRefundDto dto:list){
+                String refund_money=dto.getRefund_money();
+                BigDecimal bigDecimal=new BigDecimal(refund_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                String refund_money_yuan=bigDecimal.divide(fenmu).toString();
+                dto.setRefund_money_yuan(refund_money_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+    @RequestMapping(value="/jihehuitui")
+    public int jiheruzhang(String shenqing_danhao_list){
+        Date date=new Date();
+        String now=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        String [] shenqing_danhao_list2=shenqing_danhao_list.split(",");
+        GroupMoneyRefundDto groupMoneyRefundDto=new GroupMoneyRefundDto();
+        int l=1;
+        for(int i=0;i<shenqing_danhao_list2.length;i++){
+            String[] shenqing_danhao1=shenqing_danhao_list2[i].split(";");
+            String shenqing_danhao=shenqing_danhao1[0];
+            String jihe_ren=shenqing_danhao1[1];
+            String jihe_shijian=now;
+            groupMoneyRefundDto.setShenqing_danhao(shenqing_danhao);
+            groupMoneyRefundDto.setJihe_ren(jihe_ren);
+            groupMoneyRefundDto.setJihe_shijian(jihe_shijian);
+            l= groupMoneyRefundService.jihehuitui(groupMoneyRefundDto);
+        }
+
+        return l;
+    }
+    @RequestMapping(value="/bohuihuitui")
+    public int bohuihuitui(String shenqing_danhao_list){
+        Date date=new Date();
+        String now=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        String [] shenqing_danhao_list2=shenqing_danhao_list.split(",");
+        GroupMoneyRefundDto groupMoneyRefundDto=new GroupMoneyRefundDto();
+        int l=1;
+        for(int i=0;i<shenqing_danhao_list2.length;i++){
+            String[] shenqing_danhao1=shenqing_danhao_list2[i].split(";");
+            String shenqing_danhao=shenqing_danhao1[0];
+            String jihe_ren=shenqing_danhao1[1];
+            String jihe_shijian=now;
+            groupMoneyRefundDto.setShenqing_danhao(shenqing_danhao);
+            groupMoneyRefundDto.setJihe_ren(jihe_ren);
+            groupMoneyRefundDto.setJihe_shijian(jihe_shijian);
+            l= groupMoneyRefundService.bohuihuitui(groupMoneyRefundDto);
+        }
+
+        return l;
+    }
+    @RequestMapping(value="/expertMoneyRefund")
+    public String expertApprove(GroupMoneyRefundDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","退款集团单位名称","退款集团单位编码","退款金额","申请单号","工单状态","工单办结日期","申请人","申请日期","申请金额","稽核状态","稽核时间","稽核人"};
+        String[] methods = {"getName","getBusiness_center","getRefund_group_name","getRefund_group_id","getRefund_money_yuan", "getRefund_id", "getOrder_zhongwen", "getRequest_over_date","getLogin_name","getApply_date","getRefund_amount_yuan","getIs_jihe_zhongwen","getJihe_shijian","getLogin_name2"};
+
+        List<GroupMoneyRefundDto> reslist=  groupMoneyRefundService.groupMoneyRefundSvc(parameter);
+
+        try{
+            for(GroupMoneyRefundDto dto:reslist){
+                String refund_money=dto.getRefund_money();
+                String refund_amount=dto.getRefund_amount();
+                BigDecimal bigDecimal2=new BigDecimal(refund_amount);
+                BigDecimal bigDecimal=new BigDecimal(refund_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                String refund_amount_yuan=bigDecimal2.divide(fenmu).toString();
+                String refund_money_yuan=bigDecimal.divide(fenmu).toString();
+                dto.setRefund_money_yuan(refund_money_yuan);
+                dto.setRefund_amount_yuan(refund_amount_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金退款日报表(清单报表)";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"查询日期："+now};
+            String[] footer={"制表人：系统自动制表","稽核人："+reslist.get(reslist.size()-1).getLogin_name2()};
+
+            orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+    @RequestMapping(value="/expertgroupMoneyAllRefund")
+    public String expertgroupMoneyAllRefund(GroupMoneyRefundDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"报表日期","分公司","行业中心","退款总金额","日报稽核状态","稽核人员","稽核时间"};
+        String[] methods = {"getChaxun_riqi","getName","getBusiness_center","getRefund_money_yuan","getIs_jihe_zhongwen","getLogin_name","getJihe_shijian"};
+
+        List<GroupMoneyRefundDto> reslist= groupMoneyRefundService.groupMoneyAllRefund(parameter);
+        try{
+            for(GroupMoneyRefundDto dto:reslist){
+                String refund_money=dto.getRefund_money();
+                BigDecimal bigDecimal=new BigDecimal(refund_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                String refund_money_yuan=bigDecimal.divide(fenmu).toString();
+                dto.setRefund_money_yuan(refund_money_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+            String end =parameter.getChaxun_riqi2();
+
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金退款汇总报表";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"起始查询日期："+now,"终止查询日期："+end};
+            String[] footer={};
+
+            orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+    @RequestMapping(value="/expertMoneyMonthRefund")
+    public String expertMoneyMonthRefund(GroupMoneyRefundDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","账期","集团单位名称","集团单位编码","退款金额"};
+        String[] methods = {"getName","getBusiness_center","getRequest_over_date","getRefund_group_name","getRefund_group_id","getRefund_money_yuan"};
+
+        List<GroupMoneyRefundDto> reslist=  groupMoneyRefundService.groupMoneyMonthRefund(parameter);
+
+        try{
+            for(GroupMoneyRefundDto dto:reslist){
+                String refund_money=dto.getRefund_money();
+                BigDecimal bigDecimal=new BigDecimal(refund_money);
+                BigDecimal fenmu=new BigDecimal(100);
+                String refund_money_yuan=bigDecimal.divide(fenmu).toString();
+                dto.setRefund_money_yuan(refund_money_yuan);
+            }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金退款月报表";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"时间："+now};
+            String[] footer={};//"制表人：系统自动制表","稽核人："+reslist.get(0).getLogin_name2()};
+
+            orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+}

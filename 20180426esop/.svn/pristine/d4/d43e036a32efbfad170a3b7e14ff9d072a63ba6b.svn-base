@@ -1,0 +1,225 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>量酬情况排名</title>
+    <script type="text/javascript" language="javascript" class="init">
+        var region_name = "";
+        var town_name = "";
+        var editor; // use a global for the submit and return data rendering in the examples
+        var table;
+        function getTable() {
+            var re_amout_expire = $("#amout_expire").val();
+            if(re_amout_expire==""){
+                $("#fault").modal('show');
+                return false;
+            }
+            //console.log("-------"+re_amout_expire)
+            var amout_expire = re_amout_expire.split("-")[0]+re_amout_expire.split("-")[1]
+            var req_town_code = $("#town_code").val();
+            if(req_town_code==null){
+                req_town_code = "";
+            }
+            table = $('#retentionRate').DataTable( {
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                destroy: true,
+                //"iDisplayLength": 10,
+                //"aLengthMenu": [10, 50, 100 ],
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url:"/getAmountPaymentRank",
+                    type:"POST",
+                    data:{
+                         "region_code":$("#region_code").val(),
+                         "town_code" : req_town_code,
+                         "amout_expire" : amout_expire
+                    }
+                },
+                columns: [
+                    { data: "rownum"},
+                    { data: "region_name" },
+                    { data: "town_name" },
+                    { data: "employee_no" },
+                    { data: "role_name" },
+                    { data: "payment_money" }
+                ],
+                select: true,
+                buttons: [
+                    /*{ extend: "create", editor: editor},
+                     { extend: "edit",   editor: editor},
+                     { extend: "remove", editor: editor}*/
+                ]
+            } );
+            /*editor.on('submitSuccess',function ( e, type ) {
+             alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+             } );*/
+        }
+        $(document).ready(function () {
+
+        });
+
+        function getTown() {
+            if ($("#region_code").val() != "") {
+                $.ajax({
+                    type: "get",
+                    url: "/cityCodeListShow",
+                    data: {
+                        region_code: $("#region_code").val()
+                    },
+                    cache: false,
+                    success: function (result) {
+                        city_data = "<option value=''>全市</option>";
+                        $.each(result, function (i, field) {
+                            //拼接json数据集字符串
+                            city_data += "<option value='" + field.group_id + "' ";
+                            city_data += ">" + field.group_name + "</option>";
+                        });
+                        $("#town_code").empty();
+                        $("#town_code").append(city_data);
+                        //getTable();
+                    },
+                    error: function () {
+                        alert("请求超时，请重试！");
+                    }
+                });
+            } else {
+                $("#town_code").empty();
+                //getTable();
+            }
+        }
+    </script>
+
+</head>
+
+<!--<hr />-->
+<body class="bg-ff">
+<!--提示信息 -->
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">请选择日期</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="main pd-10 mgl-10 mgr-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box overh">
+            <!--标题-->
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+                </div>
+            </div>
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>地市：</th>
+                                <td>
+                                    <select id="region_code" class="input-sty04 form-ipt" onchange="getTown()">
+                                        <option value="">全省</option>
+                                        <option value = "10031">哈尔滨</option>
+                                        <option value = "10032">齐齐哈尔</option>
+                                        <option value = "10033">牡丹江</option>
+                                        <option value = "10034">佳木斯</option>
+                                        <option value = "10035">双鸭山</option>
+                                        <option value = "10036">七台河</option>
+                                        <option value = "10037">鸡西</option>
+                                        <option value = "10038">鹤岗</option>
+                                        <option value = "10039">伊春</option>
+                                        <option value = "10040">黑河</option>
+                                        <option value = "10041">绥化</option>
+                                        <option value = "10042">大兴安岭</option>
+                                        <option value = "10043">大庆</option>
+                                    </select>
+                                </td>
+                                <th>区县：</th>
+                                <td>
+                                    <select name="town_code" id="town_code" class="input-sty04 form-ipt">
+
+                                    </select>
+                                </td>
+                                <th>日期：</th>
+                                <td>
+                                        <input type=text id="amout_expire" class="input-sty04 form-ipt"
+                                               maxlength="11" readonly="true">
+                                        <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                             style="width: 25px;" width="25" height="21"
+                                             onclick="WdatePicker({el:'amout_expire',dateFmt:'yyyy-MM'})"
+                                             title="选择时间" />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <button class="ui-btn mgr-10" onclick="getTable()">查询</button>
+                               <%-- <button class="ui-btn">返回</button>--%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+                </div>
+            </div>
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="active-cost-box" >
+                        <table id="retentionRate" class="cost-table"  width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">名次</th>
+                                    <th class="text-center">地市</th>
+                                    <th class="text-center">区县</th>
+                                    <th class="text-center">员工编号</th>
+                                    <th class="text-center">角色</th>
+                                    <th class="text-center">量酬金额</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                            <%--<tr class="text-center">
+                                <th class="text-center">地市</th>
+                                <th class="text-center">区县</th>
+                                <th class="text-center">客户经理</th>
+                                <th class="text-center">集团编号</th>
+                                <th class="text-center">集团名称</th>
+                                <th class="text-center">宽带账号</th>
+                                <th class="text-center">开户时间</th>
+                            </tr>--%>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

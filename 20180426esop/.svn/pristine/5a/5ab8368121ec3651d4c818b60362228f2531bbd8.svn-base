@@ -1,0 +1,633 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lilei
+  Date: 2017/7/10
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  查询管理办法
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+
+
+</head>
+
+<body style="background-color:#ffffff">
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">修改管理办法成功！</label>
+            </div>
+            <div class="modal-footer">
+                <button id="updateOk"type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">修改管理办法失败！</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="checkContract" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:900px" role="document">
+        <div class="modal-content" >
+            <div class="modal-header" align="left" style="padding-left: 3px;margin-left: 3px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <div class="title-style04"  style="height: 60px;width: 890px;background-color:#ecf7ff;border:1px solid #9ce4ef ">
+                    <h3 align="left" >&nbsp;◆管理办法修改</h3>
+                </div>
+            </div>
+
+            <div align="center" style="padding-top:5px; padding-left:2px;height:540px;width: 100%;background-color:#ffffff ">
+
+                <div class="box-in" style="background-color:#ecf7ff;border:1px solid #9ce4ef;width: 99%;height: 420px">
+                    <table border="1" cellspacing="0" cellpadding="0" width="100%" align="center"
+                           class="table-01" style="margin-top: 8px;border:1px solid #ecf7ff ">
+                        <tr>
+                            <th width="180px" class="text-center"><span style="color:red">*</span>文件名称</th>
+                            <td width="280px">
+                                <input id="upTitle"  type="text"  value="" style="width: 250px"></input>
+                            </td>
+                            <th width="150px" class="text-center"><span style="color:red">*</span>发布方式</th>
+                            <td width="280px">
+                                <select  id="upPubType"  style="width: 237px">
+                                    <option value="0" name="managerMethod">管理办法</option>
+                                    <option value="1" name="expensesRe">资费文件</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="180px" class="text-center"><font style="color:red">*</font>文件内容概要（200字）</th>
+                            <td  width="380px" colspan="3">
+										<textarea id="upContent" name="note_content" rows="4" cols="100" style="width: 680px"
+                                                  onkeyup="if(this.value.length>=200){this.value = this.value.substring(0,199);event.returnValue=false}"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="180px" class="text-center"><font style="color:red">*</font>文件内容（2000字）</th>
+                            <td  width="380px" colspan="3">
+										<textarea id="upDetail" name="note_content_detail" rows="10" cols="100" class="required" style="width: 680px"
+                                                  onkeyup="if (this.value.length>=2000){this.value = this.value.substring(0,1999);event.returnValue=false}"></textarea>
+                            </td>
+                        </tr>
+                        <tr style="height: 50px">
+                            <th width="60px" class="text-center"><font style="color:red">*</font>上传附件</th>
+                            <td  width="400px"  colspan="3">
+                                <label class="btn btn-info pull-left" for="xFile">上传(文件格式支持 xlsx, xls, doc, docx, txt, gif, jpg)</label>
+                                <form id="upload-form" method="post" enctype="multipart/form-data">
+                                    <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-body">
+                    <div class="form-group" id="fileLists" >
+                        <div class="col-sm-3">
+                            ${fileLists}
+                        </div>
+                    </div>
+                </div>
+
+                <div  style="margin-top: 10px;padding-top:8px;height:50px;width:99%;background-color:#ecf7ff;border:1px solid #2A97DC;">
+                    <div  style="padding-left:350px;float:left;padding-top: 1px;" >
+                        <button class="btn btn-info pull-left" style="width: 80px" type="button"   onclick="subSrevice()" >确&nbsp;&nbsp;认</button>
+                    </div>
+                    <div style="float:left;margin-left:20px;padding-top: 1px">
+                        <button class="btn btn-info pull-left"style="width: 80px" type="button"   onclick="pageReset()" >清&nbsp;&nbsp;除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="lookInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:900px" role="document">
+        <div class="modal-content" >
+            <div class="modal-header" align="left" style="padding-left: 3px;margin-left: 3px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <div class="title-style04"  style="height: 60px;width: 890px;background-color:#ecf7ff;border:1px solid #9ce4ef ">
+                    <h3 align="left" >&nbsp;&nbsp;◆&nbsp;管理办法详情</h3>
+                </div>
+            </div>
+
+            <div align="center" style="padding-top:5px; padding-left:2px;height:450px;width: 100%;background-color:#ffffff ">
+
+                <div class="box-in" style="background-color:#ecf7ff;border:1px solid #9ce4ef;width: 99%;height: 360px">
+                    <table border="1" cellspacing="0" cellpadding="0" width="100%" align="center"
+                           class="table-01" style="margin-top: 8px;border:1px solid #ecf7ff ">
+                        <tr>
+                            <th width="100px" class="text-center">文件名称</th>
+                            <td width="160px">
+                                <input readonly id="selTitle"  type="text"  value="" style="width: 170px"></input>
+                            </td>
+                            <th width="100px" class="text-center">发布时间</th>
+                            <td width="160px">
+                                <input readonly id="selTime"  type="text" value="" style="width: 150px"></input>
+                            </td>
+                            <th width="100px" class="text-center">创建者</th>
+                            <td width="160px">
+                                <input readonly id="selCreate"  type="text" value="" style="width: 150px"></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="130px" class="text-center">内容概要</th>
+                            <td  width="380px" colspan="5">
+                                <textarea readonly id="selContent" name="note_content" rows="4" cols="100" style="width: 750px"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="130px" class="text-center">文件内容</th>
+                            <td  width="380px" colspan="5">
+                                <textarea readonly id="seldetail" name="note_content_detail" rows="10" cols="100" class="required" style="width: 750px"></textarea>
+                            </td>
+                        </tr>
+                        <tr style="height: 70px">
+                            <th width="100px" class="text-center">附件</th>
+                            <td id="selFile" width="720px" style="height: 69px" colspan="5">
+                                <div style="height: 68px" id="fileList">
+                                    ${fileList}
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div style="padding-left:1px;width: 100%;height:260px" align="center">
+    <div style="height: 30px;width: 99%;border:1px solid #9ce4ef " >
+        <h4 align="left" style="margin-top: 5px">查询管理办法</h4>
+    </div>
+    <div style="border:1px solid #9ce4ef;width: 99%">
+        <input type="hidden" name="role_type" id="role_type" />
+        <table width="100%"  cellspacing="0" border="1px"
+               cellpadding="0"  align="center" style="margin-top: 8px;border:1px solid #2A97DC ">
+            <tr style="height: 40px">
+                <td width="20%" style="background-color:#ecf7ff;">
+                    文件名称
+                </td>
+                <td width="30%" style="text-align: left">
+                    <input type="text" id="titleId" name="note_title" class="input-sty04 form-ipt"/>
+                </td>
+                <td width="20%" style="background-color:#ecf7ff;">
+                    文件内容
+                </td>
+                <td width="30%" style="text-align: left">
+                    <input type="text" id="contentId" name="note_content"  class="input-sty04 form-ipt"/>
+                </td>
+            </tr>
+            <tr style="height: 40px">
+                <td width="20%" style="background-color:#ecf7ff;">
+                    组织机构
+                </td>
+                <td width="30%" style="text-align: left">
+                    <select id="conId" class="select-style-1">
+                        <option  value="${group_id}">${group_name}</option>
+                    </select>
+                </td>
+                <td width="20%" style="background-color:#ecf7ff;">
+                    创建者
+                </td>
+                <td width="30%" style="text-align: left">
+                    <select id="loginId" class="select-style-1">
+                        <option  value="">    ---全 部--- </option>
+                    </select>
+                </td>
+            </tr>
+            <tr style="height: 40px">
+                <td width="20%" style="background-color:#ecf7ff;">
+                    开始时间
+                </td>
+                <td width="30%" style="text-align: left">
+                    <input type=text id="startTime" class="input-sty04 form-ipt"
+                           maxlength="11" readonly="true">
+                    <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                         style="width: 25px;" width="25" height="21"
+                         onclick="WdatePicker({el:'startTime',dateFmt:'yyyy-MM'})"
+                         title="选择时间" />
+                </td>
+                <td width="20%" style="background-color:#ecf7ff;">
+                    结束时间
+                </td>
+                <td width="30%" style="text-align: left">
+                    <input type=text id="overTime" class="input-sty04 form-ipt"
+                           maxlength="11" readonly="true">
+                    <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                         style="width: 25px;" width="25" height="21"
+                         onclick="WdatePicker({el:'overTime',dateFmt:'yyyy-MM'})"
+                         title="选择时间" />
+                </td>
+            </tr>
+            <tr style="height: 40px">
+                <td style="background-color:#ecf7ff;">发布方式</td>
+                <td width="30%" colspan="3" style="text-align: left">
+                    <select id="pubTypeId" class="select-style-1">
+                        <option value="">    --- 全 部 --- </option>
+                        <option value="0">  管 理 办 法</option>
+                        <option value="1">  资 费 文 件</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="operation_button"  style="margin-top: 5px;padding-top:5px;height:45px;width:99%;background-color:#ecf7ff;border:1px solid #2A97DC;">
+        <button  style="width:80px;height:30px;color: #3b7286;" name="Submit" id="qryInfo" >查询</button>
+        <button style="width:80px;height:30px;color: #3b7286;" type="reset"  onclick="pageReset()">重置</button>
+    </div>
+</div>
+<div style="margin-top:10px;width: 100%;height: 25px;background-color:#ecf7ff;border:1px solid #9ce4ef ">
+    <h4 align="left" style="margin-top: 4px">管理办法列表</h4>
+</div>
+<div id="reTb" style="display: none">
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center" >创建人</th>
+            <th class="text-center">文件名称 </th>
+            <th class="text-center">文件内容 </th>
+            <th class="text-center">创建时间 </th>
+            <th class="text-center">发布方式 </th>
+            <th class="text-center" >操作</th>
+        </tr>
+        </thead>
+
+    </table>
+</div>
+
+
+
+
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+
+    $(document).ready(function() {
+        //alert(group_id)
+        $.ajax({
+            type:"GET",
+            url:"/selGroupIdAndGroupName",
+            data:{"group_id":group_id}
+        }).then(function(data){
+            $.each(data, function (index, item) {
+                //alert(item.group_id)
+                $("#conId").append("<option value='"+item.group_id+"'>"+'&nbsp;&nbsp;&nbsp;&nbsp;'+""+item.group_name+"</option>");
+            });
+        });
+
+        $.ajax({
+            type:"GET",
+            url:"/selCreateLogin",
+            data:{"group_id":group_id}
+        }).then(function(data){
+            $.each(data, function (index, item) {
+                //alert(item.group_id)
+                $("#loginId").append("<option value='"+item.login_no+"'>"+'&nbsp;&nbsp;&nbsp;&nbsp;'+""+item.login_no+"</option>");
+            });
+        })
+
+
+    } );
+
+    //切换查询区县
+    $("#conId").change(function () {
+        //alert($("#conId").val())
+
+        $.ajax({
+            type:"GET",
+            url:"/selCreateLogin",
+            data:{"group_id":$("#conId").val()}
+        }).then(function(data){
+            $("#loginId option").remove();
+            $("#loginId").append("<option value=''>"+' ---全 部---'+"</option>");
+            $.each(data, function (index, item) {
+                //alert(item.group_id)
+                $("#loginId").append("<option value='"+item.login_no+"'>"+'&nbsp;&nbsp;&nbsp;&nbsp;'+""+item.login_no+"</option>");
+            });
+        })
+    })
+
+    //重置
+    function pageReset(){
+        $("input").val("");
+        $("textarea").val("");
+    };
+
+    //查询管理办法
+    $("#qryInfo").click(function () {
+        var titleId=$("#titleId").val();//文件名
+        var contentId=$("#contentId").val();//文件内容
+        var groupId=$("#conId").val();//区县编码
+        var createLogion=$("#loginId").val();//创建者工号
+        var sTime=$("#startTime").val();
+        var vTime=$("#overTime").val();
+        var pubType=$("#pubTypeId").val();
+        // alert(titleId+","+contentId+","+groupId+","+createLogion+","+sTime+","+vTime+","+pubType);
+        $("#reTb").show();
+        editor = new $.fn.DataTable.Editor( {
+        } );
+
+
+        //地市下发到客户经理的数据
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            scrollX: true,
+            "bFilter": false,
+            "pageLength": 5,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy:true,
+            ajax: {
+                url:"/showSelMethod",
+                type:"POST",
+                data:{"titleId":titleId,"contentId":contentId,"groupId":groupId,"createLogion":createLogion,
+                    "sTime":sTime,"vTime":vTime,"pubType":pubType}
+            },
+            columns: [
+                {data:"createName"},
+                { data:"title"},
+                { data:"content_detail"},
+                { data: "pub_date" },
+                { data: "pub_type" },
+                { data: "code",
+                    //"orderable": false,
+                    "width": "15%",
+                    render: function ( data, type, row, meta ) {
+
+                        return data= "<button  type='button' style='width: 60px' onclick='updateMsg("+row.code+")' name='"+row.code+"'>修改</button>"+"<button type='button' style='width: 60px' onclick='selMsg("+row.code+")' name='"+row.code+"'>查看</button>";
+
+                    }
+                }
+
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    });
+
+    //管理办法(修改)
+    var codeId="";
+    function updateMsg(code){
+        codeId=code;
+        $("#checkContract").modal('show');
+        //alert(codeId);
+        $.ajax({
+            type:"GET",
+            url:"/selMethodByCodeForUp",
+            data:{"codeId":codeId}
+        }).then(function(data){
+            //alert(data.title)
+            $("#upTitle").val(data.title);
+            $("#upContent").val(data.content);
+            $("#upDetail").val(data.content_detail);
+            //$("#upPubType").val(data.pub_type);
+            //alert(data.pub_type);
+            if(data.pub_type=='0'){
+                $('#upPubType')[0].selectedIndex = 0;
+            }
+            if(data.pub_type=='1'){
+                $('#upPubType')[0].selectedIndex = 1;
+            }
+        });
+        $.ajax({
+            type: "POST",
+            url: "uploadFileSelect",
+            data: {
+                "related_id": codeId
+            }
+        }).then(function (data) {
+            //alert(data);
+            if(data !="" ){
+                //循环展现附件信息
+                $("#fileLists div").remove();
+                $.each(data, function (index, item) {
+
+                    $("#fileLists").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a  style='margin-left: 1px' href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                        + "</a></div>"
+                        + "<div class=\"col-sm-1\"><button type=\"button\" style=\"margin-left:0px;height: 25px;padding-top: 2px;margin-top: 2px\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                        + "<i class=\"fa fa-times\"></i></button></div></div>");
+                });
+            }else{
+                $("#fileLists div").remove();
+                $("#fileLists").append("<div><div  class=\"col-sm-2\" align='left' style='height: 30px'>没有附件</div><div>");
+            }
+
+        });
+    };
+
+
+    $("#xFile").on("change", function(){
+        //alert($('#xFile')[0].files[0].name);
+        var file_name = $('#xFile').val();
+        var names = file_name.split("\\");
+        var length = names.length;
+        $("#file_path").val(names[length-1]);
+        var strs = names[length-1].split(".");
+        var rex = strs[strs.length-1];
+        //alert(rex)
+        if(rex != 'xlsx' && rex != 'xls'&& rex != 'doc' && rex != 'docx' && rex != 'txt' && rex != 'gif' && rex != 'jpg'){
+            alert("请上传正确的文件格式！")
+            return;
+        }
+
+        $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+            url:"${pageContext.request.contextPath}/fileUpload",
+            type:"post", //提交的类型必需是post，
+            data: { related_id: codeId},
+            dateType:"json",
+            success:function(data){
+                //如果提交成功执行
+                //如果附件编码不为空，开始取附件
+                if(codeId != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "uploadFileSelect",
+                        data: {
+                            "related_id": codeId
+                        }
+                    }).then(function (data) {
+                        //循环展现附件信息
+                        $("#fileLists div").remove();
+                        $.each(data, function (index, item) {
+                            $("#fileLists").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                                + "</a></div>"
+                                + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                                + "<i class=\"fa fa-times\"></i></button></div></div>");
+                        });
+                    });
+                }
+            },
+            error:function(data){
+                alert("error:"+data);
+            }
+        });
+    });
+
+    function subSrevice(){
+        var strTitle=$("#upTitle").val();
+        var strContent=$("#upContent").val();
+        var strDetail= $("#upDetail").val();
+        var strPubType=$("#upPubType").val();
+        if(strTitle =="" ){
+            alert("文件名称不能为空！")
+            return;
+        }
+        if(strContent=="" ){
+            alert("文件内容概要不能为空！")
+            return;
+        }
+        if(strDetail==""){
+            alert("文件内容不能为空！")
+            return;
+        }
+        var imgFlag= $("#fileLists").find('a').length;
+        //alert(imgFlag)
+        if(imgFlag == 0){
+            alert("请上传附件！");
+            return;
+        }
+        //alert(strTitle+","+strContent+","+strDetail+","+strPubType);
+        //alert(codeId);
+        $.ajax({
+            type:"GET",
+            url:"/upMethodByCode",
+            data:{"codeId":codeId,"strTitle":strTitle,"strContent":strContent,"strDetail":strDetail,"strPubType":strPubType}
+        }).then(function(data){
+            if(data == 1){
+                $("#checkContract").modal('hide');
+                $("#fault").modal('show');
+            }else{
+                $("#fault5").modal('show');
+            }
+        });
+    }
+
+    //删除附件
+    function deleteFile(buttonID,fileID){
+        $.ajax({
+            type: "POST",
+            url: "deleteFile",
+            data: {id:fileID}
+        }).then(function (data) {
+            //alert(data.result);
+            $(buttonID).parent().parent().remove();
+        });
+    }
+    //查看
+    function selMsg(code) {
+        codeId=code;
+        //alert(codeId);
+        $("#lookInfo").modal('show');
+        $.ajax({
+            type:"GET",
+            url:"/selMethodByCode",
+            data:{"codeId":codeId}
+        }).then(function(data){
+            //alert(data.title)
+            $("#selTitle").val(data.title);
+            $("#selTime").val(data.pub_date);
+            $("#selCreate").val(data.createName);
+            $("#selContent").val(data.content);
+            $("#seldetail").val(data.content_detail);
+        });
+        $.ajax({
+            type: "POST",
+            url: "uploadFileSelect",
+            data: {
+                "related_id": codeId
+            }
+        }).then(function (data) {
+            //alert(data);
+            if(data !="" ){
+                //循环展现附件信息
+                $("#fileList div").remove();
+                $.each(data, function (index, item) {
+
+                    $("#fileList").append("<div  class=\"col-sm-2\" style='margin-top:20px;height:30px;overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                        + "</a></div>");
+                });
+            }else{
+                $("#fileList div").remove();
+                $("#fileList").append("<div  class=\"col-sm-2\" align='left' style='margin-top:20px;'>没有附件</div>");
+            }
+
+        });
+    }
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+    $("#updateOk").click(function () {
+        document.location.reload();
+    });
+</script>
+</html>

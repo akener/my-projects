@@ -1,0 +1,18 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtProcStepRoleRel;
+import java.util.List;
+
+public interface CtProcStepRoleRelMapper {
+    int deleteByPrimaryKey(String cfgId);
+
+    int insert(CtProcStepRoleRel record);
+
+    CtProcStepRoleRel selectByPrimaryKey(String cfgId);
+
+    List<String> selectByProcIdAndStepId(CtProcStepRoleRel retrievalCondition);
+
+    List<CtProcStepRoleRel> selectAll();
+
+    int updateByPrimaryKey(CtProcStepRoleRel record);
+}

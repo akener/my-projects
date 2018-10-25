@@ -1,0 +1,36 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.dto.SeElecPackRecordTracDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+
+@Repository
+public class SeElecPackRecordTracService {
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+
+    /**
+     *  method 写入接口请求日志
+     * @param req_xml 请求参数
+     * @param resp_xml  返回参数
+     * @param op_time   操作时间
+     * @param result    结果ture  or false
+     * @param op_type   操作类型
+     * @param wo_no 订单号
+     * @return 插入结果
+     */
+    public int insertRecord(String req_xml,String resp_xml,Date op_time,String result,String op_type,String wo_no) {
+        SeElecPackRecordTracDto recorddto=new SeElecPackRecordTracDto();
+        recorddto.setReq_xml(req_xml);
+        recorddto.setResp_xml(resp_xml);
+        recorddto.setOp_time(op_time);
+        recorddto.setResult(result);
+        recorddto.setOp_type(op_type);
+        recorddto.setWo_no(wo_no);
+        int res = sqlSessionTemplate.insert("insertSeElecPackRecordTracDto", recorddto);
+        return res;
+    }
+}

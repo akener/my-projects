@@ -1,0 +1,376 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+public class RefundApplicationInfoDto extends BaseDto {
+    //退款申请基本信息表
+    String refund_id="";//申请单流水号
+    String apply_date="";//申请日期
+    String refund_applicant="";//申请人工号
+    String applicantName="";//申请人姓名
+    String role_codes = "";//角色id
+    String expenditure_presentation_group="";//出账集团：
+    String group_num="";//集团编码：
+    String capital_contact="";// 资金联系人
+    String contact_number="";//  联系人电话
+    String contact_type="";//   联系人类型
+    String book_balance="";//账本余额(分)
+    String available_balance="";//可用余額(分)
+    String ownerorgid="";//归属分公司
+    String ownerorgname="";//归属分公司名称
+    String businessCenter ="";//行业中心
+    //页面显示元
+    String book_balance_yuan="";//账本余额(元)
+    String available_balance_yuan="";//可用余額(元)
+    String file="";//  上传附件
+    String fileName = "";//附件名称
+    //退款字段信息
+    String refund_account="";//退款账号
+    String refund_account_name="";//退款户名
+    String refund_opening_bank="";//退款开户行
+    String refund_amount="";//退款金额(分)
+    String refund_amount_yuan="";//退款金额(元)
+    String auditor="";//审核人
+    String order_status="";//工单状态
+    String startTime="";//开始时间
+    String endTime="";//结束时间
+    String runningWarterNo="";//交易流水号
+
+    //审批信息
+    String login_name = "";
+    String dealTime = "";
+    String nextDealPerson = "";
+    String link_name = "";
+    String nodeId = "";
+    String applicantNo = "";
+    String approveOpinion = "";
+    String memo ="";
+    String apply_date_start="";//申请开始日期
+    String apply_date_end="";//申请结束日期
+    //其他
+    String login_no;
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getBusinessCenter() {
+        return businessCenter;
+    }
+
+    public void setBusinessCenter(String businessCenter) {
+        this.businessCenter = businessCenter;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getOwnerorgid() {
+        return ownerorgid;
+    }
+
+    public void setOwnerorgid(String ownerorgid) {
+        this.ownerorgid = ownerorgid;
+    }
+
+    public String getOwnerorgname() {
+        return ownerorgname;
+    }
+
+    public void setOwnerorgname(String ownerorgname) {
+        this.ownerorgname = ownerorgname;
+    }
+
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getBook_balance_yuan() {
+        return book_balance_yuan;
+    }
+
+    public void setBook_balance_yuan(String book_balance_yuan) {
+        this.book_balance_yuan = book_balance_yuan;
+    }
+
+    public String getAvailable_balance_yuan() {
+        return available_balance_yuan;
+    }
+
+    public void setAvailable_balance_yuan(String available_balance_yuan) {
+        this.available_balance_yuan = available_balance_yuan;
+    }
+
+    public String getRefund_amount_yuan() {
+        return refund_amount_yuan;
+    }
+
+    public void setRefund_amount_yuan(String refund_amount_yuan) {
+        this.refund_amount_yuan = refund_amount_yuan;
+    }
+
+    public String getRole_codes() {
+        return role_codes;
+    }
+
+    public void setRole_codes(String role_codes) {
+        this.role_codes = role_codes;
+    }
+
+    public String getRefund_id() {
+        return refund_id;
+    }
+
+    public void setRefund_id(String refund_id) {
+        this.refund_id = refund_id;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getRefund_applicant() {
+        return refund_applicant;
+    }
+
+    public void setRefund_applicant(String refund_applicant) {
+        this.refund_applicant = refund_applicant;
+    }
+
+    public String getExpenditure_presentation_group() {
+        return expenditure_presentation_group;
+    }
+
+    public void setExpenditure_presentation_group(String expenditure_presentation_group) {
+        this.expenditure_presentation_group = expenditure_presentation_group;
+    }
+
+    public String getGroup_num() {
+        return group_num;
+    }
+
+    public void setGroup_num(String group_num) {
+        this.group_num = group_num;
+    }
+
+    public String getCapital_contact() {
+        return capital_contact;
+    }
+
+    public void setCapital_contact(String capital_contact) {
+        this.capital_contact = capital_contact;
+    }
+
+    public String getContact_number() {
+        return contact_number;
+    }
+
+    public void setContact_number(String contact_number) {
+        this.contact_number = contact_number;
+    }
+
+    public String getContact_type() {
+        return contact_type;
+    }
+
+    public void setContact_type(String contact_type) {
+        this.contact_type = contact_type;
+    }
+
+    public String getBook_balance() {
+        return book_balance;
+    }
+
+    public void setBook_balance(String book_balance) {
+        this.book_balance = book_balance;
+    }
+
+    public String getAvailable_balance() {
+        return available_balance;
+    }
+
+    public void setAvailable_balance(String available_balance) {
+        this.available_balance = available_balance;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getRefund_account() {
+        return refund_account;
+    }
+
+    public void setRefund_account(String refund_account) {
+        this.refund_account = refund_account;
+    }
+
+    public String getRefund_account_name() {
+        return refund_account_name;
+    }
+
+    public void setRefund_account_name(String refund_account_name) {
+        this.refund_account_name = refund_account_name;
+    }
+
+    public String getRefund_opening_bank() {
+        return refund_opening_bank;
+    }
+
+    public void setRefund_opening_bank(String refund_opening_bank) {
+        this.refund_opening_bank = refund_opening_bank;
+    }
+
+    public String getRefund_amount() {
+        return refund_amount;
+    }
+
+    public void setRefund_amount(String refund_amount) {
+        this.refund_amount = refund_amount;
+    }
+
+    public String getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(String auditor) {
+        this.auditor = auditor;
+    }
+
+    public String getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getRunningWarterNo() {
+        return runningWarterNo;
+    }
+
+    public void setRunningWarterNo(String runningWarterNo) {
+        this.runningWarterNo = runningWarterNo;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getNextDealPerson() {
+        return nextDealPerson;
+    }
+
+    public void setNextDealPerson(String nextDealPerson) {
+        this.nextDealPerson = nextDealPerson;
+    }
+
+    public String getLink_name() {
+        return link_name;
+    }
+
+    public void setLink_name(String link_name) {
+        this.link_name = link_name;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+    public String getApproveOpinion() {
+        return approveOpinion;
+    }
+
+    public void setApproveOpinion(String approveOpinion) {
+        this.approveOpinion = approveOpinion;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getApply_date_start() {
+        return apply_date_start;
+    }
+
+    public void setApply_date_start(String apply_date_start) {
+        this.apply_date_start = apply_date_start;
+    }
+
+    public String getApply_date_end() {
+        return apply_date_end;
+    }
+
+    public void setApply_date_end(String apply_date_end) {
+        this.apply_date_end = apply_date_end;
+    }
+}

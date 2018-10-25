@@ -1,0 +1,153 @@
+package com.esop.workflow.model;
+
+public class CtDiscountCreditAuditCfg {
+    private String cfgId;
+
+    private String procId;
+
+    private String stepId;
+
+    private String selfFeeMin;
+
+    private String selfFeeMax;
+
+    private String lateFeeMin;
+
+    private String lateFeeMax;
+
+    private String note;
+
+    private String auditFlag;
+
+    private String deptId;
+
+    private String sumFeeMin;
+
+    private String sumFeeMax;
+
+    private String ocFlag;
+
+    private String oaFlag;
+
+    private String sumFlag;
+
+    public String getCfgId() {
+        return cfgId;
+    }
+
+    public void setCfgId(String cfgId) {
+        this.cfgId = cfgId;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public String getSelfFeeMin() {
+        return selfFeeMin;
+    }
+
+    public void setSelfFeeMin(String selfFeeMin) {
+        this.selfFeeMin = selfFeeMin;
+    }
+
+    public String getSelfFeeMax() {
+        return selfFeeMax;
+    }
+
+    public void setSelfFeeMax(String selfFeeMax) {
+        this.selfFeeMax = selfFeeMax;
+    }
+
+    public String getLateFeeMin() {
+        return lateFeeMin;
+    }
+
+    public void setLateFeeMin(String lateFeeMin) {
+        this.lateFeeMin = lateFeeMin;
+    }
+
+    public String getLateFeeMax() {
+        return lateFeeMax;
+    }
+
+    public void setLateFeeMax(String lateFeeMax) {
+        this.lateFeeMax = lateFeeMax;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getAuditFlag() {
+        return auditFlag;
+    }
+
+    public void setAuditFlag(String auditFlag) {
+        this.auditFlag = auditFlag;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getSumFeeMin() {
+        return sumFeeMin;
+    }
+
+    public void setSumFeeMin(String sumFeeMin) {
+        this.sumFeeMin = sumFeeMin;
+    }
+
+    public String getSumFeeMax() {
+        return sumFeeMax;
+    }
+
+    public void setSumFeeMax(String sumFeeMax) {
+        this.sumFeeMax = sumFeeMax;
+    }
+
+    public String getOcFlag() {
+        return ocFlag;
+    }
+
+    public void setOcFlag(String ocFlag) {
+        this.ocFlag = ocFlag;
+    }
+
+    public String getOaFlag() {
+        return oaFlag;
+    }
+
+    public void setOaFlag(String oaFlag) {
+        this.oaFlag = oaFlag;
+    }
+
+    public String getSumFlag() {
+        return sumFlag;
+    }
+
+    public void setSumFlag(String sumFlag) {
+        this.sumFlag = sumFlag;
+    }
+}

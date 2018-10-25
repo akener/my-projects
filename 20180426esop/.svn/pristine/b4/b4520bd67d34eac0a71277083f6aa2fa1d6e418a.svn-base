@@ -1,0 +1,101 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import java.util.Date;
+
+/**
+ * Created by Administrator on 2017/11/15.
+ */
+public class BsRoleDictDto {//角色名称类
+    private Long role_id;//角色ID
+    private String role_name;//角色名称
+    private String role_type;//
+    private String state;//状态
+    private String has_child;
+    private Date state_date;
+    private Long queue_index;
+    private String create_no;
+    private Date create_date;//创建日期
+    private String note;
+
+
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getRole_type() {
+        return role_type;
+    }
+
+    public void setRole_type(String role_type) {
+        this.role_type = role_type;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getHas_child() {
+        return has_child;
+    }
+
+    public void setHas_child(String has_child) {
+        this.has_child = has_child;
+    }
+
+    public String getCreate_no() {
+        return create_no;
+    }
+
+    public void setCreate_no(String create_no) {
+        this.create_no = create_no;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Date getState_date() {
+        return state_date;
+    }
+
+    public void setState_date(Date state_date) {
+        this.state_date = state_date;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
+    public Long getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(Long role_id) {
+        this.role_id = role_id;
+    }
+
+    public Long getQueue_index() {
+        return queue_index;
+    }
+
+    public void setQueue_index(Long queue_index) {
+        this.queue_index = queue_index;
+    }
+}

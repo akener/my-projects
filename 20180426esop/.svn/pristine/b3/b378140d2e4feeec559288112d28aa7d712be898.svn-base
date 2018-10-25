@@ -1,0 +1,90 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangxy on 2017/12/9.
+ */
+public class UnionMemberInfo extends BaseDto{
+    private Integer id;
+    private String men_code;
+    private String mem_telno;
+    private String men_name;
+    private String union_code;
+    private String union_name;
+    private String prod_code;
+    private String prod_name;
+    private String memStatus;
+
+    public String getMemStatus() {
+        return memStatus;
+    }
+
+    public void setMemStatus(String memStatus) {
+        this.memStatus = memStatus;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getMen_code() {
+        return men_code;
+    }
+
+    public void setMen_code(String men_code) {
+        this.men_code = men_code;
+    }
+
+    public String getMem_telno() {
+        return mem_telno;
+    }
+
+    public void setMem_telno(String mem_telno) {
+        this.mem_telno = mem_telno;
+    }
+
+    public String getMen_name() {
+        return men_name;
+    }
+
+    public void setMen_name(String men_name) {
+        this.men_name = men_name;
+    }
+
+    public String getUnion_code() {
+        return union_code;
+    }
+
+    public void setUnion_code(String union_code) {
+        this.union_code = union_code;
+    }
+
+    public String getUnion_name() {
+        return union_name;
+    }
+
+    public void setUnion_name(String union_name) {
+        this.union_name = union_name;
+    }
+
+    public String getProd_code() {
+        return prod_code;
+    }
+
+    public void setProd_code(String prod_code) {
+        this.prod_code = prod_code;
+    }
+}

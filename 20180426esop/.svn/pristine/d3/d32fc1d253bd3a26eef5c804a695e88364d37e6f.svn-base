@@ -1,0 +1,35 @@
+package com.esop.cust.service;
+
+import com.esop.alertClassified.dto.AccountAlertSetDto;
+import com.esop.alertClassified.dto.AccountAlertSetNumDto;
+import com.esop.common.dataBase.SqlE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/7/15.
+ */
+@Repository
+public class WarningSetService {
+    @Autowired
+    SqlE sqlE;
+    //查询阈值设置人员列表
+    public List qryWarningSetList(AccountAlertSetDto param){
+        return sqlE.selectM("qryWarningSetList",param);
+    }
+   /* //查询表中是否存在重要成员阈值
+    public List qryWarningSetJudge(AccountAlertSetNumDto param){
+        return sqlE.selectM("qryWarningSetJudge",param);
+    }*/
+    //阈值设置
+    public int setWarningVal(AccountAlertSetDto param){
+        List list = sqlE.selectM("qryWarningSetJudge",param);
+        if(list.size()>0){
+            return   sqlE.updateM("updateWarningVal",param);
+        }else{
+            return   sqlE.insertM("insertWarningVal",param);
+        }
+    }
+}

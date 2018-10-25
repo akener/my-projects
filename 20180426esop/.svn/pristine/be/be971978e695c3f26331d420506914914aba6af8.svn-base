@@ -1,0 +1,27 @@
+package com.esop.cust.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cust.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//竞争情报
+@Repository
+public class CompeteMsgService {
+    @Autowired
+    SqlE sqlE;
+    public int insertCompeteMsg(CompeteMsgInDto param){
+        List<CompeteMsgInDto> list = sqlE.selectM("qrycompeteId");
+        if(list.size()>0){
+            param.setCompete_id(list.get(0).getCompete_id());
+            return  sqlE.insertM("insertCompeteMsg",param);
+        }else {
+            return 0;
+        }
+    }
+}

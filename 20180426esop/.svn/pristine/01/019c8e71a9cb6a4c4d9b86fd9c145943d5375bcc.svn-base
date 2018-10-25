@@ -1,0 +1,167 @@
+package com.esop.workOrderInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.SignOnRecordDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by qiaojian on 2017/6/13.
+ */
+@Repository
+public class SignOnRecordService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(SignOnRecordService.class);
+
+    //获取org_name
+    public String getOrgName(Map map){
+        List list = (List)sqlE.selectM("getOrg_Name",map);
+        System.out.println("org_name------------"+(String)list.get(0));
+        return (String)list.get(0);
+    }
+
+    //导入签约工单数据
+    public int insertSignOnRecord(SignOnRecordDto parameter){
+        return sqlE.insertM("insertSignOnRecord",parameter);
+    }
+
+    //查询工单
+    public Result getAllSignRecord(SignOnRecordDto parameter){
+        Result result = sqlE.selectPage("getAllSignRecord",parameter);
+        return result;
+    }
+    //查工单数据
+    public SignOnRecordDto getSignRecord(SignOnRecordDto parameter){
+        return (SignOnRecordDto)sqlE.selectM("getAllSignRecord",parameter).get(0);
+    }
+    //下发短信
+    public int sendMessage(Map map){
+        return sqlE.insertM("sendMessage",map);
+    }
+    //获取工单批次号
+    public List<SignOnRecordDto> getSignRecordId(SignOnRecordDto parameter){
+        return sqlE.selectM("getSignRecordId",parameter);
+    }
+    //下发工单到地市
+    public int sendSignOnRecordToRegion(SignOnRecordDto parameter){
+        return sqlE.updateM("sendSignOnRecordToRegion",parameter);
+    }
+    //下发工单到区县
+    public int sendRecordToCounty(SignOnRecordDto parameter){
+        return sqlE.updateM("sendRecordToCounty",parameter);
+    }
+    //获取区县信息
+    public List<SignOnRecordDto> getCountyCode(SignOnRecordDto parameter){
+        return sqlE.selectM("getCountyCode",parameter);
+    }
+    //获取省派单截止时间
+    public String getProvinceEndDate(Map map){
+        List list = (List)sqlE.selectM("getProvinceEndDate",map);
+        return (String)list.get(0);
+    }
+    public List<SignOnRecordDto> getServiceNo(SignOnRecordDto parameter){
+        return sqlE.selectM("getServiceNo",parameter);
+    }
+    //下发工单到区县
+    public int sendSignRecordToService(SignOnRecordDto parameter){
+        return sqlE.updateM("sendSignRecordToService",parameter);
+    }
+    //回退至地市
+    public int backSignRecordToRegion(SignOnRecordDto parameter){
+        return sqlE.updateM("backSignRecordToRegion",parameter);
+    }
+    //客户经理获取单条工单
+    public SignOnRecordDto getOneSignRecordByService(SignOnRecordDto parameter){
+        SignOnRecordDto dto = (SignOnRecordDto)sqlE.selectM("getAllSignRecord",parameter).get(0);
+        return dto;
+    }
+    //签约成功
+    public int setSignRecordSuccess(SignOnRecordDto parameter){
+        return sqlE.updateM("setSignRecordSuccess",parameter);
+    }
+    //工单放弃
+    public int giveUpRecordByService(SignOnRecordDto parameter){
+        return sqlE.updateM("giveUpRecordByService",parameter);
+    }
+    //工单回退区县
+    public int backRecordToCounty(SignOnRecordDto parameter){
+        return sqlE.updateM("backRecordToCounty",parameter);
+    }
+    //获取在网集团，校验签约成功失败
+    public String getCustMsg(SignOnRecordDto parameter){
+        List list = sqlE.selectM("getCustMsg",parameter);
+        if(list.size()==0){
+            return "";
+        }else{
+            return (String)list.get(0);
+        }
+    }
+    //区县工单处理查询
+    public Result querySignRecordByCountyForHandle(SignOnRecordDto parameter){
+        Result result = sqlE.selectPage("querySignRecordByCountyForHandle",parameter);
+        return result;
+    }
+    //地市工单处理查询
+    public Result querySignRecordByRegionForHandle(SignOnRecordDto parameter){
+        Result result = sqlE.selectPage("querySignRecordByRegionForHandle",parameter);
+        return result;
+    }
+    //客户经理所属地市
+    public String getOrgCodeOfService(SignOnRecordDto parameter){
+        List list = sqlE.selectM("getOrgCodeOfService",parameter);
+        return (String)list.get(0);
+    }
+    //查询地市工单池数据
+    public Result getAllSignRecordForPool(SignOnRecordDto parameter){
+        Result result = sqlE.selectPage("getAllSignRecordForPool",parameter);
+        return result;
+    }
+    //客户经理区县信息
+    public SignOnRecordDto getCountyCodeByService(SignOnRecordDto parameter){
+        return (SignOnRecordDto)sqlE.selectM("getCountyCodeByService",parameter).get(0);
+    }
+    //客户经理认领工单
+    public int claimSignRecordByService(SignOnRecordDto parameter){
+        return sqlE.updateM("claimSignRecordByService",parameter);
+    }
+    //获取最新下发工单批次号
+    public SignOnRecordDto getSignRecordIdOfSend(SignOnRecordDto parameter){
+        return (SignOnRecordDto)sqlE.selectM("getSignRecordIdOfSend",parameter).get(0);
+    }
+    //结单
+    public int endSignRecord(SignOnRecordDto parameter){
+        return sqlE.updateM("endSignRecord",parameter);
+    }
+    //<!-- 查询地市截止日期 -->
+    public List<SignOnRecordDto> getRecordRegionEndDate(SignOnRecordDto parameter){
+        return sqlE.selectM("getRecordRegionEndDate",parameter);
+    }
+    //<!-- 查询省截止日期 -->
+    public List<SignOnRecordDto> getRecordProvinceEndDate(SignOnRecordDto parameter){
+        return sqlE.selectM("getRecordProvinceEndDate",parameter);
+    }
+    //<!-- 修改工单状态进入工单池 -->
+    public int updateRecordToPool(SignOnRecordDto parameter){
+       return sqlE.updateM("updateRecordToPool",parameter);
+    }
+    //<!-- 修改工单状态回退省管理员-->
+    public int updateRecordToProvince(SignOnRecordDto parameter){
+        return sqlE.updateM("updateRecordToProvince",parameter);
+    }
+    //工单查询
+    public Result getSignRecordForQuery(SignOnRecordDto parameter){
+        Result result = sqlE.selectPage("getSignRecordForQuery",parameter);
+        return result;
+    }
+    // 查组织机构等级
+    public String getGroupLevel(Map map){
+        List list = sqlE.selectM("getGroupLevel",map);
+        return (String)list.get(0);
+    }
+}

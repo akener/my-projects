@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectMenusList"  parameterType="com.esop.workbench.dto.menusListDto" resultType="com.esop.workbench.dto.menusListDto" >
+        select function_code , function_name   from   ep_sys_managerfjump_info  where login_no = #{landing_no}
+    </select>
+    <select id="setMenusList"  parameterType="com.esop.workbench.dto.menusListDto" resultType="int" >
+        insert into ep_sys_managerfjump_info (sequence_id,function_code,function_name,login_no) values
+         (SEQ_MANAGERFJUMP_ID.NEXTVAL,#{function_code},#{function_name},#{landing_no})
+    </select>
+    <select id="deleteMenusList"  parameterType="com.esop.workbench.dto.menusListDto" resultType="int" >
+        delete  ep_sys_managerfjump_info  where login_no = #{landing_no}
+    </select>
+
+</mapper>

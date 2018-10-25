@@ -1,0 +1,48 @@
+package com.esop.workbench.dto;
+
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/6/23.
+ */
+public class menuListRtnDto {
+    String code = "000000";
+    String message = "rest service is success";
+    String promptMsg = "";
+    List data = null;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getPromptMsg() {
+        return promptMsg;
+    }
+
+    public void setPromptMsg(String promptMsg) {
+        this.promptMsg = promptMsg;
+    }
+
+    public List getData() {
+        return data;
+    }
+
+    public void setData(List data) {
+        this.data = data;
+    }
+
+
+
+}

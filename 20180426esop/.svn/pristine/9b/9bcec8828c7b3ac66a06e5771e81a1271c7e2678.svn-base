@@ -1,0 +1,278 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>重要成员投诉明细展示</title>
+</head>
+
+<body>
+<%--<div class="row mgt-10">
+    <div class="col-md-2 mgl-10">
+        <select id="region_code" class="form-control">
+            <option value="">全省</option>
+            <option value = "10031">哈尔滨</option>
+            <option value = "10032">齐齐哈尔</option>
+            <option value = "10033">牡丹江</option>
+            <option value = "10034">佳木斯</option>
+            <option value = "10035">双鸭山</option>
+            <option value = "10036">七台河</option>
+            <option value = "10037">鸡西</option>
+            <option value = "10038">鹤岗</option>
+            <option value = "10039">伊春</option>
+            <option value = "10040">黑河</option>
+            <option value = "10041">绥化</option>
+            <option value = "10042">大兴安岭</option>
+            <option value = "10043">大庆</option>
+        </select>
+    </div>
+    <div class='col-md-2 mgl-10'>
+        <select name="town_code" id="town_code" class="selector_town">
+        </select>
+    </div>
+    <div class='col-md-2 mgl-10'>
+        <select id="product_type" class="form-control">
+            <option value="和校园">和校园</option>
+        </select>
+    </div>
+    <div class='col-sm-1'>
+        <button id="subBtn" class="btn btn-info">查询</button>
+    </div>
+    <div class='col-sm-7'></div>
+</div>
+<table id="impMenberComInfo" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th class="text-center">客户姓名</th>
+        <th class="text-center">受理号码</th>
+        <th class="text-center">工单类型</th>
+        <th class="text-center">集团类型</th>
+        <th class="text-center">集团成员类型</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">受理时间</th>
+        <th class="text-center">业务类型</th>
+        <th class="text-center">受理类容</th>
+        <th class="text-center">处理意见</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr class="text-center">
+        <th class="text-center">客户姓名</th>
+        <th class="text-center">受理号码</th>
+        <th class="text-center">工单类型</th>
+        <th class="text-center">集团类型</th>
+        <th class="text-center">集团成员类型</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">受理时间</th>
+        <th class="text-center">业务类型</th>
+        <th class="text-center">受理类容</th>
+        <th class="text-center">处理意见</th>
+    </tr>
+    </tfoot>
+</table>
+</body>--%>
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12" style="min-height:100px;">
+            <div class="pd-20 pos-rel pos-bg1">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>选择地市</th>
+                            <td>
+                                <select name="region_code" id="region_code" class="selector_region"
+                                        onchange="CityListQuery()">
+                                    <option value="">
+                                        全省
+                                    </option>
+                                    <option value="10031">哈尔滨</option>
+                                    <option value="10032">齐齐哈尔</option>
+                                    <option value="10033">牡丹江</option>
+                                    <option value="10034">佳木斯</option>
+                                    <option value="10035">双鸭山</option>
+                                    <option value="10036">七台河</option>
+                                    <option value="10037">鸡西</option>
+                                    <option value="10038">鹤岗</option>
+                                    <option value="10039">伊春</option>
+                                    <option value="10040">黑河</option>
+                                    <option value="10041">绥化</option>
+                                    <option value="10042">大兴安岭</option>
+                                    <option value="10043">大庆</option>
+                                </select>
+                            </td>
+                            <th>区县</th>
+                            <td>
+                                <select name="town_code" id="town_code" class="selector_town">
+                                </select>
+                            </td>
+                            <%--<th>产品类型</th>
+                            <td>
+                                <select name="product_type" id="product_type" class="selector_product"
+                                        onchange="CityListQuery()">
+                                    <option value=""></option>
+                                <option value="10031">和校园</option>
+                                <option value="10032">集团专线</option>
+                                <option value="10033">IDC</option>
+                                <option value="10034">集团短彩信</option>
+                                <option value="10035">集团专线</option>
+                                <option value="10036">新固话</option>
+                                </select>
+                            </td>--%>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-30">
+                        <div class="btn-box pdb-20">
+                            <button class="ui-btn mgr-10" onclick="qryComplainList()">查询</button>
+                            <button class="ui-btn" onclick="reset()">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" >
+        <div class="active-cost-box">
+            <table id="impMenberComInfo" class="display" cellspacing="0" width="98%">
+                <thead>
+                <tr>
+                    <th class="text-center">客户姓名</th>
+                    <th class="text-center">受理号码</th>
+                    <th class="text-center">工单类型</th>
+                    <th class="text-center">集团类型</th>
+                    <th class="text-center">集团成员类型</th>
+                    <th class="text-center" width="100">集团名称</th>
+                    <th class="text-center">集团编码</th>
+                    <th class="text-center">受理时间</th>
+                    <th class="text-center" width="150">受理类容</th>
+                    <th class="text-center" width="180">处理意见</th>
+                    <th class="text-center">结案时间</th>
+                </tr>
+                </thead>
+                <%--<tfoot>
+                <tr class="text-center">
+                    <th class="text-center">序号</th>
+                    &lt;%&ndash;<<th class="text-center">地市代码</th>&ndash;%&gt;
+                    <th class="text-center">地市名称</th>
+                    &lt;%&ndash;<th class="text-center">区县代码</th>&ndash;%&gt;
+                    <th class="text-center">区县名称</th>
+                    <th class="text-center"> 客户经理工号</th>
+                    <th class="text-center">客户经理名称</th>
+                    &lt;%&ndash;<th class="text-center">集团编号</th>&ndash;%&gt;
+                    <th class="text-center">集团名称</th>
+                    <th class="text-center">开户日期</th>
+                    <th class="text-center">是否为当年新发展</th>
+                </tr>
+                </tfoot>--%>
+            </table>
+        </div>
+    </div>
+</div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var table;
+    function CityListQuery() {
+        if ($("#region_code").val() != "") {
+            $.ajax({
+                type: "get",
+                url: "/cityCodeListShow",
+                data: {
+                    region_code: $("#region_code").val()
+                },
+                cache: false,
+                success: function (result) {
+                    city_data = "<option value=''>全市</option>";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        city_data += "<option value='" + field.group_id + "' ";
+
+                        city_data += ">" + field.group_name + "</option>";
+                    });
+                    $("#town_code").empty();
+                    $("#town_code").append(city_data);
+                    //qryComplainList();
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        } else {
+            $("#town_code").empty();
+
+        }
+    }
+    $(document).ready(function(){
+        qryComplainList();
+    });
+    function qryComplainList(){
+
+        table = $('#impMenberComInfo').DataTable({
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            destroy: true,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 5,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/impMemberComplaintsInfo",
+                type:"POST",
+                data:{
+                    region_code:$("#region_code").val(),
+                    town_code:$("#town_code").val(),
+                  /*  product_type:$("#product_type").val()*/
+
+                }
+            },
+            columns: [
+                { data:"comp_name"},
+                { data:"comp_phone"},
+                { data:"order_type"},
+                { data:"group_type"},
+                { data:"grp_meb_type"},
+                { data:"group_name"},
+                {data:"group_id"},
+                { data:"accept_time"},
+                { data:"buss_content"},
+                { data:"deal_opinion"},
+                { data:"end_time" }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    }
+</script>
+</html>

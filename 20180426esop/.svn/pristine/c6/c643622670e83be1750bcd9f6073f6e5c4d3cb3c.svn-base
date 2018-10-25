@@ -1,0 +1,35 @@
+package com.esop.basicManagement.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class GroupTreeInDto {
+    String id = "";
+    String pId = "";
+    String landing_no = "";
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getpId() {
+        return pId;
+    }
+
+    public void setpId(String pId) {
+        this.pId = pId;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

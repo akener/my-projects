@@ -1,0 +1,44 @@
+package com.esop.workflow.dto;
+
+import com.esop.workflow.vo.Step;
+
+import java.util.List;
+
+public class GetFirstStepsOutDTO extends OutDTO{
+    private String procId;
+    private String procNameEn;
+    private String procNameCh;
+    private List<Step> stepList;
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameEn() {
+        return procNameEn;
+    }
+
+    public void setProcNameEn(String procNameEn) {
+        this.procNameEn = procNameEn;
+    }
+
+    public String getProcNameCh() {
+        return procNameCh;
+    }
+
+    public void setProcNameCh(String procNameCh) {
+        this.procNameCh = procNameCh;
+    }
+
+    public List<Step> getStepList() {
+        return stepList;
+    }
+
+    public void setStepList(List<Step> stepList) {
+        this.stepList = stepList;
+    }
+}

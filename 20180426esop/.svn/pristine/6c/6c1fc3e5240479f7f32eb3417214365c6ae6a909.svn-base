@@ -1,0 +1,46 @@
+package com.esop.ledger.service;
+
+import com.esop.base.dto.LogisticsCompanyDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.ledger.dto.LedgerInfoDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/8/10.
+ */
+@Repository
+public class LedgerExamineService {
+    @Autowired
+    SqlE sqlE;
+    //查询节点合计台账
+    public List<LedgerInfoDto> thisLedgerInfo(LedgerInfoDto obj){
+        return sqlE.selectM("thisLedgerInfo", obj);
+    }
+    //查询子节点台账
+    public Result subsetLedgerInfo(LedgerInfoDto obj){
+        return sqlE.selectPage("subsetLedgerInfo", obj);
+    }
+    //拒绝打回台账信息
+    public int refuseLedgerInfo(LedgerInfoDto obj){
+        return sqlE.updateM("refuseLedgerInfo", obj);
+    }
+    //审批生成台账信息,如果是叶子节点,只要更新台账状态
+    public int examineLedgerInfo(LedgerInfoDto obj){
+        return sqlE.updateM("examineLedgerInfo", obj);
+    }
+    //审批生成台账信息,如果是父级节点,先更新台账状态,然后汇总台账明细信息,父级节点生成台账操作,汇总台账明细信息前,需要先做删除操作
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int sumLedgerDetailsInfo(LedgerInfoDto obj){
+        int num=0;
+        sqlE.updateM("examineLedgerInfo", obj);
+        sqlE.updateM("delLedgerDetailsInfo", obj);
+        num=sqlE.updateM("sumLedgerDetailsInfo", obj);
+        return num;
+    }
+}

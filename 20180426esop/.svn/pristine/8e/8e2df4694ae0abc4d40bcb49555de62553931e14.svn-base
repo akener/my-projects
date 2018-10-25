@@ -1,0 +1,130 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Shinelon
+  Date: 2017/5/25
+  Time: 21:00
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<%@ include file="/view/pub/base.jsp"%>
+<%@ include file="/view/pub/dataTables.jsp"%>
+<head>
+    <title>集客业务发展情况 </title>
+</head>
+<body>
+<div id="container" style="min-width:400px;height:400px"></div>
+</body>
+<script>
+    /*$(function(){
+        requestData();
+    })
+    function requestData() {
+        var region_code_req = $("#region_code").val();
+        $.ajax({
+            url: '/EpBusiDep',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+
+                'region_code' : region_code_req
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                if(data.length==0){
+                    $("#container").append("<h3 align='center'>表中数据为空</h3>");
+                    return false;
+                }
+                var day_inc = [];
+                var dayInc = {};
+                var mon_inc = [];
+                var monInc = {};
+                for (var i = 0; i < data.length; i++) {
+                    if(region_code_req==""){
+                        region_name = data[i].region_name;
+                    }else{
+                        region_name = data[i].town_name;
+                    }
+
+                    //categories.push(region_name);
+                    data1.push(parseFloat(data[i].extax_unify_fee));
+                }
+                data2.name = "统付收入";
+                data2.data = data1;
+                series.push(data2);
+                getChart();
+            }
+        });
+    }*/
+    $(function () {
+        $('#container').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: '集客业务发展情况'
+            },
+//            subtitle: {
+//                text: '数据来源: Wikipedia.org'
+//            },
+            xAxis: {
+                categories: ['4G客户', '宽带客户', '集团专线','和校园', '物联网'],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '人数（位）',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' 位'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                        allowOverlap: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: '日新增数',
+                data: [107, 31, 635, 203, 2]
+            }, {
+                name: '月新增数',
+                data: [133, 156, 947, 408, 6]
+            }, {
+                name: '年累计数',
+                data: [973, 914, 4054, 732, 34]
+            }, {
+                name: '目标值',
+                data: [973, 914, 4054, 732, 34]
+            },{
+                name: '完成进度',
+                data: [973, 914, 4054, 732, 34]
+            },]
+        });
+    });
+
+</script>
+</html>

@@ -1,0 +1,215 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.AcountManageDto;
+import com.esop.cqDevelopment.elecPack.dto.OrRequestTemplateProcDto;
+import com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto;
+import com.esop.cqDevelopment.elecPack.service.AcountManageService;
+import com.esop.cqDevelopment.elecPack.service.OrRequestinstInfoService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import com.esop.workflow.service.WorkFlowService;
+import groovy.transform.TailRecursive;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ExtendedModelMap;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+
+@Controller
+public class ElecOrderManagement {
+    @Autowired
+    OrRequestinstInfoService instservice;
+    @Autowired
+    AcountManageService acountManageService;
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    WorkFlowService flowService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+
+    Result result=new Result();
+
+    /**
+     * 查询电子订单信息
+     * @param reqdto
+     * @param request
+     * @return
+     */
+    @RequestMapping("/queryOrderInfos")
+    @ResponseBody
+    public Result queryOrderInfos (OrRequestinstInfoDto reqdto, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+        }
+
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        reqdto.setPage(page);
+        result = instservice.queryOrderInfos(reqdto);
+        return result;
+    }
+
+
+    /**
+     * 查询订单待办
+     * @param reqdto
+     * @param request
+     * @return
+     */
+    @RequestMapping("/queryOrderInfotodo")
+    @ResponseBody
+    public Result queryOrderInfotodo (OrRequestinstInfoDto reqdto, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+//        page.setPageNumber(1);
+        page.setRecordsTotal(result.getRecordsTotal());
+        reqdto.setPage(page);
+        reqdto.setDeal_login_no("112900001");
+//        reqdto.setDeal_login_no("q2403006bx");
+        result = instservice.queryOrderInfotodo(reqdto);
+        return result;
+    }
+
+    /**
+     * 查询订单待办详情并进行页面跳转
+     * @param reqdto
+     * @param request
+     * @return
+     */
+    @RequestMapping("/queryOrdertodo")
+    public String  queryOrdertodo (OrRequestinstInfoDto reqdto, Model resmodel, HttpServletRequest request){
+
+//        reqdto.setDeal_login_no("q2403006bx");
+        reqdto.setDeal_login_no("112900001");
+
+        OrRequestinstInfoDto orderinfo = instservice.queryOrdertodo(reqdto);
+        //待办信息获取
+        String biz_record_id=orderinfo.getBiz_record_id();
+        String proc_id=orderinfo.getProc_id();
+//        String proc_name_ch=orderinfo.getProc_name_ch();
+        String step_id=orderinfo.getStep_id();
+        String step_name=orderinfo.getStep_name();
+        String proc_inst_id=orderinfo.getProc_inst_id();
+        String task_inst_id=orderinfo.getTask_inst_id();
+//        String next_flag=orderinfo.getNext_flag();
+        String task_id=orderinfo.getTask_id();
+        String proc_name_en=orderinfo.getProc_name_en();
+//        String deal_login_no=orderinfo.getDeal_login_no();
+        String source_id=orderinfo.getSource_id();
+        //流程业务代码
+        String op_code=orderinfo.getOp_code();
+        //查询跳转页面
+        OrRequestTemplateProcDto reqpth=new OrRequestTemplateProcDto();
+        reqpth.setStep_id(step_id);
+        reqpth.setOp_code(op_code);
+        OrRequestTemplateProcDto respath=instservice.queryOderPathtodo(reqpth);
+        String path =respath.getPath();
+        if(op_code.equals("10002")){
+            AcountManageDto acountManageDto = new  AcountManageDto();
+            acountManageDto.setId(Integer.valueOf( source_id));
+            resmodel.addAttribute("countinfor",acountManageService.findDetailes(acountManageDto));
+        }
+//        Model resmodel=new ExtendedModelMap();
+        resmodel.addAttribute("biz_record_id",biz_record_id);
+        resmodel.addAttribute("proc_id",proc_id);
+        resmodel.addAttribute("step_id",step_id);
+        resmodel.addAttribute("step_name",step_name);
+        resmodel.addAttribute("task_inst_id",task_inst_id);
+        resmodel.addAttribute("proc_inst_id",proc_inst_id);
+        resmodel.addAttribute("task_id",task_id);
+        resmodel.addAttribute("proc_name_en",proc_name_en);
+        resmodel.addAttribute("request_num",reqdto.getRequest_num());
+        resmodel.addAttribute("source_id",source_id);
+        return path;
+    }
+
+    /**
+     * 作废电子订单  终止流程
+     * @param reqdto
+     * @return
+     */
+    @RequestMapping("/stopElecOrder")
+    @Transactional(rollbackFor = Exception.class)
+    @ResponseBody
+    public String stopElecOrder(OrRequestinstInfoDto reqdto){
+        String result="0";
+        String request_num=reqdto.getRequest_num();
+        String proc_inst_id=reqdto.getProc_inst_id();
+        OrRequestinstInfoDto upinsdto= instservice.queryOneRequestInfo(request_num);
+        upinsdto.setState("4");
+        int res1=instservice.upOrRequestinstInfoDto(upinsdto);
+        if(res1>0){
+            flowService.stopProcInst(proc_inst_id);
+            result="1";
+        }
+        return result;
+    }
+
+    /**
+     * 查询电子订单新建业务跳转url
+     * @return
+     */
+    @RequestMapping("queryOrderNew")
+    @ResponseBody
+    public Result queryOrderNew(){
+        OrRequestTemplateProcDto reqdto=new OrRequestTemplateProcDto();
+        reqdto.setStep_id("0");
+        List<OrRequestTemplateProcDto> respath=instservice.queryOderPathtodos(reqdto);
+        result.setData(respath);
+        return result;
+    }
+
+    /**
+     * 查询业务代码下拉列表
+     * @return
+     */
+    @RequestMapping("queryTemplateDomain")
+    @ResponseBody
+    public List queryTemplateDomain(OrRequestinstInfoDto reqdto){
+        List reslist=instservice.queryTemplateDomain(reqdto);
+        return reslist;
+    }
+
+    /**
+     * 导出订单查询结果
+     * @param reqdto
+     * @param response
+     * @return
+     */
+    @RequestMapping("expertOrderQuery")
+    public String expertOrderQuery(OrRequestinstInfoDto reqdto, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"订单号","业务类型","订单名","集团编码","集团名称","创建日期","状态"};
+        String[] methods = {"getRequest_num", "getOp_name", "getOrder_title","getUnion_code", "getUnion_name", "getCreate_date", "getState"};
+        PageParameter page=new PageParameter();
+        page.setPageRecords(99999);
+        reqdto.setPage(page);
+        List<OrRequestinstInfoDto> reslist= instservice.queryOrderInfos(reqdto).getData();
+
+        try {
+            orderWorkFlowService.getExport(tableHeader, methods, reslist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+}

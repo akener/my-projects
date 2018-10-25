@@ -1,0 +1,17 @@
+package com.esop.productInfo.dto;
+
+/**
+ * Created by wangbl on 2017/5/23.
+ */
+//接口返回结果提示信息
+public class PromptInformationDto {
+    String info ="";
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+}

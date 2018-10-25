@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectExcellentCaseInfo" parameterType="String" resultType="com.esop.busiAnalysis.dto.ExcellentCaseDto">
+        select a.manager_no,a.manager_name,a.excellent_case_name,a.describee,a.excellent_no,a.related_id,a.region_code,a.region_name,to_char(a.create_date,'yyyy-MM-dd') create_date,
+        '&lt;button type="button" class="btn btn-info pull-left mgr-20" onclick="updFile('''||a.excellent_no||''')" >修改&lt;/button>&lt;button type="button" class="btn btn-info pull-left" onclick="delFile('''||a.excellent_no||''')" >删除&lt;/button>' as operator_str
+        from excellentcase a
+        where 1=1
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        <if test="excellent_case_name !=''">
+            and excellent_case_name like '%'||#{excellent_case_name}||'%'
+        </if>
+        <if test="excellent_no != ''">
+            and excellent_no = #{excellent_no}
+        </if>
+    </select>
+    <select id="getCaseNum" parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="com.esop.busiAnalysis.dto.getCaseRelateNumDto">
+        select count(*) relate_num from ep_upload_file_info
+        where related_id = #{related_id}and valid='1'
+    </select>
+    <select id="insertExcellentCaseInfo"  parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="int" >
+        insert into excellentcase(manager_no,manager_name,excellent_case_name,describee,excellent_no,related_id,region_code,region_name,create_date)
+        values(#{manager_no},#{manager_name},#{excellent_case_name},#{describee},#{excellent_no},#{related_id},#{region_code},#{region_name},sysdate)
+    </select>
+    <select id="deleteExcellentCaseInfo" parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="int">
+        delete from excellentcase where excellent_no=#{excellent_no}
+    </select>
+    <select id="deleteRelateFile" parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="int">
+        update ep_upload_file_info set valid='0',update_date=sysdate where related_id=#{related_id} and id=#{id}
+    </select>
+    <select id="getExcellentNo" resultType="com.esop.busiAnalysis.dto.ExcellentNoDto">
+        select seq_compete_id.Nextval excellent_no from dual
+    </select>
+    <select id="getCaseInfoByNo" parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="com.esop.busiAnalysis.dto.ExcellentCaseDto">
+        select a.manager_no, a.manager_name,a.excellent_case_name,a.describee,a.excellent_no,a.related_id,a.region_code,a.region_name,a.create_date,b.name relate_name,b.path relate_path,b.id
+        from excellentcase a,ep_upload_file_info b
+        where a.related_id = b.related_id(+) and b.valid(+) ='1'
+        and a.excellent_no = #{excellent_no}
+    </select>
+    <select id="updExcellentCase" parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="int">
+        update excellentcase set manager_no=#{manager_no}
+        <if test="excellent_case_name != ''">
+          ,excellent_case_name=#{excellent_case_name}
+        </if>
+        <if test="describee != ''">
+            ,describee = #{describee}
+        </if>
+        <if test="region_name !=''">
+            ,region_name = #{region_name}
+        </if>
+        <if test="region_code!=''">
+            ,region_code =#{region_code}
+        </if>
+        <if test="related_id !=''">
+            ,related_id = #{related_id}
+        </if>
+        where excellent_no=#{excellent_no}
+    </select>
+    <!--app端接口-->
+    <select id="qryExcellentCaseInfo" parameterType="com.esop.busiAnalysis.dto.ExcellentCaseDto" resultType="com.esop.busiAnalysis.dto.ExcellentCaseDto">
+        select a.manager_name,a.excellent_case_name,a.describee,a.excellent_no,a.related_id,a.region_code,a.region_name,a.create_date
+        from excellentcase a
+        where 1=1
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+        <if test="create_date != ''">
+            and to_char(create_date,'yyyy-MM-dd') = #{create_date}
+        </if>
+        <if test="region_name != ''">
+            and region_name like '%'||#{region_name}||'%'
+        </if>
+        <if test="excellent_case_name != ''">
+            and excellent_case_name like '%'||#{excellent_case_name}||'%'
+        </if>
+        <if test="excellent_no!=''">
+            and excellent_no=#{excellent_no}
+        </if>
+    </select>
+
+</mapper>

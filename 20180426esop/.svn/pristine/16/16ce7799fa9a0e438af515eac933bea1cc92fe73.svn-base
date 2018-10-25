@@ -1,0 +1,149 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/7/8
+  Time: 14:40
+  To change this template use File | Settings | File Templates.
+
+  集团专线暂停销户台帐
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <title>新增管理办法</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE  =8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/common.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/component.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/list.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/reset.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/table.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/basic.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/assets/bootstrap.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/assets/bootstrap-select.min.css" >
+
+    <script src="/esop/static/js/workbench/bootstrap-select.min.js"></script>
+    <script src="/esop/static/js/workbench/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+    <style>
+        .bs-searchbox input.form-control {
+            width:90%;
+        }
+        #catalog_name {
+            margin-left: 14px;
+            width: 213.14px;
+            height: 34px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">绑定产品经理</h3>
+    </div>
+    <div class="row col-12">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <table class="table-infor-7" width="100%">
+                    <tbody>
+                    <tr>
+                        <th>产品一级名称：</th>
+                        <td>
+                            <input type="hidden" id="prod_code" value="${product.catalog_id}"><%--产品编码--%>
+                            <input type="text" value="${product.catalog_name}" id="catalog_name" readonly="readonly" class="input-sty04 form-ipt" maxlength="11"><%--产品名称--%>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>产品经理：</th>
+                        <td>
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <select name="prodmgr_no" id="prodmgr_no" class="selectpicker show-tick form-control"  data-width="98%" required data-first-option="false"   data-live-search="true">
+                                    <c:forEach items="${productManagerList}" var="manager">
+                                        <option value="${manager.staff_code}" <c:if test="${product.seProductMgrRelDto.prodmgr_no == manager.staff_code}">selected</c:if> >${manager.login_name}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="box-body">
+                    <div class="form-group" id="fileList">
+                        <div class="col-sm-3">
+                            ${fileList}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mgt-20">
+                    <div class="btn-box">
+                        <button class="ui-btn mgr-10" id="doInsert" >保存</button>
+                        <button class="ui-btn back-button">返回</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+
+    $(document).ready(function() {
+
+        $("#doInsert").click(function(){
+            var prod_code = $("#prod_code").val();//产品编码
+            var prodmgr_no = $("#prodmgr_no").val();//产品经理工号
+            var prodmgr_name = $("#prodmgr_no").find("option:selected").text();
+            $.ajax({
+                type:"post",
+                url:"/updateOrSaveProductMgrRel",
+                data:{
+                    prod_code:prod_code,
+                    prodmgr_no:prodmgr_no,
+                    prodmgr_name:prodmgr_name
+                },
+                success:function(data){
+                    $("#noticeInfo").text("保存成功");
+                    $("#fault").modal('show');
+                },
+                error:function(){
+                    $("#noticeInfo").text("保存失败");
+                    $("#fault").modal('show');
+                }
+            });
+        });
+        $(".back-button").click(function(){
+            history.go(-1);
+        });
+    });
+</script>
+</html>

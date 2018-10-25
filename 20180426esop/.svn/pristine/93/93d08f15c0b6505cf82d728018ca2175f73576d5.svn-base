@@ -1,0 +1,686 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.common.word.CreateWord;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by Administrator on 2017/12/4.
+ */
+@Repository
+public class ElecContractService {
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    ElecPackService elecPackService;
+    @Autowired
+    OrderService orderService;
+    @Value("${contract_pdf_path}")
+    private String contract_pdf_path;
+    @Value("${model_xml_path}")
+    private String model_xml_path;
+
+    public Result getPageElecContractPage(SeContractInfoDto parameter){
+
+        Result result = sqlE.selectPage("selectContractPages",parameter);
+
+        return result;
+    }
+
+    public int getOpenGrpProd(String contract_id){
+        return sqlSessionTemplate.selectOne("getOpenGrpProd",contract_id);
+    }
+
+
+    public List<SeProductChargeInfoDto> getProductChargeInfoList(SeProductChargeInfoDto productChargeInfo){
+
+        List<SeProductChargeInfoDto> productChargeInfoList = sqlE.selectM("getProductChargeInfoList",productChargeInfo);
+        return productChargeInfoList;
+    }
+
+    public SeContractQddwDto getContractQddw(String id){
+        SeContractQddwDto seContractQddwDto = sqlSessionTemplate.selectOne("getSeContractQddwById",id);
+        return seContractQddwDto;
+    }
+
+    public Result getCtUnionListPage(CtUnionInfoDto parameter){
+        Result result = sqlE.selectPage("getCtUnionList",parameter);
+        return result;
+    }
+
+    @Transactional(rollbackFor = Exception.class,isolation= Isolation.SERIALIZABLE)//添加事物，当出现错误是自动回滚,并且线程安全
+    public SeContractInfoDto addContract(SeNewContractInfoDto seNewContractInfoDto,String id){
+        SeContractInfoDto re = new SeContractInfoDto();
+        //获取合同编号 bak1
+        StringBuilder contractNo = new StringBuilder();
+        String sx = sqlSessionTemplate.selectOne("getJTsx",id); //查询分公司的拼音缩写
+        if(sx==null||sx.trim().length()==0){
+            return null;
+        }
+        contractNo.append("重移集合");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy"); //获取当前年份
+        String  yyyy = sdf.format(new Date());
+        Map param = new HashMap();
+        param.put("year",yyyy);
+        param.put("id",id);
+
+        String contractNoXh = sqlSessionTemplate.selectOne("getContractNoSeq",param);//查询分公司的合同序号
+        if(contractNoXh==null||contractNoXh.trim().length()==0){
+            sqlSessionTemplate.insert("addContractNoSeq",param);
+            contractNo.append(sx).append(yyyy).append("0001");
+        }else{
+            int xh =Integer.parseInt(contractNoXh)+1;
+            param.put("xh",String.valueOf(xh));
+            sqlSessionTemplate.update("updContractNoSeq",param);
+            contractNo.append(sx).append(yyyy).append(getFormatTotal(xh));
+        }
+        re.setBak1(contractNo.toString());//返回bak1
+
+        //获取流水号
+        StringBuilder contractSeq = new StringBuilder();
+        contractSeq.append("CQMC");
+        contractNoXh = sqlSessionTemplate.selectOne("getContractSeq",param);//查询序列号
+        if(contractNoXh==null||contractNoXh.trim().length()==0){
+            sqlSessionTemplate.insert("addContractSeq",param);
+            contractSeq.append(sx).append(yyyy).append("000001");
+        }else{
+            int xh =Integer.parseInt(contractNoXh)+1;
+            param.put("xh",String.valueOf(xh));
+            sqlSessionTemplate.update("updContractSeq",param);
+            contractSeq.append(sx).append(yyyy).append(getFormatTotal6(xh));
+        }
+        re.setBak3(contractSeq.toString());//设置bak3.
+
+        List<Long> contractIds= sqlE.selectM("getContractId");//获取合同ID
+        Long contractId = contractIds.get(0);
+        seNewContractInfoDto.setContract_id(contractId+"");
+        seNewContractInfoDto.setContract_pdf_name(seNewContractInfoDto.getElecPackName()+contractId);
+        re.setContract_id(contractId+"");//返回合同编号
+        int addNewContract = sqlE.insertM("addNewContract",seNewContractInfoDto);//添加新合同（导出用信息）
+        //添加合同附件
+        seNewContractInfoDto.setAttach_type_code("3");
+        seNewContractInfoDto.setAttach_file_id(seNewContractInfoDto.getAttachment_id_list());//将附件返回ID列表放入attach_file_id中，复用sql语句
+        if (!StringUtils.isEmpty(seNewContractInfoDto.getAttach_file_id())){//当传入attach_file_id时才保存，否则容易报错
+            saveContractDetailAttach(seNewContractInfoDto);
+        }
+
+        saveContractDetail(Integer.parseInt(seNewContractInfoDto.getElecpack_id()) ,seNewContractInfoDto);//添加额外的纵表信息，
+        int addContractProductRel = sqlE.insertM("addContractProductRel",seNewContractInfoDto);//添加合同和产品的关系表
+        SeContractChargesInfo chargesInfo = new SeContractChargesInfo();
+        chargesInfo.setContract_id(seNewContractInfoDto.getContract_id());
+        chargesInfo.setChargeIds(seNewContractInfoDto.getChargeIds());
+        chargesInfo.setProduct_code(seNewContractInfoDto.getProduct_id());
+        int insertSeOpporContractShipInfo = sqlE.insertM("insertSeOpporContractShipInfo",seNewContractInfoDto);//添加商机号
+        int addContractCharges = 1;
+        if(!StringUtils.isEmpty(chargesInfo.getChargeIds())){
+         //   addContractCharges = sqlE.insertM("addContractCharges",chargesInfo);//添加该合同下的charges
+
+            //新添加的资费s数量
+            String[] aa = chargesInfo.getChargeIds().split(",");
+            for(int i =0 ; i < aa.length ; i++){
+                String chargeId = aa[i].split("\\|")[0];//资费ID
+                String number = aa[i].split("\\|")[1];//资费数量，当没有的时候为空
+                chargesInfo.setNumber(number);
+                chargesInfo.setProduct_charge_id(chargeId);
+
+                sqlE.insertM("addContractCharges",chargesInfo);//循环插入
+            }
+        }
+        Date date = new Date();
+
+        SeContractInfoDto seContractInfoDto = new SeContractInfoDto();//个合同主表赋值
+        seContractInfoDto.setBak1(contractNo.toString());//设置bak1
+        seContractInfoDto.setContract_id(contractId.toString());//合同ID
+        seContractInfoDto.setContract_name(seNewContractInfoDto.getContract_name());//合同名称
+        seContractInfoDto.setContract_desc(seContractInfoDto.getContract_desc());//合同描述
+        seContractInfoDto.setFirstway_code(seNewContractInfoDto.getFirst_party_code());//甲方编号
+        seContractInfoDto.setFirstway_name(seNewContractInfoDto.getFirst_party());//甲方名称
+        seContractInfoDto.setFirstway_contactor(seNewContractInfoDto.getFirst_party_charge());//甲方负责人
+        seContractInfoDto.setFirstway_contactor_phone(seNewContractInfoDto.getFirst_party_phone());//甲方负责人电话
+        seContractInfoDto.setContract_money(seNewContractInfoDto.getTotal_amount());//总金额
+        seContractInfoDto.setProd_id(seNewContractInfoDto.getProduct_id());//产品ID
+        seContractInfoDto.setOper_date(date);//设置起草时间
+        seContractInfoDto.setBak1(re.getBak1());//设置合同bak1编号；
+        seContractInfoDto.setBak3(re.getBak3());//设置合同bak3流水号；
+        seContractInfoDto.setOper_name(seNewContractInfoDto.getOper_name());
+        seContractInfoDto.setOper_no(seNewContractInfoDto.getOper_no());
+        seContractInfoDto.setRegion_code(seNewContractInfoDto.getRegion_code());
+        seContractInfoDto.setGroup_id(seNewContractInfoDto.getGroup_id());
+        seContractInfoDto.setGroup_name(seNewContractInfoDto.getGroup_name());
+
+        //测试流程时  添加审批/驳回等状态        是否是非标合同
+        seContractInfoDto.setContract_status("0");
+        seContractInfoDto.setContract_type_detail("2");//标准合同
+        int addContract = sqlE.insertM("addContract",seContractInfoDto);
+        if(addNewContract > 0 && addContractCharges > 0 && addContract > 0 && addNewContract > 0 && insertSeOpporContractShipInfo>0){
+            return re;
+        }else return null;
+    }
+
+    public List<SeProductChargeInfoDto> getContractCharges(SeNewContractInfoDto chargeIds){
+        return sqlE.selectM("getContractCharges",chargeIds);
+    }
+
+    public List<SeContractChargesInfo> getContractChargesByContractId(SeNewContractInfoDto chargeIds){
+        return sqlE.selectM("getContractChargesByContractId",chargeIds);
+    }
+
+    public List<BsProductInfoDto> getProductListCatalog(){
+        return sqlE.selectM("getProductListCatalog");
+    }
+
+    //查詢分公司
+    public List<SeContractQddwDto> getQddwList(){
+        return sqlE.selectM("getQddwList");
+    }
+
+
+    public List<SeNewContractInfoDto> getContractInfo(SeNewContractInfoDto seNewContractInfoDto){
+        return sqlE.selectM("getContractInfo",seNewContractInfoDto);
+    }
+
+    public SeNewContractInfoDto getContractDetailInfo(SeNewContractInfoDto seNewContractInfoDto){
+        List<ContractDetailInfoDto> contractDetailInfoDtoList = sqlE.selectM("getContractDetailInfo",seNewContractInfoDto);
+        if(contractDetailInfoDtoList !=null && contractDetailInfoDtoList.size()>0){
+            for (ContractDetailInfoDto contractDetailInfoDto:contractDetailInfoDtoList){
+                getVerticalTable(contractDetailInfoDto,seNewContractInfoDto);
+            }
+        }
+        //获取对应的商机号
+        String oppor_id = sqlSessionTemplate.selectOne("getOpporIdByContract",seNewContractInfoDto);
+        seNewContractInfoDto.setOppor_id(oppor_id);
+
+        //获取对应的PDF文件ID，
+        seNewContractInfoDto.setAttach_type_code("1");//pdf文件ID为1.
+        String attach_file_id = sqlSessionTemplate.selectOne("getPdfId",seNewContractInfoDto);
+        seNewContractInfoDto.setAttach_file_id(attach_file_id);
+
+        //获取对应的附件文件ID列，数据库中以"|"隔开，
+        seNewContractInfoDto.setAttach_type_code("3");//附件文件ID为3
+        String attachment_id_list = sqlSessionTemplate.selectOne("getPdfId", seNewContractInfoDto);
+        seNewContractInfoDto.setAttachment_id_list(attachment_id_list);
+
+        return seNewContractInfoDto;
+    }
+
+    @Transactional(rollbackFor = Exception.class)//添加事物，当出现错误是自动回滚,并且线程安全
+    public Integer updateContract(SeNewContractInfoDto seNewContractInfoDto) throws Exception{
+        Integer newContractCount = sqlE.updateM("updateSeNewContract",seNewContractInfoDto);
+        //修改附件上传ID
+        seNewContractInfoDto.setAttach_type_code("3");
+        seNewContractInfoDto.setAttach_file_id(seNewContractInfoDto.getAttachment_id_list());//将附件id串放入attach_file_id中，实现sql的复用
+        if(!StringUtils.isEmpty(seNewContractInfoDto.getAttach_file_id())){
+            saveContractDetailAttach(seNewContractInfoDto);
+        }
+
+        int updateSeOpporContractShipInfo = sqlE.updateM("updateSeOpporContractShipInfo",seNewContractInfoDto);
+        updContractDetail(Integer.parseInt(seNewContractInfoDto.getElecpack_id()),seNewContractInfoDto);
+        SeContractChargesInfo seContractChargesInfo = new SeContractChargesInfo();
+        seContractChargesInfo.setContract_id(seNewContractInfoDto.getContract_id());
+        seContractChargesInfo.setDelete(0);//
+        Integer isDelete = this.updateContractCharges(seContractChargesInfo);//删除以前的资费
+
+
+        SeContractInfoDto seContractInfoDto = new SeContractInfoDto();//个合同主表赋值
+        seContractInfoDto.setContract_id(seNewContractInfoDto.getContract_id());//合同ID
+        seContractInfoDto.setContract_name(seNewContractInfoDto.getContract_name());//合同名称
+        seContractInfoDto.setContract_desc(seNewContractInfoDto.getContract_desc());//合同描述
+        seContractInfoDto.setFirstway_code(seNewContractInfoDto.getFirst_party_code());//甲方编号
+        seContractInfoDto.setFirstway_name(seNewContractInfoDto.getFirst_party());//甲方名称
+        seContractInfoDto.setFirstway_contactor(seNewContractInfoDto.getFirst_party_charge());//甲方负责人
+        seContractInfoDto.setFirstway_contactor_phone(seNewContractInfoDto.getFirst_party_phone());//甲方负责人电话
+        seContractInfoDto.setContract_money(seNewContractInfoDto.getTotal_amount());//总金额
+        seContractInfoDto.setProd_id(seNewContractInfoDto.getProduct_id());//产品ID
+        seContractInfoDto.setUpdate_date(new Date());//修改时间
+        seContractInfoDto.setUpdate_no(seNewContractInfoDto.getOper_no());
+        seContractInfoDto.setUpdate_name(seNewContractInfoDto.getOper_name());
+        Integer contractCount = sqlE.updateM("updateSeContract",seContractInfoDto);
+
+
+        SeNewContractInfoDto seNewContractInfo = sqlSessionTemplate.selectOne("getContractInfo",seNewContractInfoDto);
+        seNewContractInfo = getContractDetailInfo(seNewContractInfo);
+        seContractInfoDto = sqlSessionTemplate.selectOne("getContractInfoReject",seContractInfoDto);
+
+        String chargesIds = seNewContractInfoDto.getChargeIds();
+        int addContractCharges = 1;
+        String chargesInfoString = "";//导出的资费信息
+        List<SeContractChargesInfo> chargesInfoList = new ArrayList<>();
+        if (!StringUtils.isEmpty(chargesIds)){
+            //argesIds = chargesIds.substring(1,chargesIds.length());
+            SeContractChargesInfo chargesInfo = new SeContractChargesInfo();
+            chargesInfo.setContract_id(seNewContractInfoDto.getContract_id());
+            chargesInfo.setChargeIds(chargesIds);
+            chargesInfo.setProduct_code(seNewContractInfoDto.getProduct_id());
+
+            if(!StringUtils.isEmpty(chargesInfo.getChargeIds())){
+              //  addContractCharges = sqlE.insertM("addContractCharges",chargesInfo);//添加新的资费
+                //新添加的有折扣的资费
+                String[] aa = chargesInfo.getChargeIds().split(",");
+                for(int i =0 ; i < aa.length ; i++){
+                    String chargeId = aa[i].split("\\|")[0];//资费ID
+                    String number = aa[i].split("\\|")[1];//资费折扣，当没有的时候为？
+                    chargesInfo.setNumber(number);
+                    chargesInfo.setProduct_charge_id(chargeId);
+                    sqlE.insertM("addContractCharges",chargesInfo);//循环插入
+                }
+            }
+        }
+        seNewContractInfo = sqlSessionTemplate.selectOne("getContractInfo",seNewContractInfoDto);
+        seNewContractInfo = getContractDetailInfo(seNewContractInfo);
+        seContractInfoDto = sqlSessionTemplate.selectOne("getContractInfoReject",seContractInfoDto);
+
+        if (newContractCount >0 && contractCount >0){
+            String mark = "1";//合同正常导出的时候
+            savePdf(seNewContractInfo,seContractInfoDto,mark);//生成PDF
+        }
+        if (newContractCount > 0 && isDelete > 0 && contractCount > 0){
+            return 1;
+        }else
+            return 0;
+    }
+
+    public List<SeProductChargeInfoDto> getProductChargesByContractId(SeNewContractInfoDto seNewContractInfoDto){
+
+        return sqlE.selectM("getProductChargesByContractId",seNewContractInfoDto);
+    }
+
+    public Integer updateContractCharges(SeContractChargesInfo seContractChargesInfo){
+            return sqlE.updateM("updateContractCharges",seContractChargesInfo);
+    }
+
+    /**
+     * 转换为4位数的序号
+     * @param contractNoXh
+     * @return
+     */
+    private String getFormatTotal(int contractNoXh) {
+        StringBuilder xh = new StringBuilder();
+        if(contractNoXh<10 && contractNoXh > 0){
+            xh.append("000").append(contractNoXh);
+        }else if(contractNoXh<100 && contractNoXh >=10){
+            xh.append("00").append(contractNoXh);
+        }else if(contractNoXh<1000 && contractNoXh >=100){
+            xh.append("0").append(contractNoXh);
+        }else{
+            xh.append(contractNoXh);
+        }
+        return xh.toString();
+    }
+
+    /**
+     * 转换为6位数的序号
+     * @param contractNoXh
+     * @return
+     */
+    private String getFormatTotal6(int contractNoXh) {
+        StringBuilder xh = new StringBuilder();
+        if(contractNoXh<10 && contractNoXh > 0){
+            xh.append("00000").append(contractNoXh);
+        }else if(contractNoXh<100 && contractNoXh >=10){
+            xh.append("0000").append(contractNoXh);
+        }else if(contractNoXh<1000 && contractNoXh >=100){
+            xh.append("000").append(contractNoXh);
+        }else if(contractNoXh<10000 && contractNoXh >=1000){
+            xh.append("00").append(contractNoXh);
+        }else if(contractNoXh<100000 && contractNoXh >=10000){
+            xh.append("0").append(contractNoXh);
+        }else{
+            xh.append(contractNoXh);
+        }
+        return xh.toString();
+    }
+
+    /**
+     * 新增合同详情
+     * @param template_id
+     */
+    public void saveContractDetail(int template_id , SeNewContractInfoDto seNewContractInfoDto){
+        List<OrTemplateAttrDto> templates= sqlSessionTemplate.selectList("selectContractTemplateAttrById",template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            ContractDetailInfoDto dto = new ContractDetailInfoDto();
+            setVerticalTable(temp,dto,seNewContractInfoDto);
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setContract_id(seNewContractInfoDto.getContract_id());//合同号
+            dto.setContract_template_id(String.valueOf(template_id));//template_id合同号保存
+            if(!temp.getAttr_code().equals("attach_file_id")){//文件ID
+                sqlSessionTemplate.insert("insertContractDetailInfo",dto);
+            }
+        }
+    }
+
+
+    /**
+     * 新增合同文件ID
+     * @param seNewContractInfoDto
+     */
+    public void saveContractDetailAttach(SeNewContractInfoDto seNewContractInfoDto){
+        Integer updateContractAttachRel = sqlE.updateM("updateContractAttachRel",seNewContractInfoDto);
+        if (updateContractAttachRel == 0 ){
+            sqlE.insertM("insertContractAttachRel",seNewContractInfoDto);
+        }
+    }
+
+    /**
+     * 修改合同详情
+     * @param template_id
+     */
+    public void updContractDetail(int template_id, SeNewContractInfoDto seNewContractInfoDto) {
+        List<OrTemplateAttrDto> templates = sqlSessionTemplate.selectList("selectContractTemplateAttrById", template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            ContractDetailInfoDto dto = new ContractDetailInfoDto();
+            setVerticalTable(temp,dto,seNewContractInfoDto);
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setContract_id(seNewContractInfoDto.getContract_id());//合同号
+            dto.setContract_template_id(String.valueOf(template_id));
+            int result = sqlSessionTemplate.update("updContractDetailInfo",dto);
+            if(result==0){
+                sqlSessionTemplate.insert("insertContractDetailInfo",dto);
+            }
+        }
+
+    }
+
+    public Integer bak1IsRepeat(SeContractInfoDto seContractInfoDto){
+        return sqlSessionTemplate.selectOne("bak1IsRepeat",seContractInfoDto);
+    }
+
+    public Integer updateSeContractInfo(SeContractInfoDto seContractInfoDto){
+        return sqlE.updateM("updateSeContract",seContractInfoDto);
+    }
+
+    public Result getSeContract(SeContractInfoDto seContractInfoDto){//资金调用接口
+        return sqlE.selectPage("getSeContract",seContractInfoDto);
+    }
+
+    //新增和修改纵表
+    private void setVerticalTable(OrTemplateAttrDto temp,ContractDetailInfoDto dto,SeNewContractInfoDto seNewContractInfoDto){
+        if (temp.getAttr_code().equals("payment")) {//付费方式
+            dto.setAttr_value(seNewContractInfoDto.getPayment());
+        }else if (temp.getAttr_code().equals("open_time")) {//开通时间
+            dto.setAttr_value(seNewContractInfoDto.getOpen_time());//
+        }else if (temp.getAttr_code().equals("penalty")) {//违约金
+            dto.setAttr_value(seNewContractInfoDto.getPenalty());
+        }else if (temp.getAttr_code().equals("business_type")) {//甲方业务类型及资费模式
+            dto.setAttr_value(seNewContractInfoDto.getBusiness_type());//
+        }else if (temp.getAttr_code().equals("pay_main_body")) {//付费主体
+            dto.setAttr_value(seNewContractInfoDto.getPay_main_body());//
+        }else if (temp.getAttr_code().equals("use_area")) {//流量使用区域
+            dto.setAttr_value(seNewContractInfoDto.getUse_area());//
+        }else if (temp.getAttr_code().equals("invoice_type")) {//发票类型
+            dto.setAttr_value(seNewContractInfoDto.getInvoice_type());//
+        }else if (temp.getAttr_code().equals("used_in")) {//用于
+            dto.setAttr_value(seNewContractInfoDto.getUsed_in());//
+        }else if(temp.getAttr_code().equals("attach_file_id")){//文件ID
+            dto.setAttr_value(seNewContractInfoDto.getAttach_file_id());
+        }else if (temp.getAttr_code().equals("oppor_id")) { //商机号
+            dto.setAttr_value(seNewContractInfoDto.getOppor_id());//
+        }else if (temp.getAttr_code().equals("discount")) { //折扣
+            dto.setAttr_value(seNewContractInfoDto.getDiscount());//
+        }else if (temp.getAttr_code().equals("dedicated_amount")) { //条数
+            dto.setAttr_value(seNewContractInfoDto.getDedicated_amount());//
+        }else if (temp.getAttr_code().equals("bandwidth")) { //带宽
+            dto.setAttr_value(seNewContractInfoDto.getBandwidth());//
+        }else if (temp.getAttr_code().equals("lease_term")) { //租用期限
+            dto.setAttr_value(seNewContractInfoDto.getLease_term());//
+        }else if (temp.getAttr_code().equals("interface_type")) { //接口类型
+            dto.setAttr_value(seNewContractInfoDto.getInterface_type());//
+        }else if (temp.getAttr_code().equals("first_access_address")) { //甲方接入点地址
+            dto.setAttr_value(seNewContractInfoDto.getFirst_access_address());//
+        }else if (temp.getAttr_code().equals("interface_in")) { //接口界面
+            dto.setAttr_value(seNewContractInfoDto.getInterface_in());//
+        }else if (temp.getAttr_code().equals("a_access_address")) { //A端接入地址
+            dto.setAttr_value(seNewContractInfoDto.getA_access_address());//
+        }else if (temp.getAttr_code().equals("a_interface_type")) { //A端接口类型
+            dto.setAttr_value(seNewContractInfoDto.getA_interface_type());//
+        }else if (temp.getAttr_code().equals("z_access_address")) { //Z端接入地址
+            dto.setAttr_value(seNewContractInfoDto.getZ_access_address());//
+        }else if (temp.getAttr_code().equals("z_interface_type")) { //Z端接口类型
+            dto.setAttr_value(seNewContractInfoDto.getZ_interface_type());//
+        }else if (temp.getAttr_code().equals("first_connection_interface")) { //，甲方连接接口
+            dto.setAttr_value(seNewContractInfoDto.getFirst_connection_interface());//
+        }else if (temp.getAttr_code().equals("second_connection_interface")) { //，，乙方连接接口
+            dto.setAttr_value(seNewContractInfoDto.getSecond_connection_interface());//
+        }
+
+    }
+
+    //获取纵表
+    private void getVerticalTable(ContractDetailInfoDto contractDetailInfoDto,SeNewContractInfoDto seNewContractInfoDto){
+        if (contractDetailInfoDto.getAttr_code().equals("payment")) {//付费方式
+            seNewContractInfoDto.setPayment(contractDetailInfoDto.getAttr_value());
+        }else if (contractDetailInfoDto.getAttr_code().equals("business_type")){//甲方业务类型及资费模式
+            seNewContractInfoDto.setBusiness_type(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("invoice_type")){//发票类型
+            seNewContractInfoDto.setInvoice_type(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("open_time")){//开通时间
+            seNewContractInfoDto.setOpen_time(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("pay_main_body")){//付费主体
+            seNewContractInfoDto.setPay_main_body(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("penalty")){//违约金
+            seNewContractInfoDto.setPenalty(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("use_area")){//使用区域
+            seNewContractInfoDto.setUse_area(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("used_in")){//用于
+            seNewContractInfoDto.setUsed_in(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("attach_file_id")){//对象存储的文件的ID
+            seNewContractInfoDto.setAttach_file_id(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("oppor_id")){//商机号
+            seNewContractInfoDto.setOppor_id(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("discount")){//折扣
+            seNewContractInfoDto.setDiscount(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("dedicated_amount")){//专线条数
+            seNewContractInfoDto.setDedicated_amount(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("bandwidth")){//带宽
+            seNewContractInfoDto.setBandwidth(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("lease_term")){//租用期限
+            seNewContractInfoDto.setLease_term(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("interface_type")){//接口类型
+            seNewContractInfoDto.setInterface_type(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("first_access_address")){//甲方接入点地址
+            seNewContractInfoDto.setFirst_access_address(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("interface_in")){//接口界面
+            seNewContractInfoDto.setInterface_in(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("a_access_address")){//A端接入地址
+            seNewContractInfoDto.setA_access_address(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("a_interface_type")){//A端接口类型
+            seNewContractInfoDto.setA_interface_type(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("z_access_address")){//Z端接入地址
+            seNewContractInfoDto.setZ_access_address(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("z_interface_type")){//Z端接口类型
+            seNewContractInfoDto.setZ_interface_type(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("first_connection_interface")){//甲方连接接口
+            seNewContractInfoDto.setFirst_connection_interface(contractDetailInfoDto.getAttr_value());
+        }else  if(contractDetailInfoDto.getAttr_code().equals("second_connection_interface")){//乙方连接接口
+            seNewContractInfoDto.setSecond_connection_interface(contractDetailInfoDto.getAttr_value());
+        }
+    }
+
+    public SeElecPackInfoDto getElecPackPath(SeElecPackInfoDto elecPackInfoDto){
+
+        return sqlSessionTemplate.selectOne("getElecPackList",elecPackInfoDto);
+    }
+
+
+
+    public void savePdf(SeNewContractInfoDto seNewContractInfoDto ,SeContractInfoDto seContractInfoDto,String mark) throws Exception{
+        List<SeContractChargesInfo> chargesInfoList = new ArrayList<>();
+        chargesInfoList = getContractChargesByContractId(seNewContractInfoDto);//根据合同id获取资费列表。
+
+        String elecPackId = seNewContractInfoDto.getElecpack_id();
+        SeElecPackInfoDto seElecPackInfoDto = new SeElecPackInfoDto();
+        seElecPackInfoDto.setId(Integer.parseInt(elecPackId));
+        List<SeElecPackInfoDto> elecPackList = elecPackService.getElecPackList(seElecPackInfoDto);//根据模板ID获取模板（取模板名称）
+        seElecPackInfoDto = elecPackList.get(0);
+
+        //导出PDF
+        String type = "pdf";
+        Map<String, Object> dataMap = new HashMap<String, Object>();
+        dataMap.put("first_party", seNewContractInfoDto.getFirst_party());//传入数据
+        dataMap.put("first_party_charge", seNewContractInfoDto.getFirst_party_charge());
+        dataMap.put("first_party_address", seNewContractInfoDto.getFirst_party_address());
+        dataMap.put("first_party_post_code", seNewContractInfoDto.getFirst_party_post_code());
+        dataMap.put("first_party_phone", seNewContractInfoDto.getFirst_party_phone());
+        dataMap.put("second_party", seNewContractInfoDto.getSecond_party());
+        dataMap.put("second_party_charge", seNewContractInfoDto.getSecond_party_address());
+        dataMap.put("second_party_address", seNewContractInfoDto.getSecond_party_address());
+        dataMap.put("second_party_post_code", seNewContractInfoDto.getSecond_party_code());
+        dataMap.put("second_party_phone", seNewContractInfoDto.getSecond_party_phone());
+        dataMap.put("total_amount", seNewContractInfoDto.getTotal_amount());
+        dataMap.put("first_invoice_name", seNewContractInfoDto.getFirst_invoice_name());
+        dataMap.put("first_taxpayer_code", seNewContractInfoDto.getFirst_taxpayer_code());
+        dataMap.put("first_invoice_band", seNewContractInfoDto.getFirst_invoice_band());
+        dataMap.put("first_invoice_username", seNewContractInfoDto.getFirst_invoice_username());
+        dataMap.put("first_invoice_number", seNewContractInfoDto.getFirst_invoice_number());
+        dataMap.put("first_invoice_address", seNewContractInfoDto.getFirst_invoice_address());
+        dataMap.put("first_invoice_phone", seNewContractInfoDto.getFirst_invoice_phone());
+        dataMap.put("second_invoice_name", seNewContractInfoDto.getSecond_invoice_name());
+        dataMap.put("second_taxpayer_code", seNewContractInfoDto.getSecond_taxpayer_code());
+        dataMap.put("second_invoice_band", seNewContractInfoDto.getSecond_invoice_username());
+        dataMap.put("second_invoice_username", seNewContractInfoDto.getSecond_invoice_username());
+        dataMap.put("second_invoice_number", seNewContractInfoDto.getSecond_invoice_number());
+        dataMap.put("second_invoice_address", seNewContractInfoDto.getSecond_invoice_address());
+        dataMap.put("second_invoice_phone", seNewContractInfoDto.getSecond_invoice_phone());
+        dataMap.put("first_party_username", seNewContractInfoDto.getFirst_party_username());
+        dataMap.put("first_party_band", seNewContractInfoDto.getFirst_party_band());
+        dataMap.put("first_party_account_number", seNewContractInfoDto.getFirst_party_account_number());
+        dataMap.put("second_party_username", seNewContractInfoDto.getSecond_party_username());
+        dataMap.put("second_party_band", seNewContractInfoDto.getSecond_party_band());
+        dataMap.put("second_party_account_number", seNewContractInfoDto.getSecond_party_account_number());
+        dataMap.put("first_contacts_name", seNewContractInfoDto.getFirst_contacts_name());
+        dataMap.put("first_contacts_id_card", seNewContractInfoDto.getFirst_contacts_id_card());
+        dataMap.put("first_contacts_phone", seNewContractInfoDto.getFirst_contacts_phone());
+        dataMap.put("first_contacts_email", seNewContractInfoDto.getFirst_contacts_email());
+        dataMap.put("first_contacts_address",seNewContractInfoDto.getFirst_contacts_address());
+        dataMap.put("second_party",seNewContractInfoDto.getSecond_party());
+        dataMap.put("second_party_charge",seNewContractInfoDto.getSecond_party_charge());
+        dataMap.put("second_party_address",seNewContractInfoDto.getSecond_party_address());
+        dataMap.put("second_party_post_code",seNewContractInfoDto.getSecond_party_post_code());
+        dataMap.put("second_party_phone",seNewContractInfoDto.getSecond_party_phone());
+        dataMap.put("charges_info",chargesInfoList);//存入资费信息
+        dataMap.put("used_in",seNewContractInfoDto.getUsed_in());
+        dataMap.put("pay_cycle",seNewContractInfoDto.getPay_cycle());//支付周期
+        dataMap.put("safe_client",seNewContractInfoDto.getSafe_client());
+        dataMap.put("safe_address",seNewContractInfoDto.getSafe_address());
+        dataMap.put("safe_contacts",seNewContractInfoDto.getSafe_contacts());
+        dataMap.put("safe_phone",seNewContractInfoDto.getSafe_phone());
+        if (mark.equals("0")){
+            dataMap.put("bak1",seContractInfoDto.getBak1());//编号
+        }
+        dataMap.put("bak3",seNewContractInfoDto.getBak3());//流水号
+        dataMap.put("bond",seNewContractInfoDto.getBond());//保证金
+        //专线合同
+        dataMap.put("dedicated_amount", seNewContractInfoDto.getDedicated_amount());//条数
+        dataMap.put("bandwidth", seNewContractInfoDto.getBandwidth());//带宽
+        dataMap.put("lease_term", seNewContractInfoDto.getLease_term());//租用期限
+        dataMap.put("interface_type", seNewContractInfoDto.getInterface_type());//接口类型
+        dataMap.put("first_access_address", seNewContractInfoDto.getFirst_access_address());//甲方接入点地址
+        dataMap.put("interface_in", seNewContractInfoDto.getInterface_in());//接口界面
+        dataMap.put("a_access_address", seNewContractInfoDto.getA_access_address());//A端接入地址
+        dataMap.put("a_interface_type", seNewContractInfoDto.getA_interface_type());//A端接口类型
+        dataMap.put("z_access_address", seNewContractInfoDto.getZ_access_address());//Z端接入地址
+        dataMap.put("z_interface_type", seNewContractInfoDto.getZ_interface_type());//Z端接口类型
+        dataMap.put("first_connection_interface", seNewContractInfoDto.getFirst_connection_interface());//甲方连接接口
+        dataMap.put("second_connection_interface", seNewContractInfoDto.getSecond_connection_interface());//乙方连接接口
+        String payment = "";//付费方式和付费主体
+        String payment_2 = "";//当选择集团单位支付的时候加入的第二段内容
+        dataMap.put("open_time",seNewContractInfoDto.getOpen_time());//开通时间
+        dataMap.put("penalty",seNewContractInfoDto.getPenalty());//违约金
+        if (!StringUtils.isEmpty(seNewContractInfoDto.getDiscount())) {
+            float discount = Integer.valueOf(seNewContractInfoDto.getDiscount());
+            discount = discount / 10;
+            dataMap.put("discount", String.valueOf(discount));//折扣
+        }
+        if (seNewContractInfoDto.getElecpack_id().equals("5") || seNewContractInfoDto.getElecpack_id().equals("6") || seNewContractInfoDto.getElecpack_id().equals("7")) {
+            //专线合同的时候
+            if (seNewContractInfoDto.getInvoice_type().equals("1")) {//增值税电子普通发票发票 1
+                dataMap.put("invoice_type", "乙方针对预付款提供增值税电子普通发票。");
+            } else if (seNewContractInfoDto.getInvoice_type().equals("2")) {//增值税专用发票 2
+                dataMap.put("invoice_type", "乙方针对一般纳税人实际产生的通信费用可以提供增值税专用发票。");
+            }
+
+            if (seNewContractInfoDto.getBusiness_type().equals('1')) {//甲方业务类型及资费模式
+                dataMap.put("business_type", "    通用流量、指定用户、全量统付");
+            } else if (seNewContractInfoDto.getBusiness_type().equals('2')) {
+                dataMap.put("business_type", "    通用流量、指定用户、限量统付");
+            }
+
+            if (seNewContractInfoDto.getPayment().equals("1")) {//预付的时候
+                payment = "    乙方对甲方的专线租用费按月计费，甲方采取预付方式租用专线，即甲方以  " + seNewContractInfoDto.getPay_cycle() + "  月为缴费周期向乙方预付下周期专线租用费用，乙方在收取甲方费用后开通专线业务。";
+            } else if (seNewContractInfoDto.getPayment().equals("2")) {//后付的时候
+                payment = "    乙方对甲方的专线租用费按月计费，甲方对使用乙方专线业务产生的费用以  " + seNewContractInfoDto.getPay_cycle() + "  月为缴费周期向乙方支付费用。甲方自收到乙方开具的发票起15个工作日内支付本缴费周期费用。";
+            }
+        } else {//流量合同的时候
+            if (seNewContractInfoDto.getInvoice_type().equals("1")) {//增值税电子普通发票发票 1
+                dataMap.put("invoice_type", "针对预付款或者集团成员付款，乙方提供增值税电子普通发票。");
+            } else if (seNewContractInfoDto.getInvoice_type().equals("2")) {//增值税专用发票 2
+                dataMap.put("invoice_type", "针对一般纳税人实际产生的通信费用乙方可以提供增值税专用发票。");
+            }
+
+            if (seNewContractInfoDto.getBusiness_type().equals('1')) {//甲方业务类型及资费模式
+                dataMap.put("business_type", "    通用流量、指定用户、全量统付");
+            } else if (seNewContractInfoDto.getBusiness_type().equals('2')) {
+                dataMap.put("business_type", "    通用流量、指定用户、限量统付");
+            }
+
+
+            if (seNewContractInfoDto.getPayment().equals("1")) {//预付的时候
+                payment = "    甲方采取预付方式购买流量，即甲方在本合同范围内一次或分次购买流量时，需预先、足额支付该批次购流量费用，乙方在收取甲方费用后按甲方该批次需求开通业务。";
+            } else if (seNewContractInfoDto.getPayment().equals("2")) {//后付的时候
+                if (seNewContractInfoDto.getPay_main_body().equals("1")) {//1，集团付费
+                    payment = "    1、集团单位可选择为单位成员支付分区流量套餐包费用（需同时签订统付协议，费用支付及发票等相关事项将在统付协议中明确）。";
+                    payment_2 = "      2、甲方对使用乙方通信业务产生的费用以 " + seNewContractInfoDto.getPay_cycle() +
+                            "月为缴费周期向乙方支付费用。甲方自收到乙方开具的发票之日起15个工作日内，支付本缴费周期费用 。";
+                } else if (seNewContractInfoDto.getPay_main_body().equals("2")) {//2，集团成员付费
+                    payment = "    由集团成员自己支付分区流量套餐包费用。";
+                }
+            }
+
+        }
+        dataMap.put("payment",payment);//付费方式和付费主体
+        dataMap.put("payment_2",payment_2);//当选择集团单位支付的时候，加入第二段。
+        dataMap.put("use_area",seNewContractInfoDto.getUse_area());//使用区域
+        CreateWord cw = new CreateWord();
+        String contract_file_name = seNewContractInfoDto.getContract_pdf_name();
+        String imgPath = "";
+        String  filepath = cw.createContractDocunment(type,dataMap,contract_file_name,seElecPackInfoDto,contract_pdf_path,model_xml_path,imgPath);
+        if(filepath!=null&&filepath.trim().length()>0) {
+            File uploadFile = new File(filepath);
+            MultipartFile multipartFile = new MockMultipartFile(uploadFile.getName(),uploadFile.getName(),null, FileCopyUtils.copyToByteArray(new FileInputStream(uploadFile)) );
+
+            Map map = orderService.uploadFile(multipartFile);
+
+            String attach_file_id =String.valueOf(map.get("attach_file_id")) ;
+
+            if(attach_file_id!=null&&attach_file_id.trim().length()>0){
+                SeNewContractInfoDto New = new SeNewContractInfoDto();
+                New.setAttach_file_id(attach_file_id);
+                New.setContract_id(seNewContractInfoDto.getContract_id());
+                New.setAttach_type_code("1");//上传PDF文件，type为1.
+                saveContractDetailAttach(New);
+                uploadFile.delete();
+            }
+        }
+    }
+
+}

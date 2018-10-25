@@ -1,0 +1,34 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CustInfoQueryDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class CustInfoQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    public Result getCapitalInfoSvc(CustInfoQueryDto parameter){
+        String selectTion = "selectCustInfo";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+    public Result getCapitalInfoBranchOfficeSvc(CustInfoQueryDto parameter){
+        String selectTion = "selectCustInfoBranchOffice";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+}

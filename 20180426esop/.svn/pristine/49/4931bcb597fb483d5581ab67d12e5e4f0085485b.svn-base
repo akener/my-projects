@@ -1,0 +1,172 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import java.util.Date;
+
+/**
+ * Created by Administrator on 2018/1/20.
+ */
+public class SeOpporApplypublicInfo {
+    String id;
+    String order_no = "";//工单编号
+    String order_id = "";//工单ID
+    String oppor_no = "";//商机编号
+    String title = "";//主题
+    String owner_name = "";//派单人
+    String cell_phone = "";//联系方式
+    String dept_name = "";//派单部门
+    Date op_time;//派单时间
+    String urgent_degree = "";//紧急程度
+    Date accept_time;//受理时限
+    Date reply_time; //处理时限
+    String order_type = "";//工单状态
+    String operate_type = "";//操作类型:勘查/开通/拆除/调整勘察/调整开通/停机/复机
+    String spe_type_id = "";//专线类型id，出租专线（001）/互联网专线（004）/语音专线（003）/GPRS专线（005）/短信专线（006）/彩信专线（007）/一单多线（008）/WLAN（009）
+    Date oper_date; //操作时间
+    Date end_time;//工单结束时间
+
+    String product_ins_id;
+
+    public String getProduct_ins_id() {
+        return product_ins_id;
+    }
+
+    public void setProduct_ins_id(String product_ins_id) {
+        this.product_ins_id = product_ins_id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOrder_no() {
+        return order_no;
+    }
+
+    public void setOrder_no(String order_no) {
+        this.order_no = order_no;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    public String getOppor_no() {
+        return oppor_no;
+    }
+
+    public void setOppor_no(String oppor_no) {
+        this.oppor_no = oppor_no;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getOwner_name() {
+        return owner_name;
+    }
+
+    public void setOwner_name(String owner_name) {
+        this.owner_name = owner_name;
+    }
+
+    public String getCell_phone() {
+        return cell_phone;
+    }
+
+    public void setCell_phone(String cell_phone) {
+        this.cell_phone = cell_phone;
+    }
+
+    public String getDept_name() {
+        return dept_name;
+    }
+
+    public void setDept_name(String dept_name) {
+        this.dept_name = dept_name;
+    }
+
+    public Date getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(Date op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getUrgent_degree() {
+        return urgent_degree;
+    }
+
+    public void setUrgent_degree(String urgent_degree) {
+        this.urgent_degree = urgent_degree;
+    }
+
+    public Date getAccept_time() {
+        return accept_time;
+    }
+
+    public void setAccept_time(Date accept_time) {
+        this.accept_time = accept_time;
+    }
+
+    public Date getReply_time() {
+        return reply_time;
+    }
+
+    public void setReply_time(Date reply_time) {
+        this.reply_time = reply_time;
+    }
+
+    public String getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(String order_type) {
+        this.order_type = order_type;
+    }
+
+    public String getOperate_type() {
+        return operate_type;
+    }
+
+    public void setOperate_type(String operate_type) {
+        this.operate_type = operate_type;
+    }
+
+    public String getSpe_type_id() {
+        return spe_type_id;
+    }
+
+    public void setSpe_type_id(String spe_type_id) {
+        this.spe_type_id = spe_type_id;
+    }
+
+    public Date getOper_date() {
+        return oper_date;
+    }
+
+    public void setOper_date(Date oper_date) {
+        this.oper_date = oper_date;
+    }
+
+    public Date getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(Date end_time) {
+        this.end_time = end_time;
+    }
+}

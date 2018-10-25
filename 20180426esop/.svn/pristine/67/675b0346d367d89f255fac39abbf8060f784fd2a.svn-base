@@ -1,0 +1,241 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!--
+Created by IntelliJ IDEA.
+User: wangbl
+Date: 2017/6/3
+Time: 下午5:09
+To change this template use File | Settings | File Templates.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" >
+    <title>产品导航</title>
+
+    <script type="text/javascript" src="/esop/static/js/jquery.js"></script>
+    <!--<script type="text/javascript" src="/esop/static/hlj/js/ui.js"></script>
+    <script type="text/javascript" src="/esop/static/hlj/js/plugin/accordion.js"></script>-->
+
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/hlj/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/hlj/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/hlj/css/step3.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/hlj/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/hlj/css/jilin-style.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+</head>
+
+<body>
+    <div class="bg-clcc pos-rel">
+        <div >
+            <div class="bj-white">
+                <table width="100%" class="tab-infor-7 tabs-infor">
+                    <thead>
+                        <th width="150" style="background:#f7f9f9;"></th>
+                        <th width="430">标准化产品</th>
+                        <th>行业信息化产品</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="background:#f7f9f9;">
+                                <div class="ui-row bg-icon-1">
+                                    <p>外部引入</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cin-choose mgl-10 js_choose" id="out_standard"></div>
+                            </td>
+                            <td>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">军警：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="out_industry_military_police"></div>
+                                    </div>
+                                </div>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">金融：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="out_industry_financial"></div>
+                                    </div>
+                                </div>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">互联网：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="out_industry_internet"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="background:#f7f9f9;">
+                                <div class="ui-row bg-icon-2">
+                                    <p>本省重点能力</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="cin-choose mgl-10 js_choose" id="local_standard"></div>
+                            </td>
+                            <td>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">政要：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="local_industry_politicians"></div>
+                                    </div>
+                                </div>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">农业：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="local_industry_agriculture"></div>
+                                    </div>
+                                </div>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">军警：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="local_industry_military_police"></div>
+                                    </div>
+                                </div>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">交通：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="local_industry_traffic"></div>
+                                    </div>
+                                </div>
+                                <div class="ui-row">
+                                    <div class="col-3 fs-s tr">教育：</div>
+                                    <div class="col-9">
+                                        <div class="cin-choose  info_list js_choose" id="local_industry_education"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var first_type_list=new Array();
+        var first_type_nums=0;
+        var secondary_type_list=new Array();
+        var secondary_type_nums=0;
+        $.ajax({
+            type:"POST",
+            url: "getProductDict"
+        }).then(function(data){
+            //data=JSON.parse(data);
+            $.each(data,function(index,item){
+                if(first_type_nums==0){
+                    first_type_list[0]={first_type:item.first_type,first_name:item.first_name};
+                    ++first_type_nums;
+                }else{
+                    if(first_type_list[first_type_nums-1].first_type!=item.first_type){
+                        first_type_list[first_type_nums]={first_type:item.first_type,first_name:item.first_name};
+                        ++first_type_nums;
+                    }
+                }
+                if(item.secondary_type!=''){
+                    if(secondary_type_nums==0){
+                        secondary_type_list[0]={secondary_type:item.secondary_type,secondary_name:item.secondary_name};
+                        ++secondary_type_nums;
+                    }else{
+                        if(secondary_type_list[secondary_type_nums-1].secondary_type!=item.secondary_type) {
+                            secondary_type_list[secondary_type_nums] = {
+                                secondary_type: item.secondary_type,
+                                secondary_name: item.secondary_name
+                            };
+                            ++secondary_type_nums;
+                        }
+                    }
+                }
+                //外部引入标准化产品
+                if(item.first_type=='P_1'){
+                    $("#out_standard").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#out_standard").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //本省重点能力标准化产品
+                if(item.first_type=='P_2'){
+                    $("#local_standard").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#local_standard").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //外部引入行业信息化产品军警
+                if(item.first_type=='P_3'&&item.secondary_type=='P_3_1'){
+                    $("#out_industry_military_police").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#out_industry_military_police").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //外部引入行业信息化产品金融
+                if(item.first_type=='P_3'&&item.secondary_type=='P_3_2'){
+                    $("#out_industry_financial").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#out_industry_financial").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //外部引入行业信息化产品互联网
+                if(item.first_type=='P_3'&&item.secondary_type=='P_3_3'){
+                    $("#out_industry_internet").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#out_industry_internet").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //本省重点能力行业信息化产品政要
+                if(item.first_type=='P_4'&&item.secondary_type=='P_4_1'){
+                    $("#local_industry_politicians").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#local_industry_politicians").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //本省重点能力行业信息化产品农业
+                if(item.first_type=='P_4'&&item.secondary_type=='P_4_2'){
+                    $("#local_industry_agriculture").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#local_industry_agriculture").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //本省重点能力行业信息化产品军警
+                if(item.first_type=='P_4'&&item.secondary_type=='P_4_3'){
+                    $("#local_industry_military_police").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#local_industry_military_police").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //本省重点能力行业信息化产品交通
+                if(item.first_type=='P_4'&&item.secondary_type=='P_4_4'){
+                    $("#local_industry_traffic").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#local_industry_traffic").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+                //本省重点能力行业信息化产品教育
+                if(item.first_type=='P_4'&&item.secondary_type=='P_4_5'){
+                    $("#local_industry_education").append("<a onclick=parent.addTabOne('产品审批流程','/esop/pap?prod_id="+item.prod_id+"&prod_name="+item.prod_name+"','4253') class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                    //$("#local_industry_education").append("<a href='/esop/pap?prod_id="+item.prod_id+'&prod_name='+item.prod_name+"' class='ui-btn' target='view_window'>"+item.prod_name+"</a>");
+                }
+            });
+        });
+        /*
+        $(".ui-btn").on("click",function(event){
+            event.preventDefault();//使a自带的方法失效，即无法调整到href中的URL(http://www.baidu.com)
+            $.ajax({
+                type: "POST",
+                url: "/esop/view/productInfo/productApprovalProcess.html",
+                contentType:"application/json",
+                data: JSON.stringify({data:'restful',test:'test1'}),//参数列表
+                dataType:"json",
+                success: function(result){
+                    //请求正确之后的操作
+                },
+                error: function(result){
+                    //请求失败之后的操作
+                }
+            });
+        });*/
+    </script>
+</body>
+
+</html>

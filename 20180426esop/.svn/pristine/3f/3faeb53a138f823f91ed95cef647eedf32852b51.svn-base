@@ -1,0 +1,301 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>地市派任务单</title>
+
+</head>
+<body>
+<button class="btn btn-info pull-right" id="trans" style="float: right;height: 50px">一键下发</button>
+    <table class="table table-bordered" id="order" style="margin-top: 80px;">
+        <thead>
+            <tr bgcolor="#C7EDCC" id="thRegion">
+                <th class="col-lg-1">地市</th>
+                <th class="col-lg-1">4G套餐变更量</th>
+                <th class="col-lg-1">4G终端销售量</th>
+                <th class="col-lg-1">开户量</th>
+                <th class="col-lg-1">4G上网客户数</th>
+                <th class="col-lg-1">宽带发展量</th>
+            </tr>
+            <tr id="trRegion" bgcolor="#C7EDCC" style="display: none">
+                <td class="col-lg-1"></td>
+                <td class="col-lg-1" id="regionPack"></td>
+                <td class="col-lg-1" id="regionTermi"></td>
+                <td class="col-lg-1" id="regionOpen"></td>
+                <td class="col-lg-1" id="regionCust"></td>
+                <td class="col-lg-1" id="regionBroad"></td>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div style="text-align: center">
+        <input id="status_code" type="hidden" value="03"><!-- 工单状态，固定值 -->
+        <input id="region_no" type="hidden" value="${group_id}"><!-- 当前地市编码，用于查本地市任务量 -->
+        <input id="op_login" name="op_login" type="hidden" value="${login_no}"><!-- 操作工号 -->
+        <input id="op_code" name="op_code" type="hidden" value="4209"><!-- 操作模块，固定值 -->
+        <input id="group_id" name="group_id" type="hidden" value="${group_id}"><!-- 当前地市编码，用于查本地市下的区县 -->
+        <input id="op_note" name="op_note" type="hidden" value="地市派发工单到区县"><!-- 操作备注 -->
+    </div>
+
+    <div class="modal fade" id="mymodal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="msg">有未填项,是否提交?(不填将使用默认值[分配量默认值为0])</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="cfm" >确定</button>
+                    <button type="button" class="btn btn-primary" id="back" data-dismiss="modal">返回修改</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var perId = ["Pack","Termi","Open","Cust","Broad"];
+    var countId = ["cntPack","cntTermi","cntOPen","cntCust","cntBroad"];
+    var region = "";
+    var regionNo = "";
+    var pack = "";
+    var termi = "";
+    var open = "";
+    var cust = "";
+    var broad = "";
+    var dateFlag = 0;
+    var orderFlag = 0;//上级工单是否到达  0 到达  1 未到达
+    var transFlag = 0;//是否有未填项标志，0 无未填项   1 有
+    window.onload=function () {
+        //查询本地市工单信息
+        $.ajax({
+            url:'/regionOrder',
+            type:'post',
+            dataType:'json',
+            data:{
+                "region_no":$("#region_no").val(),"status_code":"02"
+            },
+            success: function (data) {
+                var msg  = eval(data);
+                var i = 0;
+                $("#trRegion").find("td").each(function () {
+                    $(this).text(msg.info[i++]);
+                });
+                $("#trRegion").show();
+                if(orderFlag == 0){
+                    getCounty();
+                }
+            },
+            error:function () {
+                $("#trans").attr("disabled",true);
+                alert("上级工单未到达!")
+                orderFlag = 1;
+                if(orderFlag == 0){
+                    getCounty();
+                }
+            }
+        })
+
+
+
+        //一键下发
+        $("#trans").click(function () {
+            $("input").each(function () {
+                if("" == $(this).val()){
+                    transFlag = 1;
+                    $("#msg").text("有未填项,是否提交?(不填将使用默认值[分配量默认值为0])");
+                    $("#mymodal").modal("toggle");
+                    return false;
+                }
+            });
+            if(transFlag == 0){  //无未填项，使用默认提示信息
+                $("#msg").text("确认提交?");
+                $("#mymodal").modal("toggle");
+                return false;
+            }
+            transFlag = 0;
+        });
+        //确认提交
+        $("#cfm").click(function () {
+            $("#mymodal").modal("hide");
+            var flag = validateTotal();
+            if(flag == false){
+                return false;
+            }
+            $("input[name='Region']").each(function () {
+                region += $(this).val()+",";
+            });
+            $("input[name='RegionNo']").each(function () {
+                regionNo += $(this).val()+",";
+            });
+            $("input[name='Pack']").each(function () {
+                if("" == $(this).val()){
+                    $(this).val("0");
+                }
+                pack += $(this).val()+",";
+            });
+            $("input[name='Termi']").each(function () {
+                if("" == $(this).val()){
+                    $(this).val("0");
+                }
+                termi += $(this).val()+",";
+            });
+            $("input[name='Open']").each(function () {
+                if("" == $(this).val()){
+                    $(this).val("0");
+                }
+                open += $(this).val()+",";
+            });
+            $("input[name='Cust']").each(function () {
+                if("" == $(this).val()){
+                    $(this).val("0");
+                }
+                cust += $(this).val()+",";
+            });
+            $("input[name='Broad']").each(function () {
+                if("" == $(this).val()){
+                    $(this).val("0");
+                }
+                broad += $(this).val()+",";
+            });
+
+            if(dateFlag == 0){
+                $.ajax({
+                    type: "post",
+                    dataType: "json",
+                    url: '/transToCounty',
+                    data: {"Region[]":region,"Open[]":open,"op_note":$("#op_note").val(),"op_login":$("#op_login").val()
+                        ,"Termi[]":termi,"Pack[]":pack,"Cust[]":cust,"Broad[]":broad,"RegionNo[]":regionNo,"status_code":$("#status_code").val(),"op_code":$("#op_code").val()
+                    },
+                    success: function (data) {
+                        window.location.reload();
+                        $("#trans").attr("disabled",true);
+                        clearDate();
+                    },
+                    error:function (data) {
+                        var msg = eval(data);
+                        alert(msg.info)
+                        clearDate();
+                    }
+                });
+            }
+            dateFlag = 0;
+
+            return true;
+        });
+
+        //日期清空
+        function clearDate() {
+            region = "";pack = "";termi = "";open = "";cust = "";broad = "";
+        }
+
+    }
+
+    //当文档发生改变时触发实时统计
+    $(document).change(function () {
+        var cntTotal = 0;
+
+        //计算总和
+        for(var i=0;i<5;i++){
+            $("input[id='"+ perId[i] +"']").each(function () {
+                var cnt = $(this).val();
+                if(cnt == ""){
+                    cnt = 0;
+                }
+                cntTotal += parseInt(cnt);
+                $("#"+ countId[i]).val(cntTotal);
+            });
+            cntTotal = 0;
+        }
+        //校验数据格式
+        var reg = /^[0-9]*$/;
+        for(var i=0;i<5;i++){
+            $("input[name='"+ perId[i] +"']").each(function () {
+                if( ! reg.test($(this).val())){
+                    var thList = $("#county").find("th");
+                    var msg = thList.eq(i+1).text();
+                    alert(msg + "含有非法字符,只能为数字!");
+                    return false;
+                }
+            });
+        }
+
+    })
+
+    //校验分配的总和是否大于等于工单目标值
+    function validateTotal() {
+        var tdList = $("#trRegion").find("td");
+        var thList = $("#thRegion").find("th");
+        for(var i=0;i<tdList.length-1;i++){
+            var tdVal = tdList.eq(i+1).text();
+            var thVal = thList.eq(i+1).text();
+            var total = $("#" + countId[i]).val();
+            if((parseInt(tdVal)) > (parseInt(total))){
+                alert("分配给区县的 " + thVal + " 总和需要大于或者等于分配给本地市的目标值:目标值为["+tdVal+"],"+"分配值为["+total+"]");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    //获取本地市区县信息
+    function getCounty() {
+        //查询本地市所有区县信息,为其分配任务量
+        $.ajax({
+            url:'/qryRegionWork',
+            type:'post',
+            dataType:'json',
+            data:{
+                "group_id":$("#group_id").val()
+            },
+            success: function (data) {
+                //后台返回区县信息
+                var msg  = eval(data);
+                var info = msg.region;
+                if(info.length == 0){
+                    alert("本月工单已经下发!")
+                    $("#trans").attr("disabled",true);
+                }
+                var html = "";
+                html += "<tr bgcolor='#BFAEA6' id='county'><th>区县</th><th >4G套餐变更量</th><th>4G终端销售量</th><th>开户量</th><th>4G上网客户数</th><th>宽带发展量</th>";
+
+                for(var j=0;j<=info.length;j++){
+                    if(j == info.length){
+                        html += "<tr id='count' style='color: blue'><td>" + "合计" + "</td>";
+                        for(var i=0;i<5;i++){
+                            html += "<td><input readonly type='text' id='"+countId[i]+"' style='width: 100%' value='0' ></td>";
+                        }
+                    }
+                    else {
+                        html += "<tr><td>" + info[j].group_name +"</td>";
+                        html += "<input name='Region' type='hidden' value='"+ info[j].group_name +"'>";
+                        html += "<input name='RegionNo' type='hidden' value='"+ info[j].group_id +"'>";
+                        for(var i=0;i<5;i++){
+                            html += "<td><input type='text' id='"+ perId[i] +"' style='width: 100%' name='"+ perId[i] +"'></td>";
+                        }
+                    }
+                    html += "</tr>";
+                }
+                $("#trRegion").after(html);
+                return ;
+            },
+            error:function () {
+                $("#trans").attr("disabled",true);
+                alert("查询本地市下属区县信息出错!")
+            }
+        })
+    }
+
+
+</script>
+</html>

@@ -1,0 +1,211 @@
+package com.esop.invoice.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CustInfoQueryDto;
+import com.esop.invoice.dto.InvPreprintDTO;
+import com.esop.invoice.dto.QryInvAppNoOutDTO;
+import com.esop.invoice.dto.QryInvApprListInDTO;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.model.EpInvSpeBossInfo;
+import com.esop.invoice.model.EpInvSpeBossInfoMonth;
+import com.esop.invoice.vo.InvApprListVo;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class PreprintInvListQryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    private PrePrintInvoiceService invoiceService;
+
+    /**
+     * 查询预打发票打印情况明细
+     * @param parameter
+     * @return
+     */
+    public Result selectInvDetaSta(EpInvSpeBossInfo parameter) {
+        String selectTion = "selectInvDetaSta";
+        Result result = sqlE.selectPage(selectTion, parameter);
+        return result;
+    }
+
+    /**
+     * 查询发票回款统计
+     * @param parameter
+     * @return
+     */
+    public List<EpInvSpeBossInfo> selectBackSta(EpInvSpeBossInfo parameter) {
+        String selectTion = "selectBackSta";
+        List<EpInvSpeBossInfo> result = sqlSessionTemplate.selectList(selectTion, parameter);
+        return result;
+    }
+
+    /**
+     * 查询发票未回款统计
+     * @param parameter
+     * @return
+     */
+    public List<EpInvSpeBossInfoMonth> selectUnBackHisSta(EpInvSpeBossInfoMonth parameter) {
+        String selectTion = "selectUnBackHisSta";
+        List<EpInvSpeBossInfoMonth> result = sqlSessionTemplate.selectList(selectTion, parameter);
+        return result;
+    }
+    /**
+     *
+     * @param invPreprintDTO
+     * @return
+     * 查询 预打发票申请工单查询
+     */
+    public Result finpageInvPreprint (InvPreprintDTO invPreprintDTO){
+        Result result=  sqlE.selectPage("finPageInvPreprint",invPreprintDTO);
+        return  result;
+    }
+
+    /**
+     * 查询预打发票审批列表
+     * @param inDTO 入参dto
+     * @return  预打发票审批列表
+     */
+    public Result qryInvApprList(QryInvApprListInDTO inDTO){
+        Result result=sqlE.selectPage("selectInvApprList",inDTO);
+        return result;
+    }
+
+
+    /**
+     * 根据集团编码查询发票工单号以及状态
+     * @param groupId 入参dto
+     * @return  预打发票工单信息
+     */
+    public QryInvAppNoOutDTO queryAppNoListByGroupId(String groupId){
+
+
+        QryInvAppNoOutDTO qryInvAppNoOutDTO=new QryInvAppNoOutDTO();
+        try {
+            String selectTion = "queryAppNoListByGroupId";
+            List<EpInvPreprintAppInfo> result = sqlSessionTemplate.selectList(selectTion, groupId);
+
+            qryInvAppNoOutDTO.setActInfos(result);
+        }catch(Exception e)
+        {
+            qryInvAppNoOutDTO.setReturnCode("1");
+            qryInvAppNoOutDTO.setErrorMessage(e.getMessage());
+        }
+        return qryInvAppNoOutDTO;
+    }
+
+
+    /**
+     * 冲红根据原始订单号获取单账户,多账户,以及待开具状态的发票信息提示
+     * @param epa 入参dto
+     * @return  预打发票工单信息
+     */
+    public String queryCheckRedInvoice(EpInvPreprintAppInfo epa){
+
+
+
+
+        //0 代表成功
+        String rest_code = "0";
+        try {
+
+            String selectTion = "queryAppInfoListByAppNo";
+            EpInvPreprintAppInfo result = sqlSessionTemplate.selectOne(selectTion, epa);
+
+            if (result != null) {
+
+                String sql = "selectCustInfo";
+                CustInfoQueryDto parameter = new CustInfoQueryDto();
+                parameter.setService_no(epa.getApplicantEsopNo());
+                parameter.setUnion_code(result.getGroupId());
+
+                Result unionInfo = sqlE.selectPage(sql, parameter);
+                if (unionInfo.getData() == null || unionInfo.getData().size() == 0) {
+
+                    //该申请订单的集团为其他客户经理管辖集团
+                    rest_code = "5";
+                    return rest_code;
+                }
+
+
+
+                if (epa.getPrintMode() != null && !"".equals(epa.getPrintMode())) {
+                    if (!epa.getPrintMode().equals(result.getPrintMode())) {
+                        if ("1".equals(epa.getPrintMode())) {
+                            // 2 该申请单编号为多账户请去多账户冲红模块操作
+                            rest_code = "2";
+                            return rest_code;
+                        } else {
+                            //3 该申请单编号为单账户请去单账户冲红模块操作
+                            rest_code = "3";
+                            return rest_code;
+                        }
+                    }
+                }
+
+                //4 该申请单还未开出发票,不能进行冲红
+                if (!"3".equals(result.getWorkState())) {
+                    rest_code = "4";
+                    return rest_code;
+
+                }
+
+
+            }
+            else {
+
+                //6 无此申请单数据,请检查申请单编号
+                rest_code = "6";
+                return rest_code;
+
+            }
+
+            EpInvPreprintAppInfo dr=new EpInvPreprintAppInfo();
+            dr.setOriginalApplicationNo(epa.getApplicationNo());
+
+            EpInvPreprintAppInfo appinfo=invoiceService.qryRedExistUnPrint(dr);
+
+
+            if(appinfo!=null)
+            {
+
+
+                 if("1".equals(appinfo.getIsRed())) {
+                     //7 该申请单已经发起过冲红申请
+                     rest_code = "7";
+                     return rest_code;
+                 }
+                 else
+                 {
+                     //8 该申请单已经发起过作废申请
+                     rest_code = "8";
+                     return rest_code;
+
+                 }
+            }
+
+
+
+
+        }
+        catch(Exception e)
+        {
+            //1 系统错误请联系管理人员
+            rest_code = "1";
+        }
+
+
+
+
+        return rest_code;
+    }
+
+
+}

@@ -1,0 +1,42 @@
+package com.esop.basicManagement.service;
+
+
+import com.esop.basicManagement.dto.GroupTreeDto;
+import com.esop.basicManagement.dto.BasicFunctionDealDto;
+import com.esop.common.dataBase.SqlE;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@Repository
+public class BasicFunctionDealService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    //获取树
+    public List getGroupTreeMsgFuncList(GroupTreeDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectFuncTreeMsg";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //插入
+    public int insertFunctionInfoSv(BasicFunctionDealDto parameter){
+        int number;
+        String selectTion = "insertFunctionInfoXml";
+        number=sqlE.insertM(selectTion, parameter);
+        return number;
+    }
+    //删除操作
+    public int deleteFunctionInfoSv(BasicFunctionDealDto parameter){
+        return sqlE.deleteM("deleteFunctionInfoXml",parameter);
+    }
+}

@@ -1,0 +1,45 @@
+package com.esop.alertClassified.controller;
+
+import com.esop.alertClassified.dto.BusiOppAlertDto;
+import com.esop.alertClassified.dto.AccountAlertRetrunDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class BusiOppAlertRC {
+    @Autowired
+    com.esop.alertClassified.service.BusiOppAlertService busiOppAlertService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @RequestMapping(value="/busiOppAlertRM")
+    public AccountAlertRetrunDto getBusiOppAlert(BusiOppAlertDto parameter, HttpServletRequest request, boolean flag){
+
+        List list;
+        list= busiOppAlertService.getBusiOppAlertList(parameter);
+
+        AccountAlertRetrunDto accountAlertRetrunDto = new AccountAlertRetrunDto();
+        accountAlertRetrunDto.setData(list);
+        accountAlertRetrunDto.setCode("0000000");
+        accountAlertRetrunDto.setMessage("Rest Request Success");
+
+        return accountAlertRetrunDto;
+    }
+    //设置阈值
+    @RequestMapping(value="/busiOppAlertStatusSetRM")
+    public int busiOppAlertStatusSet(BusiOppAlertDto parameter){
+        int result=0;
+        result=busiOppAlertService.getBusiOppAlertSet(parameter);
+        return result;
+    }
+}

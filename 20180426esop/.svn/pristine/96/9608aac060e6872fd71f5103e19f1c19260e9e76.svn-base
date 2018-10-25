@@ -1,0 +1,167 @@
+#程序内使用变量
+ServiceUrl=http://100.21.3.100:50000/WES/rest/
+#指定加载视图的地址
+spring.mvc.view.prefix: /view/
+#指定加载视图文件的后缀名
+spring.mvc.view.suffix: .jsp
+
+#指定启动的端口号
+server.port=8085
+
+#上下文路径，默认为'/'
+server.context-path=/esop
+
+#服务端服务器地址;分割
+serviceUrl=10.191.143.207:8085/esop;10.191.143.208:8085/esop;
+
+#允许访问地址
+allowOriginIP=10.191.143.207;10.191.143.208;
+
+#mysql数据库连接
+#测试
+hikari.datasource.url=jdbc:mysql://10.191.143.226:4407/esopdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true
+hikari.datasource.username=esopweb
+hikari.datasource.password=N_2510las
+
+#北京
+#hikari.datasource.url=jdbc:mysql://172.21.3.102:3306/mkdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true
+#hikari.datasource.username=dbmarketopr
+#hikari.datasource.password=dbmarketopr
+
+
+
+#华为服务地址;
+serviceHuaWei=http://10.191.143.60:7301
+token_path=/OAuth/restOauth2Server/access_token
+token_client_id=20140526000002047
+token_client_secret=5a918c8caf174bb58adad7432f3eb5ae
+
+#本地文件存放目录
+local_file_path=/home/webapp/tomcat8085/files/
+
+
+#xml合同模板路径
+model_xml_path = d://test/model_xml/
+#word合同模板路径
+model_word_path = d://test/model_word/
+#生成合同PDF路径
+contract_pdf_path = D://test/
+
+
+##对象存储配置开始
+##租户名称（账户信息）
+file_username = esop-api
+##用户名称（账户信息）
+file_tenant_name = esop-api
+## 密码（账户信息）
+file_password = 9Uhd#8mt
+##对称存储url
+file_url = http://10.191.143.77:8080/cloud-united-api/iaas/
+##对象配置结束
+
+
+##订单中心接口地址
+order_center_url = http://localhost:8089/trtdsps-server-run/ws/orderCreateSvc
+
+#解决不安全的HTTP方法漏洞
+server.tomcat.port-header=HEAD,PUT,DELETE,OPTIONS,TRACE,COPY,SEARCH,PROPFIND,PATCH
+
+
+################################################ hlj start ################################################
+#文件服务器地址;
+uploadFileService=10.149.85.30:8081
+#uploadFileService=10.110.22.170:8081
+#uploadFileService=localhost:8081
+
+#billing服务地址
+billingService=http://10.110.26.23:61000/esbWS/services/
+
+#weblogic部署使用
+#serviceUrl=10.149.85.30:11200/esop
+
+#4A鉴权服务器地址
+#测试环境
+service4A=http://10.117.70.40:8081/portal/ticket_login.do
+#生产环境
+#service4A=http://10.117.70.123:8084/portal/ticket_login.do
+
+#4A服务地址
+#测试环境
+service4ALoginRole=http://10.110.22.170:8083/
+#生产环境
+#service4ALoginRole=http://10.110.22.169:8083/
+
+#上传文件
+spring.http.encoding.enabled: false
+spring.http.multipart.max-file-size=10240KB
+spring.http.multipart.max-request-size=10240KB
+
+######集团总部密钥加载路径
+keyFilePath=secretekey451.dat
+#Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly.
+#spring.http.encoding.charset=GBK
+#Enable http encoding support.
+#spring.http.encoding.enabled=true
+#spring.http.encoding.force=true
+
+################################################ hlj end ################################################
+
+#oracle数据库连接
+#hikari.datasource.url= jdbc:oracle:thin:@//172.21.1.13:1552/kmanadb
+#hikari.datasource.url= jdbc:oracle:thin:@//10.110.26.26:1521/crmdb4
+#生产环境地址
+#hikari.datasource.url= jdbc:oracle:thin:@//10.110.2.132:1521/crmdb2
+#hikari.datasource.username=dbesopopr
+#hikari.datasource.username=dbesopadm
+#hikari.datasource.password=${db.password}
+
+#可以针对具体的类指定log日志打印等级
+logging.level.com.esop.common.aop=INFO
+#程序调试使用，上线程序此处应改为ERROR
+logging.level.org.springframework.web=error
+#程序调试使用，上线程序此处应改为ERROR
+logging.level.org.apache.ibatis = INFO
+logging.level.org.mybatis.spring.SqlSessionTemplate = INFO
+logging.level.org.apache.ibatis.session = INFO
+logging.level.com.esop.common.dataBase.SqlE=TRACE
+log4j.logger.com.esop.common.dataBase.SqlE=TRACE
+# Global logging configuration
+log4j.rootLogger=INFO
+# MyBatis logging configuration...
+log4j.logger.org.mybatis=INFO
+
+# hikariCP
+#oracle驱动
+#hikaricp.datasource.dataSourceClassName=oracle.jdbc.pool.OracleDataSource
+
+#mysql驱动
+#hikaricp.datasource.dataSourceClassName=com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+hikaricp.datasource.dataSourceClassName=org.mariadb.jdbc.MySQLDataSource
+
+hikaricp.datasource.maximumPoolSize=10
+
+#等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 缺省:30秒 -->
+hikaricp.datasource.connectionTimeout=60000
+
+#一个连接的生命时长（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟
+hikaricp.datasource.maxLifetime=900000
+
+#一个连接idle状态的最大时长（毫秒），超时则被释放（retired），缺省:10分钟
+hikaricp.datasource.idleTimeout=600000
+
+hikaricp.datasource.connectionTestQuery=select 1 from dual
+
+
+
+multipart.maxFileSize=100Mb
+
+multipart.maxRequestSize=100Mb
+
+spring.output.ansi.enabled=always
+
+boss_rest_obtain_token_url=http://10.191.143.60:7301/OAuth/restOauth2Server/access_token
+boss_rest_obtain_token_grant_type=client_credentials
+boss_rest_obtain_token_client_id=20140526000002047
+boss_rest_obtain_token_client_secret=5a918c8caf174bb58adad7432f3eb5ae
+
+boss_rest_obtain_url=http://10.191.143.60:7301/openapi/httpService/

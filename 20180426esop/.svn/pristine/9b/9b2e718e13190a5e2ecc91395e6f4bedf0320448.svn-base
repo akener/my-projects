@@ -1,0 +1,33 @@
+package com.esop.workbench.service;
+
+import com.esop.workbench.dto.EpTradeMedicineDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/5/26.
+ */
+@Repository
+public class EpTradeMedicineService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(EpTradeMedicineService.class);
+    //查询
+    public Result getEpTradeMedicineList(EpTradeMedicineDto parameter){
+        logger.info("log4----------------");
+        Result result=sqlE.selectPage("selectEpTradeMedicine",parameter);
+        return result;
+    }
+
+    public List getEpTradeList(EpTradeMedicineDto epTradeMedicineDto){
+        List list = sqlE.selectM("selectEpTradeMedicine",epTradeMedicineDto);
+        System.out.println("service打印测试-----"+list);
+        System.out.println("service打印测试-----"+list.size());
+        return list;
+    }
+}

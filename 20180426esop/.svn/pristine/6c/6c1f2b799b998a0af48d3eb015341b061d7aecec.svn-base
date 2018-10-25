@@ -1,0 +1,26 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.CapitalInfoQueryDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalInfoQueryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class CapitalInfoQueryRC {
+    @Autowired
+    CapitalInfoQueryService capitalInfoQueryService;
+    @RequestMapping(value="/capitalInfoQuery")
+    public List getCapitalInfoRC(CapitalInfoQueryDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= capitalInfoQueryService.getCapitalInfoSvc(parameter);
+        return list;
+    }
+}

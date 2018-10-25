@@ -1,0 +1,76 @@
+package com.esop.cqDevelopment.refund.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto;
+import com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@Repository
+public class OffsetService {
+    private static Logger logger = Logger.getLogger(OffsetService.class);
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    //新增冲销历史短款单基本信息
+    public int insertOffsetInfo(HistoryOffsetInfoDto param){
+        int result = sqlE.insertM("insertHistoryOffsetInfo",param);
+        logger.info("新增资金回退单填写信息成功");
+        return result;
+    }
+    //保存流程发起信息
+    public int insertOffsetWorkFlowInfo(WorkFlowInfoDto param){
+        int result = sqlE.insertM("insertOffsetWorkFlowInfo",param);
+        logger.info("保存成功!");
+        return result;
+    }
+    //审批信息查询
+    public Result getHistoryOffsetApproveInfo(HistoryOffsetInfoDto parameter){
+        Result result = sqlE.selectPage("selectHistoryOffsetListInfo",parameter);
+        return result;
+    }
+    //信息查询
+    public HistoryOffsetInfoDto selectHistoryOffsetListInfo2(String parameter){
+        HistoryOffsetInfoDto historyOffsetInfoDto = sqlSessionTemplate.selectOne("selectHistoryOffsetListInfo2",parameter);
+        return historyOffsetInfoDto;
+    }
+
+    //保存审批信息
+    public int saveOffsetApproveInfo(WorkFlowFirstDto parameter){
+        int result = sqlE.insertM("insertOffsetWorkFlowInfo",parameter);
+        return result;
+    }
+
+    //过滤正在审批中的历史短款信息
+    public HistoryOffsetInfoDto filterOnApproveHistoryOffsetInfo(){
+        logger.info("过滤正在审批中的历史短款信息--->>>>>>>>>>>>");
+        return sqlSessionTemplate.selectOne("filterOnApproveHistoryOffsetInfo");
+    }
+
+    //查询CRM处理失败的工单
+    public Result getOffsetNeedReleaseInfo(HistoryOffsetInfoDto parameter){
+        logger.info("getCapitalUseFundQuery--查询CRM处理失败的工单开始");
+        Result result = sqlE.selectPage("getOffsetNeedReleaseInfo",parameter);
+        logger.info("getCapitalUseFundQuery--查询CRM处理失败的工单结束");
+        return result;
+    }
+    //手动释放资金成功后,往ep_work_flow_info记录成功的信息
+    public int putOffsetWorkFlowInfo(WorkFlowFirstDto param){
+        String selectTion = "";
+        selectTion = "insertOffsetWorkFlowInfo";
+        int result = sqlSessionTemplate.insert(selectTion,param);
+        logger.info(">>>更新成功");
+        return result;
+    }
+}

@@ -1,0 +1,43 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/5.
+ */
+//根据客户经理工号查询集团列表出参
+public class GrpListDto {
+    String unit_id = "";//集团编号
+    String unit_name ="";//集团名
+    String grp_status = "";//集团状态
+    String cust_id = "";//客户id
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getGrp_status() {
+        return grp_status;
+    }
+
+    public void setGrp_status(String grp_status) {
+        this.grp_status = grp_status;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+}

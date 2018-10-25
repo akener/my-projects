@@ -1,0 +1,243 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimApproveQueryService;
+import com.esop.cqDevelopment.capitalManage.service.CapitalUseApproveQueryService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.Enumeration;
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class CapitalUseApproveQueryRC {
+    @Autowired
+    CapitalUseApproveQueryService capitalUseApproveQueryService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    CapitalClaimApproveQueryService capitalClaimApproveQueryService;
+    Result result = new Result();
+
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+
+    //资金使用
+    @RequestMapping(value="/capitalUseApproveQuery")
+    public Result getcapitalUseApproveInfoRC(CapitalUseApproveQueryDto parameter, HttpServletRequest request, boolean flag){
+
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        if(!parameter.getRoleCode().contains("21242")){
+            parameter.setShenqingren("");
+        }else if(parameter.getRoleCode().contains("21242")){
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+
+        //账务员(230640)，资金管理员（23073），财务人员（23075），财务管理员（23077）
+        if(parameter.getRoleCode().contains("23073")||parameter.getRoleCode().contains("23075")||parameter.getRoleCode().contains("23077")){
+            parameter.setShenqingren("");
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+        if(parameter.getRoleCode().contains("23064")&&parameter.getFengongsi().equals("CQ.CQ")){
+            parameter.setShenqingren("");
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+        if(parameter.getFengongsi().equals("CQ.CQ")||parameter.getFengongsi().equals("CQ.CQ.C4")||parameter.getFengongsi().equals("CQ.CQ.0B")){
+            parameter.setShenqingren("");
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+
+        if(!parameter.getShiyong_jine_yuan().equals("")){
+            BigDecimal zhuanfen = new BigDecimal(100);
+            BigDecimal shiyongjine = new BigDecimal(parameter.getShiyong_jine_yuan());
+            parameter.setShiyong_jine(shiyongjine.multiply(zhuanfen).toString());
+        }else {
+            parameter.setShiyong_jine("");
+        }
+
+        result = capitalUseApproveQueryService.getcapitalUseApproveInfoSvc(parameter);
+
+        List<CapitalUseApproveQueryDto> list = result.getData();
+        BigDecimal zhuanyuan = new BigDecimal(100);
+        for(CapitalUseApproveQueryDto dto:list){
+            if(dto.getDongjie_jine() != null && !dto.getDongjie_jine().equals("")){
+                BigDecimal dongjie_jine_yuan = new BigDecimal(dto.getDongjie_jine());
+                dto.setDongjie_jine_yuan(dongjie_jine_yuan.divide(zhuanyuan).toString());
+            }else{
+                dto.setDongjie_jine_yuan("");
+            }
+            if(dto.getShiyong_jine() != null && !dto.getShiyong_jine().equals("")){
+                BigDecimal shiyong_jine_yuan = new BigDecimal(dto.getShiyong_jine());
+                dto.setShiyong_jine_yuan(shiyong_jine_yuan.divide(zhuanyuan).toString());
+            }else{
+                dto.setShiyong_jine_yuan("");
+            }
+            if(dto.getFapiao_jine() != null && !dto.getFapiao_jine().equals("")){
+                BigDecimal fapiao_jine_yuan = new BigDecimal(dto.getFapiao_jine());
+                dto.setFapiao_jine_yuan(fapiao_jine_yuan.divide(zhuanyuan).toString());
+            }else{
+                dto.setFapiao_jine_yuan("");
+            }
+            if (dto.getNextDealPerson().equals("CRM")){
+                dto.setNextDealPerson_name(dto.getNextDealPerson());
+            }
+            //dto.setFengongsiname(capitalClaimApproveQueryService.selectOrgNameByOrgId(dto.getFengongsi()));
+        }
+
+        return result;
+    }
+
+    @RequestMapping("/exportCapitalUseApproveInfoRC")
+    public String exportCapitalUseApproveInfoRC(CapitalUseApproveQueryDto parameter, HttpServletRequest request, HttpServletResponse response){
+        String message = "1";
+        String tableHeaderStr = "";
+        String methodsStr = "";
+
+        if(parameter.getChanpin_leixing().equals("1")){
+            tableHeaderStr = "操作人,操作时间,下一步处理人,环节,ESOP工单号码,申请工单业务类型,分公司,申请人,申请人工号,行业中心,集团编号,集团名称,集团账号,集团账号名称,冻结金额,申请使用金额,申请时间,备注信息,是否冲销预打发票,发票代码,发票号码,发票金额";
+            methodsStr = "getLogin_name,getDealTime,getNextDealPerson_name,getLink_name,getGongdan_bianhao,getChanpin_leixing,getFengongsiname,getShenqingrenname,getShenqingren,getHangye_zhongxin_name,getJituan_bianhao,getJituan_mingcheng,getJituan_zhanghao,getZhanghao_mingcheng,getDongjie_jine_yuan,getShiyong_jine_yuan,getShenqing_shijian,getBeizhu_xinxi,getShifou_yuda,getFapiao_daima,getFapiao_haoma,getFapiao_jine_yuan";
+        }else if(parameter.getChanpin_leixing().equals("2")){
+            tableHeaderStr = "操作人,操作时间,下一步处理人,环节,ESOP工单号码,申请工单业务类型,分公司,申请人,申请人工号,行业中心,集团编号,集团名称,集团账号,集团账号名称,冻结金额,申请使用金额,申请时间,备注信息,附件";
+            methodsStr = "getLogin_name,getDealTime,getNextDealPerson_name,getLink_name,getGongdan_bianhao,getChanpin_leixing,getFengongsiname,getShenqingrenname,getShenqingren,getHangye_zhongxin_name,getJituan_bianhao,getJituan_mingcheng,getJituan_zhanghao,getZhanghao_mingcheng,getDongjie_jine_yuan,getShiyong_jine_yuan,getShenqing_shijian,getBeizhu_xinxi,getFileName";
+        }else if(parameter.getChanpin_leixing().equals("3")){
+            tableHeaderStr = "操作人,操作时间,下一步处理人,环节,ESOP工单号码,申请工单业务类型,分公司,申请人,申请人工号,行业中心,集团编号,集团名称,集团账号,集团账号名称,冻结金额,申请使用金额,申请时间,备注信息,附件";
+            methodsStr = "getLogin_name,getDealTime,getNextDealPerson_name,getLink_name,getGongdan_bianhao,getChanpin_leixing,getFengongsiname,getShenqingrenname,getShenqingren,getHangye_zhongxin_name,getJituan_bianhao,getJituan_mingcheng,getJituan_zhanghao,getZhanghao_mingcheng,getDongjie_jine_yuan,getShiyong_jine_yuan,getShenqing_shijian,getBeizhu_xinxi,getFileName";
+        }else if(parameter.getChanpin_leixing().equals("5")){
+            tableHeaderStr = "操作人,操作时间,下一步处理人,环节,ESOP工单号码,申请工单业务类型,分公司,申请人,申请人工号,行业中心,集团编号,集团名称,集团账号,集团账号名称,冻结金额,申请使用金额,申请时间,备注信息,是否出货,合同编号";
+            methodsStr = "getLogin_name,getDealTime,getNextDealPerson_name,getLink_name,getGongdan_bianhao,getChanpin_leixing,getFengongsiname,getShenqingrenname,getShenqingren,getHangye_zhongxin_name,getJituan_bianhao,getJituan_mingcheng,getJituan_zhanghao,getZhanghao_mingcheng,getDongjie_jine_yuan,getShiyong_jine_yuan,getShenqing_shijian,getBeizhu_xinxi,getShifou_chuhuo,getHetong_bianhao";
+        }
+
+        String[] tableHeader = tableHeaderStr.split(",");
+        String[] methods = methodsStr.split(",");
+
+//        String[] tableHeader = {"操作人","操作时间","下一步处理人","环节","ESOP工单号码","申请工单业务类型","分公司","申请人","申请人工号","行业中心","集团编号","集团名称","集团账号","集团账号名称","冻结金额","申请使用金额","申请时间","备注信息"};
+//        String[] methods = {"getOrg_name","getBusiness_center","getGroup_name","getGroup_code","getManager","getAccount_clerk","getYesterday_balance","getYesterday_available_balance","getToday_claim_amount","getToday_deduction_amount","getToday_into_amount","getToday_out_amount","getToday_refund_amount","getToday_freeze_amount","getToday_occupy_amount","getToday_history_deduction_amount","getToday_account_balance","getToday_account_available_balance","getLast_operat_date","getCheck_status","getCheck_code","getCheck_date"};
+
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        if(!parameter.getRoleCode().contains("21242")){
+            parameter.setShenqingren("");
+        }else if(parameter.getRoleCode().contains("21242")){
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+
+        //账务员(230640)，资金管理员（23073），财务人员（23075），财务管理员（23077）
+        if(parameter.getRoleCode().contains("23073")||parameter.getRoleCode().contains("23075")||parameter.getRoleCode().contains("23077")){
+            parameter.setShenqingren("");
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+        if(parameter.getRoleCode().contains("23064")&&parameter.getFengongsi().equals("CQ.CQ")){
+            parameter.setShenqingren("");
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+        if(parameter.getFengongsi().equals("CQ.CQ")||parameter.getFengongsi().equals("CQ.CQ.C4")||parameter.getFengongsi().equals("CQ.CQ.0B")){
+            parameter.setShenqingren("");
+            parameter.setNextDealPerson("");
+            parameter.setNextDealPerson_sp("");
+        }
+
+        if(!parameter.getShiyong_jine_yuan().equals("")){
+            BigDecimal zhuanfen = new BigDecimal(100);
+            BigDecimal shiyongjine = new BigDecimal(parameter.getShiyong_jine_yuan());
+            parameter.setShiyong_jine(shiyongjine.multiply(zhuanfen).toString());
+        }else {
+            parameter.setShiyong_jine("");
+        }
+
+        result = capitalUseApproveQueryService.getcapitalUseApproveInfoSvc(parameter);
+
+        List<CapitalUseApproveQueryDto> list = result.getData();
+        BigDecimal zhuanyuan = new BigDecimal(100);
+        for(CapitalUseApproveQueryDto dto:list){
+            if(!dto.getDongjie_jine().equals("")){
+                BigDecimal dongjie_jine_yuan = new BigDecimal(dto.getDongjie_jine());
+                dto.setDongjie_jine_yuan(dongjie_jine_yuan.divide(zhuanyuan).toString());
+            }else{
+                dto.setDongjie_jine_yuan("");
+            }
+            if(!dto.getShiyong_jine().equals("")){
+                BigDecimal shiyong_jine_yuan = new BigDecimal(dto.getShiyong_jine());
+                dto.setShiyong_jine_yuan(shiyong_jine_yuan.divide(zhuanyuan).toString());
+            }else{
+                dto.setShiyong_jine_yuan("");
+            }
+            if(!dto.getFapiao_jine().equals("")){
+                BigDecimal fapiao_jine_yuan = new BigDecimal(dto.getFapiao_jine());
+                dto.setFapiao_jine_yuan(fapiao_jine_yuan.divide(zhuanyuan).toString());
+            }else{
+                dto.setFapiao_jine_yuan("");
+            }
+            if (dto.getNextDealPerson().equals("CRM")){
+                dto.setNextDealPerson_name(dto.getNextDealPerson());
+            }
+
+            if(parameter.getChanpin_leixing().equals("1")){
+                dto.setChanpin_leixing("集团缴费");
+            }else if(parameter.getChanpin_leixing().equals("2")){
+                dto.setChanpin_leixing("成员缴费");
+            }else if(parameter.getChanpin_leixing().equals("3")){
+                dto.setChanpin_leixing("超大成员缴费");
+            }else if(parameter.getChanpin_leixing().equals("5")){
+                dto.setChanpin_leixing("一次性费用");
+            }
+
+            if(dto.getShifou_yuda().equals("1")){
+                dto.setShifou_yuda("是");
+            }else{
+                dto.setShifou_yuda("否");
+            }
+
+            if(parameter.getChanpin_leixing().equals("2") || parameter.getChanpin_leixing().equals("3")){
+                if(!dto.getFileName().equals("")){
+                    String fujianStr = dto.getFileName();
+                    if(fujianStr.contains("\\")){
+                        String[] fujianStrs = fujianStr.split("\\\\");
+                        dto.setFileName(fujianStrs[fujianStrs.length -1]);
+                    }
+
+                }
+            }
+
+            if(dto.getShifou_chuhuo().equals("1")){
+                dto.setShifou_chuhuo("是");
+            }else {
+                dto.setShifou_chuhuo("否");
+            }
+        }
+
+        try{
+            orderWorkFlowService.getExport(tableHeader,methods,result.getData(),response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message = "999";
+        }
+
+        return message;
+    }
+}

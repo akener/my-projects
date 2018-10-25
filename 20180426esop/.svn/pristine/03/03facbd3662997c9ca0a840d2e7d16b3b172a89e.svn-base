@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectBankDealInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.BankDealQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.BankDealQueryDto" >
+        SELECT
+            jiaoyi_liushui,
+            yinhang_zhanghao,
+            huming,
+            duifang_zhanghao,
+            duifang_huming,
+            zhaoyao,
+            yongtu,
+            jihe_biaoshima,
+            yingye_gonghao,
+            jiefang_jine,
+            daifang_jine,
+            shouxufei,
+            jiaoyi_shijian,
+            jiaofei_fangshi,
+            zhipiaohao,
+            yinhang_wangdian,
+            zijin_zhanghu,
+            jituan_bianhao,
+            fengongsi,
+            kehu_jingli,
+            ruzhang_zuzhi,
+            chuli_zhuangtai,
+            chuli_shijian,
+            biaoshima,
+            shenqing_ren,
+            shenqing_shijian,
+            zhangwuyuan,
+            ruzhang_beizhu
+        FROM
+            ep_cap_bankdealdetail_info
+        where 1=1
+        <if test="biaoshima != ''">
+            and biaoshima = #{biaoshima}
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+package com.esop.invoice.mapper;
+
+import com.esop.invoice.model.EpInvRedPartInfo;
+import java.util.List;
+
+public interface EpInvRedPartInfoMapper {
+    int deleteByPrimaryKey(Integer recSerialNo);
+
+    int insert(EpInvRedPartInfo record);
+
+    EpInvRedPartInfo selectByPrimaryKey(Integer recSerialNo);
+
+    EpInvRedPartInfo selectForFundCheck(String invoiceNo);
+
+    List<EpInvRedPartInfo> selectAll();
+
+    int updateByPrimaryKey(EpInvRedPartInfo record);
+}

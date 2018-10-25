@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+
+    <!--根据集团编号查询集团资金帐户信息-->
+    <select id="getCapitalInfo" parameterType="com.esop.cqDevelopment.refund.dto.CapCapitalInfoDto" resultType="com.esop.cqDevelopment.refund.dto.CapCapitalInfoDto">
+        SELECT  * from ep_cap_capitalquery_info WHERE grpCustId=#{grpCustId}
+    </select>
+    <!--资金账户列表信息查询-->
+    <select id="getCapitalListInfo" parameterType="String" resultType="com.esop.cqDevelopment.refund.dto.CapCapitalInfoDto">
+        SELECT  * from  ep_cap_capitalquery_info WHERE 1=1
+        <if test="grpCustId != ''">    and grpCustId = #{grpCustId}   </if>
+        <if test="grpFundAcctid != ''">    and grpFundAcctid = #{grpFundAcctid}   </if>
+    </select>
+
+    <!--新增集团成员申请单填写信息-->
+    <select id="insertGroupMemberApplyInfo" parameterType="com.esop.cqDevelopment.groupMemberPayCost.dto.GroupMemberDto" resultType="int">
+        INSERT INTO ep_group_member_apply_info (orderID,recType,areaID,applyOpID,tradeCenterID,
+        groupID,groupName,groupAcctID,groupAcctName,prePrintInvBeginCycle,prePrintInvEndCycle,invoicingInfo,
+        freezeFee,applyFee,applyDate,groupMemListFile,groupMemListFileLines,note,orderStatus)
+        VALUES(#{orderID},#{recType},#{areaID},#{applyOpID},#{tradeCenterID},#{groupID},#{groupName},
+        #{groupAcctID},#{groupAcctName},#{prePrintInvBeginCycle},#{prePrintInvEndCycle},#{invoicingInfo},
+        #{freezeFee},#{applyFee},#{applyDate},#{groupMemListFile},#{groupMemListFileLines},#{note},#{orderStatus})
+    </select>
+
+    <!--集团成员待办工单列表信息查询-->
+    <select id="getGMOListInfo" parameterType="String" resultType="com.esop.cqDevelopment.groupMemberPayCost.dto.GroupMemberDto">
+        SELECT * from  ep_group_member_apply_info WHERE 1=1
+        <if test="orderID != ''">    and orderID = #{orderID}   </if>
+        <if test="groupID != ''">    and groupID = #{groupID}   </if>
+
+    </select>
+
+    <!--申请工单业务类型-->
+    <select id="qryApplyOrderType"  resultType="com.esop.cqDevelopment.groupMemberPayCost.dto.ApplyOrderTypeDto">
+        SELECT payment_type,payment_type_name     FROM   ep_pay_business_dict
+    </select>
+    <!--根据orderId获取集团成员待审批页面信息-->
+    <select id="getGroupMemApproveInfo" parameterType="com.esop.cqDevelopment.groupMemberPayCost.dto.GroupMemberDto" resultType="com.esop.cqDevelopment.groupMemberPayCost.dto.GroupMemberDto">
+        SELECT *   FROM   ep_group_member_apply_info WHERE  orderID=#{orderID}
+    </select>
+
+</mapper>

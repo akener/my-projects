@@ -1,0 +1,107 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/hlj.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <title>产品需求情况</title>
+
+</head>
+
+<!--<hr />-->
+<body>
+<div class="row">
+    <div class="col-md-12">
+        <!-- Horizontal Form -->
+        <div class="box">
+            <div class="form-horizontal">
+                <div class="box box-solid box-default">
+                    <div class="box-header">
+                        <h3 class="box-title">产品需求情况</h3>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                            <input:hidden id="related_id"  value="${related_id}"/>
+                            <html:hidden id="send_node" />
+                            <html:hidden id="group_id" />
+                            <html:hidden id="receive_node" />
+                            <html:hidden id="region_group_id" />
+                            <html:hidden id="resource_code" />
+
+                        <div class="form-group">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-10">
+                                <textarea rows="10" class="form-control" id="note">${message}</textarea>
+                            </div>
+                            <div class="col-sm-1"></div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <label class="btn btn-info pull-left" for="xFile">上传附件</label>
+                        <form><input type="file" id="xFile" style="position:absolute;clip:rect(0 0 0 0);"></form>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="form-group" id="fileList">
+                           ${fileList}
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-info pull-center" id="submitAllocation">提交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    if($("#related_id").attr("value")!=""){
+        $("#related_id").val($("#related_id").attr("value"));
+        //alert($("#related_id").val());
+    }
+    $("#xFile").on("change", function(){
+        if($('#xFile')[0].files[0] != undefined)
+        {alert($('#xFile')[0].files[0].name);
+            var fd = new FormData();
+            fd.append("file", $('#xFile')[0].files[0]);
+            fd.append("related_id",$("#related_id").val());
+            $.ajax({
+                type: "POST",
+                url: "fileUpload",
+                data: fd,
+                contentType: false,
+                processData: false,
+                cache: false
+            }).then(function (data) {alert("related_id="+data.related_id);$("#related_id").val(data.related_id);
+                alert(data.id);
+                $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='/"+data.pathValue+"/"+$('#xFile')[0].files[0].name+"'>"+$('#xFile')[0].files[0].name
+                        +"</a></div>"
+                        +"<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this,"+data.id+")' title=\"删除\">"
+                +"<i class=\"fa fa-times\"></i></button></div></div>");
+                //alert(data.pathValue);
+            });
+        }
+    });
+    function deleteFile(buttonID,fileID){
+        $.ajax({
+            type: "POST",
+            url: "deleteFile",
+            data: {id:fileID}
+        }).then(function (data) {
+            alert(data.result);
+            $(buttonID).parent().parent().remove();
+        });
+    }
+    $("#submitAllocation").click(function () {
+        alert($("#related_id").attr("value"));alert($("#note").val());
+    });
+</script>
+</html>

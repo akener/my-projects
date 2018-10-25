@@ -1,0 +1,82 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Qiao
+  Date: 2017/6/2
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  展示客户经理名下工单列表
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>客户经理工单处理</title>
+
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<div id="thisLedgerInfo" class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">欠费工单处理</h3>
+    </div>
+    <div class="box-body">
+        <table id="example" class="table table-hover table-bordered">
+            <tr>
+                <th class="text-center">批次号</th>
+                <th class="text-center">集团编码</th>
+                <th class="text-center">集团名称</th>
+                <th class="text-center">产品编码</th>
+                <th class="text-center">产品名称</th>
+                <th class="text-center">缴费周期</th>
+                <th class="text-center">欠费金额</th>
+                <th class="text-center">账期结束时间</th>
+                <th class="text-center">客户经理</th>
+                <th class="text-center">客户经理姓名</th>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+    $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "getAllRecordByService",
+            data:{
+                service_no:service_no
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                $("#example").append("<tr id='ledtr'><td id='record'><a href='#' onclick='getOneOweRecord("+item.id+")'><input type='hidden' id='record_id' value='"+item.record_id+"' />" + item.record_id + "</a></td><td>" + item.cust_id + "</td><td>" + item.cust_name + "</td><td>" + item.product_id + "</td><td>" + item.product_name + "</td><td>" + item.pay_period + "</td><td>" + item.owe_money + "</td><td>"+item.account_end_date+"</td><td>"+item.service_no+"</td><td>"+item.service_name +"</td></tr>");
+                //$("#ledger_status").val(item.status);
+            });
+        });
+    });
+
+    function getOneOweRecord(id){
+        //alert(record_id);
+        location.href="showOneOweRecordByService?id="+id;
+    }
+</script>
+</html>

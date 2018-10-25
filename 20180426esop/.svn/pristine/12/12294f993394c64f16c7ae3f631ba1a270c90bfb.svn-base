@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectEsopGroup"  parameterType="com.esop.basicManagement.dto.BasicEsopGroupQueryDto" resultType="com.esop.basicManagement.dto.BasicEsopGroupQueryDto" >
+        select b.group_id, trim(b.name) as name
+          from ep_sys_boss_esop_group_rel a, dgrpgroups b ,dloginmsg c
+         where c.login_no = #{login_no}
+           and a.boss_org_code = substr(c.org_code,0,4)
+           and a.esop_org_code = b.boss_org_code
+           and b.immediate_parent_flag = 'Y'
+         order by b.group_id
+    </select>
+</mapper>

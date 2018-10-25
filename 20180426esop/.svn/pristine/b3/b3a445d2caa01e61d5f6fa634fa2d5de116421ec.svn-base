@@ -1,0 +1,280 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/20
+  Time: 21:44
+  To change this template use File | Settings | File Templates.
+--%>
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/15
+  Time: 8:39
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>集团资金办理有价卡业务出库跟踪表(清单报表）</title>
+</head>
+
+<body>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+    </div>
+</div>
+<!--地市详情-->
+<div class="row col-12" style="min-height:100px;">
+    <div class="pd-20 pos-rel pos-bg1">
+        <div class="row">
+            <table class="table-infor-7" width="100%">
+                <tbody>
+                <tr>
+                   <th>分公司</th>
+                    <td>
+                        <input type=text id="ltd" class="input-sty04 form-ipt"
+                               maxlength="11" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>日期</th>
+                    <td>
+                        <input type=text id="eff_date" class="input-sty04 form-ipt"
+                               maxlength="11" readonly="true">
+                        <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                             style="width: 25px;" width="25" height="21"
+                             onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM-dd'})"
+                             title="选择时间" />
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="row mgt-30">
+                <div class="btn-box pdb-20">
+                    <button class="ui-btn mgr-10" onclick="qryTrackCardOutRptList()">查询</button>
+<%--                    <button class="ui-btn" onclick="reset()">重置</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" >
+        <div class="active-cost-box" >
+            <div style="overflow:auto;">
+            <table id="epCapRefundDailyRpt" class="cost-table"  width="100%" >
+                <thead>
+                <tr>
+                    <th colspan="11" class="text-center">集团资金余额日报表</th>
+                </tr>
+             <%--   <tr>
+                <th rowspan="2" class="text-center">地市</th>
+                <th colspan="4" class="text-center">4G客户</th>
+                <th colspan="5" class="text-center">宽带净增客户</th>
+                <th colspan="5" class="text-center">集团专线</th>
+                <th colspan="5" class="text-center">和校园</th>
+                <th colspan="5" class="text-center">物联网</th>
+                </tr>--%>
+                <tr>
+                    <th  class="text-center">分公司</th>
+                    <th  class="text-center">行业中心</th>
+                    <th  class="text-center">业务受理人员</th>
+                    <th  class="text-center">业务受理时间</th>
+                    <th  class="text-center">业务类型</th>
+                    <th  class="text-center">实际使用金额(元)</th>
+                    <th  class="text-center">工单处理状态</th>
+                    <th  class="text-center">集团编号</th>
+                    <th  class="text-center">集团名称</th>
+                    <th  class="text-center">申请单号 </th>
+                    <th  class="text-center">工单状态</th>
+                    <th  class="text-center">申请人</th>
+                    <th  class="text-center">申请日期</th>
+                    <th  class="text-center">申请金额(元)</th>
+                    <th  class="text-center">是否出库</th>
+                    <%--  <th  class="text-center">日净增</th>
+                    <th  class="text-center">月净增</th>
+                    <th  class="text-center">年净增(万)</th>
+                    <th  class="text-center">目标值</th>
+                    <th  class="text-center">完成进度</th>--%>
+                </tr>
+                </thead>
+            </table>
+            </div>
+        </div></div></div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    /*$('.form_datetime').datetimepicker({
+        format: "yyyy-mm-dd ",
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });*/
+ /*  $(document).ready(function () {
+        var region_code_tp = "";
+        if (region_code_tp != '' && region_code_tp != null) {
+            init_region();
+        } else {
+            qryTrackCardOutRptList();
+        }
+    })*/
+   //小数转百分数并保留两位小数
+    function toPercent(point){
+        var str=Number(point*100).toFixed(1);
+        str+="%";
+        return str;
+    }
+    /*function getBusiDepList(){
+        $("#epCapRefundDailyRpt tr").each(function(i){
+            if(i>=3){
+                $(this).empty();
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: '/getepCapRefundDailyRptInfo',
+            cache : false,
+            data:{
+                eff_date:$("#eff_date").val()
+            },
+            success : function(data) {
+                if(data.length > 0) {
+                    for(var i=0; i<data.length; i++){
+                        var trStr = "";
+                        trStr+="<tr>";
+                        trStr +=
+                            "<td>" + data[i].region_name + "</td>" +
+                            "<td>" + data[i].day_inc + "</td>" +
+                            "<td>" + data[i].year_inc + "</td>" +
+                            "<td>" + data[i].goal + "</td>" +
+                            "<td>" + toPercent(data[i].comp_rate) + "</td>" +
+                            "<td>" + data[i].wid_day_inc + "</td>" +
+                            "<td>" + data[i].wid_month_inc + "</td>" +
+                            "<td>" + data[i].wid_year_inc + "</td>" +
+                            "<td>" + data[i].wid_goal + "</td>" +
+                            "<td>" + toPercent(data[i].wid_comp_rate) + "</td>" +
+                            "<td>" + data[i].unit_day_inc + "</td>" +
+                            "<td>" + data[i].unit_mon_inc + "</td>" +
+                            "<td>" + data[i].unit_year_inc + "</td>" +
+                            "<td>" + data[i].unit_goal + "</td>" +
+                            "<td>" + toPercent(data[i].uint_comp_rate) + "</td>" +
+                            "<td>" + data[i].shool_day_inc + "</td>" +
+                            "<td>" + data[i].school_month_inc + "</td>" +
+                            "<td>" + data[i].school_year_inc + "</td>" +
+                            "<td>" + data[i].shool_goal + "</td>" +
+                            "<td>" + toPercent(data[i].school_comp_rate) + "</td>" +
+                            "<td>" + data[i].net_day_inc + "</td>" +
+                            "<td>" + data[i].net_mon_inc + "</td>" +
+                            "<td>" + data[i].net_total_inc + "</td>" +
+                            "<td>" + data[i].net_goal + "</td>" +
+                            "<td>" + toPercent(data[i].net_comp_rate)+ "</td>" +
+                            "</tr>";
+                        $("#epCapRefundDailyRpt").append(trStr);
+                    }
+                }else{
+                    $("#modal_text").text("没有数据");
+                    $("#modalInfo").modal('show');
+                    return false;
+
+                }
+                // $("#initElement").val(resp);
+            },
+            error:function(resp){
+               // alert("查询数据失败");
+                $("#modal_text").text("查询数据失败");
+                $("#modalInfo").modal('show');
+                return false;
+            }
+        });
+    }*/
+    function qryTrackCardOutRptList(){
+        table = $('#epCapRefundDailyRpt').DataTable( {
+            dom: "Bfrtip",
+            destroy:true,
+            bLengthChange:true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 14,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/getCardOUtRpt",
+                type:"POST",
+                data: {
+                    ltd:$("#ltd").val()
+                    /*
+                    暂时不传日期
+                    eff_date: $("#eff_date").val()*/
+                }
+            },
+            columns: [
+                { data: "ltd" },
+                { data: "industry_center"},
+                { data: "business_acceptor"},
+                { data: "business_accept_time"},
+                { data: "busi_type"},
+                { data: "actual_use_amt"},
+                { data: "work_order_handleStatus"},
+                { data: "group_code"},
+                { data: "group_name"},
+                { data: "apply_num"},
+                { data: "work_order_status"},
+                { data: "applicant"},
+                { data: "apply_date"},
+                { data: "apply_amt"},
+                { data: "shipping_status"}
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    }
+</script>
+</html>
+
+

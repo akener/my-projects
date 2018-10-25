@@ -1,0 +1,7 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.LoginBean;
+
+public interface LoginBeanMapper {
+    LoginBean selectByLoginNo(String loginNo);
+}

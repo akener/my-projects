@@ -1,0 +1,33 @@
+package com.esop.invoice.dto;
+
+import com.esop.invoice.model.EpInvPreprintActInfo;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.workflow.dto.OutDTO;
+
+import java.util.List;
+
+/**
+ * 冲红：预打发票申请查询界面展示内容OutDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class QryInvAppForRedOutDTO extends OutDTO {
+    private EpInvPreprintAppInfo appInfo;
+    private List<EpInvPreprintActInfo> actInfos;
+
+    public EpInvPreprintAppInfo getAppInfo() {
+        return appInfo;
+    }
+
+    public void setAppInfo(EpInvPreprintAppInfo appInfo) {
+        this.appInfo = appInfo;
+    }
+
+    public List<EpInvPreprintActInfo> getActInfos() {
+        return actInfos;
+    }
+
+    public void setActInfos(List<EpInvPreprintActInfo> actInfos) {
+        this.actInfos = actInfos;
+    }
+}

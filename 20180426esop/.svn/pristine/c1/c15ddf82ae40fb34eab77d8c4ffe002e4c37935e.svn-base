@@ -1,0 +1,213 @@
+package com.esop.base.dto;
+
+/**
+ * Created by wangbl on 16/8/4.
+ */
+public class SessionDto {
+    String login_no="";             //工号
+    String login_name="";           //姓名
+    String password="";
+    String group_id="";             //组织ID
+    String group_name="";           //组织名称
+    String region_group_id="";
+    String contact_phone="";
+    String sys_date="";
+    String opt="";
+    String yesterday="";
+    String identity_code="";
+    String role_code="";            //角色编码
+    String work_area_url="";        //工作台对应url地址
+    String role_name="";            //角色名称
+    String region_code="";          //地市编码
+    String boss_org_code="";        //地市区县
+    String busi_boss_no="";         //个人业务办理的营业工号
+    String busi_password="";        //个人业务办理的营业工号密码
+    String grpusertype="";          //	1   类型：地市级、省级
+    String grp_staff_number="";     //	451aavg90   一级esop工号
+    String need_remind="";          //	1 是否提醒标志
+    String grp_role_code="";        //	1,2   角色(1,2,3,4,5 客户经理、领导、……)
+    String is_grp_staff="";         //是否有跨省权限
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getRegion_group_id() {
+        return region_group_id;
+    }
+
+    public void setRegion_group_id(String region_group_id) {
+        this.region_group_id = region_group_id;
+    }
+
+    public String getContact_phone() {
+        return contact_phone;
+    }
+
+    public void setContact_phone(String contact_phone) {
+        this.contact_phone = contact_phone;
+    }
+
+    public String getSys_date() {
+        return sys_date;
+    }
+
+    public void setSys_date(String sys_date) {
+        this.sys_date = sys_date;
+    }
+
+    public String getOpt() {
+        return opt;
+    }
+
+    public void setOpt(String opt) {
+        this.opt = opt;
+    }
+
+    public String getYesterday() {
+        return yesterday;
+    }
+
+    public void setYesterday(String yesterday) {
+        this.yesterday = yesterday;
+    }
+
+    public String getIdentity_code() {
+        return identity_code;
+    }
+
+    public void setIdentity_code(String identity_code) {
+        this.identity_code = identity_code;
+    }
+
+    public String getRole_code() {
+        return role_code;
+    }
+
+    public void setRole_code(String role_code) {
+        this.role_code = role_code;
+    }
+
+    public String getWork_area_url() {
+        return work_area_url;
+    }
+
+    public void setWork_area_url(String work_area_url) {
+        this.work_area_url = work_area_url;
+    }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getBoss_org_code() {
+        return boss_org_code;
+    }
+
+    public void setBoss_org_code(String boss_org_code) {
+        this.boss_org_code = boss_org_code;
+    }
+
+    public String getBusi_boss_no() {
+        return busi_boss_no;
+    }
+
+    public void setBusi_boss_no(String busi_boss_no) {
+        this.busi_boss_no = busi_boss_no;
+    }
+
+    public String getBusi_password() {
+        return busi_password;
+    }
+
+    public void setBusi_password(String busi_password) {
+        this.busi_password = busi_password;
+    }
+
+    public String getGrpusertype() {
+        return grpusertype;
+    }
+
+    public void setGrpusertype(String grpusertype) {
+        this.grpusertype = grpusertype;
+    }
+
+    public String getGrp_staff_number() {
+        return grp_staff_number;
+    }
+
+    public void setGrp_staff_number(String grp_staff_number) {
+        this.grp_staff_number = grp_staff_number;
+    }
+
+    public String getNeed_remind() {
+        return need_remind;
+    }
+
+    public void setNeed_remind(String need_remind) {
+        this.need_remind = need_remind;
+    }
+
+    public String getGrp_role_code() {
+        return grp_role_code;
+    }
+
+    public void setGrp_role_code(String grp_role_code) {
+        this.grp_role_code = grp_role_code;
+    }
+
+    public String getIs_grp_staff() {
+        return is_grp_staff;
+    }
+
+    public void setIs_grp_staff(String is_grp_staff) {
+        this.is_grp_staff = is_grp_staff;
+    }
+}

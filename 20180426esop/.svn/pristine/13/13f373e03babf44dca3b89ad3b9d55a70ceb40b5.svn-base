@@ -1,0 +1,12 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtProcMatchCfg;
+import java.util.List;
+
+public interface CtProcMatchCfgMapper {
+    int insert(CtProcMatchCfg record);
+
+    List<CtProcMatchCfg> selectAll();
+
+    CtProcMatchCfg selectByProcTypeCodeAndDeptIdAndKeyValue(CtProcMatchCfg retrievalCondition);
+}

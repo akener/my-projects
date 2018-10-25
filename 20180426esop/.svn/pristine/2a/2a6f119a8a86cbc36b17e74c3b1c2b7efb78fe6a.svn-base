@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyCheckDto">
+    <select id="groupMoneyCheckDto" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyCheckDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyCheckDto">
+        select * from (
+            SELECT
+            a.id,
+            date_format(a.shenqing_riqi,'%Y-%m-%d %H:%i') as shenqing_riqi,
+            a.fen_gongs,
+            a.fen_gongs_name,
+            a.hangye_zhongxin,
+            a.business_center,
+            a.shenqing_leixin,
+            a.shenqing_danhao,
+            b.crm_name as crm_zhuangtai,
+            c.link_name as esop_zhuangtai,
+            a.jine,
+            case a.is_deal when '0' then '未处理' when '1' then '已处理' end as is_deal,
+            a.deal_name,
+            a.deal_time,
+            a.deal_declare
+            FROM
+            se_group_money_check_info a,
+            se_group_money_check_dict  b,
+            ep_work_flow_dict c
+            WHERE
+            a.is_chayi != '0'
+            and b.crm_zhuangtai=a.crm_zhuangtai
+            and c.link_id=a.esop_zhuangtai_real
+            <if test="fen_gongs !='' and fen_gongs !=null and fen_gongs !='null'">
+               and  a.fen_gongs=#{fen_gongs}
+            </if>
+            <if test="hangye_zhongxin !='' and hangye_zhongxin !=null and hangye_zhongxin !='null'">
+                and  a.hangye_zhongxin=#{hangye_zhongxin}
+            </if>
+            <if test="chaxun_riqi !='' and chaxun_riqi !=null and chaxun_riqi !='null'">
+                and  date_format(a.shenqing_riqi,'%Y-%m-%d') &gt;= #{chaxun_riqi}
+            </if>
+            <if test="chaxun_riqi2 !='' and chaxun_riqi2 !=null and chaxun_riqi2 !='null'">
+                and  date_format(a.shenqing_riqi,'%Y-%m-%d') &lt;= #{chaxun_riqi2}
+            </if>
+            <if test="shenqing_leixin_bianhao !='' and shenqing_leixin_bianhao !=null and shenqing_leixin_bianhao !='null'">
+                and  a.shenqing_leixin_bianhao = #{shenqing_leixin_bianhao}
+            </if>
+            order by a.shenqing_riqi desc
+        )a
+
+    </select>
+    <update id="updateDealDifferent" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyCheckDto">
+        UPDATE se_group_money_check_info
+        SET  is_deal='1',deal_no=#{deal_no},deal_name=#{deal_name},deal_time=#{deal_time},deal_declare=#{deal_declare}
+        where id=#{id}
+    </update>
+</mapper>

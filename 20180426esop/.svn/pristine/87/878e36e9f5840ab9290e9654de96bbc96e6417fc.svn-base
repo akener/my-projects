@@ -1,0 +1,265 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/11/20.
+ */
+public class SeProductChargeInfoDto extends BaseDto {
+    private int id;
+    private String add_prod_code ="";//资费编码（crm）
+    private String add_prod_name = "";//资费名称
+    private String charge_crm ="";//CRM资费描述
+    private String charge_desc ="";//资费描述
+    private String price ="";//价格
+    private String content ="";//内容
+    private String number ="";//数量
+    private String other_content ="";//其他说明
+    private String oper_no ="";//操作人工号
+    private String oper_name ="";//操作人
+    private Date oper_time;//操作时间
+    private String state ="";//状态
+    private String modify_no ="";//变更人
+    private String modify_name ="";//变更人姓名
+    private Date modify_time;//
+    private String bak1 ="";
+    private String bak2 ="";
+    private String bak3 ="";
+
+    private String prod_id = "";//二级产品编码 用于存放插叙条件
+    private String prod_name = "";//二级产品名称 用于存放查询条件
+    private String catalog_name = "";//一级产品名称 用于存放查询条件
+    private String prodmgr_name = "" ;//产品经理姓名
+    private BsProductInfoDto productInfo;
+    private BsProductSelectProdInfoDto bsProductSelectProdInfoDto;
+    private String not_in_chargeId = "";//不包括的chargeID；
+    private String discount = "";//资费折扣
+    private List zkList;//折扣信息
+
+    public List getZkList() {
+        return zkList;
+    }
+
+    public void setZkList(List zkList) {
+        this.zkList = zkList;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
+    public String getNot_in_chargeId() {
+        return not_in_chargeId;
+    }
+
+    public void setNot_in_chargeId(String not_in_chargeId) {
+        this.not_in_chargeId = not_in_chargeId;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public String getCatalog_name() {
+        return catalog_name;
+    }
+
+    public void setCatalog_name(String catalog_name) {
+        this.catalog_name = catalog_name;
+    }
+
+    public String getProdmgr_name() {
+        return prodmgr_name;
+    }
+
+    public void setProdmgr_name(String prodmgr_name) {
+        this.prodmgr_name = prodmgr_name;
+    }
+
+    public BsProductSelectProdInfoDto getBsProductSelectProdInfoDto() {
+        return bsProductSelectProdInfoDto;
+    }
+
+    public void setBsProductSelectProdInfoDto(BsProductSelectProdInfoDto bsProductSelectProdInfoDto) {
+        this.bsProductSelectProdInfoDto = bsProductSelectProdInfoDto;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public BsProductInfoDto getProductInfo() {
+        return productInfo;
+    }
+
+    public void setProductInfo(BsProductInfoDto productInfo) {
+        this.productInfo = productInfo;
+    }
+
+    public String getAdd_prod_code() {
+        return add_prod_code;
+    }
+
+    public void setAdd_prod_code(String add_prod_code) {
+        this.add_prod_code = add_prod_code;
+    }
+
+    public String getAdd_prod_name() {
+        return add_prod_name;
+    }
+
+    public void setAdd_prod_name(String add_prod_name) {
+        this.add_prod_name = add_prod_name;
+    }
+
+    public String getCharge_crm() {
+        return charge_crm;
+    }
+
+    public void setCharge_crm(String charge_crm) {
+        this.charge_crm = charge_crm;
+    }
+
+    public String getCharge_desc() {
+        return charge_desc;
+    }
+
+    public void setCharge_desc(String charge_desc) {
+        this.charge_desc = charge_desc;
+    }
+
+    public String getOther_content() {
+        return other_content;
+    }
+
+    public void setOther_content(String other_content) {
+        this.other_content = other_content;
+    }
+
+    public String getOper_no() {
+        return oper_no;
+    }
+
+    public void setOper_no(String oper_no) {
+        this.oper_no = oper_no;
+    }
+
+    public String getOper_name() {
+        return oper_name;
+    }
+
+    public void setOper_name(String oper_name) {
+        this.oper_name = oper_name;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getModify_no() {
+        return modify_no;
+    }
+
+    public void setModify_no(String modify_no) {
+        this.modify_no = modify_no;
+    }
+
+    public String getModify_name() {
+        return modify_name;
+    }
+
+    public void setModify_name(String modify_name) {
+        this.modify_name = modify_name;
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1;
+    }
+
+    public String getBak2() {
+        return bak2;
+    }
+
+    public void setBak2(String bak2) {
+        this.bak2 = bak2;
+    }
+
+    public String getBak3() {
+        return bak3;
+    }
+
+    public void setBak3(String bak3) {
+        this.bak3 = bak3;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getOper_time() {
+        return oper_time;
+    }
+
+    public void setOper_time(Date oper_time) {
+        this.oper_time = oper_time;
+    }
+
+    public Date getModify_time() {
+        return modify_time;
+    }
+
+    public void setModify_time(Date modify_time) {
+        this.modify_time = modify_time;
+    }
+}

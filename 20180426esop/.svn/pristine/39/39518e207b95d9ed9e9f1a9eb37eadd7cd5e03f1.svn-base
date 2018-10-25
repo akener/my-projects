@@ -1,0 +1,41 @@
+<%
+    String ctxPath = request.getContextPath();
+    String login_no = (String) session.getAttribute("login_no");//工号
+    String login_name = (String) session.getAttribute("login_name");//姓名
+    String root_org_id = (String) session.getAttribute("root_org_id");//分公司ID
+    String root_org_name = (String) session.getAttribute("root_org_name");//分公司名称
+    String org_id = (String) session.getAttribute("org_id");//组织机构ID
+    String org_name = (String) session.getAttribute("org_name");//组织机构名称
+    String blogin_code = (String) session.getAttribute("blogin_code");//经分工号
+    String clogin_code = (String) session.getAttribute("clogin_code");//boss工号
+    String mobile_phone = (String) session.getAttribute("mobile_phone");//手机号码
+    String role_codes = (String) session.getAttribute("role_codes");//拥有的角色串
+%>
+<%--<script>
+    var login_no = '<%=login_no%>';
+    if(login_no == null || login_no == 'null' || login_no == ""){
+        window.location.href = "about:blank";
+//        window.opener = null;
+//        window.open('','_self');
+//        window.close();
+    }
+</script>--%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/assets/css/bootstrap.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/assets/css/style.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/component.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/common.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/list.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/reset.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/table.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/basic.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/search.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/cqDevelopment/pub-ui/css/jquery-ui.min.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/css/dataTables.tableTools.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/css/jquery.dataTables.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/css/buttons.dataTables.min.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/css/select.dataTables.min.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/css/editor.dataTables.min.css" rel="stylesheet">
+<link type="text/css" href="<%=ctxPath %>/static/bootstrap/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+

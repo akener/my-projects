@@ -1,0 +1,75 @@
+package test;
+
+import java.io.IOException;
+import java.util.Iterator;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.Headers;
+/**
+ * Created by wangbl on 2017/3/23.
+ */
+public class ESBServiceInvokeOkhttp3 {
+    public static final MediaType JSON
+           // = MediaType.parse("application/json; charset=utf-8");
+            = MediaType.parse("application/x-www-form-urlencoded;charset=UTF-8");
+    OkHttpClient client = new OkHttpClient();
+
+    String post(String url, String json) throws IOException {
+        RequestBody body = RequestBody.create(JSON,json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+        Response response = client.newCall(request).execute();
+        Headers headers = response.headers();
+        headers.names();
+        Iterator it = headers.names().iterator();
+        while (it.hasNext()) {
+            // it.next()返回的是一个对象类型，需要强制转换
+            String book = (String) it.next();
+            System.out.println("headers="+book);
+            System.out.println("response.headers="+response.headers(book));
+        }
+        //response.
+        return response.body().string();
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        ESBServiceInvokeOkhttp3 example = new ESBServiceInvokeOkhttp3();
+        String json = "";
+        json = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>"
+                +"<Message xmlns=\"http://nm.cmcc.com/PCMP/ESOPSrv/ESOPMethod/ESOP000001/\">"
+                +"    <Header>"
+                +"        <AppID>PCMP</AppID>   <!-- 消费方应用标识 -->"
+                +"               <Provide_AppID>ESOP</Provide_AppID>   <!-- 提供方应用标识 -->"
+                +"    </Header>"
+                +"    <Body>"
+                +"        <prod_id>PD_002</prod_id>  <!-- 产品id,不可为空 -->"
+                +"        <link_id>L_004</link_id>   <!-- 环节id,不可为空,且值必须是L_003 -->"
+                +"        <main_depart>集客部</main_depart>  <!-- 主办部门 -->"
+                +"        <apply_person>张三</apply_person>  <!-- 申请人 -->"
+                +"        <apply_date>2017-03-15</apply_date>  <!-- 申请日期 -->"
+                +"        <file_no>00000001</file_no>  <!-- 文件编号 -->"
+                +"        <file_title>发展云企信业务SI申请</file_title>      <!-- 文件标题 -->"
+                +"        <ass_points>89</ass_points> "
+                +"        <review_file_id>9876543210.doc</review_file_id>  <!-- 审批单上传存放文件名称 -->"
+                +"        <review_file_name>发展云企信业务产品方案审批单信息.doc</review_file_name>  <!-- 审批单上传真实文件名称 -->"
+                +"        <si_material>1234567890.doc</si_material>       <!-- SI申请材料存放文件名称 -->"
+                +"        <si_material_name>SI申请材料文档.doc</si_material_name>  <!-- SI申请材料真实文件名称 -->"
+                +"        <colusion_opinion>0</colusion_opinion>  <!-- 结论意见 -->"
+                +"    </Body>"
+                +"</Message>";
+        //String response = example.post("http://localhost:8082/esop_to_oa", json);
+
+        //String response=example.post("http://localhost:8080/service-registry/instance-status","null");
+        //String response=example.post("http://localhost:8082/getString","OUT_OF_SERVICE");
+        String response=example.post("http://localhost:8084/getProductDict","{syscode:1}");
+        System.out.println(response);
+    }
+
+}

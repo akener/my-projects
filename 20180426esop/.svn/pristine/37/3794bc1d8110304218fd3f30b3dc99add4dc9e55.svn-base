@@ -1,0 +1,362 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/20
+  Time: 21:44
+  To change this template use File | Settings | File Templates.
+--%>
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/15
+  Time: 8:39
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>保证金使用申请查询列表展示</title>
+</head>
+
+<body>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+    </div>
+</div>
+<!--地市详情-->
+<div class="row col-12" style="min-height:100px;">
+    <div class="pd-20 pos-rel pos-bg1">
+        <div class="row">
+            <table class="table-infor-7" width="100%">
+                <tbody>
+                <tr>
+                   <th>分公司</th>
+                    <td>
+                        <input type=text id="ltd" class="input-sty04 form-ipt"
+                               maxlength="11" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>日期</th>
+                    <td>
+                        <input type=text id="eff_date" class="input-sty04 form-ipt"
+                               maxlength="11" readonly="true">
+                        <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                             style="width: 25px;" width="25" height="21"
+                             onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM-dd'})"
+                             title="选择时间" />
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="row mgt-30">
+                <div class="btn-box pdb-20">
+                    <button class="ui-btn mgr-10" onclick="qryDepositApplyList()">查询</button>
+<%--                    <button class="ui-btn" onclick="reset()">重置</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" >
+        <div class="active-cost-box" >
+            <div style="overflow:auto;">
+            <table id="epCapDepositApply" class="cost-table"  width="100%" >
+                <thead>
+                <tr>
+                    <th colspan="17" class="text-center">保证金使用申请查询列表</th>
+                </tr>
+             <%--   <tr>
+                <th rowspan="2" class="text-center">地市</th>
+                <th colspan="4" class="text-center">4G客户</th>
+                <th colspan="5" class="text-center">宽带净增客户</th>
+                <th colspan="5" class="text-center">集团专线</th>
+                <th colspan="5" class="text-center">和校园</th>
+                <th colspan="5" class="text-center">物联网</th>
+                </tr>--%>
+                <tr>
+                    <th  class="text-center">分公司</th>
+                    <th  class="text-center">行业中心</th>
+                    <th  class="text-center">申请人</th>
+                    <th  class="text-center">集团单位名称</th>
+                    <th  class="text-center">集团编码</th>
+                    <th  class="text-center">集团合同信息</th>
+                    <th  class="text-center">保证金金额</th>
+                    <th  class="text-center">保证金收据的编号</th>
+                    <th  class="text-center">缴费业务账号</th>
+                    <th  class="text-center">缴费业务 </th>
+                    <th  class="text-center">已开发票信息</th>
+                    <th  class="text-center">可用金额</th>
+                    <th  class="text-center">产品账期</th>
+                    <th  class="text-center">申请金额(元)</th>
+                    <th  class="text-center">申请日期</th>
+                     <th  class="text-center">上传文件名</th>
+                    <th  class="text-center">操作</th>
+                    <%--  <th  class="text-center">月净增</th>
+                     <th  class="text-center">年净增(万)</th>
+                     <th  class="text-center">目标值</th>
+                     <th  class="text-center">完成进度</th>--%>
+                </tr>
+                </thead>
+            </table>
+            </div>
+        </div></div></div>
+    <%@ include file="depositApplyDealInfo.jsp" %>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    /*$('.form_datetime').datetimepicker({
+        format: "yyyy-mm-dd ",
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });*/
+ /*  $(document).ready(function () {
+        var region_code_tp = "";
+        if (region_code_tp != '' && region_code_tp != null) {
+            init_region();
+        } else {
+            qryDepositApplyList();
+        }
+    })*/
+   //小数转百分数并保留两位小数
+    function toPercent(point){
+        var str=Number(point*100).toFixed(1);
+        str+="%";
+        return str;
+    }
+    /*function getBusiDepList(){
+        $("#epCapDepositApply tr").each(function(i){
+            if(i>=3){
+                $(this).empty();
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: '/getepCapDepositApplyInfo',
+            cache : false,
+            data:{
+                eff_date:$("#eff_date").val()
+            },
+            success : function(data) {
+                if(data.length > 0) {
+                    for(var i=0; i<data.length; i++){
+                        var trStr = "";
+                        trStr+="<tr>";
+                        trStr +=
+                            "<td>" + data[i].region_name + "</td>" +
+                            "<td>" + data[i].day_inc + "</td>" +
+                            "<td>" + data[i].year_inc + "</td>" +
+                            "<td>" + data[i].goal + "</td>" +
+                            "<td>" + toPercent(data[i].comp_rate) + "</td>" +
+                            "<td>" + data[i].wid_day_inc + "</td>" +
+                            "<td>" + data[i].wid_month_inc + "</td>" +
+                            "<td>" + data[i].wid_year_inc + "</td>" +
+                            "<td>" + data[i].wid_goal + "</td>" +
+                            "<td>" + toPercent(data[i].wid_comp_rate) + "</td>" +
+                            "<td>" + data[i].unit_day_inc + "</td>" +
+                            "<td>" + data[i].unit_mon_inc + "</td>" +
+                            "<td>" + data[i].unit_year_inc + "</td>" +
+                            "<td>" + data[i].unit_goal + "</td>" +
+                            "<td>" + toPercent(data[i].uint_comp_rate) + "</td>" +
+                            "<td>" + data[i].shool_day_inc + "</td>" +
+                            "<td>" + data[i].school_month_inc + "</td>" +
+                            "<td>" + data[i].school_year_inc + "</td>" +
+                            "<td>" + data[i].shool_goal + "</td>" +
+                            "<td>" + toPercent(data[i].school_comp_rate) + "</td>" +
+                            "<td>" + data[i].net_day_inc + "</td>" +
+                            "<td>" + data[i].net_mon_inc + "</td>" +
+                            "<td>" + data[i].net_total_inc + "</td>" +
+                            "<td>" + data[i].net_goal + "</td>" +
+                            "<td>" + toPercent(data[i].net_comp_rate)+ "</td>" +
+                            "</tr>";
+                        $("#epCapDepositApply").append(trStr);
+                    }
+                }else{
+                    $("#modal_text").text("没有数据");
+                    $("#modalInfo").modal('show');
+                    return false;
+
+                }
+                // $("#initElement").val(resp);
+            },
+            error:function(resp){
+               // alert("查询数据失败");
+                $("#modal_text").text("查询数据失败");
+                $("#modalInfo").modal('show');
+                return false;
+            }
+        });
+    }*/
+    function qryDepositApplyList(){
+        table = $('#epCapDepositApply').DataTable( {
+            dom: "Bfrtip",
+            destroy:true,
+            bLengthChange:true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 14,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/qryDepositApplyList",
+                type:"POST",
+                data: {
+                    "ltd":$("#ltd").val()
+                    /*
+                    暂时不传日期
+                    eff_date: $("#eff_date").val()*/
+                }
+            },
+            columns: [
+                { data: "ltd" },
+                { data: "industry_center"},
+                { data: "applicant"},
+                { data: "group_unit_name"},
+                { data: "group_code"},
+                { data: "grp_ctrct_name"},
+                { data: "ctrct_deposit_amt"},
+                { data: "deposit_bill_code"},
+                { data: "pay_busi_acct"},
+                { data: "pay_busi_name"},
+                { data: "invoice_info"},
+                { data: "usable_amt"},
+                { data: "product_acct_period"},
+                { data: "apply_amt"},
+                { data: "apply_date"},
+                { data: "upload_file_name"},
+                { data: "applicant",
+                    "width": "10%",
+                    render: function ( data , type , row,meta) {
+                        return data =
+                            "<button type='button' style='width: 60px' " +
+                            "onclick='showDepositModal(" + row.applicant + ")'  name='" +  row.applicant + "'>查看详细信息</button>";
+
+                    }
+                }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    }
+
+    //查询保证金使用申请详细信息(模态框展示)
+    function showDepositModal(applicant) {
+        //展示出模态框
+        $("#alertInfo").modal('show');
+        $.ajax({
+            type: "post",
+            url: "/getDepositApplyDealInfo",
+            dataType: 'json',
+            data: {
+                "applicant": applicant
+            },
+            success: function (result) {
+              /*  console.log(result.info);*/
+              /*  {"info":[{"applicant":"1",   0
+              "apply_amt":"14", 1
+              "apply_date":"2",  2
+                    "ctrct_deposit_amt":"8",  3
+                    "deposit_bill_code":"15",  4
+                    "group_code":"5",            5
+                    "group_unit_name":"6",   6
+                    "grp_ctrct_name":"7",    7
+                    "industry_center":"4"  8
+                    ,"invoice_info":"11",  9
+                    "ltd":"3",          10
+                    "page":{"flag":false,"order_column":"","order_dir":"","pageNumber":0,"pageRecords":10,"recordsTotal":1110},
+                    "pay_busi_acct":"9",  12
+                    "pay_busi_name":"10",   13
+                    "product_acct_period":"13",  14
+                    "upload_file_name":"16",    15
+                    "usable_amt":"12"}]}*/  16
+                //获取响应的json数据
+                var  filed  =result.info;
+//                    //filed[0].applicant;
+                console.info("filed="+ filed[0]);
+                console.info( result.info);
+                console.log("filed第0索引applicant="+ filed[0].applicant);
+                console.log("filed第10索引ltd="+ filed[0].ltd);
+                    $("#ltd2").val(filed[0].ltd), //不改为ltd2会和qry_deposit_apply_list.jsp即本页面的id重复而发生冲突
+                    $("#industry_center").val(filed[0].industry_center),
+                    $("#applicant").val(filed[0].applicant),
+                    $("#group_unit_name").val(filed[0].group_unit_name),
+                    $("#group_code").val(filed[0].group_code),
+                    $("#grp_ctrct_name").val(filed[0].grp_ctrct_name),
+                    $("#ctrct_deposit_amt").val(filed[0].ctrct_deposit_amt),
+
+                    $("#deposit_bill_code").val(filed[0].deposit_bill_code),
+                    $("#pay_busi_acct").val(filed[0].pay_busi_acct),
+                    $("#pay_busi_name").val(filed[0].pay_busi_name),
+                    $("#invoice_info").val(filed[0].invoice_info),
+                    $("#usable_amt").val(filed[0].usable_amt),
+                    $("#product_acct_period").val(filed[0].product_acct_period),
+                    $("#apply_amt").val(filed[0].apply_amt),
+                    $("#apply_date").val(filed[0].apply_date),
+                    $("#upload_file_name").val(filed[0].upload_file_name)
+               /* $.each(result.info, function (i, filed) {
+                    console.log(i+"第0索引"+filed);
+                    console.log("ltd2="+filed[10]);
+
+                    }
+                );*/
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        })
+    }
+
+        //唯一标识码
+       /* var biaoshima='23423424';*/
+
+</script>
+</html>
+
+

@@ -1,0 +1,63 @@
+package com.esop.workflow.model;
+
+public class CtProcessDict {
+    private String procId;
+
+    private String procNameEn;
+
+    private String procNameCh;
+
+    private String initAssigneeFlag;
+
+    private String callbackId;
+
+    private String bizStatusCallback;
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameEn() {
+        return procNameEn;
+    }
+
+    public void setProcNameEn(String procNameEn) {
+        this.procNameEn = procNameEn;
+    }
+
+    public String getProcNameCh() {
+        return procNameCh;
+    }
+
+    public void setProcNameCh(String procNameCh) {
+        this.procNameCh = procNameCh;
+    }
+
+    public String getInitAssigneeFlag() {
+        return initAssigneeFlag;
+    }
+
+    public void setInitAssigneeFlag(String initAssigneeFlag) {
+        this.initAssigneeFlag = initAssigneeFlag;
+    }
+
+    public String getCallbackId() {
+        return callbackId;
+    }
+
+    public void setCallbackId(String callbackId) {
+        this.callbackId = callbackId;
+    }
+
+    public String getBizStatusCallback() {
+        return bizStatusCallback;
+    }
+
+    public void setBizStatusCallback(String bizStatusCallback) {
+        this.bizStatusCallback = bizStatusCallback;
+    }
+}

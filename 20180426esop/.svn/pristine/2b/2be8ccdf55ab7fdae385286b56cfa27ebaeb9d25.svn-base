@@ -1,0 +1,445 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/public_include_new_css.jsp" %>
+<head>
+    <meta charset="utf-8">
+    <title>复核人和工号对应</title>
+    <%@ include file="../pub/public_include_js.jsp" %>
+    <script type="text/javascript" language="javascript" class="init">
+        var  login_no;
+        var  root_org_id;
+        $(document).ready(function() {
+            login_no="<%=login_no%>";
+            rootOrgId="<%=root_org_id%>";
+            root_org_name="<%=root_org_name%>";
+            role_codes="<%=role_codes%>";
+            //判断组织机构权限
+            if(rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B'){
+                $.ajax({
+                    url:"invoice/getOrganizationInfos",
+                    type:"POST",
+                    async: false,
+                    success:function (data) {
+                        //console.log(data);
+                        var applicantOrgStr = "";
+                        for(var i=0;i<data.length;i++){
+                            applicantOrgStr += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                        }
+                        $("#applicantOrg").empty();
+                        $("#applicantOrg").append(applicantOrgStr);
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:"invoice/getOrganizationInfos",
+                    type:"POST",
+                    data:{id:rootOrgId},
+                    async: false,
+                    success:function (data) {
+                        //console.log(data);
+                        var applicantOrgStr = "";
+                        for(var i=0;i<data.length;i++){
+                            applicantOrgStr += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                        }
+                        $("#applicantOrg").empty();
+                        $("#applicantOrg").append(applicantOrgStr);
+                    }
+                });
+            }
+            selectBusinessCenter();
+        });
+
+        //增加复核人
+        function addBusinessCenterRel () {
+            $("#qu_reset3").attr("disabled",false);
+            $("#qu_reset3").text("提交");
+            $("#applicantOrg2").val($('#applicantOrg option:selected').text());
+            $("#insertBusinessCenterRel").modal('show');
+            $("#selectRolRel2").dataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                // serverSide: true,
+                destroy: true,
+                "bSort":false,
+                ajax: {
+                    url: "invoice/selectAllReviewerInfo",
+                    type: "POST",
+                    data:{
+                        root_org_id:$('#applicantOrg').val(),
+                        staff_code:$("#staff_code2").val(),
+                        staff_name:$("#staff_name2").val()
+                    }
+                },
+                columns: [
+                    {render:function (data,type,row,meta) {
+                        return data= "<input name='Fruit' style='zoom:150%;' type='checkbox' value='' /></td>";
+                    }},
+                    {data: "staff_code"},
+                    {data: "staff_name"},
+                    {data: "group_pay_name"},
+                    {data: "root_org_id"}
+                ],
+                select: true,
+                buttons: [
+
+                ]
+            })
+
+        }
+        //查询复核人新增列表
+        function selectRolRel() {
+            $("#qu_reset3").attr("disabled",false);
+            $("#qu_reset3").text("提交");
+            table =  $('#selectRolRel2').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:false,
+                "bFilter": false,
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: false,
+                destroy: true,
+                "bSort":false,
+                ajax: {
+                    url: "invoice/selectAllReviewerInfo",
+                    type: "POST",
+                    data:{
+                        root_org_id:$('#applicantOrg').val(),
+                        staff_code:$("#staff_code2").val(),
+                        staff_name:$("#staff_name2").val()
+                    }
+                },
+                columns: [
+                    {render:function (data,type,row,meta) {
+                        return data= "<input name='Fruit' style='zoom:150%;' type='checkbox'/></td>";
+                    }},
+                    {data: "staff_code"},
+                    {data: "staff_name"},
+                    {data: "group_pay_name"},
+                    {data: "root_org_id"}
+                ],
+                select: true,
+                buttons: [
+
+                ]
+            })
+        }
+
+        //查询
+        function selectBusinessCenter(){
+            table =  $('#businessCenter').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                "bSort":false,
+                ajax: {
+                    url: "invoice/selectReviewerList",
+                    type: "POST",
+                    "data": {
+                        "root_org_id":$("#applicantOrg").val(),
+                        "login_no":$("#login_no").val(),
+                        "login_name":$("#login_name").val()
+                    }
+                },
+                columns: [
+                    {data: "id","sClass":"hidden"},
+                    {data: "login_no"},
+                    {data: "login_name"},
+                    {data: "root_org_id"},
+                    {data: "root_org_name"},
+                    {data: "update_time"},
+                    { data: "id",
+                        "width": "10%",
+                        render: function ( data, type, row, meta ) {
+                            var id=row.id;
+                            var login_no=row.login_no;
+                            var login_name=row.login_name;
+                            return data = "<button type='button'  class='ui-btn mgr-10' onclick='deleteReviewer(\""+id+"\",\""+login_no+"\",\""+login_name+"\")'>删除工号</button>";
+                        }
+                    }
+                ],
+                select: true,
+                buttons: [
+
+                ]
+            })
+        }
+
+        function deleteReviewer(id,login_no,login_name){
+            layer.confirm("确认删除工号："+login_no+"，工号名称："+login_name+"吗？", {
+                btn: ['确认', '取消'] //按钮
+            }, function () {
+                layer.msg('提交中', {
+                    icon: 16,
+                    time: 1000,
+                    shade: 0.01
+                });
+                $.ajax({
+                    url:"invoice/deleteReviewerInfo",
+                    type:"POST",
+                    data:{id:id},
+                    success:function (data) {
+                        layer.alert("删除成功！", {
+                            icon: 1,
+                            skin: 'layer-ext-moon' //该皮肤由    layer.seaning.com友情扩展。关于皮肤的扩展规则，去这里查阅
+                        });
+                        selectBusinessCenter();
+                    },
+                    error: function () {
+                        layer.alert('请求超时，请重试！', {
+                            icon: 2,
+                            skin: 'layer-ext-moon'
+                        });
+                    }
+                });
+            }, function () {
+                //取消
+            });
+        }
+
+        function saveBusinessCenterRel() {
+            if($('input[name="Fruit"]:checked').length==0){
+                layer.alert('请勾选相应工号！', {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                });
+                return false;
+            }
+            $("#qu_reset3").attr("disabled",true);
+            $("#qu_reset3").text("提交中...");
+            var reqParam={};
+            //获取选中的值
+            var checkedInfo = [];
+            $('input[name="Fruit"]:checked').each(function () {
+                var reviewer={};
+                var login_no=$(this).parent().parent().find("td:eq(1)").html();
+                var login_name=$(this).parent().parent().find("td:eq(2)").html();
+                var root_org_name=$(this).parent().parent().find("td:eq(3)").html();
+                var root_org_id=$(this).parent().parent().find("td:eq(4)").html();
+                reviewer['login_no']=login_no;
+                reviewer['login_name']=login_name;
+                reviewer['root_org_name']=root_org_name;
+                reviewer['root_org_id']=root_org_id;
+                checkedInfo.push(reviewer);
+            });
+
+            reqParam['checkedInfo'] = checkedInfo;
+            $.ajax({
+                type: 'POST',
+                url: '<%=ctxPath %>/invoice/addReviewerInfo',
+                contentType: 'application/json;charset=utf-8',
+                data: JSON.stringify(reqParam),
+                success: function (result) {
+                    //selectRolRel();
+                    // location.href="businessCenterRel";
+                    layer.alert("添加工号成功！", {
+                        icon: 1,
+                        skin: 'layer-ext-moon' //该皮肤由    layer.seaning.com友情扩展。关于皮肤的扩展规则，去这里查阅
+                    }, function () {
+                        location.href="reviewer";
+
+                    });
+
+                },
+                error: function () {
+                    layer.alert('请求超时，请重试！', {
+                        icon: 2,
+                        skin: 'layer-ext-moon'
+                    });
+                }
+            });
+        }
+
+    </script>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>复核人查询列表</span>
+            </div>
+        </div>
+        <!--详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row pdb-10 border-ed">
+                    <div class="row">
+                        <table class="table-infor-7  width-th-1" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>组织名称：</th>
+                                <td>
+                                    <select id="applicantOrg" class="select-style-1">
+                                    </select>
+                                </td>
+                                <th>工号：</th>
+                                <td>
+                                    <input type="text" id="login_no" value="" class="input-sty04 form-ipt">
+                                </td>
+                                <th>工号名称：</th>
+                                <td>
+                                    <input type="text" id="login_name" value="" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <button class="ui-btn mgr-10" onclick="selectBusinessCenter()">查询</button>
+                                <button class="ui-btn mgr-10"  onclick="addBusinessCenterRel()">增加</button>
+                                <%--<button class="ui-btn btn-success mgr-10" onclick="exportBusinessCenter()">导出</button>--%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: none">
+                    <form action="" name="exportExcel" id="exportExcel" target="export"
+                          method="post" accept-charset="utf-8"></form>
+                    <iframe name="export" id="export"></iframe>
+                </div>
+                <div class="row col-12 bg-white">
+                    <div class="market-name-box pdlr-10 clearfix">
+                        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>复核人列表</span>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <div class="row">
+                            <div class="active-cost-box" style="padding-bottom:0;">
+                                <table class="table table-bordered" id="businessCenter"style="width:100%;">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center"  style="display:none;">编号</th>
+                                        <th class="text-center">工号</th>
+                                        <th class="text-center">工号名称</th>
+                                        <th class="text-center">组织编号</th>
+                                        <th class="text-center">组织名称</th>
+                                        <th class="text-center">时间</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="insertBusinessCenterRel" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document"  style="width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> 增加复核人</h4>
+            </div>
+            <div class="modal-body">
+                <div class="" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>组织名称</th>
+                                <td>
+                                    <input id="applicantOrg2" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+
+                                <th>工号</th>
+                                <td>
+                                    <input id="staff_code2" type="text"  class="input-sty04 form-ipt">
+                                </td>
+                                <th>姓名</th>
+                                <td>
+                                    <input id="staff_name2" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20" style="margin-bottom: 5px;">
+                            <div class="btn-box">
+                                <button class="ui-btn mgr-10"  onclick="selectRolRel()">查询</button>
+                            </div>
+                        </div>
+                        <div class="bg-white">
+                            <div class="market-name-box pdlr-10 clearfix">
+                                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>复核人添加列表</span>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                                <div class="row">
+                                        <table class="table table-bordered" id="selectRolRel2"style="width:100%;">
+                                            <thead>
+                                            <tr>
+                                                <th class="text-center"></th>
+                                                <th class="text-center">工号</th>
+                                                <th class="text-center">姓名</th>
+                                                <th class="text-center">分公司名称</th>
+                                                <th class="text-center">分公司编码</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mgt-20" style="margin-bottom: 5px;">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10" id="qu_reset3" name="reset1" onclick="saveBusinessCenterRel()">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+

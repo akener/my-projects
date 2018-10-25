@@ -1,0 +1,57 @@
+package test;
+
+import org.json.JSONObject;
+import org.springframework.util.StringUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 2017/2/10.
+ */
+public class Test {
+    public static void main(String args[]){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSS");
+        System.out.println(sdf.format(new Date()));
+        System.out.println("deEe".contains("deE"));
+        JSONObject json1 = new JSONObject(
+                "{\n" +
+                        "    \"fileAddress\": [\n" +
+                        "        {\n" +
+                        "            \"path\": 11, \n" +
+                        "            \"name\": \"aa\"\n" +
+                        "        }, \n" +
+                        "        {\n" +
+                        "            \"path\": 12, \n" +
+                        "            \"name\": \"ab\"\n" +
+                        "        }, \n" +
+                        "        {\n" +
+                        "            \"path\": 13, \n" +
+                        "            \"name\": \"ac\"\n" +
+                        "        }, \n" +
+                        "        {\n" +
+                        "            \"path\": 14, \n" +
+                        "            \"name\": \"ad\"\n" +
+                        "        }\n" +
+                        "    ]\n" +
+                        "}");
+        System.out.println(json1.toMap().toString());
+        Map  m=json1.toMap();
+        System.out.println(m.get("fileAddress"));
+        List l = (ArrayList)m.get("fileAddress");
+        for(int i=0;i<l.size();i++){
+            Map<String,Object > map = (Map<String,Object >)l.get(i);
+            System.out.println(map.get("path").toString()+map.get("name"));
+
+        }
+        String[] pairs = StringUtils.tokenizeToStringArray("id=123487567&content=spring world中文", "&");
+        for(String str:pairs){
+            if(str.equals("id=123487567"))
+            continue;
+            System.out.println(str);
+        }
+    }
+}

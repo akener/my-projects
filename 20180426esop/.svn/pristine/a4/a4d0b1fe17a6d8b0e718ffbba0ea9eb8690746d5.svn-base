@@ -1,0 +1,58 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.TestDto;
+import com.esop.base.service.TestService;
+import com.esop.common.uploadFile.UploadFileInfoService;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by wangbl on 2017/2/7.
+ */
+@RestController
+public class TestController {
+    @Autowired
+    TestService testService;
+    @Autowired
+    UploadFileInfoService uploadFileInfoService;
+    //查询操作
+    @RequestMapping(value="/selectTest")
+    public List<TestDto> selectTest(TestDto parameter, HttpServletRequest request){
+        System.out.println(uploadFileInfoService.getRelatedID()+"=uploadFileInfoService="+uploadFileInfoService.getID());
+        System.out.println("parameter="+parameter.getName());
+         return testService.select(parameter);
+    }
+    //添加操作
+    @RequestMapping(value="/insertTest")
+    public TestDto insertTest(TestDto parameter, HttpServletRequest request){
+        int num = testService.insert(parameter);
+       System.out.println("后端接口="+parameter.getName());
+        //int num = 1;
+        if(num==1)
+            return parameter;
+        else
+            return parameter;
+    }
+    //修改操作
+    @RequestMapping(value="/updateTest")
+    public boolean updateTest(TestDto parameter, HttpServletRequest request){
+        int num = testService.update(parameter);
+        if(num==1)
+            return true;
+        else
+            return false;
+    }
+    //删除操作
+    @RequestMapping(value="/deleteTest")
+    public boolean deleteTest(TestDto parameter, HttpServletRequest request){
+        int num = testService.delete(parameter);
+        if(num==1)
+            return true;
+        else
+            return false;
+    }
+}

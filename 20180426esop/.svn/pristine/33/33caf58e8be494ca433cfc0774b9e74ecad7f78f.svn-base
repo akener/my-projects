@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Hello CORS</title>
+        <script src="/static/js/jquery.js"></script>
+        <script src="test.js"></script>
+    </head>
+
+    <body>
+        <div>
+            <p class="greeting-id">The ID is ddd</p>
+            <p class="greeting-content">The content is </p>
+        </div>
+    </body>
+</html>

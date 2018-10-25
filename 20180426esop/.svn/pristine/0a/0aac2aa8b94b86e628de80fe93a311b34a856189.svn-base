@@ -1,0 +1,124 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+public class GroupBusAcceptAccountCheckDto extends BaseDto {
+    private String org_name;//分公司
+    private String business_center;//行业中心
+    private String business_processer;//业务受理员
+    private String process_date;//受理时间
+    private String business_type;//业务类型
+    private String real_use_money;//实际使用金额
+    private String group_code;//集团编号
+    private String group_name;//集团名称
+    private String order_id;//业务工单编号
+
+    private String org_id;
+    private String center_code;
+    private String process_date_start;
+    private String process_date_end;
+
+    public String getOrg_name() {
+        return org_name;
+    }
+
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getBusiness_processer() {
+        return business_processer;
+    }
+
+    public void setBusiness_processer(String business_processer) {
+        this.business_processer = business_processer;
+    }
+
+    public String getProcess_date() {
+        return process_date;
+    }
+
+    public void setProcess_date(String process_date) {
+        this.process_date = process_date;
+    }
+
+    public String getBusiness_type() {
+        return business_type;
+    }
+
+    public void setBusiness_type(String business_type) {
+        this.business_type = business_type;
+    }
+
+    public String getReal_use_money() {
+        return real_use_money;
+    }
+
+    public void setReal_use_money(String real_use_money) {
+        this.real_use_money = real_use_money;
+    }
+
+    public String getGroup_code() {
+        return group_code;
+    }
+
+    public void setGroup_code(String group_code) {
+        this.group_code = group_code;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getProcess_date_start() {
+        return process_date_start;
+    }
+
+    public void setProcess_date_start(String process_date_start) {
+        this.process_date_start = process_date_start;
+    }
+
+    public String getProcess_date_end() {
+        return process_date_end;
+    }
+
+    public void setProcess_date_end(String process_date_end) {
+        this.process_date_end = process_date_end;
+    }
+}

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectBasicNumberManage"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select count(*) as num from ep_sys_loginmsg_new where 1=1
+        <if test="login_no != ''">
+            and login_no = #{login_no}
+        </if>
+        <if test="id_card_no != ''">
+            and id_card_no = #{id_card_no}
+        </if>
+        <if test="busi_boss_no != ''">
+            and busi_boss_no = #{busi_boss_no}
+        </if>
+        <if test="oa_login_no != ''">
+            and oa_login_no = #{oa_login_no}
+        </if>
+        <if test="mis_no != ''">
+            and mis_no = #{mis_no}
+        </if>
+    </select>
+    <select id="selectBasicNumberManageUC"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select count(*) as num from ep_sys_loginmsg_new where 1=1
+        <if test="login_no != ''">
+            and login_no != #{login_no}
+        </if>
+        <if test="id_card_no != ''">
+            and id_card_no = #{id_card_no}
+        </if>
+        <if test="busi_boss_no != ''">
+            and busi_boss_no = #{busi_boss_no}
+        </if>
+        <if test="oa_login_no != ''">
+            and oa_login_no = #{oa_login_no}
+        </if>
+        <if test="mis_no != ''">
+            and mis_no = #{mis_no}
+        </if>
+    </select>
+    <select id="selectCrmFuncNum"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select count(d.function_code) as num
+        from dbesopadm.ep_sys_rolefunc_rel_new c, dbesopadm.ep_sys_funccode_new d
+        where c.role_code = #{role_code}
+        and c.function_code = d.function_code
+        and d.vilid_flag = '1'
+        and d.out_sys_id in ('15', '16')
+    </select>
+    <select id="selectBusiPasswordUC"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select password as boss_password,trim(power_code) as power_code,trim(group_id) as crm_group_id from dloginmsg where login_no = #{landing_no}
+    </select>
+    <select id="selectBusiFuncUC"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select a.function_code as op_code from ep_sys_rolefunc_rel_new a,ep_sys_funccode_new b where role_code = #{role_code}||'01' and a.function_code = b.function_code and b.out_sys_id in ('15','16')
+    </select>
+    <select id="selectBusiGroupUC"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select group_id from dloginmsg where login_no = #{login_no}
+    </select>
+    <insert id="insertBasicNumberManage"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        insert into ep_sys_loginmsg_new (LOGIN_NO, LOGIN_NAME, PASSWORD, CONTRACT_PHONE, ID_CARD_NO, BUSI_BOSS_NO, OA_LOGIN_NO, MIS_NO, VILID_FLAG, IS_GRP_STAFF, GRPUSERTYPE, GRP_STAFF_NUMBER, NEED_REMIND, GRP_ROLE_CODE, ROLE_CODE, ROLE_CODE_SMALL, GROUP_ID, WORK_AREA, BUSIDO_REGION, BUSIDO_TOWN, OFFICE_TOWN, CREATE_DATE, BOSS_ROLE_CODE, RIGHT_CODE, ORG_CODE,IS_LC,OA_NO,OA_TITLE,INTER_TYPE)
+        values (#{login_no},#{login_name},#{password},#{contract_phone},#{id_card_no},#{busi_boss_no},#{oa_login_no},#{mis_no},#{vilid_flag},#{is_grp_staff1},#{grpusertype},#{grp_staff_number1},#{need_remind},#{grp_role_code},#{role_code},#{role_code}||'01',#{group_id},#{work_area},#{busido_region},#{busido_town},#{office_town},sysdate,#{boss_role_code},#{right_code},#{org_code},#{is_lc},#{oa_no},#{oa_title},#{inter_type})
+    </insert>
+    <insert id="insertGrpManagerMsg"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        insert into dGrpManagerMsg(org_code,service_no,login_type,name,id_type,sex,polity,edu_levelid,create_date,system_type,belong_region,phone_no)
+        values (#{group_id},#{login_no},'B',#{login_name},'01','0','01','00',sysdate,'0','1',#{contract_phone})
+    </insert>
+    <insert id="insertGrpManagerBossMsg"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        insert into dGrpManagerMsg(org_code,service_no,login_type,name,id_type,sex,polity,edu_levelid,create_date,system_type,belong_region,phone_no)
+        values (#{group_id},#{login_no},'B',#{login_name},'01','0','01','00',sysdate,'0','1',#{contract_phone})
+    </insert>
+    <insert id="updateGrpManagerMsg"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        update dGrpManagerMsg set org_code=#{group_id},name=#{login_name},phone_no=#{contract_phone}
+        where service_no=#{login_no}
+    </insert>
+    <delete id="deleteLoginRoleManage" parameterType="com.esop.basicManagement.dto.BasicRoleDealDto">
+        delete from ep_sys_rolecode_rel where login_no = #{login_no}
+    </delete>
+    <insert id="insertManagementFuncMsg"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        insert into ep_sys_crmfunc_rel (LOGIN_NO, CREATE_DATE, OP_TYPE, OP_LOGIN)
+        values (#{login_no},sysdate,'insert',#{landing_no})
+    </insert>
+    <insert id="insertLoginRoleManage"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        insert into ep_sys_rolecode_rel (LOGIN_NO, ROLE_CODE_SMALL)
+        values (#{login_no},#{role_code}||'01')
+    </insert>
+    <select id="selectLoginRoleManageJg"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select role_code_small from ep_sys_rolecode_rel where login_no = #{login_no} and substr(role_code_small,3,2) = '01' and length(role_code_small) = 4
+    </select>
+    <select id="updateBasicNumberManage"  parameterType="com.esop.basicManagement.dto.GroupTreeDto" resultType="com.esop.basicManagement.dto.GroupTreeDto" >
+        update ep_sys_loginmsg_new set login_name=#{login_name},contract_phone=#{contract_phone},id_card_no=#{id_card_no},busi_boss_no=#{busi_boss_no},oa_login_no=#{oa_login_no},mis_no=#{mis_no},vilid_flag=#{vilid_flag},is_grp_staff=#{is_grp_staff2},grpusertype=#{grpusertype},grp_staff_number=#{grp_staff_number2},need_remind=#{need_remind},grp_role_code=#{grp_role_code},role_code=#{role_code},role_code_small=#{role_code}||'01',group_id=#{group_id},work_area=#{work_area},is_lc=#{is_lc},inter_type=#{inter_type}
+        where  login_no = #{login_no}
+    </select>
+    <select id="queryBasicNumManage"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto" >
+        select a.login_no,a.login_name,a.password,a.contract_phone,a.id_card_no,a.busi_boss_no,a.oa_login_no,a.mis_no,a.vilid_flag,a.is_grp_staff,a.grpusertype,a.grp_staff_number,a.need_remind,a.grp_role_code,a.role_code,a.group_id,a.work_area,trim(b.role_name) as role_name,trim(c.group_name) as group_name,a.boss_role_code,a.right_code,a.org_code,is_lc,oa_no,oa_title
+        from ep_sys_loginmsg_new a, ep_sys_rolecode_new b, ep_sys_group_info c
+        where 1 = 1
+        and a.role_code = b.role_code(+)
+        and a.group_id = c.group_id(+)
+        <if test="login_no != ''">
+            and login_no = #{login_no}
+        </if>
+    </select>
+    <select id="queryBasicNumGrpStaffManage"  parameterType="com.esop.basicManagement.dto.BasicManagementGrpStaffDto" resultType="com.esop.basicManagement.dto.BasicManagementGrpStaffDto" >
+        select a.login_no,a.login_name,a.password,a.contract_phone,a.id_card_no,a.busi_boss_no,a.oa_login_no,a.mis_no,a.vilid_flag,a.is_grp_staff,a.grpusertype,a.grp_staff_number,a.need_remind,a.grp_role_code,a.role_code,a.group_id,a.work_area,trim(b.role_name) as role_name,trim(c.group_name) as group_name,a.boss_role_code,a.right_code,a.org_code
+        from ep_sys_loginmsg_new a, ep_sys_rolecode_new b, ep_sys_group_info c
+        where 1 = 1
+        and a.role_code = b.role_code(+)
+        and a.group_id = c.group_id(+)
+        <if test="login_no != ''">
+            and login_no = #{login_no}
+        </if>
+    </select>
+    <select id="queryBasicNumManageUpdate"  parameterType="com.esop.basicManagement.dto.BasicManagementUpdateDto" resultType="com.esop.basicManagement.dto.BasicManagementUpdateDto" >
+        select a.login_no,a.login_name,a.password,a.contract_phone,a.id_card_no,a.busi_boss_no,a.oa_login_no,a.mis_no,a.vilid_flag,a.is_grp_staff,a.grpusertype,a.grp_staff_number,a.need_remind,a.grp_role_code,a.role_code,a.group_id,a.work_area,a.boss_role_code,a.right_code,a.org_code,is_lc,inter_type
+        from ep_sys_loginmsg_new a
+        where 1 = 1
+        and login_no = #{tp_login}
+    </select>
+    <select id="queryBasicBossLoginInfo"  parameterType="com.esop.basicManagement.dto.BasicBossManagementDto" resultType="com.esop.basicManagement.dto.BasicBossManagementDto" >
+        select substr(org_code,0,2) as busido_region,substr(org_code,3,2) as busido_town,substr(org_code,5,3) as office_town,trim(password) as busi_password,trim(power_code) as boss_role_code,trim(power_right) as right_code,trim(org_code) as org_code,trim(login_name) as login_name,contract_phone
+        from dloginmsg
+        where 1 = 1
+        and login_no = #{login_no}
+    </select>
+    <insert id="insertBasicBossChange"  parameterType="com.esop.basicManagement.dto.BasicManagementDto" >
+        insert into ep_sys_loginmsg_new (LOGIN_NO, LOGIN_NAME, PASSWORD, CONTRACT_PHONE, ID_CARD_NO, BUSI_BOSS_NO, OA_LOGIN_NO, MIS_NO, VILID_FLAG, IS_GRP_STAFF, GRPUSERTYPE, GRP_STAFF_NUMBER, NEED_REMIND, GRP_ROLE_CODE, ROLE_CODE, ROLE_CODE_SMALL, GROUP_ID, WORK_AREA, BUSIDO_REGION, BUSIDO_TOWN, OFFICE_TOWN, CREATE_DATE, BUSI_PASSWORD, BOSS_ROLE_CODE, RIGHT_CODE, ORG_CODE,IS_LC,OA_NO,OA_TITLE,INTER_TYPE)
+        values (#{login_no},#{login_name},#{password},#{contract_phone},#{id_card_no},#{busi_boss_no},#{oa_login_no},#{mis_no},#{vilid_flag},#{is_grp_staff4},#{grpusertype},#{grp_staff_number4},#{need_remind},#{grp_role_code},#{role_code},#{role_code}||'01',#{group_id},#{work_area},#{busido_region},#{busido_town},#{office_town},sysdate,#{busi_password},#{boss_role_code},#{right_code},#{org_code},#{is_lc},#{oa_no},#{oa_title},#{inter_type})
+    </insert>
+    <select id="selectGroupTreeMsg"  parameterType="com.esop.basicManagement.dto.GroupTreeDto" resultType="com.esop.basicManagement.dto.GroupTreeDto" >
+        select group_id as id,
+        parent_group_id as pId,
+        name,
+        'true' as open,
+        'false' as nocheck
+        from dgrpgroups b
+        where b.immediate_parent_flag = 'Y'
+        <if test="pId != ''">
+            and b.group_id = (select group_id from dgrpgroups where boss_org_code = #{pId} and immediate_parent_flag = 'Y')
+        </if>
+        union all
+        select *
+        from (select unique t.group_id as id,
+        t.parent_group_id as pId,
+        trim(t.name) as name,
+        'false' as open,
+        'false' as nocheck
+        from dgrpgroups t
+        where t.immediate_parent_flag = 'Y') a
+        <if test="pId != ''">
+            start with  a.pId = (select group_id from dgrpgroups where boss_org_code = #{pId} and immediate_parent_flag = 'Y')
+        </if>
+        connect by prior a.id = a.pId
+    </select>
+    <select id="selectRoleTreeMsg"  parameterType="com.esop.basicManagement.dto.GroupTreeDto" resultType="com.esop.basicManagement.dto.GroupTreeDto" >
+        select '00' as id,
+        '' as pId,
+        '根目录' as name,
+        'true' as open,
+        'true' as nocheck
+        from dual b
+        union all
+        select *
+        from (select unique t.role_code as id,
+        t.parent_code as pId,
+        trim(t.role_name) as name,
+        'false' as open,
+        'false' as nocheck
+        from ep_sys_rolecode_new t) a
+        start with  a.pId = '00'
+        connect by prior a.id = a.pId
+    </select>
+    <select id="selectBossRoleTreeMsg"  parameterType="com.esop.basicManagement.dto.GroupTreeDto" resultType="com.esop.basicManagement.dto.GroupTreeDto" >
+        select trim(a.power_code) as id,'00' as pId, a.power_name as name,
+        'true' as open,
+        'true' as nocheck
+        from sPowerCode a, sRoleTypeCode b, dLoginMsg c
+        where c.login_no = #{id}
+        and a.roletype_code = b.roletype_code
+        and a.power_code =
+        (select min(d.power_code)
+        from dpowerobjrelation d
+        where Trim(d.object_id) = Trim(c.group_id))
+        union all
+        select *
+        from (select unique trim(a.power_code) as id,
+        substr(trim(a.power_code),0,length(trim(a.power_code))-2) as pId,
+        a.power_name as name,
+        'false' as open,
+        'false' as nocheck
+        from sPowerCode a, sRoleTypeCode b, dLoginMsg c, dpowerobjrelation d
+        where a.roletype_code = b.ROLETYPE_CODE
+        and a.use_flag = 'Y'
+        and c.login_no = #{id}
+        and Trim(c.group_id) = Trim(d.object_id)
+        and d.power_code = a.power_code
+        )  a
+        start with  a.pId = #{pId}
+        connect by prior a.id = a.pId
+    </select>
+
+    <select id="insertLoginMsgMid" parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="int">
+        insert into ep_sys_loginmsg_mid (
+                    ORDER_ID,LOGIN_NO, LOGIN_NAME, PASSWORD, CONTRACT_PHONE, ID_CARD_NO, BUSI_BOSS_NO, OA_LOGIN_NO,
+                    MIS_NO, VILID_FLAG, IS_GRP_STAFF, GRPUSERTYPE, GRP_STAFF_NUMBER, NEED_REMIND, GRP_ROLE_CODE, ROLE_CODE,
+                    ROLE_CODE_SMALL, GROUP_ID, WORK_AREA, BUSIDO_REGION, BUSIDO_TOWN, OFFICE_TOWN, CREATE_DATE, BUSI_PASSWORD,BOSS_ROLE_CODE, RIGHT_CODE, ORG_CODE,
+                    OA_NO,OA_TITLE,IS_LC,EXAMINE_TYPE,EXAMINE_DES,HAS_BOSS,APPLY_NO,INTER_TYPE
+        )
+        values
+        (
+                   s_ep_upload_file_info_r.nextval,#{login_no},#{login_name},#{password},#{contract_phone},#{id_card_no},#{busi_boss_no},#{oa_login_no},
+                   #{mis_no},#{vilid_flag},#{is_grp_staff4},#{grpusertype},#{grp_staff_number4},#{need_remind},#{grp_role_code},#{role_code},
+                   #{role_code}||'01',#{group_id},#{work_area},#{busido_region},#{busido_town},#{office_town},sysdate,#{busi_password},#{boss_role_code},#{right_code},#{org_code},
+                   #{oa_no},#{oa_title},#{is_lc},#{examine_type},#{examine_des},#{has_boss},#{apply_no},#{inter_type}
+        )
+    </select>
+
+    <select id="getLoginMsgMidList" parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto">
+        select
+            order_id,login_no, login_name, password, contract_phone, id_card_no, busi_boss_no, oa_login_no,
+            mis_no, vilid_flag, is_grp_staff, grpusertype, grp_staff_number, need_remind, grp_role_code, role_code,
+            role_code_small, group_id, work_area, busido_region, busido_town, office_town, to_char(create_date,'yyyy-mm-dd hh24:MM:ss') create_date, boss_role_code, right_code, org_code,
+            oa_no,oa_title,is_lc,inter_type,
+            DECODE(TRIM(examine_type),
+            '0',
+            '新增',
+            '1',
+            '通过',
+            '2',
+            '不通过') examine_type,examine_des,has_boss
+        from  ep_sys_loginmsg_mid where 1=1
+        <if test="examine_type != null and examine_type != ''">
+            and examine_type=#{examine_type}
+        </if>
+        <if test="login_no != null and login_no != ''">
+            and login_no=#{login_no}
+        </if>
+        <if test="apply_no != null and apply_no != ''">
+            and apply_no=#{apply_no}
+        </if>
+        <if test="order_id != null and order_id != ''">
+            and order_id=#{order_id}
+        </if>
+    </select>
+    <!-- 工号审批单挑明细 -->
+    <select id="getLoginMsgMidDetail" parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto">
+        select a.order_id,a.login_no,a.login_name,a.password,a.contract_phone,a.id_card_no,a.busi_boss_no,a.oa_login_no,a.mis_no,a.vilid_flag,a.is_grp_staff,a.grpusertype,a.grp_staff_number,a.need_remind,a.grp_role_code,a.role_code,a.group_id,a.work_area,trim(b.role_name) as role_name,trim(c.group_name) as group_name,a.boss_role_code,a.right_code,a.org_code,oa_no,oa_title,is_lc,examine_type,examine_des,inter_type
+        from ep_sys_loginmsg_mid a, ep_sys_rolecode_new b, ep_sys_group_info c
+        where 1 = 1
+        and a.role_code = b.role_code(+)
+        and a.group_id = c.group_id(+)
+        <if test="order_id != null and order_id != ''">
+            and order_id=#{order_id}
+        </if>
+    </select>
+
+    <select id="updateLoginMsgMid" parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="int">
+        update ep_sys_loginmsg_mid set examine_type=#{examine_type},examine_des=#{examine_des} where order_id=#{order_id}
+    </select>
+
+    <select id="getLoginMsgMidByOrderId" parameterType="com.esop.basicManagement.dto.BasicManagementDto" resultType="com.esop.basicManagement.dto.BasicManagementDto">
+        select
+            order_id,login_no, login_name, password, contract_phone, id_card_no, busi_boss_no, oa_login_no,
+            mis_no, vilid_flag, is_grp_staff, grpusertype, grp_staff_number, need_remind, grp_role_code, role_code,
+            role_code_small, group_id, work_area, busido_region, busido_town, office_town, to_char(create_date,'yyyy-mm-dd hh24:MM:ss') create_date, boss_role_code, right_code, org_code,
+            oa_no,oa_title,is_lc,examine_type,examine_des,has_boss,inter_type
+        from  ep_sys_loginmsg_mid
+        where order_id=#{order_id}
+    </select>
+</mapper>

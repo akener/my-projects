@@ -1,0 +1,208 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Qiao on 2017/6/1.
+ */
+public class OweRecordDto extends BaseDto{
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    String DT_RowId         = "";
+    String id               = "";//流水号
+    String record_id        = "";//批次号
+    String cust_id          = "";//集团id
+    String cust_name        = "";//集团名称
+    String org_code         = "";//地市
+    String product_id       = "";//产品id
+    String product_name     = "";//产品名称
+    String pay_period       = "";//缴费周期
+    String owe_money        = "";//欠费金额
+    String account_end_date = "";//账期结束时间
+    String service_no       = "";//客户经理工号
+    String service_name     = "";//客户经理姓名
+    String record_status    = "";//工单状态
+    String record_end_date  = "";//工单截止日期
+    String op_time          = "";//操作时间
+    String fault_reason     = "";//催缴失败原因
+    String ending_time      = "";//客户经理结束工单日期
+    String login_no         = "";//操作人工号
+    String resend           = "";//是否可重新派单
+    String org_name         = "";//地市名称
+    String status_name      = "";//工单状态中文
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus_name() {
+        return status_name;
+    }
+
+    public void setStatus_name(String status_name) {
+        this.status_name = status_name;
+    }
+
+    public String getOrg_name() {
+        return org_name;
+    }
+
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
+    }
+
+    public String getRecord_id() {
+        return record_id;
+    }
+
+    public void setRecord_id(String record_id) {
+        this.record_id = record_id;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public String getCust_name() {
+        return cust_name;
+    }
+
+    public void setCust_name(String cust_name) {
+        this.cust_name = cust_name;
+    }
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+
+    public String getProduct_id() {
+        return product_id;
+    }
+
+    public void setProduct_id(String product_id) {
+        this.product_id = product_id;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public String getPay_period() {
+        return pay_period;
+    }
+
+    public void setPay_period(String pay_period) {
+        this.pay_period = pay_period;
+    }
+
+    public String getOwe_money() {
+        return owe_money;
+    }
+
+    public void setOwe_money(String owe_money) {
+        this.owe_money = owe_money;
+    }
+
+    public String getAccount_end_date() {
+        return account_end_date;
+    }
+
+    public void setAccount_end_date(String account_end_date) {
+        this.account_end_date = account_end_date;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getService_name() {
+        return service_name;
+    }
+
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
+    }
+
+    public String getRecord_status() {
+        return record_status;
+    }
+
+    public void setRecord_status(String record_status) {
+        this.record_status = record_status;
+    }
+
+    public String getRecord_end_date() {
+        return record_end_date;
+    }
+
+    public void setRecord_end_date(String record_end_date) {
+        this.record_end_date = record_end_date;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getFault_reason() {
+        return fault_reason;
+    }
+
+    public void setFault_reason(String fault_reason) {
+        this.fault_reason = fault_reason;
+    }
+
+    public String getEnding_time() {
+        return ending_time;
+    }
+
+    public void setEnding_time(String ending_time) {
+        this.ending_time = ending_time;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getResend() {
+        return resend;
+    }
+
+    public void setResend(String resend) {
+        this.resend = resend;
+    }
+}

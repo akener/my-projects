@@ -1,0 +1,70 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/23.
+ */
+public class NoteInfoDto {
+    String note_id = "";//公告表示
+    String note_title ="";//公告标题
+    String note_content = "";//公告内容
+    String pub_date = "";//公布时间
+    String exp_date = "";//失效时间
+    String note_type_flag = "";//公告类别
+    String pub_loginno = "";//公布人
+
+    public String getNote_id() {
+        return note_id;
+    }
+
+    public void setNote_id(String note_id) {
+        this.note_id = note_id;
+    }
+
+    public String getNote_title() {
+        return note_title;
+    }
+
+    public void setNote_title(String note_title) {
+        this.note_title = note_title;
+    }
+
+    public String getNote_content() {
+        return note_content;
+    }
+
+    public void setNote_content(String note_content) {
+        this.note_content = note_content;
+    }
+
+    public String getPub_date() {
+        return pub_date;
+    }
+
+    public void setPub_date(String pub_date) {
+        this.pub_date = pub_date;
+    }
+
+    public String getExp_date() {
+        return exp_date;
+    }
+
+    public void setExp_date(String exp_date) {
+        this.exp_date = exp_date;
+    }
+
+    public String getNote_type_flag() {
+        return note_type_flag;
+    }
+
+    public void setNote_type_flag(String note_type_flag) {
+        this.note_type_flag = note_type_flag;
+    }
+
+    public String getPub_loginno() {
+        return pub_loginno;
+    }
+
+    public void setPub_loginno(String pub_loginno) {
+        this.pub_loginno = pub_loginno;
+    }
+}

@@ -1,0 +1,113 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <input type="text" id="branch_company" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>业务组织（行业中心）：</th>
+                            <td>
+                                <input type="text" id="bus_org" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>入账开始时间：</th>
+                            <td>
+                                <input type=text id="start_time" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'start_time',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>入账结束时间：</th>
+                            <td>
+                                <input type=text id="end_time" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'end_time',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="bankDealInfo()">查询</button>
+                            <%--<button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>--%>
+                            <button class="ui-btn" type="reset"  onclick="addRefundApply()">新增</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>银行交易明细查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="bankDealInfo" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">交易流水号</th>
+                            <th class="text-center">银行账号</th>
+                            <th class="text-center">户名</th>
+                            <th class="text-center">对方账号</th>
+                            <th class="text-center">对方户名</th>
+                            <th class="text-center">摘要</th>
+                            <th class="text-center">用途</th>
+                            <th class="text-center">稽核标识码</th>
+                            <th class="text-center">营业员工号</th>
+                            <th class="text-center">借方金额</th>
+                            <th class="text-center">贷方金额</th>
+                            <th class="text-center">手续费</th>
+                            <th class="text-center">交易时间</th>
+                            <th class="text-center">缴款方式</th>
+                            <th class="text-center">支票号</th>
+                            <th class="text-center">银行网点编号</th>
+                            <th class="text-center">处理状态</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%@ include file="refundApply.jsp"%>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/refund/refundApply.js"></script>
+</html>

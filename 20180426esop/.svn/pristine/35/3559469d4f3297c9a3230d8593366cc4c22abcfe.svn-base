@@ -1,0 +1,408 @@
+$(document).ready(function() {
+    offsetApproveQuery();
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+} );
+//重置
+function pageReset(){
+    $("input").val("");
+    $("textarea").val("");
+}
+var login_no=$("#login_no").val();//获取当前登录的员工
+
+//查询集团资金账户接口信息
+/*function qryCapitalInfoList() {
+    table = $('#qryCapitalInfo').DataTable({
+        "scrollX": true,
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        //"ordering":true,
+        "scrollX": true,
+        "bRetrieve": true,
+        "pageLength": 20,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getGroupCapitalInfoFromBoss",
+            type:"POST",
+            data:{
+                GROUPID:$("#group_num").val()
+            }
+        },
+        columns: [
+            { data: "grpfundacctid",
+                "width": "8%",
+                render: function ( data, type, row, meta ) {
+                    return data= "<button type='button' style='width: 85px' class='ui-btn mgr-10' onclick=addHistoryOffsetApply('"+row.grpfundacctid+","+row.grpcustid+"," +
+                        ""+row.grpcustname+","+row.bankacctid+","+row.bankname+","+row.ownerorgid+","+row.status+","+row.balance+","+row.nowbalance+","+row.holdbalance+","+row.freezefee+","+$("#group_num").val()+","+row.newBalance+","+row.newNowbalance+","+row.newHoldbalance+","+row.newFreezefee+"')>发起申请</button>";
+                }
+            },
+            { data: "grpfundacctid"},
+            { data: "grpcustid"},
+            { data: "grpcustname"},
+            { data: "bankacctid"},
+            { data: "bankname"},
+            { data: "ownerorgid"},
+            {
+                data: "status",
+                render:function (data, type, row, meta) {
+                    if(row.status == '0'){
+                        return data = "未绑定";
+                    }else if(row.status == '1'){
+                        return data = "已绑定";
+                    }
+                }
+            },
+            { data: "newBalance"},
+            { data: "newNowbalance"},
+            { data: "newHoldbalance"},
+            { data: "newFreezefee"}
+        ],
+        select: true,
+        buttons: [
+        ]
+    });
+}*/
+//申请时间
+var currentDate= getNowFormatTime();
+//冲销历史短款申请页面
+function addHistoryOffsetApply(params) {
+    //清除input 框的值
+    $("input").val("");
+    $("#fileList div").remove();
+    capitalOffset(params);//申请页面回显集团资金账户信息
+    $("#offsetApplicant").val(login_no);
+    $("#applyDate").val(currentDate);
+    $("#approve_detail").modal('show');
+    getNextLink("10","0");//加载下一步处理人
+}
+function capitalOffset(result) {
+    var arr = new Array();
+    arr = result.split(",");
+    var zijin_zhanghao = arr[0];
+    var kehu_bianhao = arr[1];
+    var kehu_mingcheng = arr[2];
+    var bankacctid = arr[3];
+    var bankname = arr[4];
+    var ownerorgid = arr[5];
+    var zhanghao_zhuangtai = arr[6];
+    var zhanghu_yue = arr[7];
+    var keyong_yue = arr[8];
+    var zhanyong_zijin = arr[9];
+    var dongjie_zijin = arr[10];
+    $("#zijin_zhanghao").val(zijin_zhanghao);
+    $("#kehu_bianhao").val(kehu_bianhao);
+    $("#kehu_mingcheng").val(kehu_mingcheng);
+    $("#bankacctid").val(bankacctid);
+    $("#bankname").val(bankname);
+    $("#ownerorgid").val(ownerorgid);
+    $("#zhanghao_zhuangtai").val(zhanghao_zhuangtai);
+    $("#zhanghu_yue").val(zhanghu_yue);
+    $("#keyong_yue").val(keyong_yue);
+    $("#zhanyong_zijin").val(zhanyong_zijin);
+    $("#dongjie_zijin").val(dongjie_zijin);
+    $("#outGroupNo").val(arr[11]);
+    $("#zhanghu_yue_yuan").val(arr[12]);
+    $("#keyong_yue_yuan").val(arr[13]);
+    $("#zhanyong_zijin_yuan").val(arr[14]);
+    $("#dongjie_zijin_yuan").val(arr[15]);
+    getGroupInfo(arr[11]);
+}
+
+var GROUPID =  $("#outGroupNo").val();//集团编号
+var OPERFEE =  $("#applyAmount").val();//资金操作金额
+
+//待审批历史短款冲销操作列表
+function offsetApproveQuery() {
+    var nodeId = $("#first_node_id").val();//下一环节ID
+    var endTime = $("#apply_date_end").val();
+    var date = new Date(endTime);
+    var newEndDate = addDate(date,1);//结束日期
+    table = $('#example').DataTable({
+        "scrollX": true,
+        "processing": true,
+        "serverSide": true,
+        destroy: true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        //"bSort":false,
+        "bLengthChange": false,
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        ajax: {
+            url: "/historyOffsetApproveQuery",
+            type: "POST",
+            data: {
+                "nodeId": nodeId,
+                taskOrderId:$("#taskOrderId").val(),
+                applicant:$("#applicant").val(),
+                startTime:$("#apply_date_start").val(),
+                endTime:newEndDate,
+                nextDealPerson:login_no
+            }
+        },
+        columns: [
+            {
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    if(row.nodeId == 1){
+                        return data= "<input style='width: 60px' value='已审批'/>";
+                    }else{
+                        return data= "<button type='button' style='width: 60px' class='ui-btn mgr-10' onclick=HistoryOffsetDoApprove('"+row.taskOrderId+"','"+row.applicant+"')>审批</button>";
+                    }
+                }
+            },
+            {data: "login_name"},
+            {data: "dealTime"},
+            {data: "taskOrderId"},
+            {data: "outGroup"},
+            {data: "outGroupNo"},
+            {data: "capitalContact"},
+            {data: "contactNumber"},
+            {data: "contactType"},
+            {data: "applyAmount_yuan"},
+            {data: "historyOffsetAmount_yuan"},
+            {data: "remark"},
+            {data: "ownerorgname"},
+            {data: "balance_yuan"},
+            {data: "nowbalance_yuan"},
+            {data: "holdbalance_yuan"},
+            {data: "freezefee_yuan"},
+            {data: "runningWarterNo"}
+        ],
+        select: true
+    });
+}
+
+//审批页面
+function HistoryOffsetDoApprove(taskOrderId,applicant){
+    $("#HistoryOffsetDoApprove").modal('show');//显示审批页面
+    //获取行业中心
+    selectBusinessCenterByLoginNo(applicant);
+    $("#applicant").val(applicant);
+    $.ajax({
+        type:"POST",
+        url:"/historyOffsetApproveQuery",
+        data:{
+            "taskOrderId":taskOrderId
+        }
+    }).then(function(result){
+        var result=result.data;
+        //console.log(result);
+        $("#applyDate1").val(result[0].applyDate);
+        $("#out_group1").val(result[0].outGroup);
+        $("#outGroupNo1").val(result[0].outGroupNo);
+        $("#capitalContact1").val(result[0].capitalContact);
+        $("#contactNumber1").val(result[0].contactNumber);
+        $("#contactType1").val(result[0].contactType);
+        $("#applyAmount1").val(result[0].applyAmount);
+        $("#historyOffsetAmount1").val(result[0].historyOffsetAmount);
+        $("#runningWarterNo1").val(result[0].runningWarterNo);
+        $("#doloadFile a").remove();//模态框每次打开之前,清空之前的文件
+        if(result[0].fileName!=null&&$.trim(result[0].fileName)!=''){
+            $("#fileName").val(result[0].fileName);
+            $("#attach_file_id").val(result[0].file);
+            $("#doloadFile").append("<a href='javascript:downloadFile()' title='"+result[0].fileName+"'>"+result[0].fileName+"</a>")
+
+        }
+        $("#remark1").val(result[0].remark);
+        $("#kehu_bianhao1").val(result[0].grpcustid);
+        $("#kehu_mingcheng1").val(result[0].grpcustname);
+        $("#ownerorgid1").val(result[0].ownerorgid);
+        $("#ownerorgid1name").val(result[0].ownerorgname);
+
+        $("#zhanghu_yue1").val(result[0].balance);
+        $("#keyong_yue1").val(result[0].nowbalance);
+        $("#zhanyong_zijin1").val(result[0].holdbalance);
+        $("#dongjie_zijin1").val(result[0].freezefee);
+        var taskOrderId = result[0].taskOrderId;
+        $("#taskOrderId").val(taskOrderId);
+
+        $("#applyAmount1_yuan").val(result[0].applyAmount_yuan);
+        $("#historyOffsetAmount1_yuan").val(result[0].historyOffsetAmount_yuan);
+        $("#zhanghu_yue1_yuan").val(result[0].balance_yuan);
+        $("#keyong_yue1_yuan").val(result[0].nowbalance_yuan);
+        $("#zhanyong_zijin1_yuan").val(result[0].holdbalance_yuan);
+        $("#dongjie_zijin1_yuan").val(result[0].freezefee_yuan);
+
+        qryWFNodeId(taskOrderId);
+    })
+}
+
+//查询流程info表的NodeId
+function qryWFNodeId(param){
+    $.ajax({
+        type: "post",
+        url: "/getWorkFlowNodeIdByRefundId",
+        dataType: 'json',
+        data: {
+            "taskOrderId": param
+        },
+        success: function (result) {
+            //获取响应的json数据
+            var  filed  =result.info;
+            $("#node_id").val(filed[0].nodeId);
+            getNextLink("10",$("#node_id").val());
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    })
+
+}
+//提交审批信息
+function saveDoApproveOffsetInfo(){
+    $("#qu_reset").attr('disabled',true);
+    //审批信息
+    var nextStepDealPerson = $("#nextStepDealPerson").val();//下一步处理人
+    var nodeId = $("#first_node_id").val();//下一环节ID
+    // var dealTime = getNowFormatTime();//处理时间
+    var approveOpinion = $("#shifou_tongguo").val();//审批意见
+    var memo = $("#shenpi_yijian").val();//备注
+    var taskOrderId =  $("#taskOrderId").val();//工单流水号
+    //行业中心(用于同步工单)
+    var businessCenterCode = $("#center_code").val();
+    var applicant = $("#applicant").val();
+    $.ajax({
+        type: "post",
+        url: "/saveOffsetApproveInfo",
+        data: {
+            "applyDate" :	currentDate,
+            "outGroup"   : $("#out_group1").val(),
+            "outGroupNo" :	$("#outGroupNo1").val(),
+            "capitalContact":	$("#capitalContact1").val(),
+            "contactNumber"  :	$("#contactNumber1").val(),
+            "contactType":   $("#contactType1").val(),
+            "applyAmount" :	$("#applyAmount1").val( ),
+            "historyOffsetAmount" :	$("#historyOffsetAmount1").val(),
+            "runningWarterNo":$("#runningWarterNo1").val(),
+            "file":	$("#xFile1").val( ),
+            "remark" : $("#remark1").val(),
+            "grpfundacctid"  :	$("#zijin_zhanghao1").val(),
+            "grpcustid"  :	$("#kehu_bianhao1").val(),
+            "grpcustname"  : $("#kehu_mingcheng1").val(),
+            "bankacctid" :	$("#bankacctid1").val(),
+            "bankname"  :	$("#bankname1").val(),
+            "ownerorgid"   :	 $("#ownerorgid1").val(),
+            "status"  :	$("#zhanghao_zhuangtai1").val(),
+            "balance"   :	 $("#zhanghu_yue1").val(),
+            "nowbalance"   :	$("#keyong_yue1").val(),
+            "holdbalance"  :	$("#zhanyong_zijin1").val(),
+            "freezefee":	$("#dongjie_zijin1").val(),
+
+            "taskOrderId" : taskOrderId,
+            "nextDealPerson"   : nextStepDealPerson,
+            "nodeId"   : nodeId,
+            // "dealTime"   : dealTime,
+            "approveOpinion"   : approveOpinion,
+            "memo"   : memo,
+            applicantNo : login_no,
+            applicant:applicant,
+            businessCenter:businessCenterCode
+
+        },
+        success: function (result) {
+            var  return_code = result.info.split(",")[0];
+            var  return_msg  = result.info.split(",")[1];
+            if(return_code ==1 ){
+                alert(return_msg);
+                $("#HistoryOffsetDoApprove").modal('hide');
+                location.href="cxlsdk";//跳转到操作列表
+            }else{
+                alert(return_msg);
+                $("#qu_reset").attr('disabled',false);
+            }
+        },
+        error: function () {
+            alert('请求超时，请重试！');
+            $("#qu_reset").attr('disabled',false);
+        }
+    });
+}
+
+
+
+
+//集团资金账户查询
+function group_capital_choose() {
+    var url="/esop/jtzjzhcx";
+    var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+    if(ret!=undefined){
+        var data=ret.split("#");
+        $("#book_balance").val(data[0]);
+        $("#available_balance").val(data[1]);
+
+    }
+}
+function getNowFormatTime() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        + " " + date.getHours() + seperator2 + date.getMinutes()
+        + seperator2 + date.getSeconds();
+    return currentdate;
+
+}
+
+function downloadFile() {
+    var attach_file_id = $("#attach_file_id").val();
+    if(attach_file_id==null||$.trim(attach_file_id)==''){
+        alert("下载失败");
+        return;
+    }
+    window.location.href = "downloadFile?attach_file_id="+attach_file_id;
+}
+function addDate(date,days){
+    var d=new Date(date);
+    d.setDate(d.getDate()+days);
+    var month=d.getMonth()+1;
+    var day = d.getDate();
+    if(month<10){
+        month = "0"+month;
+    }
+    if(day<10){
+        day = "0"+day;
+    }
+    var val = d.getFullYear()+""+month+""+day;
+    return val;
+}
+
+function selectBusinessCenterByLoginNo(param) {
+    $.ajax({
+        url:"/selectBusinessCenterByLoginNo",
+        type:"post",
+        data:{
+            login_no:param
+        },success:function (data) {
+            $("#ruzhang_zuzhi").val(data.business_center);
+            $("#center_code").val(data.center_code);
+        }
+    })
+}

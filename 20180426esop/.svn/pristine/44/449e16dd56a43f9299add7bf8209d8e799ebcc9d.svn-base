@@ -1,0 +1,22 @@
+<%
+    String ctxPath1 = request.getContextPath();
+%>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/js/jquery-1.11.3.min.js"></script>
+<%--<script type="text/javascript" src="<%=ctxPath1 %>/static/js/jquery.js"></script>--%>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/assets/js/ui.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/plugins/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/js/common.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/js/dataTables.select.min.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/js/dataTables.editor.min.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/js/dataTables.tableTools.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/layer-v2.3/layer/layer.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/js/comcom.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/js/common.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/js/common-invoice.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="<%=ctxPath1 %>/static/cqDevelopment/pub-ui/js/jquery.form.js"></script>

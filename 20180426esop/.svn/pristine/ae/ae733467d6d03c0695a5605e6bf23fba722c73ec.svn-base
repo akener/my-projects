@@ -1,0 +1,293 @@
+/**
+ * 根据url参数名获取参数值
+ */
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) {
+        return decodeURI(r[2]);
+    } else {
+        return null;
+    }
+}
+
+/**
+ * 两数求和
+ */
+function sum(arg1, arg2) {
+    var r1, r2, m, c;
+    try {
+        r1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r1 = 0;
+    }
+    try {
+        r2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r2 = 0;
+    }
+    c = Math.abs(r1 - r2);
+    m = Math.pow(10, Math.max(r1, r2));
+    if (c > 0) {
+        var cm = Math.pow(10, c);
+        if (r1 > r2) {
+            arg1 = Number(arg1.toString().replace(".", ""));
+            arg2 = Number(arg2.toString().replace(".", "")) * cm;
+        } else {
+            arg1 = Number(arg1.toString().replace(".", "")) * cm;
+            arg2 = Number(arg2.toString().replace(".", ""));
+        }
+    } else {
+        arg1 = Number(arg1.toString().replace(".", ""));
+        arg2 = Number(arg2.toString().replace(".", ""));
+    }
+    return (arg1 + arg2) / m;
+}
+
+/**
+ * 清除金额输入框非法输入
+ */
+function clrNoNum(obj) {
+    if (obj.value != '' && obj.value.substr(0, 1) == '.') {
+        obj.value = "";
+    }
+    obj.value = obj.value.replace(/^0*(0\.|[1-9])/, '$1');
+    obj.value = obj.value.replace(/[^\d.]/g, "");
+    obj.value = obj.value.replace(/\.{2,}/g, ".");
+    obj.value = obj.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+    obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
+    if (obj.value.indexOf(".") < 0 && obj.value != "") {
+        if (obj.value.substr(0, 1) == '0' && obj.value.length == 2) {
+            obj.value = obj.value.substr(1, obj.value.length);
+        }
+    }
+}
+
+/**
+ * 格式化金额为保留小数点后两位
+ */
+function formatMoney(money) {
+    money = money.replace(/[^0-9|\.]/g, '');
+
+    if (/^0+/)
+        money = money.replace(/^0+/, '');
+    if (!/\./.test(money))
+        money += '.00';
+    if (/^\./.test(money))
+        money = '0' + money;
+    money += '00';
+    money = money.match(/\d+\.\d{2}/)[0];
+    return money;
+}
+
+/**
+ * 取当前时间
+ */
+function curentTime() {
+    var now = new Date();
+
+    var year = now.getFullYear();       //年
+    var month = now.getMonth() + 1;     //月
+    var day = now.getDate();            //日
+
+    var hh = now.getHours();            //时
+    var mm = now.getMinutes();          //分
+    var ss = now.getSeconds();           //秒
+
+    var clock = year + "-";
+
+    if (month < 10)
+        clock += "0";
+
+    clock += month + "-";
+
+    if (day < 10)
+        clock += "0";
+
+    clock += day + " ";
+
+    if (hh < 10)
+        clock += "0";
+
+    clock += hh + ":";
+    if (mm < 10) clock += '0';
+    clock += mm + ":";
+
+    if (ss < 10) clock += '0';
+    clock += ss;
+    return (clock);
+}
+
+/**
+ * 判断对象非空
+ */
+function isNotNull(obj) {
+    if(obj == null){
+        return false;
+    }
+    if (typeof(obj) != "undefined") {
+        if (obj instanceof Array) {
+            if (obj.length != 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (obj instanceof String) {
+            if (obj != "" && obj != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (typeof(obj) === "object") {
+            var tmpStr = JSON.stringify(obj);
+            if (tmpStr == "" || tmpStr == "{}" || tmpStr == "[]" || tmpStr == "NaN") {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
+/**
+ * 模糊化词语
+ */
+function fuzzy(word) {
+    if (word == '') {
+        return '';
+    }
+    var result = '';
+    switch (word.length) {
+        case 2:
+            result = word.substr(0, 1) + '*';
+            break;
+        case 3:
+            result = word.substr(0, 1) + '*' + word.substr(2);
+            break;
+        case 11:
+            result = word.substr(0, 3) + '****' + word.substr(6, 4);
+            break;
+        default:
+            result = word.substr(0, 2);
+            for (var i = 0; i < word.length; i++) {
+                result += '*';
+            }
+    }
+    return result;
+}
+
+//日期格式化
+function Format(now, mask) {
+    var d = now;
+    var zeroize = function (value, length) {
+        if (!length) length = 2;
+        value = String(value);
+        for (var i = 0, zeros = ''; i < (length - value.length); i++) {
+            zeros += '0';
+        }
+        return zeros + value;
+    };
+
+    return mask.replace(/"[^"]*"|'[^']*'|\b(?:d{1,4}|m{1,4}|yy(?:yy)?|([hHMstT])\1?|[lLZ])\b/g, function ($0) {
+        switch ($0) {
+            case 'd':
+                return d.getDate();
+            case 'dd':
+                return zeroize(d.getDate());
+            case 'ddd':
+                return ['Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat'][d.getDay()];
+            case 'dddd':
+                return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][d.getDay()];
+            case 'M':
+                return d.getMonth() + 1;
+            case 'MM':
+                return zeroize(d.getMonth() + 1);
+            case 'MMM':
+                return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+            case 'MMMM':
+                return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getMonth()];
+            case 'yy':
+                return String(d.getFullYear()).substr(2);
+            case 'yyyy':
+                return d.getFullYear();
+            case 'h':
+                return d.getHours() % 12 || 12;
+            case 'hh':
+                return zeroize(d.getHours() % 12 || 12);
+            case 'H':
+                return d.getHours();
+            case 'HH':
+                return zeroize(d.getHours());
+            case 'm':
+                return d.getMinutes();
+            case 'mm':
+                return zeroize(d.getMinutes());
+            case 's':
+                return d.getSeconds();
+            case 'ss':
+                return zeroize(d.getSeconds());
+            case 'l':
+                return zeroize(d.getMilliseconds(), 3);
+            case 'L':
+                var m = d.getMilliseconds();
+                if (m > 99) m = Math.round(m / 10);
+                return zeroize(m);
+            case 'tt':
+                return d.getHours() < 12 ? 'am' : 'pm';
+            case 'TT':
+                return d.getHours() < 12 ? 'AM' : 'PM';
+            case 'Z':
+                return d.toUTCString().match(/[A-Z]+$/);
+            // Return quoted strings with the surrounding quotes removed
+            default:
+                return $0.substr(1, $0.length - 2);
+        }
+    });
+}
+
+/**
+ * 日期格式化（原型扩展或重载）
+ * 格式 YYYY或yyyy/ 表示年份
+ * MM/M 月份
+ * dd/DD/d/D 日期
+ * @param {formatStr} 格式模版
+ * @type string
+ * @returns 日期字符串
+ */
+Date.prototype.format = function (formatStr) {
+    var str = formatStr;
+    str = str.replace(/yyyy|YYYY/, this.getFullYear());
+    str = str.replace(/MM/, (this.getMonth() + 1) > 9 ? (this.getMonth() + 1).toString() : '0' + (this.getMonth() + 1));
+    str = str.replace(/dd|DD/, this.getDate() > 9 ? this.getDate().toString() : '0' + this.getDate());
+    return str;
+}
+
+/**
+ * 字符串转日期
+ * 格式yyyy-MM-dd hh:mm:ss
+ */
+function convertDateFromString(dateString) {
+    if (dateString) {
+        var arr1 = dateString.split(" ");
+        var sdate = arr1[0].split('-');
+        var stime = arr1[1].split(':');
+        var date = new Date(sdate[0], sdate[1] - 1, sdate[2], stime[0], stime[1], stime[2]);
+        return date;
+    } else {
+        return null;
+    }
+}
+
+/**
+ * 计算两个日期之间相差的天数
+ */
+function countDiffDays(d1, d2) {
+    var diffTime = d1.getTime() - d2.getTime();
+    return parseInt(diffTime / (1000 * 60 * 60 * 24));
+}

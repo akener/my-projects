@@ -1,0 +1,30 @@
+//关于屏幕1024分辨率的问题
+$(function(){
+	$(window).resize(function(){
+		if($(window).width()<1189){
+			$(".home-page-list").css('width','688px');
+			$(".set-moner-step1 li .num-right").css('width','80px');
+			$(".set-moner-box1").css('width','698px');
+			$(".set-moner-step li .num-right").css('width','115px');
+			$(".set-moner-box").css('width','705px');
+			$(".ca-container").css('width','585px');
+			$(".set-moner-step2 li .num-right").css('width','80px');
+			$(".set-moner-box2").css('width','696px');
+			$(".set-moner-step3 li .num-right").css('width','165px');
+			$(".set-moner-box3").css('width','690px');
+			}else{
+			$(".home-page-list").css('width','860px');
+			$(".set-moner-step1 li .num-right").css('width','120px');
+			$(".set-moner-box1").css('width','895px');
+			$(".set-moner-step li .num-right").css('width','160px');
+			$(".set-moner-box").css('width','884px');
+			$(".ca-container").css('width','780px');
+			$(".set-moner-box").css('width','884px');
+			$(".set-moner-step2 li .num-right").css('width','120px');
+			$(".set-moner-box2").css('width','896px');
+			$(".set-moner-step3 li .num-right").css('width','210px');
+			$(".set-moner-box3").css('width','818px');
+				}
+		})
+	$(window).resize();
+})

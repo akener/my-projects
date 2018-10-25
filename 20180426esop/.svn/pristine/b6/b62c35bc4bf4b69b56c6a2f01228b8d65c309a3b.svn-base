@@ -1,0 +1,77 @@
+package com.esop.capAdjustApply.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.capAdjustApply.dto.EpCapDepositInfo;
+import com.esop.capAdjustApply.service.SubmitDepositApplySvr;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+/**
+ * Created by user on 2017/11/8.
+ */
+//保证金使用申请表单提交
+@RestController
+public class SubmitDepositApply {
+    @Autowired
+    SubmitDepositApplySvr tjService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @RequestMapping(value="/submitDepositApply")
+    public String tijiaoSQ(EpCapDepositInfo parameter, HttpServletRequest request, boolean flag){
+        System.out.println("保证金使用申请页面传来参数是="+parameter);
+
+        int i = tjService.insertEpCapDepositApplyInfo(parameter);
+        String json= "";
+        Map<String,Object> mapN = new HashMap<>();
+        mapN.put("succ_msg",i);
+        List< Map<String,Object> > list = new ArrayList<>();
+        list.add(mapN);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        json =  JSONObject.toJSONString(map);
+        System.out.println("申请返回json="+json);
+        return  json;
+    }
+
+    //保证资金使用申请列表查询
+    @RequestMapping(value="/qryDepositApplyList")
+    public Result qryDepositApplyList(EpCapDepositInfo parameter, HttpServletRequest request){
+        System.out.println("保证金申请使用列表查询参数="+parameter.toString());
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = tjService.qryDepositApplyList(parameter);
+        return result;
+    }
+
+    //查询保证金使用申请详细信息
+    @RequestMapping(value="/getDepositApplyDealInfo")
+    public String getDepositApplyDealInfo(EpCapDepositInfo parameter, HttpServletRequest request, boolean flag){
+        System.out.println("保证金使用申请详情页面传来参数是="+parameter);
+        List depList = tjService.getDepositApplyDealInfo(parameter);
+         String json= "";
+       /* Map<String,Object> mapN = new HashMap<>();
+        mapN.put("succ_msg",i);
+        List< Map<String,Object> > list = new ArrayList<>();
+        list.add(mapN);*/
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",depList);
+        json =  JSONObject.toJSONString(map);
+        System.out.println("查询保证金使用申请详细信息--返回json="+json);
+        return  json;
+    }
+}

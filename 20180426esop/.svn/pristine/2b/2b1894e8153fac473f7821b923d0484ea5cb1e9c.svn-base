@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="queryBasicLoginMsg"  parameterType="com.esop.basicManagement.dto.BasicRoleDealDto" resultType="com.esop.basicManagement.dto.BasicRoleDealDto" >
+        select a.login_no,a.login_name,a.role_code,nvl(b.role_name,'无角色') as role_name from ep_sys_loginmsg_new a,ep_sys_rolecode_new b
+        where a.role_code = b.role_code(+)
+        <if test="region_code != ''">
+            and a.group_id in (select group_id from ep_sys_group_rel t where t.parent_group_id = #{region_code})
+        </if>
+        <if test="town_code != ''">
+            and a.group_id in (select group_id from ep_sys_group_rel t where t.parent_group_id = #{town_code})
+        </if>
+        <if test="login_no != ''">
+            and a.login_no = #{login_no}
+        </if>
+    </select>
+    <select id="queryBasicRoleMsg"  parameterType="com.esop.basicManagement.dto.BasicRoleDealDto" resultType="com.esop.basicManagement.dto.BasicRoleDealDto" >
+        select a.role_code, a.role_name
+        from ep_sys_rolecodesmall_info a
+        where 1 = 1
+        <if test="role_code != ''">
+            and a.parent_code = #{role_code}
+        </if>
+        and substr(a.role_code,3,2) != '01'
+    </select>
+    <select id="queryBasicRoleFcMsg"  parameterType="com.esop.basicManagement.dto.BasicRoleDealDto" resultType="com.esop.basicManagement.dto.BasicRoleDealDto" >
+        select a.role_code, a.role_name
+        from ep_sys_rolecodesmall_info a
+        where 1 = 1
+        <if test="role_code != ''">
+            and a.parent_code = #{role_code}
+        </if>
+    </select>
+    <insert id="insertLoginRolRel" parameterType="com.esop.basicManagement.dto.BasicRoleDealDto" >
+        insert into ep_sys_rolecode_rel (LOGIN_NO, ROLE_CODE_SMALL) values (#{login_no},#{role_code})
+    </insert>
+    <delete id="deleteLoginRolRel" parameterType="com.esop.basicManagement.dto.BasicRoleDealDto">
+        DELETE FROM ep_sys_rolecode_rel WHERE login_no=#{login_no} and substr(role_code_small,3,2) != '01'
+    </delete>
+</mapper>

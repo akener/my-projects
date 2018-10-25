@@ -1,0 +1,44 @@
+package com.esop.newVip.dto;
+
+/**
+ * Created by zuoyue on 2017/8/3.
+ */
+//经理树Dto
+public class managerDto {
+    String service_no="";//经理工号
+    String name="";//经理姓名
+    String org_code="";//
+    String group_id="";//地市代码
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+}

@@ -1,0 +1,52 @@
+package com.esop.hello;
+
+import org.json.JSONObject;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 2017/3/25.
+ */
+@RestController
+public class JsonpController {
+    @RequestMapping("/jsonpTest")
+    public Map<String, Object> jsonpTest(String id,String name) {
+        System.out.println("服务端已接受到参数{id:"+id+",name:"+name+"}");
+        JSONObject json1 = new JSONObject("{id:1,name:spring world!}");
+        return json1.toMap();
+    }
+    @RequestMapping("/jsonp")
+    public String jsonp(String id,String name,HttpServletResponse response) {
+        System.out.println("服务端已接受到参数jsonp{id:"+id+",name:"+name+"}");
+        response.setContentType("application/x-javascript;charset=UTF-8");
+        response.setHeader("X-XSS-Protection","0");
+        return "dec('\"服务端已接受到参数{id:"+id+",name:"+name+"}\"')";
+    }
+    @RequestMapping("/responseAddHeader")
+    public Map<String, Object> responseAddHeader(String id,String name, HttpServletResponse response) {
+        System.out.println("服务端已接受到参数123{id:"+id+",name:"+name+"}");
+        response.addHeader("Access-Control-Allow-Origin","*");
+        //response.setHeader("Access-Control-Allow-Origin","null");
+        JSONObject json1 = new JSONObject("{id:2,name:\"服务端已接受到参数{id:"+id+",name:"+name+"}\"}");
+        return json1.toMap();
+    }
+   // @CrossOrigin(origins = "*")
+    @RequestMapping("/crossOrigin")
+    public Map<String, Object> crossOrigin(String id,String name, HttpServletResponse response) {
+        System.out.println("服务端已接受到参数123{id:"+id+",name:"+name+"}");
+        Iterator it = response.getHeaderNames().iterator();
+        while (it.hasNext()) {
+            // it.next()返回的是一个对象类型，需要强制转换
+            String book = (String) it.next();
+            System.out.println("headers="+book);
+            System.out.println("response.headers="+response.getHeader(book));
+        }
+        JSONObject json1 = new JSONObject("{id:2,name:\"服务端已接受到参数{id:"+id+",name:"+name+"}\"}");
+        return json1.toMap();
+    }
+}

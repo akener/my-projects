@@ -1,0 +1,22 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtProcInstInfo;
+import java.util.List;
+
+public interface CtProcInstInfoMapper {
+    int deleteByPrimaryKey(String procInstId);
+
+    int insert(CtProcInstInfo record);
+
+    void insertProcInst(CtProcInstInfo info);
+
+    CtProcInstInfo selectByPrimaryKey(String procInstId);
+
+    List<CtProcInstInfo> selectAll();
+
+    int updateByPrimaryKey(CtProcInstInfo record);
+
+    int updateForStopByPrimaryKey(CtProcInstInfo record);
+
+    CtProcInstInfo selectByBizRecordId(String bizRecordId);
+}

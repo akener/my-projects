@@ -1,0 +1,109 @@
+package com.esop.cust.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by lubinghan on 2017/6/21.
+ */
+//合同审批时查询待审批的合同的入参和查询根据工号查询地区编码的入参
+public class CnttExamineDto extends BaseDto{
+    String login_no = "";// 登陆工号
+    String contract_id = "";//合同序列
+    String deal_time = "";//开始时间
+    String complete_time = "";//结束时间
+    String parent_group_id = "";//地区
+    String charge_flag = "";//待审批为1。审批时选择审批状态 通过为 5 不通过为 0
+    String goods_not = "";//产品经理不通过原因
+    String dept_not = "";//部门经理不同过原因
+    String role_zc = "";// 用于判断是否拥有此功能的权限 为0时没有权限，为1是有
+    //审批时历史表的字段
+    String zc_status = "";//支撑人员是否通过
+    String isOk = "";//是否通过
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getDeal_time() {
+        return deal_time;
+    }
+
+    public void setDeal_time(String deal_time) {
+        this.deal_time = deal_time;
+    }
+
+    public String getComplete_time() {
+        return complete_time;
+    }
+
+    public void setComplete_time(String complete_time) {
+        this.complete_time = complete_time;
+    }
+
+    public void setParent_group_id(String parent_group_id) {
+        this.parent_group_id = parent_group_id;
+    }
+
+    public String getParent_group_id() {
+        return parent_group_id;
+    }
+
+    public String getCharge_flag() {
+        return charge_flag;
+    }
+
+    public void setCharge_flag(String charge_flag) {
+        this.charge_flag = charge_flag;
+    }
+
+    public String getGoods_not() {
+        return goods_not;
+    }
+
+    public void setGoods_not(String goods_not) {
+        this.goods_not = goods_not;
+    }
+
+    public String getRole_zc() {
+        return role_zc;
+    }
+
+    public void setRole_zc(String role_zc) {
+        this.role_zc = role_zc;
+    }
+
+    public String getDept_not() {
+        return dept_not;
+    }
+
+    public void setDept_not(String dept_not) {
+        this.dept_not = dept_not;
+    }
+
+    public String getZc_status() {
+        return zc_status;
+    }
+
+    public void setZc_status(String zc_status) {
+        this.zc_status = zc_status;
+    }
+
+    public String getIsOk() {
+        return isOk;
+    }
+
+    public void setIsOk(String isOk) {
+        this.isOk = isOk;
+    }
+}

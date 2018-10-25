@@ -1,0 +1,501 @@
+package com.esop.cqDevelopment.refund.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.common.uploadFile.UploadFileInfoService;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimApproveQueryService;
+import com.esop.cqDevelopment.refund.controller.CallBossServiceUtils.CallBossServiceUtils;
+import com.esop.cqDevelopment.refund.dto.GrpHisShortAgeFeeDto;
+import com.esop.cqDevelopment.refund.dto.HistoryOffsetInfoDto;
+import com.esop.cqDevelopment.refund.service.OffsetService;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@EnableTransactionManagement
+@RestController
+public class HistoryOffsetController {
+    private static Logger logger =  LoggerFactory.getLogger(HistoryOffsetController.class);
+    @Autowired
+    OffsetService offsetService;
+    @Autowired
+    UploadFileInfoService uploadFileInfoService;
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    CallBossServiceUtils callBossServiceUtils;
+    @Autowired
+    CapitalClaimApproveQueryService capitalClaimApproveQueryService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+    Result result=new Result();
+    //冲销历史短款申请、并发起流程
+    @Transactional
+    @RequestMapping(value = "/getOffsetInfo")
+    public String getOffsetInfo(HistoryOffsetInfoDto param, HttpServletRequest request){
+        int result1=0;
+        int result2=0;
+        String retrun_msg = "";
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String applySerialNo = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(date);//申请单流水号
+        String dealTime = sdf.format(date);
+        param.setTaskOrderId(applySerialNo);
+        param.setApplyDate(dealTime);
+        try {
+            //设置事务回滚点
+            Object savePoint = TransactionAspectSupport.currentTransactionStatus().createSavepoint();
+            //数据插入业务表
+            result1 = offsetService.insertOffsetInfo(param);
+            //流程发起并插入操作日志到记录表ep_work_flow_info
+            String approveOpinion = "";
+            String memo = "流程发起";
+            WorkFlowInfoDto wf = new WorkFlowInfoDto();
+            wf.setTaskOrderId(applySerialNo);//申请单流水号
+            wf.setApplicantNo(param.getApplicantNo());//申请人
+            wf.setNextDealPerson(request.getParameter("nextStepDealPerson"));//下一环节处理人
+            wf.setNodeId(request.getParameter("nodeId"));//下一环节ID
+            wf.setDealTime(dealTime);//处理时间
+            wf.setApproveOpinion(approveOpinion);//审批意见
+            wf.setMemo(memo);//备注
+            result2 = offsetService.insertOffsetWorkFlowInfo(wf);
+            result1 = result1 + result2 - 1;
+            if (result1 == 1) {
+                //资金占用
+                Map paramMap = new HashMap();
+                String res_code = "";
+                String res_desc = "";
+                paramMap.put("ORDERID", param.getTaskOrderId());
+                paramMap.put("GROUPID", param.getOutGroupNo());
+                paramMap.put("OPERTYPE", "0");
+                paramMap.put("OPERFEE", param.getHistoryOffsetAmount());
+                paramMap.put("APPLYOPERID", param.getApplicantNo());
+                String resStr = callBossServiceUtils.changeGroupFundAccountStatus(paramMap);
+                JSONObject object = JSONObject.parseObject(resStr);
+                res_code = object.getString("res_code");
+                res_desc = object.getString("res_desc");
+                if(res_code != null && res_code.equals("0")){
+                    retrun_msg = "1,操作成功!";
+                } else {
+                    retrun_msg = res_code+","+res_desc;
+                    TransactionAspectSupport.currentTransactionStatus().rollbackToSavepoint(savePoint);//事务回滚
+                    //记录调用CRM 接口信息
+                    try {
+                        prePrintInvoiceService.saveCrmLog(param.getTaskOrderId(),"调用CRM接口失败","grpGroupFundAccountDealESOP",paramMap.toString(),resStr,"1");
+                    }catch (Exception e){
+                        logger.info("记录日志失败！");
+                    }
+                }
+            } else {
+                retrun_msg = "999,数据库执行出错，请联系系统管理员！";
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            retrun_msg = "999,系统错误，请联系系统管理员！";
+        }
+        return retrun_msg;
+    }
+    //审批进度信息查询
+    @RequestMapping(value="/historyOffsetApproveQuery")
+    public Result historyOffsetApproveQuery(HistoryOffsetInfoDto parameter, HttpServletRequest request, boolean flag){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        if(!parameter.getRole_codes().contains("21242")){
+            //判断当前登录人是否是为客户经理角色,如果是,客户经理只能查看自己发起的流程的审批轨迹信息
+            parameter.setApplicant("");
+        }
+        if(!parameter.getRole_codes().contains("23064")){
+            //账务员角色,查看当前审批流程
+            parameter.setLogin_no2("");//审批人
+        }else if(parameter.getRole_codes().contains("23064")&&parameter.getOwnerorgid().equals("CQ.CQ")){
+            //账务员角色,分公司id是CQ.CQ则清空申请人和审批人的入参查询条件
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        if(parameter.getOwnerorgid().equals("CQ.CQ")||parameter.getOwnerorgid().equals("CQ.CQ.C4")||parameter.getOwnerorgid().equals("CQ.CQ.0B")){
+            parameter.setApplicant("");
+            parameter.setLogin_no2("");
+        }
+        //资金管理员（23073），财务人员（23075），财务管理员（23077）查看全市的数据
+        if(parameter.getRole_codes().contains("23073") || parameter.getRole_codes().contains("23075") || parameter.getRole_codes().contains("23077")){
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        //金额转换元转分
+        BigDecimal zhuanfen = new BigDecimal(100);
+        if(!parameter.getApplyAmount_yuan().equals("")){
+            BigDecimal temp = new BigDecimal(parameter.getApplyAmount_yuan());
+            parameter.setApplyAmount_yuan(temp.multiply(zhuanfen).toString());
+        }
+        result = offsetService.getHistoryOffsetApproveInfo(parameter);
+        List<HistoryOffsetInfoDto> list = result.getData();
+        BigDecimal zhuanyuan = new BigDecimal(100);
+        for(HistoryOffsetInfoDto dto:list){
+            if(!dto.getApplyAmount().equals("")){
+                BigDecimal applyAmount_yuan = new BigDecimal(dto.getApplyAmount());
+                dto.setApplyAmount_yuan(applyAmount_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getApplyAmount().equals("")){
+                BigDecimal historyOffsetAmount_yuan = new BigDecimal(dto.getApplyAmount());
+                dto.setHistoryOffsetAmount_yuan(historyOffsetAmount_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getBalance().equals("")){
+                BigDecimal balance_yuan = new BigDecimal(dto.getBalance());
+                dto.setBalance_yuan(balance_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getNowbalance().equals("")){
+                BigDecimal nowbalance_yuan = new BigDecimal(dto.getNowbalance());
+                dto.setNowbalance_yuan(nowbalance_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getHoldbalance().equals("")){
+                BigDecimal holdbalance_yuan = new BigDecimal(dto.getHoldbalance());
+                dto.setHoldbalance_yuan(holdbalance_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getFreezefee().equals("")){
+                BigDecimal freezefee_yuan = new BigDecimal(dto.getFreezefee());
+                dto.setFreezefee_yuan(freezefee_yuan.divide(zhuanyuan).toString());
+            }
+            dto.setOwnerorgname(capitalClaimApproveQueryService.selectOrgNameByOrgId(dto.getOwnerorgid()));
+        }
+        result.setData(list);
+        return result;
+    }
+    //审批
+    @Transactional
+    @RequestMapping(value="/saveOffsetApproveInfo")
+    public String saveOffsetApproveInfo(WorkFlowFirstDto parameter, HistoryOffsetInfoDto infoDto, HttpServletRequest request, boolean flag){
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = sdf.format(d);
+        parameter.setDealTime(time);
+        if(parameter.getNodeId().equals("10") && parameter.getApproveOpinion().equals("1")){
+            logger.info("一级审批>>>>>>>>>");
+        } else if(parameter.getApproveOpinion().equals("1")){
+            logger.info("二级审批>>>>>>>>>");
+            parameter.setNodeId("1");//工单发起--推送给CRM
+            parameter.setNextDealPerson("CRM");
+        }else{//申请单作废,资金解锁
+            parameter.setNodeId("2");
+            parameter.setNextDealPerson("");
+        }
+        if(parameter.getNodeId().equals("1")){
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                DateFormat dFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                String applyDate = "";
+                try{
+                    Date date = df.parse(infoDto.getApplyDate());
+                    applyDate = dFormat.format(date);
+                }catch (Exception e){
+                }
+                Map map = new HashMap();
+                map.put("OrderID",infoDto.getTaskOrderId());
+                map.put("AreaID",infoDto.getOwnerorgid());
+                map.put("ApplyOpID", infoDto.getApplicant());
+                map.put("TradeCenterID",infoDto.getBusinessCenter());//行业中心
+                map.put("GroupID",infoDto.getOutGroupNo());
+                map.put("GroupName",infoDto.getOutGroup());
+                map.put("GroupAcctID","");//集团账号
+                map.put("GroupAcctName","");//集团账号名称
+                map.put("SHORTFEESEQ",infoDto.getRunningWarterNo());
+                map.put("FreezeFee",infoDto.getApplyAmount());
+                map.put("ApplyFee",infoDto.getApplyAmount());
+                map.put("ApplyDate",applyDate);
+                map.put("Note",infoDto.getRemark());
+                String resResult = callBossServiceUtils.getGrpFundAccountUserFlowESOP(map);
+                JSONObject object = JSONObject.parseObject(resResult);
+                res_code = object.getString("res_code");
+                res_desc = object.getString("res_desc");
+                if(res_code != null && res_code.equals("0")){
+                    retrun_msg = "1,操作成功!";
+                    //同步成功后,保存审批信息
+                    offsetService.saveOffsetApproveInfo(parameter);
+                }else {
+                    retrun_msg = "995,同步crm失败,请联系系统管理员！";
+                }
+            }else if(parameter.getNodeId().equals("2")){
+                Map paramMap = new HashMap();
+                paramMap.put("ORDERID",infoDto.getTaskOrderId());
+                paramMap.put("GROUPID",infoDto.getOutGroupNo());
+                paramMap.put("OPERTYPE","1");
+                paramMap.put("OPERFEE",infoDto.getHistoryOffsetAmount());
+                paramMap.put("APPLYOPERID",parameter.getApplicantNo());
+                String resStr = callBossServiceUtils.changeGroupFundAccountStatus(paramMap);
+                JSONObject resObj = JSONObject.parseObject(resStr);
+                res_code = resObj.getString("res_code");
+                res_desc = resObj.getString("res_desc");
+                if(res_code != null && res_code.equals("0")){
+                    retrun_msg = "1,操作成功!";
+                    offsetService.saveOffsetApproveInfo(parameter);//保存审批信息
+                }else {
+                    retrun_msg = "995,调用资金释放接口失败["+res_code+res_desc+"]，请联系系统管理员！";
+                }
+            }else{//记录流程审批信息
+              int result = offsetService.saveOffsetApproveInfo(parameter);//保存审批信息
+              if(result == 1){
+                  retrun_msg = "1,操作成功!";
+              }else{
+                  retrun_msg = "999,数据库执行出错，请联系系统管理员！";
+              }
+            }
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",retrun_msg);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+
+    //历史短款记录查询接口
+    @RequestMapping(value = "/getGrpHisShortAgeFeeFromBoss")
+    public Result getGrpHisShortAgeFeeFromBoss(HistoryOffsetInfoDto infoDto,GrpHisShortAgeFeeDto param,HttpServletRequest request){
+        //获取接口请求参数
+        Enumeration en =request.getParameterNames();
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+        Map<String,Object> map=new HashMap<>();
+        map.put("GROUPID",param.getGroupid());//集团编号
+        String verifyInfo = callBossServiceUtils.getHisShortInfo(map);//调用接口数据
+        JSONObject obj=JSONObject.parseObject(verifyInfo);//获取jsonobject对象
+        String resultJson= obj.getString("result");
+        JSONObject jsonObject=JSONObject.parseObject(resultJson);
+        String jsonStr= jsonObject.getString("SHORTAGELIST");
+        List<GrpHisShortAgeFeeDto> shortAgeFeeDtosList = JSON.parseArray(jsonStr, GrpHisShortAgeFeeDto.class);
+        List<GrpHisShortAgeFeeDto> newShortAgeFeeDtosList = new ArrayList<GrpHisShortAgeFeeDto>();
+        //过滤掉已冲销数据
+        for(GrpHisShortAgeFeeDto gh:shortAgeFeeDtosList){
+            if(gh.getStatus().equals("未冲销")){
+                newShortAgeFeeDtosList.add(gh);
+            }
+        }
+        //过滤正在审批中的历史短款信息
+        HistoryOffsetInfoDto historyOffsetInfoDto =  offsetService.filterOnApproveHistoryOffsetInfo();
+        List<GrpHisShortAgeFeeDto> newDto = new ArrayList<GrpHisShortAgeFeeDto>();
+        //分转元、获取中文名称,过滤正在审批中的信息
+        for(GrpHisShortAgeFeeDto dto:newShortAgeFeeDtosList){
+            BigDecimal shortagefee = new BigDecimal(dto.getShortagefee());
+            BigDecimal zhuanyuan = new BigDecimal(100);
+            dto.setShortagefee_yuan(shortagefee.divide(zhuanyuan).toString());
+            dto.setOwnerorgname(capitalClaimApproveQueryService.selectOrgNameByOrgId(dto.getAreaid()));//获取分公司中文名称
+            String oid = dto.getOid();//短款记录号
+            if(historyOffsetInfoDto!= null ){
+                String runningWarterNo = historyOffsetInfoDto.getRunningWarterNo();
+                boolean status = runningWarterNo.contains(oid);
+                //过滤
+                if(status){
+                    newDto.add(dto);
+                }
+            }
+        }
+        for(GrpHisShortAgeFeeDto dto : newDto){
+            newShortAgeFeeDtosList.remove(dto);
+        }
+        result.setData(newShortAgeFeeDtosList);
+        //获取总记录数
+        int resultJsonPage = newShortAgeFeeDtosList.size();
+        //设置查询结果的总记录数
+        if(newShortAgeFeeDtosList.size()>0){
+            result.setRecordsTotal(resultJsonPage);
+        }else {
+            //若没有返回数据，则总记录数设置为0条
+            result.setRecordsTotal(0);
+        }
+        result.setRecordsFiltered(resultJsonPage);
+        return result;
+    }
+    @RequestMapping(value = "/selectHistoryOffsetListInfo2")
+    public HistoryOffsetInfoDto selectHistoryOffsetListInfo2(String taskOrderId){
+        HistoryOffsetInfoDto historyOffsetInfoDto=new HistoryOffsetInfoDto();
+        try{
+            historyOffsetInfoDto=offsetService.selectHistoryOffsetListInfo2(taskOrderId);
+            String balance_fen=historyOffsetInfoDto.getBalance();
+            String nowbalance=historyOffsetInfoDto.getNowbalance();
+            String holdbalance=historyOffsetInfoDto.getHoldbalance();
+            String historyOffsetAmount=historyOffsetInfoDto.getHistoryOffsetAmount();
+            String applyAmount=historyOffsetInfoDto.getApplyAmount();
+            String freezefee=historyOffsetInfoDto.getFreezefee();
+
+            BigDecimal fenmu=new BigDecimal(100);
+            BigDecimal bigDecimal=new BigDecimal(balance_fen);
+            BigDecimal bigDecimal2=new BigDecimal(nowbalance);
+            BigDecimal bigDecimal3=new BigDecimal(holdbalance);
+            BigDecimal bigDecimal4=new BigDecimal(freezefee);
+            BigDecimal bigDecimal5=new BigDecimal(historyOffsetAmount);
+            BigDecimal bigDecimal6=new BigDecimal(applyAmount);
+            String balance_yuan=bigDecimal.divide(fenmu).toString();
+            String nowbalance_yuan=bigDecimal2.divide(fenmu).toString();
+            String holdbalance_yuan=bigDecimal3.divide(fenmu).toString();
+            String freezefee_yuan=bigDecimal4.divide(fenmu).toString();
+            String applyAmount_yuan=bigDecimal5.divide(fenmu).toString();
+            String historyOffsetAmount_yuan=bigDecimal6.divide(fenmu).toString();
+            historyOffsetInfoDto.setBalance_yuan(balance_yuan);
+            historyOffsetInfoDto.setNowbalance_yuan(nowbalance_yuan);
+            historyOffsetInfoDto.setHoldbalance_yuan(holdbalance_yuan);
+            historyOffsetInfoDto.setFreezefee_yuan(freezefee_yuan);
+            historyOffsetInfoDto.setApplyAmount_yuan(applyAmount_yuan);
+            historyOffsetInfoDto.setHistoryOffsetAmount_yuan(historyOffsetAmount_yuan);
+        }catch (Exception e){
+
+        }
+        return historyOffsetInfoDto;
+    }
+    @RequestMapping(value="/exportExcoffsetApproveQuery")
+    public String expertApprove(HistoryOffsetInfoDto parameter,HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"操作人","操作时间","下一步处理人","环节","工单流水号","申请日期","申请人姓名","申请人工号","出账集团","出账集团编号","资金联系人","联系人电话","联系人类型","本次申请使用金额(元)","冲减历史短款金额(元)","备注","归属分公司","账户余额(元)","可用余额(元)","占用资金(元)","冻结资金(元)","短款记录流水号"};
+        String[] methods = {"getLogin_name","getDealTime","getNextDealPerson", "getLink_name","getTaskOrderId", "getApplyDate", "getApplicantName","getApplicant","getOutGroup","getOutGroupNo","getCapitalContact","getContactNumber","getContactType","getApplyAmount_yuan","getHistoryOffsetAmount_yuan","getRemark","getOwnerorgname","getBalance_yuan","getNowbalance_yuan","getHoldbalance_yuan","getFreezefee_yuan","getRunningWarterNo"};
+
+        PageParameter page=new PageParameter();
+        page.setPageRecords(99999);
+        parameter.setPage(page);
+        if(!parameter.getRole_codes().contains("21242")){
+            //判断当前登录人是否是为客户经理角色,如果是,客户经理只能查看自己发起的流程的审批轨迹信息
+            parameter.setApplicant("");
+        }
+        if(!parameter.getRole_codes().contains("23064")){
+            //账务员角色,查看当前审批流程
+            parameter.setLogin_no2("");//审批人
+        }else if(parameter.getRole_codes().contains("23064")&&parameter.getOwnerorgid().equals("CQ.CQ")){
+            //账务员角色,分公司id是CQ.CQ则清空申请人和审批人的入参查询条件
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        if(parameter.getOwnerorgid().equals("CQ.CQ")||parameter.getOwnerorgid().equals("CQ.CQ.C4")||parameter.getOwnerorgid().equals("CQ.CQ.0B")){
+            parameter.setApplicant("");
+            parameter.setLogin_no2("");
+        }
+        //资金管理员（23073），财务人员（23075），财务管理员（23077）查看全市的数据
+        if(parameter.getRole_codes().contains("23073") || parameter.getRole_codes().contains("23075") || parameter.getRole_codes().contains("23077")){
+            parameter.setApplicant("");//申请人
+            parameter.setLogin_no2("");//审批人
+        }
+        //金额转换元转分
+        BigDecimal zhuanfen = new BigDecimal(100);
+        if(!parameter.getApplyAmount_yuan().equals("")){
+            BigDecimal temp = new BigDecimal(parameter.getApplyAmount_yuan());
+            parameter.setApplyAmount_yuan(temp.multiply(zhuanfen).toString());
+        }
+        result = offsetService.getHistoryOffsetApproveInfo(parameter);
+        List<HistoryOffsetInfoDto> list = result.getData();
+        BigDecimal zhuanyuan = new BigDecimal(100);
+        for(HistoryOffsetInfoDto dto:list){
+            if(!dto.getApplyAmount().equals("")){
+                BigDecimal applyAmount_yuan = new BigDecimal(dto.getApplyAmount());
+                dto.setApplyAmount_yuan(applyAmount_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getApplyAmount().equals("")){
+                BigDecimal historyOffsetAmount_yuan = new BigDecimal(dto.getApplyAmount());
+                dto.setHistoryOffsetAmount_yuan(historyOffsetAmount_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getBalance().equals("")){
+                BigDecimal balance_yuan = new BigDecimal(dto.getBalance());
+                dto.setBalance_yuan(balance_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getNowbalance().equals("")){
+                BigDecimal nowbalance_yuan = new BigDecimal(dto.getNowbalance());
+                dto.setNowbalance_yuan(nowbalance_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getHoldbalance().equals("")){
+                BigDecimal holdbalance_yuan = new BigDecimal(dto.getHoldbalance());
+                dto.setHoldbalance_yuan(holdbalance_yuan.divide(zhuanyuan).toString());
+            }
+            if(!dto.getFreezefee().equals("")){
+                BigDecimal freezefee_yuan = new BigDecimal(dto.getFreezefee());
+                dto.setFreezefee_yuan(freezefee_yuan.divide(zhuanyuan).toString());
+            }
+            dto.setOwnerorgname(capitalClaimApproveQueryService.selectOrgNameByOrgId(dto.getOwnerorgid()));
+        }
+        List <HistoryOffsetInfoDto> reslist=result.getData();
+
+        try {
+            orderWorkFlowService.getExport(tableHeader, methods, reslist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+    //查询CRM处理失败的信息
+    @RequestMapping("/getOffsetNeedReleaseInfoList")
+    public Result getCapitalUseFundQueryList(HistoryOffsetInfoDto parameter, HttpServletRequest request, HttpServletResponse response){
+        Result result = new Result();
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = offsetService.getOffsetNeedReleaseInfo(parameter);
+        BigDecimal zhuanyuan = new BigDecimal(100);
+        List<HistoryOffsetInfoDto> list = result.getData();
+        for(HistoryOffsetInfoDto dto:list){
+            if(!dto.getApplyAmount().equals("")){
+                BigDecimal applyAmount_yuan = new BigDecimal(dto.getApplyAmount());
+                dto.setApplyAmount_yuan(applyAmount_yuan.divide(zhuanyuan).toString());
+            }else {
+                dto.setApplyAmount_yuan("");
+            }
+        }
+        return result;
+    }
+    //CRM处理失败,手动释放资金
+    @RequestMapping("/updateCapitalReleaseFund")
+    public int updateCapitalReleaseFund(HistoryOffsetInfoDto parameter,HttpServletResponse response){
+        int result = 999;
+        Map map = new HashMap();
+        map.put("ORDERID",parameter.getTaskOrderId());
+        map.put("GROUPID",parameter.getOutGroupNo());
+        map.put("OPERTYPE","1");
+        map.put("OPERFEE",parameter.getApplyAmount());
+        map.put("APPLYOPERID",parameter.getApplicantNo());
+        String resStr = callBossServiceUtils.changeGroupFundAccountStatus(map);
+        JSONObject object = JSONObject.parseObject(resStr);
+        String res_code = object.getString("res_code");
+        if(res_code != null && res_code.equals("0")){
+            result = 1;
+        }else {
+            result = 999;
+        }
+        //释放成功后往流程信息表中记录成功信息
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dealTime = df.format(new Date());
+        WorkFlowFirstDto workFlowFirstDto = new WorkFlowFirstDto();
+        workFlowFirstDto.setTaskOrderId(parameter.getTaskOrderId());
+        workFlowFirstDto.setApplicantNo(parameter.getApplicantNo());
+        workFlowFirstDto.setNextDealPerson("");
+        workFlowFirstDto.setDealTime(dealTime);
+        workFlowFirstDto.setApproveOpinion("1");
+        workFlowFirstDto.setMemo("CRM业务办理失败（资金已释放）");
+        if(result == 1){
+            workFlowFirstDto.setNodeId("6");
+            offsetService.putOffsetWorkFlowInfo(workFlowFirstDto);
+        }
+        return result;
+    }
+}

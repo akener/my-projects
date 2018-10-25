@@ -1,0 +1,59 @@
+package com.esop.Interface.controller;
+
+import com.esop.alertClassified.dto.AccountAlertSetDto;
+import com.esop.common.util.ParameterConversion;
+import com.esop.cust.service.WarningSetService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Shinelon on 2017/7/15.
+ */
+@RestController
+public class WarningSetController {
+    private static Logger logger = Logger.getLogger(WarningSetController.class);
+    @Autowired
+    WarningSetService warningSetService;
+    //阈值设置查询
+    @RequestMapping(value = "/qryWarningSetList")
+    public Map qryWarningSetList(HttpServletRequest request){
+        AccountAlertSetDto param = ParameterConversion.jsonToObject(request,AccountAlertSetDto.class);
+       /* AccountAlertSetDto param = new AccountAlertSetDto();
+        param.setService_no("aavg38");*/
+
+        List<AccountAlertSetDto> list = warningSetService.qryWarningSetList(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(list.size()>0){
+            map.put("return_msg","查询成功");
+            map.put("return_code","000000");
+            map.put("warn_list",list);
+        }else{
+            map.put("return_msg","未查询到相关数据");
+            map.put("return_code","-1");
+        }
+        return map;
+    }
+    //设置阈值
+    @RequestMapping(value = "/setWarningVal")
+    public Map setWarningVal(HttpServletRequest request){
+        AccountAlertSetDto param = ParameterConversion.jsonToObject(request,AccountAlertSetDto.class);
+
+        int flag = warningSetService.setWarningVal(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(flag>0){
+            map.put("return_msg","设置成功");
+            map.put("return_code","000000");
+        }else{
+            map.put("return_msg","设置失败");
+            map.put("return_code","-1");
+        }
+        return map;
+    }
+}

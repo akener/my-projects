@@ -1,0 +1,55 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangxy on 2017/12/8.
+ */
+public class GroupInfoDto extends BaseDto {
+    private String union_name;//集团信息
+    private String union_code;//集团编码
+    private String product_name;//产品名称
+    private String product_code;//产品编码
+    private String serviceNo;//客户经理编码
+
+    public String getServiceNo() {
+        return serviceNo;
+    }
+
+    public void setServiceNo(String serviceNo) {
+        this.serviceNo = serviceNo;
+    }
+
+    public String getUnion_name() {
+        return union_name;
+    }
+
+    public void setUnion_name(String union_name) {
+        this.union_name = union_name;
+    }
+
+    public String getUnion_code() {
+        return union_code;
+    }
+
+    public void setUnion_code(String union_code) {
+        this.union_code = union_code;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public String getProduct_code() {
+        return product_code;
+    }
+
+    public void setProduct_code(String product_code) {
+        this.product_code = product_code;
+    }
+
+}

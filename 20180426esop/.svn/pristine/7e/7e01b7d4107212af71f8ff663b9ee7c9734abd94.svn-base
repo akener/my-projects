@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <!--通过环节流程表ep_prd_state_info取当前在流转的产品审批流程，link_id = 29表示流程已结束。
+    通过choose_link_id字段判断跨过可选环节-->
+    <select id="getProductAndLink" parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="com.esop.productInfo.dto.ProductAndLinkDto" >
+    select b.prod_id,c.prod_name,a.link_id,a.link_name from ep_prd_pdlink_dict a,
+    (select prod_id,(link_id+1) link_id
+    from ep_prd_state_info  where link_id!=30) b,ep_prd_product_dict c
+    where (a.sys_code=#{sys_code} or a.sysb_code=#{sys_code}) and a.choose_link_id &lt;= b.link_id and b.prod_id=c.prod_id
+     and c.del_flag=1
+    order by b.prod_id,a.link_id
+    </select>
+    <!--外系统通过接口提交流程数据时，首先验证提交的系统是否可以提交此产品的当前环节数据，验证当前环节是否允许此系统操作，此产品是否流转到当前环节-->
+    <select id="verifyProductLinkSyscode" parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="String" >
+        select b.batch_id from ep_prd_pdlink_dict a,
+        (select batch_id,prod_id,(link_id+1) link_id
+        from ep_prd_state_info  where link_id!=30) b,ep_prd_product_dict c
+        where (a.sys_code=#{sys_code} or a.sysb_code=#{sys_code}) and a.choose_link_id &lt;= b.link_id and b.prod_id=c.prod_id
+        and b.prod_id=#{prod_id} and a.link_id=#{link_id} and c.del_flag=1
+        order by b.prod_id,a.link_id
+    </select>
+    <!--验证当前产品环节审批数据是否已提交，如果数据此前已提交，此次接口调用会更新当前数据，如果没有，则新增一条数据.
+    当查询的字段都为空时，返回的DTO对象是null，此时再取DTO里面的值时会报null错误！-->
+    <select id="verifyLinkInfo" parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="com.esop.productInfo.dto.ProgramReviewInfoDto" >
+        select prod_plan,review_file_id,si_material,project_basis,cons_situation,operation_support,
+        accept_report,file_added,online_document,work_log,prod_ass,summary_meeting,offline_document,contract_rel,accessory
+         from ep_prd_programreview_info where prod_id = #{prod_id} and link_id = #{link_id}
+        and batch_id = #{batch_id}
+    </select>
+    <!--新增产品一体化审批环节信息-->
+    <select id="insertProgramReviewInfo"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="int" >
+        insert into ep_prd_programreview_info(batch_id,prod_id,link_id,main_depart,apply_person,apply_date,file_no,
+        file_title,colusion_opinion,review_opinion,review_file_id,prod_plan,ass_points,
+        si_material,project_basis,operation_support,accept_report,file_added,online_document,work_log,
+        prod_ass,summary_meeting,offline_document,contract_type,contract_id,contract_name,contract_amount,
+        contract_term,supplier_name,legal_rep,tax_num,contract_person,contract_phone,account_name,account_no,
+        contract_rel,frame_no,frame_name,frame_date,upper_amount,sign_amount,current_amount,fram_contract_term,
+        purchase_name,draft_person,draft_part,sign_date,commit_term,settle_name,settle_date,
+        settle_cycle,supplier_id,unit_account,price,tax,this_price,this_tax,project_name,
+        cons_situation,accessory,annex,note,
+        create_login,create_date)
+        values(#{batch_id},#{prod_id},#{link_id},#{main_depart},#{apply_person},#{apply_date},#{file_no},
+        #{file_title},#{colusion_opinion},#{review_opinion},#{review_file_id},#{prod_plan},#{ass_points},
+        #{si_material},#{project_basis},#{operation_support},#{accept_report},#{file_added},#{online_document},#{work_log},
+        #{prod_ass},#{summary_meeting},#{offline_document},#{contract_type},#{contract_id},#{contract_name},
+        #{contract_amount},#{contract_term},#{supplier_name},#{legal_rep},#{tax_num},#{contract_person},
+        #{contract_phone},#{account_name},#{account_no},#{contract_rel},#{frame_no},#{frame_name},#{frame_date},
+        #{upper_amount},#{sign_amount},#{current_amount},#{fram_contract_term},#{purchase_name},#{draft_person},
+        #{draft_part},#{sign_date},#{commit_term},#{settle_name},#{settle_date},
+        #{settle_cycle},#{supplier_id},#{unit_account},#{price},#{tax},#{this_price},#{this_tax},#{project_name},
+        #{cons_situation},#{accessory},#{annex},#{note},
+        #{create_login},sysdate)
+    </select>
+    <!--更新产品一体化审批环节信息-->
+    <select id="updateProgramReviewInfo"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="int" >
+        update ep_prd_programreview_info set main_depart=#{main_depart},apply_person=#{apply_person},
+        apply_date=#{apply_date},file_no=#{file_no},file_title=#{file_title},colusion_opinion=#{colusion_opinion},
+        review_opinion=#{review_opinion},review_file_id=#{review_file_id},prod_plan=#{prod_plan},ass_points=#{ass_points},
+        si_material=#{si_material},project_basis=#{project_basis},operation_support=#{operation_support},
+        accept_report=#{accept_report},file_added=#{file_added},online_document=#{online_document},
+        work_log=#{work_log},prod_ass=#{prod_ass},summary_meeting=#{summary_meeting},offline_document=#{offline_document},
+        contract_type=#{contract_type},contract_id=#{contract_id},contract_name=#{contract_name},
+        contract_amount=#{contract_amount},contract_term=#{contract_term},supplier_name=#{supplier_name},
+        legal_rep=#{legal_rep},tax_num=#{tax_num},contract_person=#{contract_person},
+        contract_phone=#{contract_phone},account_name=#{account_name},account_no=#{account_no},
+        contract_rel=#{contract_rel},frame_no=#{frame_no},frame_name=#{frame_name},frame_date=#{frame_date},
+        upper_amount=#{upper_amount},sign_amount=#{sign_amount},current_amount=#{current_amount},
+        fram_contract_term=#{fram_contract_term},purchase_name=#{purchase_name},draft_person=#{draft_person},
+        draft_part=#{draft_part},sign_date=#{sign_date},commit_term=#{commit_term},
+        settle_name=#{settle_name},settle_date=#{settle_date},settle_cycle=#{settle_cycle},supplier_id=#{supplier_id},
+        unit_account=#{unit_account},price=#{price},tax=#{tax},this_price=#{this_price},this_tax=#{this_tax},
+        cons_situation=#{cons_situation},accessory=#{accessory},
+        project_name=#{project_name},update_date=sysdate
+        where batch_id=#{batch_id} and prod_id=#{prod_id} and link_id=#{link_id}
+    </select>
+    <!--产品一体化审批环节信息日志-->
+    <select id="insertProgramReviewLog"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="int" >
+        insert into ep_prd_programreview_log(batch_id,prod_id,link_id,main_depart,apply_person,apply_date,file_no,
+        file_title,colusion_opinion,review_opinion,review_file_id,prod_plan,ass_points,
+        si_material,project_basis,operation_support,accept_report,file_added,online_document,work_log,
+        prod_ass,summary_meeting,offline_document,contract_type,contract_id,contract_name,contract_amount,
+        contract_term,supplier_name,legal_rep,tax_num,contract_person,contract_phone,account_name,account_no,
+        contract_rel,frame_no,frame_name,frame_date,upper_amount,sign_amount,current_amount,fram_contract_term,
+        purchase_name,draft_person,draft_part,sign_date,commit_term,settle_name,settle_date,
+        settle_cycle,supplier_id,unit_account,price,tax,this_price,this_tax,project_name,
+        cons_situation,accessory,annex,note,
+        create_login,create_date,op_code)
+        values(#{batch_id},#{prod_id},#{link_id},#{main_depart},#{apply_person},#{apply_date},#{file_no},
+        #{file_title},#{colusion_opinion},#{review_opinion},#{review_file_id},#{prod_plan},#{ass_points},
+        #{si_material},#{project_basis},#{operation_support},#{accept_report},#{file_added},#{online_document},#{work_log},
+        #{prod_ass},#{summary_meeting},#{offline_document},#{contract_type},#{contract_id},#{contract_name},
+        #{contract_amount},#{contract_term},#{supplier_name},#{legal_rep},#{tax_num},#{contract_person},
+        #{contract_phone},#{account_name},#{account_no},#{contract_rel},#{frame_no},#{frame_name},#{frame_date},
+        #{upper_amount},#{sign_amount},#{current_amount},#{fram_contract_term},#{purchase_name},#{draft_person},
+        #{draft_part},#{sign_date},#{commit_term},#{settle_name},#{settle_date},
+        #{settle_cycle},#{supplier_id},#{unit_account},#{price},#{tax},#{this_price},#{this_tax},#{project_name},
+        #{cons_situation},#{accessory},#{annex},#{note},
+        #{create_login},sysdate,#{op_code})
+    </select>
+    <!--更新产品一体化审批环节信息-->
+    <select id="updateStateInfo"  parameterType="com.esop.productInfo.dto.InterfaceParameterDto" resultType="int" >
+     update ep_prd_state_info set link_id=#{link_id} where batch_id=#{batch_id} and prod_id=#{prod_id}
+    </select>
+</mapper>

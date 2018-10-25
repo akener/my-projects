@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+
+    <!--新增退款申请单填写信息-->
+    <select id="insertRefundInfo" parameterType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto" resultType="int">
+        INSERT INTO ep_refund_application_info (refund_id,apply_date,refund_applicant,expenditure_presentation_group,group_num,capital_contact,contact_number,
+        contact_type,book_balance,available_balance,file,refund_account,refund_account_name,refund_opening_bank,refund_amount,order_status,ownerorgid)
+        VALUES(#{refund_id},#{apply_date},#{refund_applicant},#{expenditure_presentation_group},#{group_num},#{capital_contact},#{contact_number},
+        #{contact_type},#{book_balance},#{available_balance},#{file},#{refund_account},#{refund_account_name},#{refund_opening_bank},
+        #{refund_amount},#{order_status},#{ownerorgid})
+
+    </select>
+    <!--新增流程信息-->
+    <select id="insertWorkFlowInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto" resultType="int">
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{taskOrderId},
+        #{applicantNo},
+        #{nextDealPerson},
+        #{nodeId},
+        #{dealTime},
+        #{approveOpinion},
+        #{memo}
+        )
+
+    </select>
+    <!--更改申请单状态（二级审批）-->
+    <select id="updateRefundOrderStatus" parameterType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto" resultType="int">
+        UPDATE   ep_refund_application_info SET order_status=#{order_status} where refund_id= #{refund_id};
+
+    </select>
+    <!--退款申请列表查询-->
+    <select id="selectRefundListInfo" parameterType="String" resultType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto">
+        select refund_id,apply_date,refund_applicant,expenditure_presentation_group,group_num,capital_contact,contact_number,
+        contact_type,book_balance,available_balance,file,account,userid,arrive_account,arrive_account_name,
+        arrive_date,arrival_amount,billing_date,account_clerk,abstracts,refund_account,refund_account_name,
+        refund_opening_bank,refund_amount,auditor,t2.login_name,
+        CASE
+        WHEN  order_status='1' THEN '未处理'
+        WHEN  order_status='2' THEN '审批中'
+        WHEN  order_status='3' THEN '已处理'
+        WHEN  order_status='4' THEN '作废'END  as order_status
+        from ep_refund_application_info t1,
+        bs_systemuser_info t2
+        where t1.refund_applicant = t2.staff_code
+        <if test="refund_applicant != ''">
+            and refund_applicant = #{refund_applicant}
+        </if>
+        <if test="expenditure_presentation_group != ''">
+            and expenditure_presentation_group = #{expenditure_presentation_group}
+        </if>
+        <if test="order_status !=''">
+            and order_status = #{order_status}
+        </if>
+        <if test="startTime != ''">
+            and  apply_date  >= #{startTime}
+        </if>
+        <if test="endTime != ''">
+            and  apply_date  &lt;= #{endTime}
+        </if>
+        ORDER  by apply_date DESC
+    </select>
+
+    <!--资金回退-审批进度列表信息查询-->
+    <select id="selectRefundProgressApproveQuery" parameterType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto" resultType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto">
+        select
+        a.refund_id,
+        a.apply_date,
+        a.refund_applicant,
+        h.login_name as applicantName,
+        a.expenditure_presentation_group,
+        a.group_num,
+        a.capital_contact,
+        a.contact_number,
+        a.contact_type,
+        a.book_balance,
+        a.available_balance,
+        a.file,
+        a.refund_account,
+        a.refund_account_name,
+        a.refund_opening_bank,
+        a.refund_amount,
+        a.order_status,
+        case b.applicantNo when 'CRM' then 	'CRM' else	c.login_name end login_name,
+        b.dealTime,
+        case b.nextDealPerson when 'CRM' then	'CRM' else	g.login_name end nextDealPerson,
+        d.link_name,
+        b.nodeId,
+        f.source_file_name as fileName
+        from
+        ep_refund_application_info a
+        left join tf_attach_file_info f on a.file = f.attach_file_id
+        left join ep_work_flow_info b on a.refund_id = b.taskOrderId
+        left join bs_systemuser_info c on b.applicantNo = c.staff_code
+        left join bs_systemuser_info h on a.refund_applicant = h.staff_code
+        left join bs_systemuser_info g on b.nextDealPerson = g.staff_code
+        left join bs_staff_info t1 on t1.staff_id = c.staff_id
+        left join se_orgid_rel t2 on t2.fen_gongs = substring(t1.org_id, 1, 8)
+        left join se_group_business_code t3 on t3.group_pay_code = t2.group_pay_code
+        left join se_business_center_staff_rel t4 on t4.staff_code = a.refund_applicant
+        left join se_business_center t5 on t5.center_code = t4.center_code
+        left join ep_work_flow_dict d on b.nodeId = d.link_id
+        where
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        select
+        max(
+        str_to_date(
+        e.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        from
+        ep_work_flow_info e
+        where
+        e.taskOrderId = a.refund_id
+        )
+        <if test="refund_id != '' and refund_id != 'null'">
+            and a.refund_id = #{refund_id}
+        </if>
+        <if test="startTime != '' and startTime != 'null'">
+            and substr(a.apply_date,1,10) >= #{startTime}
+        </if>
+        <if test="endTime != '' and endTime != 'null'">
+            and substr(a.apply_date,1,10) &lt;= #{endTime}
+        </if>
+        <if test="refund_applicant != '' and refund_applicant != 'null'">
+            and a.refund_applicant = #{refund_applicant}
+        </if>
+        <if test="login_no !='' and login_no !=null and login_no !='null'">
+            and #{login_no}=(select f.nextDealPerson from ep_work_flow_info f where nodeId='13' and f.taskOrderId = a.refund_id)
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson != 'null'">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="ownerorgid !='' and ownerorgid !=null and ownerorgid !='null'">
+            and substring(a.ownerorgid, 1, 8)  = #{ownerorgid}
+        </if>
+        <if test="businessCenter !='' and businessCenter !=null and businessCenter !='null'">
+            and t5.center_code = #{businessCenter}
+        </if>
+        <if test="refund_amount !='' and refund_amount !=null and refund_amount !='null'">
+            and a.refund_amount=#{refund_amount}
+        </if>
+        <if test="file !='' and file !=null and file !='null'">
+            and c.login_name LIKE  concat(concat('%',#{file}),'%')
+        </if>
+        <if test="nodeId !='' and nodeId !=null and nodeId !='null'">
+            and b.nodeId=#{nodeId}
+        </if>
+        ORDER  by apply_date DESC
+    </select>
+
+    <!--资金回退-待审批列表信息查询-->
+    <select id="selectRefundApproveQuery" parameterType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto" resultType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto">
+      select
+            a.refund_id,
+            a.apply_date,
+            a.refund_applicant,
+            a.expenditure_presentation_group,
+            a.group_num,
+            a.capital_contact,
+            a.contact_number,
+            a.contact_type,
+            a.book_balance,
+            a.available_balance,
+            a.file,
+            a.refund_account,
+            a.refund_account_name,
+            a.refund_opening_bank,
+            a.refund_amount,
+            a.order_status,
+            c.login_name,
+            b.dealTime,
+            b.nextDealPerson,
+            d.link_name,
+            b.nodeId,
+            f.source_file_name as fileName
+        from
+            ep_refund_application_info a left join tf_attach_file_info f on a.file = f.attach_file_id
+            left join bs_systemuser_info c on a.refund_applicant = c.staff_code
+            left join ep_work_flow_info b on a.refund_id = b.taskOrderId
+            left join ep_work_flow_dict d on b.nodeId = d.link_id
+        where
+        str_to_date(b.dealTime,'%Y-%m-%d %H:%i:%s') = (
+            SELECT
+                max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s'))
+            FROM
+                ep_work_flow_info e
+            WHERE
+                e.taskOrderId = a.refund_id
+        )
+        <if test="refund_id != ''">
+            and a.refund_id = #{refund_id}
+        </if>
+        <if test="refund_applicant != ''">
+            and c.login_name LIKE  concat(concat('%',#{refund_applicant}),'%')
+        </if>
+        <if test="apply_date_start != ''">
+            and substr(a.apply_date,1,10) >= #{apply_date_start}
+        </if>
+        <if test="apply_date_end != ''">
+            and substr(a.apply_date,1,10) &lt;= #{apply_date_end}
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson !=null and nextDealPerson  !='null'">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        ORDER  by apply_date DESC
+    </select>
+    <!--查看资金回退审批页面详情信息-->
+    <select id="getRefundDetailInfo" parameterType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto" resultType="com.esop.cqDevelopment.refund.dto.RefundApplicationInfoDto">
+        select
+        a.refund_id,a.apply_date,a.refund_applicant,a.expenditure_presentation_group,a.group_num,a.capital_contact,a.contact_number,
+        a.contact_type,a.book_balance,a.available_balance,a.file,a.refund_account,a.refund_account_name,
+        a.refund_opening_bank,a.refund_amount,
+        f.source_file_name as fileName,
+        c.login_name
+        from   ep_refund_application_info a  left join tf_attach_file_info f on a.file = f.attach_file_id,
+         bs_systemuser_info c
+        where
+        c.staff_code = a.refund_applicant
+        <if test="refund_id !='' and refund_id !=null">
+            and  a.refund_id=#{refund_id}
+        </if>
+    </select>
+    <!--查询nodeId-->
+    <select id="getWorkFlowNodeIdByRefundId" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto"  resultType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto">
+        SELECT
+        nodeId
+        FROM
+        ep_work_flow_info b
+        WHERE
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        SELECT
+        max(
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        FROM
+        ep_work_flow_info b
+        WHERE
+        b.taskOrderId = #{taskOrderId} )
+        and b.taskOrderId = #{taskOrderId}
+    </select>
+
+
+</mapper>

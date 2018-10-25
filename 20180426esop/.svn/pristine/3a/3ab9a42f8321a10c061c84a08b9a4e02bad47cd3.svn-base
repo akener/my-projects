@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectCustBusiReq"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CustBusiReqDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CustBusiReqDto" >
+        select fengongsi,hangye_zhongxin,jituan_bianhao,jituan_danwei_mingcheng,kehu_jingli,shenqingdan_leixing,shenqing_danhao,shenqingdan_zhuangtai,zhangwuyuan,caozuo_liushui,shenqing_riqi,shifou_gongdan,shouli_bianhao,shoulidan_zhuangtai
+        from ep_cap_custbusireq_rpt t
+    </select>
+    <select id="selectCustBondPay"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CustBusiReqDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CustBusiReqDto" >
+        select fengongsi,hangye_zhongxin,yewu_shouliyuan,shouli_shijian,yewu_leixing,baozhengjin_jine,baozhengjin_leixing,shouju_bianhao,chuli_zhuangtai,jituan_bianhao,jituan_danwei_mingcheng,gongdan_bianhao,shenqingren,shenqing_riqi,shenqing_jine
+        from ep_cap_custbondpay_rpt t
+    </select>
+</mapper>

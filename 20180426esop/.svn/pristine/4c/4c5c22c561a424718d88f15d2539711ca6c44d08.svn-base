@@ -1,0 +1,554 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.AccountPbResolveDto;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto;
+import com.esop.cqDevelopment.capitalManage.dto.PrePrintInvRecoidDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimQueryService;
+import com.esop.cqDevelopment.capitalManage.service.CapitalInfoApplyService;
+
+import com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto;
+import com.esop.cqDevelopment.elecPack.service.ElecContractService;
+import com.esop.cqDevelopment.refund.controller.CallBossServiceUtils.CallBossServiceUtils;
+import com.esop.invoice.dto.QryInvAppNoOutDTO;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import com.esop.invoice.service.PreprintInvListQryService;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@EnableTransactionManagement
+@RestController
+public class CapitalInfoApplyRC {
+    private static Logger logger = LoggerFactory.getLogger(CapitalInfoApplyRC.class);
+
+    @Autowired
+    CapitalInfoApplyService CapitalInfoApplyService;
+    @Autowired
+    CapitalClaimQueryService capitalClaimQueryService;
+    @Autowired
+    DataConversion dataConversion;
+
+    @Autowired
+    CallBossServiceUtils callBossServiceUtils;
+    @Autowired
+    ElecContractService elecContractService;
+
+    @Autowired
+    private PreprintInvListQryService preprintInvListQryService;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+
+    Result result=new Result();
+    //工号信息查询
+    @RequestMapping(value="/cqLoginInfoQuery")
+    public List getCqLoginInfoRC(CapitalInfoApplyDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= CapitalInfoApplyService.getCqLoginInfoSvc(parameter);
+        return list;
+    }
+
+    //资金申请填写
+    @Transactional
+    @RequestMapping(value="/cqCapitalApplyInfo")
+    public String putCapitalApplyInfo(CapitalInfoApplyDto parameter,WorkFlowFirstDto workFlowFirstDto, HttpServletRequest request, boolean flag){
+        String retrun_msg = "";
+        String res_code = "";
+        String res_desc = "";
+
+        int result;
+        //获取工单编号
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        String gongdan_bianhao = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(date);
+        String shenqing_shijian = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+
+        parameter.setGongdan_bianhao(gongdan_bianhao);
+        parameter.setShenqing_shijian(shenqing_shijian);
+
+        int result2;
+        workFlowFirstDto.setTaskOrderId(gongdan_bianhao);
+
+
+        try {
+            result = CapitalInfoApplyService.putCapitalApplyInfoSvc(parameter);
+
+            result2 = capitalClaimQueryService.putWorkFlowFirstSvc(workFlowFirstDto);
+
+            result = result + result2 - 1;
+            if (result == 1) {
+                //资金占用
+                Map map = new HashMap();
+                map.put("ORDERID",workFlowFirstDto.getTaskOrderId());
+                map.put("GROUPID",parameter.getJituan_bianhao());
+                map.put("OPERTYPE","0");
+                map.put("OPERFEE",parameter.getShiyong_jine());
+                map.put("APPLYOPERID",workFlowFirstDto.getApplicantNo());
+                logger.info("资金使用申请-------资金占用：工单号"+gongdan_bianhao);
+                String reqResult = callBossServiceUtils.changeGroupFundAccountStatus(map);
+                //logger.info("资金使用申请-------资金占用成功");
+
+                JSONObject object = new JSONObject(reqResult);
+                res_code = object.getString("res_code");
+                res_desc = object.getString("res_desc");
+                if(res_code != null && res_code.equals("0")){
+                    retrun_msg = "1,操作成功!";
+                }else {
+                    retrun_msg = res_code+","+res_desc;
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            } else {
+                retrun_msg = "999,数据库执行出错，请联系系统管理员！";
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            retrun_msg = "999,系统错误，请联系系统管理员！";
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return retrun_msg;
+    }
+
+    //集团账号信息查询
+    @RequestMapping(value="/getGroupAccountInfo")
+    public String getGroupAccountInfo(HttpServletRequest request, boolean flag){
+        String groupAccountId = request.getParameter("jituan_zhanghao");
+        Map map = new HashMap();
+        map.put("group_acctid",groupAccountId);
+        String resultStr = callBossServiceUtils.getGroupAccountInfoByGroupAcctid(map);
+
+        JSONObject object = new JSONObject(resultStr);
+
+        JSONObject result = new JSONObject();
+        if(object.get("res_code").equals("0")){
+            result.put("code",0);
+            result.put("data",object.get("result"));
+        }else {
+            result.put("code",999);
+            result.put("data","接口调用失败！");
+        }
+
+        return result.toString();
+    }
+
+    //过滤账号信息 临时
+    @RequestMapping(value="/getAccountPbDataNum")
+    public int getAccountPbDataNumRC(AccountPbResolveDto parameter, HttpServletRequest request, boolean flag){
+        List<AccountPbResolveDto> list;
+        list= CapitalInfoApplyService.getAccountPbDataNumSvc(parameter);
+        int num = Integer.parseInt(list.get(0).getNum());
+        return num;
+    }
+
+    //解析附件Txt文件并计算申请总金额
+    @RequestMapping(value="/dealTxtFileApplySumMoney")
+    //public Double dealTxtFileApplySumMoney(CapitalInfoApplyDto parameter, HttpServletRequest request, boolean flag) {
+    public Map dealTxtFileApplySumMoney(String filePath) {
+        int num = 0;
+        File file = new File(filePath);
+        List<String> list = txt2String(file);
+        String money = "";
+        Double sumMoney = 0.0;
+        BigDecimal totalMoney = BigDecimal.ZERO;
+        for (String str :list ) {
+            if (str.trim() != null && str.trim() != "" && str.trim().length() > 0) {
+                num = num + 1;
+                System.out.println("\n\n***************************** str = "+str+"\n\n");
+                String strArray[] = str.split("\\|");
+                //System.out.println("【电话号码】" + strArray[0] + "【金额】" + strArray[1]);
+                if(Integer.parseInt(strArray[1]) <= 0){
+                    Map err = new HashMap();
+                    err.put("code","999");
+                    err.put("phoneNum",strArray[0]);
+                    err.put("errMsg","缴费金额必须大于0");
+                    return  err;
+                }
+                money = strArray[1];
+                BigDecimal  bigDecimal = new BigDecimal(money);
+                totalMoney = totalMoney.add(bigDecimal);
+                sumMoney = totalMoney.doubleValue();
+                //sumMoney = (Double)BigDecimalMath.add(sumMoney,dmoney);
+            }
+        }
+        //System.out.println("【申请总金额=】" + sumMoney);
+        //System.out.println("【总行数=】" + num);
+        Map map = new HashMap();
+        map.put("code","0");
+        map.put("sumMoney", sumMoney);
+        map.put("num", num);
+        return map;
+    }
+    public static List<String> txt2String(File file){
+        StringBuilder result = new StringBuilder();
+        List<String> strList = new ArrayList<String>();
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file),"gbk"));//构造一个BufferedReader类来读取文件
+            String s = null;
+            while((s = br.readLine())!=null){//使用readLine方法，一次读一行
+                result.append(System.lineSeparator()+s);
+                strList.add(s);
+            }
+            br.close();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return strList;
+    }
+
+    @RequestMapping(value = "/getPrePrintInvRecoidInfo")
+    public Result getPrePrintInvRecoidInfo(HttpServletRequest request){
+        String groupId = request.getParameter("groupId");
+        String groupAcctId = request.getParameter("groupAcctId");
+        String beginDate = request.getParameter("beginDate");
+        String endDate = request.getParameter("endDate");
+
+        Map map = new HashMap();
+        map.put("GROUPID",groupId);
+        map.put("GROUPACCTID",groupAcctId);
+        map.put("BEGINDATE",beginDate);
+        map.put("ENDDATE",endDate);
+
+        String resStr = callBossServiceUtils.getPrePrintInvRecoid(map);
+
+        Result result = new Result();
+
+        List<PrePrintInvRecoidDto> list = new ArrayList<>();
+        JSONObject object = new JSONObject(resStr);
+        if(object.get("res_code").equals("0")){
+            if(resStr.contains("result")) {
+                JSONArray resultArr =  (JSONArray)object.get("result");
+                BigDecimal zhuanyuan = new BigDecimal(100);
+                if (resultArr != null) {
+                    for (int i = 0; i < resultArr.length(); i++) {
+                        JSONObject resultObj = (JSONObject) resultArr.get(i);
+                        if (resultObj.get("STATUS").toString().equals("未回款")) {
+
+                            PrePrintInvRecoidDto dto = new PrePrintInvRecoidDto();
+                            JSONObject returnObj = new JSONObject();
+                            dto.setGroupacctid(resultObj.get("GROUPACCTID").toString());
+                            dto.setBegincycle(resultObj.get("BEGINCYCLE").toString());
+                            dto.setEndcycle(resultObj.get("ENDCYCLE").toString());
+                            dto.setPrintdate(resultObj.get("PRINTDATE").toString());
+                            dto.setGroupaccname(resultObj.get("GROUPACCNAME").toString());
+                            dto.setOrderid(resultObj.get("ORDERID").toString());
+                            dto.setStatus(resultObj.get("STATUS").toString());
+                            dto.setInvoicefee(resultObj.get("INVOICEFEE").toString());
+//                        JSONObject invlist = (JSONObject) ((JSONArray)resultObj.get("INVLIST")).get(0);
+                            JSONArray invlist = (JSONArray) resultObj.get("INVLIST");
+                            String invoicecode = "";
+                            String invoicenum = "";
+                            for (int j = 0; j < invlist.length(); j++) {
+                                JSONObject invObj = (JSONObject) invlist.get(j);
+                                invoicecode += invObj.get("INVOICECODE").toString() + ",";
+                                invoicenum += invObj.get("INVOICENUM").toString() + ",";
+                            }
+                            dto.setInvoicecode(invoicecode.substring(0, invoicecode.length() - 1));
+                            dto.setInvoicenum(invoicenum.substring(0, invoicenum.length() - 1));
+                            if (!dto.getInvoicefee().equals("")) {
+                                BigDecimal invoicefee_yuan = new BigDecimal(dto.getInvoicefee());
+                                dto.setInvoicefee_yuan(invoicefee_yuan.divide(zhuanyuan).toString());
+                            } else {
+                                dto.setInvoicefee_yuan("");
+                            }
+
+                            list.add(dto);
+                        }
+
+                    }
+                }
+            }
+        }else {
+
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+
+        //设置列表分页展示
+        Integer currPage = page.getPageNumber();//当前页
+//        Integer pageRecordNum = page.getPageRecords();//每页显示记录数
+        Integer pageRecordNum = list.size();//每页显示记录数
+        List newList = list.subList(currPage*pageRecordNum,(currPage+1)*pageRecordNum);
+        result.setData(newList);
+        //设置查询结果的总记录数
+        if(list.size()>0){
+            result.setRecordsTotal(list.size());
+        }else {
+            //若没有返回数据，则总记录数设置为0条
+            result.setRecordsTotal(0);
+        }
+        result.setRecordsFiltered(list.size());
+
+        return result;
+    }
+
+    //集团缴费--查询发票信息（改造后）
+    @RequestMapping(value = "/getPrePrintInvoiceListInfo")
+    public String getPrePrintInvoiceListInfo(HttpServletRequest request){
+        String groupId = request.getParameter("groupId");
+        String groupAcctId = request.getParameter("groupAcctId");
+        String esopOrderId = request.getParameter("esopOrderId");
+        String status = request.getParameter("status");// 0－未回款，1－已回款，2－作废，3－冲红，5—放弃打印
+        String beginDate = request.getParameter("beginDate");
+        String endDate = request.getParameter("endDate");
+        JSONObject result = new JSONObject();
+
+        Map map = new HashMap();
+        map.put("GROUPID",groupId);
+        map.put("GROUPACCTID",groupAcctId);
+        map.put("ESOPORDERID",esopOrderId);
+        map.put("STATUS",status);
+        map.put("BEGINDATE",beginDate);
+        map.put("ENDDATE",endDate);
+
+        String resStr = callBossServiceUtils.getPrePrintInvoiceList(map);
+
+        List<PrePrintInvRecoidDto> list = new ArrayList<>();
+        JSONObject object = new JSONObject(resStr);
+        String result_code_str = object.get("res_code").toString();
+        String result_msg_str = object.get("res_desc").toString();
+        boolean printMode = false;
+        if(result_code_str.equals("0")){
+            try {
+                if("null".equals(object.get("result").toString())||object.get("result").toString()==null){
+                    result.put("ret_code",997);
+                    result.put("ret_msg","997,未查询到发票详情！请联系管理员！");
+                    return result.toString();
+                }
+                JSONArray resultArr = (JSONArray) object.get("result");
+                if(resultArr.length()<1){
+                    result.put("ret_code",998);
+                    result.put("ret_msg","998,未查询到发票详情！请联系管理员！");
+                    return result.toString();
+                }
+                BigDecimal zhuanyuan = new BigDecimal(100);
+                if (resultArr != null) {
+                    for (int i = 0; i < resultArr.length(); i++) {
+                        JSONObject resultObj = (JSONObject) resultArr.get(i);
+//                        if (resultObj.get("STATUS").toString().equals("未回款")) {
+
+                        PrePrintInvRecoidDto dto = new PrePrintInvRecoidDto();
+                        JSONObject returnObj = new JSONObject();
+                        dto.setGroupacctid(resultObj.get("GROUPACCTID").toString());
+                        dto.setGroupaccname(resultObj.get("GROUPACCNAME").toString());
+//                            dto.setBegincycle(resultObj.get("CYCLE").toString());
+                        dto.setBegincycle(resultObj.get("BEGINCYCLE").toString());
+                        dto.setEndcycle(resultObj.get("ENDCYCLE").toString());
+                        dto.setInvoicefee(resultObj.get("INVOICEFEE").toString());
+                        dto.setStatus(resultObj.get("STATUS").toString());
+                        dto.setPrintdate(resultObj.get("PRINTDATE").toString());
+                        dto.setOrderid(resultObj.get("ORDERID").toString());
+
+                        if(!("null".equals(resultObj.get("INVLIST").toString()))&&!(resultObj.get("INVLIST").toString()==null)){
+                            JSONArray invlist = (JSONArray) resultObj.get("INVLIST");
+
+                            String invoicecode = "";
+                            String invoicenum = "";
+                            for (int j = 0; j < invlist.length(); j++) {
+                                JSONObject invObj = (JSONObject) invlist.get(j);
+                                invoicecode += invObj.get("INVOICECODE").toString() + ",";
+                                invoicenum += invObj.get("INVOICENUM").toString() + ",";
+                            }
+                            dto.setInvoicecode(invoicecode.substring(0, invoicecode.length() - 1));
+                            dto.setInvoicenum(invoicenum.substring(0, invoicenum.length() - 1));
+                            printMode = true;
+                        }
+
+                        if (!dto.getInvoicefee().equals("")) {
+                            BigDecimal invoicefee_yuan = new BigDecimal(dto.getInvoicefee());
+                            dto.setInvoicefee_yuan(invoicefee_yuan.divide(zhuanyuan).toString());
+                        } else {
+                            dto.setInvoicefee_yuan("");
+                        }
+
+                        list.add(dto);
+//                        }
+
+                    }
+                    JSONArray array = new JSONArray();
+                    for(PrePrintInvRecoidDto dto:list){
+                        JSONObject obj = new JSONObject();
+                        obj.put("groupacctid",dto.getGroupacctid());
+                        obj.put("groupaccname",dto.getGroupaccname());
+                        obj.put("begincycle",dto.getBegincycle());
+                        obj.put("endcycle",dto.getEndcycle());
+                        obj.put("invoicefee",dto.getInvoicefee());
+                        obj.put("invoicefee_yuan",dto.getInvoicefee_yuan());
+                        obj.put("status",dto.getStatus());
+                        obj.put("printdate",dto.getPrintdate());
+                        if(printMode){
+                            obj.put("invoicecode",dto.getInvoicecode());
+                            obj.put("invoicenum",dto.getInvoicenum());
+                        }else{
+                            obj.put("invoicecode","");
+                            obj.put("invoicenum","");
+                        }
+
+                        obj.put("orderid",dto.getOrderid());
+                        array.put(obj);
+                    }
+                    result.put("ret_code",0);
+                    result.put("ret_msg","成功！");
+                    result.put("data",array);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                JSONObject errObj = new JSONObject();
+                if(e.getMessage().contains("result")){
+                    errObj.put("ret_code",999);
+                    errObj.put("ret_msg","该发票不符合缴费条件！错误码：error01");//没有发票信息'result为空'
+                    return errObj.toString();
+                }
+                if(e.getMessage().contains("INVLIST")){
+                    errObj.put("ret_code",999);
+                    errObj.put("ret_msg","该发票不符合缴费条件！错误码：error02");//没有发票号码，发票代码信息'INVLIST为空'
+                    return errObj.toString();
+                }
+            }
+        }else {
+            result.put("ret_code",object.get("res_code").toString());
+            result.put("ret_msg",object.get("res_desc").toString());
+            String orderid = String.valueOf("FPCX_"+map.get("GROUPID"));
+            prePrintInvoiceService.saveCrmLog(orderid,"3","arQryPrePrintInv",map.toString(),resStr,"1");
+        }
+        return result.toString();
+    }
+
+    //    @RequestMapping(value = "/getPrePrintInvRecoidInfo")
+//    public Result getPrePrintInvRecoidInfo(HttpServletRequest request){
+//        String groupId = request.getParameter("groupId");
+//        String groupAcctId = request.getParameter("groupAcctId");
+//        String beginDate = request.getParameter("beginDate");
+//        String endDate = request.getParameter("endDate");
+//
+//        Map map = new HashMap();
+//        map.put("GROUPID",groupId);
+//        map.put("GROUPACCTID",groupAcctId);
+//        map.put("BEGINDATE",beginDate);
+//        map.put("ENDDATE",endDate);
+//
+//        String resStr = callBossServiceUtils.getPrePrintInvRecoid(map);
+//
+//        Result result = new Result();
+//
+//        List<PrePrintInvRecoidDto> list = new ArrayList<>();
+//        JSONObject object = new JSONObject(resStr);
+//        if(object.get("rtnCode").equals("0")){
+//            JSONObject object1 = (JSONObject) object.get("object");
+//            if(object1.get("respCode").equals("0")){
+//                JSONArray resultArr =  (JSONArray)object1.get("result");
+//                BigDecimal zhuanyuan = new BigDecimal(100);
+//                for(int i=0;i<resultArr.length();i++){
+//                    JSONObject resultObj = (JSONObject) resultArr.get(i);
+//                    if(resultObj.get("STATUS").toString().equals("未回款")){
+//                        JSONObject invlist = (JSONObject) ((JSONArray)resultObj.get("INVLIST")).get(0);
+//                        PrePrintInvRecoidDto dto = new PrePrintInvRecoidDto();
+//                        JSONObject returnObj = new JSONObject();
+//                        dto.setGroupacctid(resultObj.get("GROUPACCTID").toString());
+//                        dto.setBegincycle(resultObj.get("BEGINCYCLE").toString());
+//                        dto.setEndcycle(resultObj.get("ENDCYCLE").toString());
+//                        dto.setPrintdate(resultObj.get("PRINTDATE").toString());
+//                        dto.setGroupaccname(resultObj.get("GROUPACCNAME").toString());
+//                        dto.setOrderid(resultObj.get("ORDERID").toString());
+//                        dto.setStatus(resultObj.get("STATUS").toString());
+//                        dto.setInvoicefee(resultObj.get("INVOICEFEE").toString());
+//                        dto.setInvoicecode(invlist.get("INVOICECODE").toString());
+//                        dto.setInvoicenum(invlist.get("INVOICENUM").toString());
+//                        if(!dto.getInvoicefee().equals("")){
+//                            BigDecimal invoicefee_yuan = new BigDecimal(dto.getInvoicefee());
+//                            dto.setInvoicefee_yuan(invoicefee_yuan.divide(zhuanyuan).toString());
+//                        }else{
+//                            dto.setInvoicefee_yuan("");
+//                        }
+//
+//                        list.add(dto);
+//                    }
+//
+//                }
+//
+//            }else {
+//
+//            }
+//        }else {
+//
+//        }
+//        PageParameter page = dataConversion.setPageValues(request);
+//        page.setRecordsTotal(result.getRecordsTotal());
+//
+//        //设置列表分页展示
+//        Integer currPage = page.getPageNumber();//当前页
+////        Integer pageRecordNum = page.getPageRecords();//每页显示记录数
+//        Integer pageRecordNum = list.size();//每页显示记录数
+//        List newList = list.subList(currPage*pageRecordNum,(currPage+1)*pageRecordNum);
+//        result.setData(newList);
+//        //设置查询结果的总记录数
+//        if(list.size()>0){
+//            result.setRecordsTotal(list.size());
+//        }else {
+//            //若没有返回数据，则总记录数设置为0条
+//            result.setRecordsTotal(0);
+//        }
+//        result.setRecordsFiltered(list.size());
+//
+//        return result;
+//    }
+    //根据集团编码查询合同id、合同名称
+    @RequestMapping(value="/getContractListInfo")
+    public Result getContractListInfo(SeContractInfoDto parameter, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        Result result = elecContractService.getSeContract(parameter);
+        return  result;
+    }
+
+    //过滤在审批和CRM处理成功订单的发票
+    @RequestMapping("/selectUsedInvoiceOrderId")
+    public QryInvAppNoOutDTO selectUsedInvoiceOrderId(CapitalInfoApplyDto parameter){
+        String groupId = parameter.getJituan_bianhao();
+        QryInvAppNoOutDTO qryInvAppNoOutDTO = preprintInvListQryService.queryAppNoListByGroupId(groupId);
+        List<EpInvPreprintAppInfo> allEpInvPreprintAppInfos = qryInvAppNoOutDTO.getActInfos();
+
+        List<String> usedInvOrderIds = CapitalInfoApplyService.selectUsedInvoiceOrderId();
+        List<EpInvPreprintAppInfo> usedEpInvPreprintAppInfos = new ArrayList<>();
+        for(String id:usedInvOrderIds){
+            for(EpInvPreprintAppInfo info:allEpInvPreprintAppInfos){
+                if(info.getApplicationNo().equals(id)){
+                    usedEpInvPreprintAppInfos.add(info);
+                }
+            }
+        }
+        allEpInvPreprintAppInfos.removeAll(usedEpInvPreprintAppInfos);
+        qryInvAppNoOutDTO.setActInfos(allEpInvPreprintAppInfos);
+        return  qryInvAppNoOutDTO;
+    }
+}

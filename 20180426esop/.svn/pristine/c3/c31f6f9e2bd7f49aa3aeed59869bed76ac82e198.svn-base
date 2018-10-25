@@ -1,0 +1,25 @@
+package com.esop.busiAnalysis.dto;
+
+/**
+ * Created by Administrator on 2017/6/17.
+ */
+public class EpWfSbizTypeDto {
+    String biz_type= "";//业务类型
+    String biz_name = "";//业务名称
+
+    public String getBiz_type() {
+        return biz_type;
+    }
+
+    public void setBiz_type(String biz_type) {
+        this.biz_type = biz_type;
+    }
+
+    public String getBiz_name() {
+        return biz_name;
+    }
+
+    public void setBiz_name(String biz_name) {
+        this.biz_name = biz_name;
+    }
+}

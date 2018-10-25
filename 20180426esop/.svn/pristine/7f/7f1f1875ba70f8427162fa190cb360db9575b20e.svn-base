@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+    <insert id="insertBusinessCenter" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        INSERT into se_business_center (business_center,oper_time,oper_no,group_pay_id,center_code)
+        VALUES (#{business_center},#{oper_time},#{oper_no},#{group_pay_id},#{center_code})
+    </insert>
+
+    <insert id="insertBusinessCenterRel" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        INSERT into se_business_center_staff_rel (center_code,staff_code,staff_name,oper_no,oper_time,bak1)
+        VALUES (#{center_code},#{staff_code},#{staff_name},#{oper_no},#{oper_time},#{bak1})
+    </insert>
+
+    <select id="selectBusinessCenter" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select   t1.center_code,t1.business_center,t1.oper_time,t1.oper_no,t1.group_pay_id,t2.group_pay_name
+        from se_business_center t1,se_group_business_code t2
+        WHERE 1=1
+        <if test="center_code !=null and center_code !='' ">
+            AND t1.center_code=#{center_code}
+        </if>
+        <if test="business_center !=null and business_center !='' ">
+            AND t1.business_center=#{business_center}
+        </if>
+        <if test="oper_time !=null and oper_time !='' ">
+            AND t1.oper_time=#{oper_time}
+        </if>
+        <if test="oper_no !=null and oper_no !='' ">
+            AND t1.oper_no=#{oper_no}
+        </if>
+        <if test="group_pay_id !=null and group_pay_id !='' ">
+            AND t1.group_pay_id=#{group_pay_id}
+        </if>
+        <if test="root_org_id !=null and root_org_id !='' ">
+            and t2.root_org_id=#{root_org_id}
+        </if>
+        and t1.group_pay_id=t2.group_pay_id
+    </select>
+
+    <select id="selectBusinessCenterRel" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select t1.center_code,t1.staff_code,t1.staff_name,t2.business_center,t1.bak1,t1.id,CASE t1.bak1 WHEN '1'THEN '客户经理' WHEN '2' THEN '账务员' END as bak1_zhongwen
+        from se_business_center_staff_rel t1,se_business_center t2
+        where t1.center_code=#{center_code}
+        AND t1.center_code=t2.center_code
+        <if test="staff_code !=null and staff_code !=''">
+            AND t1.staff_code =#{staff_code}
+        </if>
+        <if test="staff_name !=null and staff_name !=''">
+            AND t1.staff_name like concat(concat('%',#{staff_name}),'%')
+        </if>
+        <if test="bak1 !=null and bak1 !=''">
+            AND t1.bak1=#{bak1}
+        </if>
+    </select>
+    <select id="selectCenterCode" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select *
+        from se_business_center
+        where business_center=#{business_center}
+    </select>
+    <select id="selectFengongs" parameterType="String"  resultType="String">
+        select fen_gongs
+        from se_orgid_rel
+        where group_pay_code=#{group_pay_code}
+    </select>
+
+
+    <select id="selectRole" parameterType="String" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+         select t1.staff_code,t1.login_name staff_name
+        from bs_systemuser_info t1,bs_staff_info t2
+        where t1.staff_id = t2.staff_id
+        and t1.state = 'Y'
+        and t2.org_id like concat(concat('%',#{staff_code}),'%')
+		and t1.staff_code not in (select a1.staff_code from se_business_center_staff_rel a1 where a1.staff_code=t1.staff_code)
+    </select>
+
+    <select id="selectGroupBusinessCode"  resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select *
+        from se_group_business_code
+    </select>
+    <select id="selectGroupCodeForFengongs"  parameterType="string"  resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select group_pay_id,group_pay_code,group_pay_name
+        from se_group_business_code
+        where root_org_id=#{root_org_id}
+    </select>
+    <select id="selectBusinessCenterByPayId" parameterType="string" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select *
+        from se_business_center
+        where group_pay_id=#{group_pay_id}
+    </select>
+
+    <select id="selectBusinessCenterByLoginNo"  parameterType="string" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select  t1.center_code,t1.business_center
+        from se_business_center t1,se_business_center_staff_rel t2
+        where t2.staff_code=#{login_no}
+        AND  t1.center_code=t2.center_code
+        and t2.bak1='1'
+    </select>
+    <select id="selectAllBusiness"  resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select center_code,business_center
+        from se_business_center
+    </select>
+    <select id="selectFengongsByRegioncode" parameterType="string" resultType="string">
+        select fen_gongs as region_code
+        from se_orgid_rel
+        where group_pay_code=#{group_pay_code}
+    </select>
+    <select id="selectRolRelForManager" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select b.staff_name ,c.staff_code,d.group_pay_name,d.root_org_id
+        from bs_staff_role_rel a,bs_staff_info b,bs_systemuser_info c,se_group_business_code d
+        where a.role_id='21242'
+        and a.system_user_id=c.system_user_id
+        and SUBSTR(b.org_id,1,8)=#{region_code}
+        and b.staff_id=c.staff_id
+        and c.state='Y'
+        and c.staff_code not in (select a1.staff_code from se_business_center_staff_rel a1 where a1.staff_code=c.staff_code)
+        and d.root_org_id=#{region_code}
+        <if test="staff_code !=null and staff_code !=''">
+            and c.staff_code=#{staff_code}
+        </if>
+        <if test="staff_name !=null and staff_name !=''">
+            and b.staff_name like concat(concat('%',#{staff_name}),'%')
+        </if>
+</select>
+    <!--生产记得改roleID 23064、本地ID22951、UAT33104-->
+    <select id="selectAllBusinessForZhangwuyuanByLoginNo" parameterType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+        select b.staff_name,c.staff_code,d.group_pay_name,d.root_org_id
+        from bs_staff_role_rel a,bs_staff_info b,bs_systemuser_info c,se_group_business_code d
+        where a.role_id='23064'
+        and a.system_user_id=c.system_user_id
+        and SUBSTR(b.org_id,1,8)=#{region_code}
+        and b.staff_id=c.staff_id
+        and c.state='Y'
+        and d.root_org_id=#{region_code}
+        <if test="staff_code !=null and staff_code !=''">
+            and c.staff_code=#{staff_code}
+        </if>
+        <if test="staff_name !=null and staff_name !=''">
+            and b.staff_name like concat(concat('%',#{staff_name}),'%')
+        </if>
+    </select>
+    <select id="selectZhangwuyuan" parameterType="string" resultType="string">
+        select bak1 from se_business_center_staff_rel
+        where center_code=#{center_code}
+        and bak1='2'
+    </select>
+    <delete id="deleteCenterStaffRell" parameterType="String">
+        DELETE from
+        se_business_center_staff_rel
+        WHERE id=#{id}
+    </delete>
+    <select id="selectBusinessCenterForZhangwuyun" parameterType="string" resultType="com.esop.cqDevelopment.businessCenter.dto.BusinessCenter">
+          select a.center_code,a.business_center
+        from se_business_center a,se_business_center_staff_rel b
+        where b.staff_code=#{login_no}
+        and b.bak1='2'
+        and a.center_code=b.center_code
+    </select>
+</mapper>

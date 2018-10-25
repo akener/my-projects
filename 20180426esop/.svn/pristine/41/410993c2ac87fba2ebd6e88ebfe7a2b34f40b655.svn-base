@@ -1,0 +1,8 @@
+package com.esop.common.axis;
+
+/**
+ * Created by wangbl on 2017/3/17.
+ */
+public interface Consumer<T> {
+    public void accept(T t);
+}

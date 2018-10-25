@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectAccountSetAlert"  parameterType="String" resultType="com.esop.alertClassified.dto.AccountAlertSetDto" >
+        select rownum as DT_RowId,
+               a.user_name,
+               to_char(a.birthday,'yyyy-mm-dd') as birthday,
+               a.contact_addr,
+               trim(a.phone_no) as phone_no,
+               a.unit_id,
+               a.duty,
+               b.alert_value,
+               b.phone_blc,
+               b.rateflow_blc,
+               '&lt;a class="badge bg-red" onclick="impblcset('''||a.imp_id||''','''||a.user_name||''')">阈值设置&lt;/a&gt;' as opt
+          from dgrpcustimpmanmsg a, ep_alert_impset_info b
+         where a.imp_id = b.imp_id(+)
+        <if test="service_no != ''">
+            and a.service_no = #{service_no}
+        </if>
+        <if test="user_name != ''">
+            and a.user_name like '%'||#{user_name}||'%'
+        </if>
+        <if test="unit_id != ''">
+            and a.unit_id = #{unit_id}
+        </if>
+        <if test="phone_no != ''">
+            and trim(a.phone_no) = #{phone_no}
+        </if>
+    </select>
+    <insert id="insertAccountSetAlert"  parameterType="com.esop.alertClassified.dto.AccountAlertSetDto" >
+        insert into ep_alert_impset_info (IMP_ID, ALERT_VALUE, PHONE_BLC, RATEFLOW_BLC)
+        values (#{imp_id}, #{alert_value}, #{phone_blc}, #{rateflow_blc})
+    </insert>
+    <select id="selectAccountSetJudge"  parameterType="String" resultType="com.esop.alertClassified.dto.AccountAlertSetDto" >
+        select count(*) as num from ep_alert_impset_info t where 1 = 1
+        <if test="imp_id != ''">
+            and t.imp_id = #{imp_id}
+        </if>
+    </select>
+    <select id="updateAccountSetAlert"  parameterType="com.esop.alertClassified.dto.AccountAlertSetDto" resultType="com.esop.alertClassified.dto.AccountAlertSetDto" >
+        update ep_alert_impset_info set alert_value=#{alert_value},phone_blc=#{phone_blc},rateflow_blc=#{rateflow_blc}
+        where  imp_id=#{imp_id}
+    </select>
+</mapper>

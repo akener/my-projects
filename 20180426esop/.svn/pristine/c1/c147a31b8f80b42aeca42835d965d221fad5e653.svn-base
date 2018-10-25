@@ -1,0 +1,27 @@
+package com.esop.callServiceOtherSys.controller;
+
+
+import com.esop.callServiceOtherSys.dto.ManagerInfoQueryDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class ManagerInfoQueryRC {
+    @Autowired
+    com.esop.callServiceOtherSys.service.ManagerInfoQueryService managerInfoQueryService;
+    @RequestMapping(value="/ManagerInfoQuery")
+    public List getManagerInfoRC(ManagerInfoQueryDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= managerInfoQueryService.getManagerInfoSvc(parameter);
+        return list;
+    }
+}

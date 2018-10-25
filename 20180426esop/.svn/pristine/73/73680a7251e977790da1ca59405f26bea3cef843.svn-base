@@ -1,0 +1,40 @@
+package com.esop.capAdjustApply.service;
+
+import com.esop.capAdjustApply.dto.EpCapOneTimeExpenseInfo;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by user on 2017/11/22.
+ */
+//资金管理下的资金使用下充值缴费的子业务---》一次性费用业务服务层
+    @Repository
+public class OneTimeExpenseSrv {
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Transactional
+    public int insertEpCapOneTimeExpenseApplyInfo(EpCapOneTimeExpenseInfo parameter) {
+        //插入一条 一次性费用使用申请 的信息
+        return sqlE.insertM("insertEpCapOneTimeExpenseApplyInfo",parameter);
+    }
+    //查询一次性费用申请信息列表
+    public List getOneTimeExpenseApplyDealInfo(EpCapOneTimeExpenseInfo parameter) {
+
+        List list = sqlE.selectM("getOneTimeExpenseApplyDealInfo",parameter);
+        return list;
+
+    }
+    //查询一次性费用申请详细（基本/流程轨迹）等信息
+    public Result qryOneTimeExpenseApplyList(EpCapOneTimeExpenseInfo parameter) {
+        Result result = sqlE.selectPage("qryOneTimeExpenseApplyList", parameter);
+        return result;
+    }
+}

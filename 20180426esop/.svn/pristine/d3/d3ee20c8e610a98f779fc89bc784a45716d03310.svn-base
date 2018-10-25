@@ -1,0 +1,126 @@
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <%@ include file="../../pub/public_include.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <title>集团成员管理</title>
+
+    <style>
+        .row{
+            text-align:center;
+        }
+    </style>
+    <script src="<%=path %>/static/member/layer/layer.js"></script>
+    <script src="<%=path %>/static/member/jquery-placeholder.js"></script>
+
+</head>
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3> 成员管理 </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团信息</span>
+            </div>
+        </div>
+        <!--详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7 width-th-1" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团名称：</th>
+                            <td>
+                                <input type="text" id="union_name" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团编码：</th>
+                            <td>
+                                <input type="text" id="union_code" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7 width-th-1" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>产品名称：</th>
+                            <td>
+                                <input type="text" id="product_name" class="input-sty04 form-ipt">
+                            </td>
+                            <th>产品编码：</th>
+                            <td>
+                                <input type="text" id="product_code" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <Div Class="Row Mgt-20">
+                        <Div Class="Btn-Box">
+                            <Button id="query_info" onclick="queryGroupMember()">查询</Button>
+                            <Button id="reset">重置</Button>
+                        </Div>
+                    </Div>
+                </div>
+            </div>
+        </div>
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>成员列表</span>
+                <a href="#" id="add_member" class="export-a fr">新增</a>
+
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <div class="active-cost-box" style="padding-bottom:0;">
+                        <table id="member_info_list" class="cost-table" width="100%;">
+                            <thead>
+                                <tr>
+                                    <th>姓名</th>
+                                    <th>号码</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <!--
+                            <tbody id="tbody_info">
+                            </tbody>
+                            -->
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="serviceNo" value="${serviceNo}"/>
+</body>
+<script src="<%=path %>/static/member/member.js"></script>
+</html>

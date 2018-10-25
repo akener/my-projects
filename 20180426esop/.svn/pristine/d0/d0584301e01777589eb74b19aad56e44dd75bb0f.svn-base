@@ -1,0 +1,25 @@
+package com.esop.workflow.api.impl;
+
+import com.esop.workflow.api.IAssigneeFilter;
+import com.esop.workflow.mapper.AssigneeMapper;
+import com.esop.workflow.vo.Assignee;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * 被指定人为流程发起人
+ *
+ * @author daish 2017/10/31
+ */
+@Service(value = "assigneeStartLoginNoSvc")
+public class AssigneeFilterAsProcessStarter implements IAssigneeFilter {
+    @Autowired
+    private AssigneeMapper assigneeMapper;
+
+    public Assignee[] getAssignee(Assignee iAssignee) {
+        Assignee assignee = assigneeMapper.selectProcStarter(iAssignee.getProcInstId());
+        Assignee[] assigneeArr = new Assignee[1];
+        assigneeArr[0] = assignee;
+        return assigneeArr;
+    }
+}

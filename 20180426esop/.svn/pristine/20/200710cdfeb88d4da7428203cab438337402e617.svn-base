@@ -1,0 +1,33 @@
+package com.esop.synLoginFor4A.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.synLoginFor4A.dto.SynLoginFor4ADto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class SynLoginFor4AService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    public List getSynLoginFor4AList(){
+        String selectTion = "";
+        selectTion = "selectSynLoginInfo";
+        List list=sqlSessionTemplate.selectList(selectTion);
+        return list;
+    }
+    public int deleteSynLoginFor4AList(SynLoginFor4ADto parameter){
+        int result;
+        result = sqlE.deleteM("deleteSynLogin", parameter);
+        return result;
+    }
+}

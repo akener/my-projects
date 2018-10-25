@@ -1,0 +1,116 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/public_include.jsp"%>
+    <title>新增成员订单申请发起</title>
+</head>
+
+<body class="bg-ff">
+    <!-- main S -->
+    <div class="main pd-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box over">
+            <!--标题-->
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单申请</span>
+                </div>
+            </div>
+            <!--地市详情-->
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+                                <tr>
+                                    <th>集团单位名称：</th>
+                                    <td>
+                                        <div class="work-search-keyword clearfix">
+                                            <input type="text" placeholder="输入要搜索类型的关键字" class="input-keyword fl input-sty04 form-ipt mgl-10" id="jtName"/>
+                                        </div>
+                                    </td>
+                                    <th>集团编码：</th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="jtCode">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>合同编号：</th>
+                                    <td>
+                                        <select class="select-style-1" id="htNo" onchange="selProList()">
+                                            <option selected="selected" value="">请选择</option>
+                                        </select>
+                                    </td>
+                                    <th>产品名称：</th>
+                                    <td>
+                                        <select class="select-style-1" id="proId" onchange="isCl()">
+                                            <option selected="selected" value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>成员姓名：</th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="cyName">
+                                    </td>
+                                    <th>成员号码：</th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="cyNo">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>订单标题：</th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="orderTitle">
+                                    </td>
+                                    <th>生效方式：</th>
+                                    <td>
+                                        <select class="select-style-1" id="sxfs">
+                                        <option selected="selected" value="0">立即</option>
+                                        <option value="1">下月</option>
+                                    </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>订单说明：</th>
+                                    <td colspan="3">
+                                        <textarea rows="3" class="ui-text form-ctrl" style="width:60%;" id="orderDesc"></textarea>
+                                    </td>
+                                </tr>
+                                <tr style="background-color:#eaeaea;">
+                                    <th>下一环节：</th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="next_deal1" readonly="readonly">
+                                    </td>
+                                    <th>下一环节处理人：</th>
+                                    <td>
+                                        <select id="ASSIGNEE_1">
+                                            <option selected="selected" value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <button class="ui-btn mgr-10" onclick="addOrder()" id="addOrderSubmit">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="procTypeCode" name="procTypeCode" type="hidden" value="3008">
+    <input id="branchCode" name="branchCode" type="hidden" value="CQ.CQ">
+    <input id="keyValue" name="keyValue" type="hidden" value="1">
+
+    <input id="loginCode" name="" type="hidden" value="112900001">
+    <input id="loginName" name="" type="hidden" value="思特奇员工">
+    <script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/applyOrder.js"></script>
+</body>
+</html>

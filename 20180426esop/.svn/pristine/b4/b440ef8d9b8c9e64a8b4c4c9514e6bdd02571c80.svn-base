@@ -1,0 +1,203 @@
+package com.esop.workOrderInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.*;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by lilei on 2017/6/5.
+ */
+@Repository
+public class ProCaseSendService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(ProCaseSendService.class);
+    //省营销数据导入
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int importProRecord(ProCaseSendDto in){
+
+        return sqlE.insertM("insertProRecordInfo",in);
+
+    }
+    //查序列
+    //省营销数据导入展示
+    public String selSeqInfo(){
+
+        List result=sqlE.selectM("selectSeqNextVal");
+
+        return  result.get(0).toString();
+    }
+
+    //省营销数据导入展示
+    public Result showProRecord(ProCaseSendDto in){
+        logger.debug("省营销数据查询:"+in.toString());
+        Result result=sqlE.selectPage("selectProInfo",in);
+        logger.debug("result:"+result.toString());
+        return result;
+    }
+
+
+
+    //营销活动展示查询
+    public Result showCaseActInfo(ProCaseInfoDto in){
+        logger.debug("省营销案查询:"+ in.toString());
+        return sqlE.selectPage("selectCaseAct",in);
+    }
+
+    //省营销活动下发到地市
+    public int sendCaseToRegion(ProCaseSendDto in){
+
+        return sqlE.updateM("sendTORegion",in);
+    }
+
+    //短信下发
+    public int sendMsgToRegion(Map in){
+        return sqlE.insertM("sendMsg",in);
+    }
+
+    //查询market_name
+    public List<CaseRelDto> qryMarketName(CaseRelDto dto){
+        return sqlE.selectM("selectMarketName",dto);
+    }
+
+    //插入数据到中间表
+    public int insertRel(CaseRelDto in){
+        return sqlE.insertM("insertToCaseRel",in);
+    }
+
+    //查省下发的工单
+    public Result qryProSendToRegionCase(CaseRelDto in){
+        return sqlE.selectPage("qryProSendToRegionInfo",in);
+    }
+
+    //根据market_name模糊查询地市营销活动
+    public Result qryLikeCaseByName(ProCaseInfoDto in){
+        return sqlE.selectPage("selectNameByLike",in);
+    }
+
+
+    //查询地市下所选批次中的集团编号
+    public List<ProCaseSendDto> qryRegionOfUnit(ProCaseSendDto in){
+        return sqlE.selectM("qryRegionUnitId",in);
+    }
+
+    //删除省下发的营销活动
+    public int delProSendCaseByBatchNoAndUnitId(CaseRelDto delDto){
+        return sqlE.deleteM("deleteProSendInfo",delDto);
+    }
+
+    //根据地市查批次号和集团编码
+   /* public List<ProCaseSendDto> qryBatchNoAndUnitIdByRegionId(ProCaseSendDto in){
+        return sqlE.selectM("selectBatchNoAndUnitIdByRegionId",in);
+    }*/
+
+    //地市下发客户经理
+    public int regionSendToCust(ProCaseSendDto in){
+        return sqlE.updateM("RegionCaseToCustManager",in);
+    }
+
+    //查询客户经理对应的集团编号
+    public List<ProCaseSendDto> selectUnitIdByLoginNo(ProCaseSendDto in){
+        return  sqlE.selectM("qryUnitIdByLoginNo",in);
+    }
+
+    //查询客户经理处的工单数据
+    public Result selectCustOfWorkOrderInfo(ProCaseSendDto in){
+        return  sqlE.selectPage("selectCustManagerWorkOrderInfo",in);
+    }
+
+    //客户经理回退给地市管理员
+    public int mgBackToRegion(ProCaseSendDto in){
+        return sqlE.updateM("backToRegion",in);
+    }
+
+    //地市管理员回退到省
+    public int regionBackToProvice(ProCaseSendDto in){
+        return sqlE.updateM("RegionBackToPro",in);
+    }
+
+    //客户经理结单
+    public int custManagerEndCase(ProCaseSendDto in){
+        return sqlE.updateM("endCaseByCustManager",in);
+    }
+
+    //查客户经理对应的营销活动
+    public Result selCustRecordByCustLoginNo(CaseRelDto in){
+
+        return sqlE.selectPage("qryCaseByCustManagerLoginNo",in);
+    }
+
+    //地市管理员查询客户经理回退工单
+    public Result qryCustManagerReturnRecordInfo(ProCaseSendDto in){
+        return  sqlE.selectPage("selectCaseBackToRegion",in);
+    }
+
+    //省下所有回退的工单
+    public Result qryOfProviceAllBackCase(ProCaseSendDto in){
+        return  sqlE.selectPage("selectProviceAllOwnCase",in);
+    }
+    //地市管理员结单
+    public int proviceOverCase(ProCaseSendDto in){
+        return sqlE.updateM("proOverCaseRecord",in);
+    }
+
+    //客户经理工单提交到地市
+    public int custsendCaseToRegionManagers(ProCaseSendDto in){
+
+        return sqlE.updateM("upCustRecordSendTORegion",in);
+    }
+
+    //省管理员查询工单根据日期
+    public Result selectAllRecordByYearAndMon(ProCaseSendDto in){
+
+        return sqlE.selectPage("qryAllRecordByYearAndMon",in);
+    }
+
+    //查询一条工单数据对应的营销活动
+    public Result selectCaseByOneToMany(CaseRelDto in){
+
+        return sqlE.selectPage("qryCaseByOneToMany",in);
+    }
+    //客户经理关闭省和地市回退工单
+    public int closeAllRecordByBackOfProAndRegion(ProCaseSendDto in){
+        return sqlE.updateM("closeCaseByProAndRegion",in);
+    }
+
+    //客户经理关闭省和地市回退工单
+    public int DeleteAllBackOfProAndRegion(ProCaseSendDto in){
+        return sqlE.deleteM("DeleteCaseByProAndRegion",in);
+    }
+
+    //超期自动结单
+    public int moreDateEndRecord(ProCaseSendDto in){
+        return sqlE.updateM("moreDateEndRecordInfo",in);
+    }
+
+    //省级督办单查询
+    public Result EarlyWarningWorkLookAt(EarlyWarningDto in){
+
+        return sqlE.selectPage("lookAtProEarlyWarning",in);
+    }
+
+    //查询地市管理员电话
+    public List<SendMsgDto> getCustPhoneNoByService(SendMsgDto dto){
+        return  sqlE.selectM("getPhoneNoByCustService",dto);
+    }
+
+    //查询数据数目
+    public int qryRecordCountNow(){
+      int num = (int)sqlE.selectM("selectNumByRecordCount").get(0);
+        return num;
+    }
+
+}

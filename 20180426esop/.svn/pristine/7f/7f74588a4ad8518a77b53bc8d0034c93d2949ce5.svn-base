@@ -1,0 +1,217 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by qiaojian on 2017/6/13.
+ */
+public class SignOnRecordDto extends BaseDto{
+
+    String DT_RowId         = "";
+    String id               = "";//流水
+    String cust_id          = "";//集团编码
+    String cust_name        = "";//集团名称
+    String org_code         = "";//地市编码
+    String cust_addr        = "";//集团地址
+    String province_end_date= "";//省派单截止日期
+    String region_end_date  = "";//地市派单截止日期
+    String record_status    = "";//工单状态
+    String status_name      = "";//工单状态中文
+    String service_no       = "";//客户经理工号
+    String service_name     = "";//客户经理姓名
+    String op_time          = "";//数据导入时间
+    String endding_time     = "";//客户经理操作时间
+    String org_name         = "";//地市名称
+    String record_id        = "";//批次号
+    String county_code      = "";//区县编码
+    String county_name      = "";//区县名称
+    String giveup_reason    ="";//放弃原因
+    String start_date       ="";//查询开始时间
+    String end_date         ="";//查询结束时间
+    String role_code        ="";//角色id
+    String role_name        ="";//角色名称
+
+    public String getRole_code() {
+        return role_code;
+    }
+
+    public void setRole_code(String role_code) {
+        this.role_code = role_code;
+    }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getStatus_name() {
+        return status_name;
+    }
+
+    public void setStatus_name(String status_name) {
+        this.status_name = status_name;
+    }
+
+    public String getGiveup_reason() {
+        return giveup_reason;
+    }
+
+    public void setGiveup_reason(String giveup_reason) {
+        this.giveup_reason = giveup_reason;
+    }
+
+    public String getCounty_code() {
+        return county_code;
+    }
+
+    public void setCounty_code(String county_code) {
+        this.county_code = county_code;
+    }
+
+    public String getCounty_name() {
+        return county_name;
+    }
+
+    public void setCounty_name(String county_name) {
+        this.county_name = county_name;
+    }
+
+    public String getRecord_id() {
+        return record_id;
+    }
+
+    public void setRecord_id(String record_id) {
+        this.record_id = record_id;
+    }
+
+    public String getOrg_name() {
+        return org_name;
+    }
+
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
+    }
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public String getCust_name() {
+        return cust_name;
+    }
+
+    public void setCust_name(String cust_name) {
+        this.cust_name = cust_name;
+    }
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+
+    public String getCust_addr() {
+        return cust_addr;
+    }
+
+    public void setCust_addr(String cust_addr) {
+        this.cust_addr = cust_addr;
+    }
+
+    public String getProvince_end_date() {
+        return province_end_date;
+    }
+
+    public void setProvince_end_date(String province_end_date) {
+        this.province_end_date = province_end_date;
+    }
+
+    public String getRegion_end_date() {
+        return region_end_date;
+    }
+
+    public void setRegion_end_date(String region_end_date) {
+        this.region_end_date = region_end_date;
+    }
+
+    public String getRecord_status() {
+        return record_status;
+    }
+
+    public void setRecord_status(String record_status) {
+        this.record_status = record_status;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getService_name() {
+        return service_name;
+    }
+
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getEndding_time() {
+        return endding_time;
+    }
+
+    public void setEndding_time(String endding_time) {
+        this.endding_time = endding_time;
+    }
+}

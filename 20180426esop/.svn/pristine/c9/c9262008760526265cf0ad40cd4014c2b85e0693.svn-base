@@ -1,0 +1,179 @@
+package com.esop.shellLoadFile.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class ShellLoadDataDto extends BaseDto{
+
+    String DT_RowId = "";     //dataTables.editor使用参数,如果没有此参数,编辑功能不可用.
+    String config_id = "";
+    String table_name = "";
+    String table_desc = "";
+    String status = "";
+    String file_name = "";
+    String data_date = "";
+    String table_type = "";
+    String date_name = "";
+    String date_name_time = "";
+    String enable_errnum = "";
+    String file_full_name = "";
+    String data_num = "";
+    String load_num = "";
+    String error_num = "";
+    String actual_num = "";
+    String start_time = "";
+    String end_time = "";
+
+
+    public void setConfig_id(String config_id) {
+        this.config_id = config_id;
+    }
+
+    public void setTable_name(String table_name) {
+        this.table_name = table_name;
+    }
+
+    public void setTable_desc(String table_desc) {
+        this.table_desc = table_desc;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setFile_name(String file_name) {
+        this.file_name = file_name;
+    }
+
+    public void setData_date(String data_date) {
+        this.data_date = data_date;
+    }
+
+    public void setTable_type(String table_type) {
+        this.table_type = table_type;
+    }
+
+    public void setDate_name(String date_name) {
+        this.date_name = date_name;
+    }
+
+    public void setDate_name_time(String date_name_time) {
+        this.date_name_time = date_name_time;
+    }
+
+    public void setEnable_errnum(String enable_errnum) {
+        this.enable_errnum = enable_errnum;
+    }
+
+    public void setFile_full_name(String file_full_name) {
+        this.file_full_name = file_full_name;
+    }
+
+    public void setData_num(String data_num) {
+        this.data_num = data_num;
+    }
+
+    public void setLoad_num(String load_num) {
+        this.load_num = load_num;
+    }
+
+    public void setError_num(String error_num) {
+        this.error_num = error_num;
+    }
+
+    public void setActual_num(String actual_num) {
+        this.actual_num = actual_num;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
+    }
+
+
+
+    public String getConfig_id() {
+        return config_id;
+    }
+
+    public String getTable_name() {
+        return table_name;
+    }
+
+    public String getTable_desc() {
+        return table_desc;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getFile_name() {
+        return file_name;
+    }
+
+    public String getData_date() {
+        return data_date;
+    }
+
+    public String getTable_type() {
+        return table_type;
+    }
+
+    public String getDate_name() {
+        return date_name;
+    }
+
+    public String getDate_name_time() {
+        return date_name_time;
+    }
+
+    public String getEnable_errnum() {
+        return enable_errnum;
+    }
+
+    public String getFile_full_name() {
+        return file_full_name;
+    }
+
+    public String getData_num() {
+        return data_num;
+    }
+
+    public String getLoad_num() {
+        return load_num;
+    }
+
+    public String getError_num() {
+        return error_num;
+    }
+
+    public String getActual_num() {
+        return actual_num;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+
+}

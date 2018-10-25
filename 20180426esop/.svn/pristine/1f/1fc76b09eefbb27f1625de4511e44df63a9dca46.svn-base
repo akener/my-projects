@@ -1,0 +1,319 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/6/13
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>--%>
+<head>
+
+    <link rel="icon" href="./favicon.ico">
+    <title>客户经理工单处理</title>
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="group_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">请选择签约结果</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">工单处理失败，请检查</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">请填写放弃原因</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice4">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo4">该集团尚未签约成功</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">转发工单</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">确认录入签约结果吗？</label>
+            </div>
+            <div class="modal-footer">
+                <button id="send_record" name="send_record" class="btn btn-info">是</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">签约工单详情</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <input type="hidden" id="id" value="${id}">
+                            <label class="col-sm-3 control-label">潜在集团编码</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="cust_id" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">集团名称</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="cust_name" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">归属地市</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="org_name" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">归属区县</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="county_name" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">省派单截止日期</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="province_end_date" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">地市派单截止日期</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="region_end_date" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">集团地址</label>
+                            <div class="col-sm-2">
+                                <%--<input type="text" class="form-control" id="cust_addr" readonly="true">--%>
+                                <textarea id="cust_addr" class="form-control" maxlength="30" style="resize: none"></textarea>
+                            </div>
+
+                            <label class="col-sm-3 control-label">签约结果录入</label>
+                            <div class="col-sm-2">
+                                <select class="input-md form-control" id="record_status" onchange="setReason()">
+                                    <option value="">--请选择--</option>
+                                    <option value="11">签约成功</option>
+                                    <option value="07">工单回退区县</option>
+                                    <option value="06">工单主动放弃</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div id="rsn" style="display:none">
+                                <label class="col-sm-3 control-label">填写放弃因</label>
+                                <div class="col-sm-2">
+                                    <textarea id="giveup_reason" class="form-control" maxlength="30" style="resize: none"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-info pull-right" id="dosubmit">提交</button>
+                            <button type="submit" class="btn btn-info pull-right" id="back">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#group_name").val();
+    //获取数据
+    $(document).ready(function() {
+        var id = $("#id").val();
+        $.ajax({
+            type: "GET",
+            url: "getOneSignRecordByService",
+            data:{
+                id:id
+            }
+        }).then(function (data) {
+            //alert(data.product_id);
+            $("#cust_id").val(data.cust_id);
+            $("#org_name").val(data.org_name);
+            $("#cust_name").val(data.cust_name);
+            $("#cust_addr").val(data.cust_addr);
+            $("#county_name").val(data.county_name);
+            $("#province_end_date").val(data.province_end_date);
+            $("#region_end_date").val(data.region_end_date);
+        });
+
+    });
+
+
+    //返回
+    $("#back").click(function(){
+        location.href="sasbs";
+    });
+
+    $("#dosubmit").click(function(){
+        if($("#record_status").val() == ""){
+            $("#fault1").modal('show');
+            return false;
+        }
+        if($("#record_status").val() == '06'){
+            if($("#giveup_reason").val() == ''){
+                $("#fault3").modal('show');
+                return false;
+            }
+        }
+
+        $("#send").modal('show');
+    });
+
+    $("#send_record").click(function(){
+        var record_status = $("#record_status").val();
+        var giveup_reason = $("#giveup_reason").val();
+        var cust_id = $("#cust_id").val();
+        var id = $("#id").val();
+        $.ajax({
+            type: "GET",
+            url: "handleSignRecordByService",
+            data:{
+                record_status:record_status,
+                id:id,
+                giveup_reason:giveup_reason,
+                cust_id:cust_id
+            }
+        }).then(function (data) {
+            if(data == 1){
+                location.href="sasbs";
+            } else if(data == -1){
+                $("#send").modal('hide');
+                $("#fault4").modal('show');
+            }else{
+                $("#send").modal('hide');
+                $("#fault2").modal('show');
+            }
+        });
+    });
+
+    function setReason(){
+        var record_status = $("#record_status").val();
+        if(record_status=='06'){
+            $("#rsn").show();
+        }else{
+            $("#rsn").hide();
+        }
+    }
+
+
+</script>
+</html>

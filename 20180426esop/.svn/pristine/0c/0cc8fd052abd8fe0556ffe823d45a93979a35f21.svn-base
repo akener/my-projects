@@ -1,0 +1,11 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.OutDTO;
+
+/**
+ * 预打发票工单状态更新OutDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class UpdateWorkStateOutDTO extends OutDTO{
+}

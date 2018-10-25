@@ -1,0 +1,34 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cqDevelopment.capitalManage.dto.GroupMoneyCheckDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class GroupMoneyCheckService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    public List groupMoneyCheckDto(GroupMoneyCheckDto groupMoneyCheckDto){
+        String selectTion = "";
+        selectTion = "groupMoneyCheckDto";
+        List<GroupMoneyCheckDto> list=sqlE.selectM(selectTion,groupMoneyCheckDto);
+        return list;
+    }
+    public int updateDealDifferentSc(GroupMoneyCheckDto groupMoneyCheckDto){
+        String selectTion = "";
+        selectTion = "updateDealDifferent";
+        int i=sqlE.updateM(selectTion,groupMoneyCheckDto);
+        return i;
+    }
+}

@@ -1,0 +1,236 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/6/13
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  工单导入
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>--%>
+<head>
+    <link rel="icon" href="./favicon.ico">
+    <title>省管理员工单导入</title>
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+</head>
+<body>
+</div>
+</div>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<div class="modal fade" id="success" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">数据导入成功,生成批次号为<p id="msg"></p></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="ok">确认</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">工单导入失败，请检查数据</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">省管理员签约工单导入</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="box-footer">
+                                <div class="col-sm-4">
+                                    <input readonly class="form-control" id="file_path" name="file_path">
+                                </div>
+                                <label class="btn btn-info pull-left" for="xFile">浏览</label>
+                                <form id="upload-form" method="post" enctype="multipart/form-data">
+                                    <input type="file" name="file" id="xFile" style="position:absolute;clip:rect(0 0 0 0);">
+                                </form>
+                                <div class="col-sm-1">
+                                    <button type="submit" class="btn btn-info" id="submitRecord">提交</button>
+                                </div>
+                                <div class="col-sm-0">
+                                    <%--<button type="submit" class="btn btn-info" id=""><a href="fileLoad/templet/signOnRecord.xls" >模板下载</a></button>--%>
+                                    <a href="fileLoad/templet/signOnRecord.xls" >模板下载</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+
+    $("#xFile").on("change", function() {
+        var file_name = $('#xFile').val();
+        var names = file_name.split("\\");
+        var length = names.length;
+        $("#file_path").val(names[length-1]);
+    });
+
+    /*$(document).ready(function() {
+        $.ajax({
+            type:"GET",
+            url:"/getGroupLevel",
+            data:{
+                org_code:$("#org_code").val()
+            }
+        }).then(function(data){
+            if(data=='1' || data=='2'){
+                $("#fault2").modal('show');
+                $("#submitRecord").attr("disabled", true);
+            }
+        })
+    })*/
+    /*$("#submitRecord").click(function () {
+        if ($('#xFile')[0].files[0] != undefined) {
+            var fd = new FormData();
+            //var excelExtName = $('#xFile')[0].files[0].name.split(".")[1];
+            fd.append("file", $('#xFile')[0].files[0]);
+            //fd.append("excelExtName",excelExtName);
+            /!*alert(excelExtName);
+            return;*!/
+            $.ajax({
+                type: "POST",
+                url: "signRecordImport",
+                data: fd,
+                contentType: false,
+                processData: false,
+                cache: false
+            }).then(function (data) {
+                if(data == 1){
+                    $("#success").modal('show');
+                    //location.href="/showAllOweRecord";
+                    //document.location.reload();
+                }else{
+                    $("#fault").modal('show');
+                }
+            });
+        }
+    });*/
+
+    $("#submitRecord").click(function () {
+        $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+            url:"${pageContext.request.contextPath}/signRecordImport",
+            type:"post", //提交的类型必需是post，
+            data: {service_no:service_no},
+            dateType:"json",
+            success:function(data1){
+                $.ajax({
+                    type: "POST",
+                    url: "getSignRecordIdOfSend",
+                }).then(function (data1) {
+                    $("p").text(data1.record_id);
+                    $("#success").modal('show');
+                });
+            },
+            error:function(data){
+                $("#fault").modal('show');
+            }
+        });
+    });
+
+    $("#ok").click(function () {
+        document.location.reload();
+    });
+
+</script>
+</html>

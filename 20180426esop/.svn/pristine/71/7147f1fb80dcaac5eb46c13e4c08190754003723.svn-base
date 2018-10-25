@@ -1,0 +1,24 @@
+package com.esop.base.service;
+
+
+import com.esop.base.dto.SysLogQueryDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class SysLogQueryService {
+    @Autowired
+    SqlE sqlE;
+    //查询操作
+    public Result getSysLogMsgSvcList(SysLogQueryDto parameter){
+        Result result= sqlE.selectPage("selectSysLogMsg",parameter);
+        return result;
+    }
+}

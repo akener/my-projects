@@ -1,0 +1,90 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+/**
+ * Created by wangxy on 2018/1/17.
+ */
+public class SeOpporUserBusinessInfo {
+    private String order_no;
+    private String order_id;
+    private String business_name;
+    private String business_name_en;
+    private String business_info;
+    private String business_type;
+    private String oper_date;
+    private String opporNo;
+
+    private String spe_type_id;
+
+
+    public String getSpe_type_id() {
+        return spe_type_id;
+    }
+
+    public void setSpe_type_id(String spe_type_id) {
+        this.spe_type_id = spe_type_id;
+    }
+
+    public String getOpporNo() {
+        return opporNo;
+    }
+
+    public void setOpporNo(String opporNo) {
+        this.opporNo = opporNo;
+    }
+
+    public String getOrder_no() {
+        return order_no;
+    }
+
+    public void setOrder_no(String order_no) {
+        this.order_no = order_no;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    public String getBusiness_name() {
+        return business_name;
+    }
+
+    public void setBusiness_name(String business_name) {
+        this.business_name = business_name;
+    }
+
+    public String getBusiness_name_en() {
+        return business_name_en;
+    }
+
+    public void setBusiness_name_en(String business_name_en) {
+        this.business_name_en = business_name_en;
+    }
+
+    public String getBusiness_info() {
+        return business_info;
+    }
+
+    public void setBusiness_info(String business_info) {
+        this.business_info = business_info;
+    }
+
+    public String getBusiness_type() {
+        return business_type;
+    }
+
+    public void setBusiness_type(String business_type) {
+        this.business_type = business_type;
+    }
+
+    public String getOper_date() {
+        return oper_date;
+    }
+
+    public void setOper_date(String oper_date) {
+        this.oper_date = oper_date;
+    }
+}

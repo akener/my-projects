@@ -1,0 +1,163 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/12/15.
+ */
+public class GroupCapitalInfDto extends BaseDto{
+    private String grpfundacctid;//集团资金账户号
+    private String grpcustid;//集团客户编号
+    private String grpcustname;//集团客户名称
+    private String bankacctid;//绑定银行账号
+    private String bankname;//开户行
+    private String ownerorgid;//归属分公司
+    private String status;//账号状态
+    private String balance;//资金账户余额（分）
+    private String nowbalance;//资金账户可用余额（分）
+    private String holdbalance;//占用资金（分）
+    private String freezefee;//冻结资金（分）
+    private String groupid;//集团编号
+    //用于页面展示
+    private String newBalance;//账户余额（元）
+    private String newNowbalance;//可用余额（元）
+    private String newHoldbalance;//占用资金（元）
+    private String newFreezefee;//冻结资金（元）
+    private String ownerorgname;//归属分公司 中文
+
+    public String getNewBalance() {
+        return newBalance;
+    }
+
+    public void setNewBalance(String newBalance) {
+        this.newBalance = newBalance;
+    }
+
+    public String getNewNowbalance() {
+        return newNowbalance;
+    }
+
+    public void setNewNowbalance(String newNowbalance) {
+        this.newNowbalance = newNowbalance;
+    }
+
+    public String getNewHoldbalance() {
+        return newHoldbalance;
+    }
+
+    public void setNewHoldbalance(String newHoldbalance) {
+        this.newHoldbalance = newHoldbalance;
+    }
+
+    public String getNewFreezefee() {
+        return newFreezefee;
+    }
+
+    public void setNewFreezefee(String newFreezefee) {
+        this.newFreezefee = newFreezefee;
+    }
+
+    public String getGrpfundacctid() {
+        return grpfundacctid;
+    }
+
+    public void setGrpfundacctid(String grpfundacctid) {
+        this.grpfundacctid = grpfundacctid;
+    }
+
+    public String getGrpcustid() {
+        return grpcustid;
+    }
+
+    public void setGrpcustid(String grpcustid) {
+        this.grpcustid = grpcustid;
+    }
+
+    public String getGrpcustname() {
+        return grpcustname;
+    }
+
+    public void setGrpcustname(String grpcustname) {
+        this.grpcustname = grpcustname;
+    }
+
+    public String getBankacctid() {
+        return bankacctid;
+    }
+
+    public void setBankacctid(String bankacctid) {
+        this.bankacctid = bankacctid;
+    }
+
+    public String getBankname() {
+        return bankname;
+    }
+
+    public void setBankname(String bankname) {
+        this.bankname = bankname;
+    }
+
+    public String getOwnerorgid() {
+        return ownerorgid;
+    }
+
+    public void setOwnerorgid(String ownerorgid) {
+        this.ownerorgid = ownerorgid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getNowbalance() {
+        return nowbalance;
+    }
+
+    public void setNowbalance(String nowbalance) {
+        this.nowbalance = nowbalance;
+    }
+
+    public String getHoldbalance() {
+        return holdbalance;
+    }
+
+    public void setHoldbalance(String holdbalance) {
+        this.holdbalance = holdbalance;
+    }
+
+    public String getFreezefee() {
+        return freezefee;
+    }
+
+    public void setFreezefee(String freezefee) {
+        this.freezefee = freezefee;
+    }
+
+    public String getOwnerorgname() {
+        return ownerorgname;
+    }
+
+    public void setOwnerorgname(String ownerorgname) {
+        this.ownerorgname = ownerorgname;
+    }
+
+    public String getGroupid() {
+        return groupid;
+    }
+
+    public void setGroupid(String groupid) {
+        this.groupid = groupid;
+    }
+}

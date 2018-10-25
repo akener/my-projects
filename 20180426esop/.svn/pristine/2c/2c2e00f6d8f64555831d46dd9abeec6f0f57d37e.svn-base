@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtProcStepRoleRelMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtProcStepRoleRel">
+    <id column="cfg_id" jdbcType="VARCHAR" property="cfgId" />
+    <result column="proc_id" jdbcType="VARCHAR" property="procId" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ct_proc_step_role_rel
+    where cfg_id = #{cfgId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtProcStepRoleRel">
+    <selectKey keyProperty="cfgId" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ct_proc_step_role_rel (proc_id, step_id, role_code, 
+      role_name)
+    values (#{procId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR}, 
+      #{roleName,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.workflow.model.CtProcStepRoleRel">
+    update ct_proc_step_role_rel
+    set proc_id = #{procId,jdbcType=VARCHAR},
+      step_id = #{stepId,jdbcType=VARCHAR},
+      role_code = #{roleCode,jdbcType=VARCHAR},
+      role_name = #{roleName,jdbcType=VARCHAR}
+    where cfg_id = #{cfgId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select cfg_id, proc_id, step_id, role_code, role_name
+    from ct_proc_step_role_rel
+    where cfg_id = #{cfgId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByProcIdAndStepId" parameterType="com.esop.workflow.model.CtProcStepRoleRel" resultType="java.lang.String">
+    select role_code
+    from ct_proc_step_role_rel
+    where proc_id = #{procId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select cfg_id, proc_id, step_id, role_code, role_name
+    from ct_proc_step_role_rel
+  </select>
+</mapper>

@@ -1,0 +1,243 @@
+package com.esop.capAdjustApply.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/11/1.
+ */
+//集团资金日报表
+public class EpCapBalanceRpt extends BaseDto {
+     private int id;
+    private  String  ltd; //分公司
+    private  String  industry_center; //行业中心
+    private  String group_unit ; //集团单位
+    private  String  group_code; //集团编码
+    private  String  cust_manager; //客户经理
+    private  String  account_clerk; //账务员
+    private  Double  yestd_balance; //昨日余额
+    private  Double  yestd_usable_blc; //昨日可用余额
+    private  Double recognt_amt ; //今日认款金额
+    private  Double  deduction_amt; //今日业务工单扣减金额
+    private  Double in_amount ; //今日调入金额
+    private  Double out_amount ; //今日调出金额
+    private  Double  refund_amount; //今日退款金额
+    private  Double  freeze_amount; //今日冻结金额
+    private  Double using_amount ; //今日资金占用金额
+    private  Double  his_short_dedct_amt; //今日历史短款扣减金额
+    private  Double today_balance ; //今日账户余额
+    private  Double usable_balance ; //今日账户可用余额
+    private  String  last_handle_time; //最后操作时间
+
+  @Override
+  public String toString() {
+    return "EpCapBalanceRpt{" +
+            "id=" + id +
+            ", ltd='" + ltd + '\'' +
+            ", industry_center='" + industry_center + '\'' +
+            ", group_unit='" + group_unit + '\'' +
+            ", group_code='" + group_code + '\'' +
+            ", cust_manager='" + cust_manager + '\'' +
+            ", account_clerk='" + account_clerk + '\'' +
+            ", yestd_balance=" + yestd_balance +
+            ", yestd_usable_blc=" + yestd_usable_blc +
+            ", recognt_amt=" + recognt_amt +
+            ", deduction_amt=" + deduction_amt +
+            ", in_amount=" + in_amount +
+            ", out_amount=" + out_amount +
+            ", refund_amount=" + refund_amount +
+            ", freeze_amount=" + freeze_amount +
+            ", using_amount=" + using_amount +
+            ", his_short_dedct_amt=" + his_short_dedct_amt +
+            ", today_balance=" + today_balance +
+            ", usable_balance=" + usable_balance +
+            ", last_handle_time='" + last_handle_time + '\'' +
+            '}';
+  }
+
+  public EpCapBalanceRpt() {
+  }
+
+  public EpCapBalanceRpt(int id, String ltd, String industry_center, String group_unit, String group_code, String cust_manager, String account_clerk, Double yestd_balance, Double yestd_usable_blc, Double recognt_amt, Double deduction_amt, Double in_amount, Double out_amount, Double refund_amount, Double freeze_amount, Double using_amount, Double his_short_dedct_amt, Double today_balance, Double usable_balance, String last_handle_time) {
+    this.id = id;
+    this.ltd = ltd;
+    this.industry_center = industry_center;
+    this.group_unit = group_unit;
+    this.group_code = group_code;
+    this.cust_manager = cust_manager;
+    this.account_clerk = account_clerk;
+    this.yestd_balance = yestd_balance;
+    this.yestd_usable_blc = yestd_usable_blc;
+    this.recognt_amt = recognt_amt;
+    this.deduction_amt = deduction_amt;
+    this.in_amount = in_amount;
+    this.out_amount = out_amount;
+    this.refund_amount = refund_amount;
+    this.freeze_amount = freeze_amount;
+    this.using_amount = using_amount;
+    this.his_short_dedct_amt = his_short_dedct_amt;
+    this.today_balance = today_balance;
+    this.usable_balance = usable_balance;
+    this.last_handle_time = last_handle_time;
+  }
+
+  public int getId() {
+
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public String getLtd() {
+    return ltd;
+  }
+
+  public void setLtd(String ltd) {
+    this.ltd = ltd;
+  }
+
+  public String getIndustry_center() {
+    return industry_center;
+  }
+
+  public void setIndustry_center(String industry_center) {
+    this.industry_center = industry_center;
+  }
+
+  public String getGroup_unit() {
+    return group_unit;
+  }
+
+  public void setGroup_unit(String group_unit) {
+    this.group_unit = group_unit;
+  }
+
+  public String getGroup_code() {
+    return group_code;
+  }
+
+  public void setGroup_code(String group_code) {
+    this.group_code = group_code;
+  }
+
+  public String getCust_manager() {
+    return cust_manager;
+  }
+
+  public void setCust_manager(String cust_manager) {
+    this.cust_manager = cust_manager;
+  }
+
+  public String getAccount_clerk() {
+    return account_clerk;
+  }
+
+  public void setAccount_clerk(String account_clerk) {
+    this.account_clerk = account_clerk;
+  }
+
+  public Double getYestd_balance() {
+    return yestd_balance;
+  }
+
+  public void setYestd_balance(Double yestd_balance) {
+    this.yestd_balance = yestd_balance;
+  }
+
+  public Double getYestd_usable_blc() {
+    return yestd_usable_blc;
+  }
+
+  public void setYestd_usable_blc(Double yestd_usable_blc) {
+    this.yestd_usable_blc = yestd_usable_blc;
+  }
+
+  public Double getRecognt_amt() {
+    return recognt_amt;
+  }
+
+  public void setRecognt_amt(Double recognt_amt) {
+    this.recognt_amt = recognt_amt;
+  }
+
+  public Double getDeduction_amt() {
+    return deduction_amt;
+  }
+
+  public void setDeduction_amt(Double deduction_amt) {
+    this.deduction_amt = deduction_amt;
+  }
+
+  public Double getIn_amount() {
+    return in_amount;
+  }
+
+  public void setIn_amount(Double in_amount) {
+    this.in_amount = in_amount;
+  }
+
+  public Double getOut_amount() {
+    return out_amount;
+  }
+
+  public void setOut_amount(Double out_amount) {
+    this.out_amount = out_amount;
+  }
+
+  public Double getRefund_amount() {
+    return refund_amount;
+  }
+
+  public void setRefund_amount(Double refund_amount) {
+    this.refund_amount = refund_amount;
+  }
+
+  public Double getFreeze_amount() {
+    return freeze_amount;
+  }
+
+  public void setFreeze_amount(Double freeze_amount) {
+    this.freeze_amount = freeze_amount;
+  }
+
+  public Double getUsing_amount() {
+    return using_amount;
+  }
+
+  public void setUsing_amount(Double using_amount) {
+    this.using_amount = using_amount;
+  }
+
+  public Double getHis_short_dedct_amt() {
+    return his_short_dedct_amt;
+  }
+
+  public void setHis_short_dedct_amt(Double his_short_dedct_amt) {
+    this.his_short_dedct_amt = his_short_dedct_amt;
+  }
+
+  public Double getToday_balance() {
+    return today_balance;
+  }
+
+  public void setToday_balance(Double today_balance) {
+    this.today_balance = today_balance;
+  }
+
+  public Double getUsable_balance() {
+    return usable_balance;
+  }
+
+  public void setUsable_balance(Double usable_balance) {
+    this.usable_balance = usable_balance;
+  }
+
+  public String getLast_handle_time() {
+    return last_handle_time;
+  }
+
+  public void setLast_handle_time(String last_handle_time) {
+    this.last_handle_time = last_handle_time;
+  }
+}

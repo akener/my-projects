@@ -1,0 +1,53 @@
+package com.esop.workflow.model;
+
+public class CtElecWoExtInfo {
+    private String woNo;
+
+    private String paramKey;
+
+    private String paramName;
+
+    private String paramVal;
+
+    private String paramQueue;
+
+    public String getWoNo() {
+        return woNo;
+    }
+
+    public void setWoNo(String woNo) {
+        this.woNo = woNo;
+    }
+
+    public String getParamKey() {
+        return paramKey;
+    }
+
+    public void setParamKey(String paramKey) {
+        this.paramKey = paramKey;
+    }
+
+    public String getParamName() {
+        return paramName;
+    }
+
+    public void setParamName(String paramName) {
+        this.paramName = paramName;
+    }
+
+    public String getParamVal() {
+        return paramVal;
+    }
+
+    public void setParamVal(String paramVal) {
+        this.paramVal = paramVal;
+    }
+
+    public String getParamQueue() {
+        return paramQueue;
+    }
+
+    public void setParamQueue(String paramQueue) {
+        this.paramQueue = paramQueue;
+    }
+}

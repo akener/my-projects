@@ -1,0 +1,115 @@
+package com.esop.productInfo.dto;
+
+/**
+ * Created by wangbl on 2017/7/9.
+ */
+public class ProductRemindInfoDto {
+    String remind_id ="";          //提醒id
+    String remind_type ="";        //提醒类型，1、框架合同续签待办提醒；2、运维结算告待办提醒；3、产品后评估打分待办提醒
+    String prod_id ="";            //产品编码
+    String prod_name ="";          //产品名称
+    String remind_note ="";        //提醒内容
+    String handle_note ="";        //处理内容
+    String handle_flag ="";        //处理标示，1表示已处理，0表示未处理
+    String handle_login ="";       //处理工号
+    String handle_date  ="";       //处理时间
+    String end_date ="";           //结束日期
+    String remind_date ="";        //创建时间
+    String landing_no ="";         //登录工号
+
+    public String getRemind_id() {
+        return remind_id;
+    }
+
+    public void setRemind_id(String remind_id) {
+        this.remind_id = remind_id;
+    }
+
+    public String getRemind_type() {
+        return remind_type;
+    }
+
+    public void setRemind_type(String remind_type) {
+        this.remind_type = remind_type;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public String getRemind_note() {
+        return remind_note;
+    }
+
+    public void setRemind_note(String remind_note) {
+        this.remind_note = remind_note;
+    }
+
+    public String getHandle_note() {
+        return handle_note;
+    }
+
+    public void setHandle_note(String handle_note) {
+        this.handle_note = handle_note;
+    }
+
+    public String getHandle_flag() {
+        return handle_flag;
+    }
+
+    public void setHandle_flag(String handle_flag) {
+        this.handle_flag = handle_flag;
+    }
+
+    public String getHandle_login() {
+        return handle_login;
+    }
+
+    public void setHandle_login(String handle_login) {
+        this.handle_login = handle_login;
+    }
+
+    public String getHandle_date() {
+        return handle_date;
+    }
+
+    public void setHandle_date(String handle_date) {
+        this.handle_date = handle_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getRemind_date() {
+        return remind_date;
+    }
+
+    public void setRemind_date(String remind_date) {
+        this.remind_date = remind_date;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

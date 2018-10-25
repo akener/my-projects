@@ -1,0 +1,16 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/6/26.
+ */
+public class FlagshipStoreDto {
+    BUSI_INFO busi_info = new BUSI_INFO();
+
+    public BUSI_INFO getBusi_info() {
+        return busi_info;
+    }
+
+    public void setBusi_info(BUSI_INFO busi_info) {
+        this.busi_info = busi_info;
+    }
+}

@@ -1,0 +1,24 @@
+package com.esop.busiAnalysis.service;
+
+
+import com.esop.busiAnalysis.dto.RetentionRateDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Created by liuxiao on 2017/5/29.
+ */
+@Repository
+public class RetentionRateService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(RetentionRateService.class);
+    //查询操作
+    public Result getRetentionRateList(RetentionRateDto parameter){
+        Result result= sqlE.selectPage("selectRetentionRate",parameter);
+        return result;
+    }
+}

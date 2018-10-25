@@ -1,0 +1,17 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/7/8.
+ */
+//人人微店
+public class OrderStateWorkDto {
+    String title = "";//工单主题
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+}

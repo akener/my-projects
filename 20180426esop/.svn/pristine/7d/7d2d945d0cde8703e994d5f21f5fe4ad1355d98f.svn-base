@@ -1,0 +1,63 @@
+/* Circular Content Carousel Style */
+.ca-container{
+	position:relative;
+	margin:25px auto 20px auto;
+	width:780px;
+	height:260px;
+}
+.ca-wrapper{
+	width:100%;
+	height:100%;
+	position:relative;
+}
+.ca-item{
+	float:left;
+	width:195px;
+	height:258px;
+	text-align:center;
+}
+.ca-item-main{
+	position:relative;
+	height:258px;
+	width:175px; 
+	margin:0 10px;
+	border:solid 1px #e1e1e1;
+	border-radius:5px;
+}
+.ca-content-wrapper{
+	background:#b0ccc6;
+	position:absolute;
+	width:0px; /* expands to width of the wrapper minus 1 element */
+	height:440px;
+	top:5px;
+	text-align:left;
+	z-index:10000;
+	overflow:hidden;
+}
+.ca-nav span{
+	width:33px;
+	height:70px;
+	background: url(../images/arrows.png) no-repeat top left;
+	position:absolute;
+	top:50%;
+	margin-top:-19px;
+	left:-40px;
+	text-indent:-9000px;
+	opacity:0.7;
+	cursor:pointer;
+	z-index:100;
+}
+.ca-nav span.ca-nav-next{
+	background-position:top right;
+	left:auto;
+	right:-40px;
+}
+.ca-nav span:hover{
+	opacity:0.6;
+}
+.ca-item p{ font-size:12px; color:#696969; text-align:left; line-height:22px;overflow:hidden; padding:0 8px;
+}
+.figcaption{width:175px; height:88px;}
+.ca-each-bottom{ background-color:#f9f9f9; border-top:1px solid #e1e1e1; line-height:35px; height:35px; position:absolute; bottom:0; width:100%; font-size:16px; color:#343434;}
+.ca-item button{ width:18px; height:16px; background:transparent url(../images/amplification-icon.png) no-repeat center center; position:absolute; right:5px; top:102px; border:none;}
+.ca-item .img2{ position:fixed; left:50%; top:50%; width:525px; margin-left:-265px; height:369px; margin-top:-185px; border:solid 5px #fff; border-radius:10px; z-index:99; cursor:pointer;}

@@ -1,0 +1,38 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo;
+import com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.UnionInfoDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class GroupProdChangeService {
+
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+
+    public List<UnionInfoDto> getUnionInfo(){
+        List<UnionInfoDto> list = sqlSessionTemplate.selectList("getUnionInfo1");
+        return  list;
+    }
+
+    public SeNewContractInfoDto getSeNewContractInfo(String contractId){
+        SeNewContractInfoDto contractInfo = sqlSessionTemplate.selectOne("getSeNewContractInfo", contractId);
+        return contractInfo;
+    }
+
+    public List<SeContractChargesInfo> getSeContractChargesInfos(String contractId){
+        List<SeContractChargesInfo> list = sqlSessionTemplate.selectList("getSeContractChargesInfos", contractId);
+        return list;
+    }
+    //获取集团账户id
+    public List<SeContractAccountInfoDto> selectSeContractAccountInfoDto(SeContractAccountInfoDto seContractAccountInfoDto){
+        List list=sqlSessionTemplate.selectList("selectSeContractAccountInfoDtos",seContractAccountInfoDto);
+        return list;
+    }
+}

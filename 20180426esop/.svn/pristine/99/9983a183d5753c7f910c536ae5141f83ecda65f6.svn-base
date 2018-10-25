@@ -1,0 +1,27 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.AllPayIncomeDto;
+import com.esop.workbench.service.AllPayIncomeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/5.
+ */
+@RestController
+public class AllPayIncomeController {
+    @Autowired
+    AllPayIncomeService allPayIncomeService;
+    @RequestMapping(value="/allPayIncome")
+    public List getallPayIncomeList(AllPayIncomeDto allPayIncomeDto, HttpServletRequest request){
+        String eff_date = request.getParameter("eff_date");
+        String region_code = request.getParameter("region_code");
+        allPayIncomeDto.setEff_date(eff_date);
+        allPayIncomeDto.setRegion_code(region_code);
+        return allPayIncomeService.getAllPayIncomeListBymonth(allPayIncomeDto);
+    }
+}

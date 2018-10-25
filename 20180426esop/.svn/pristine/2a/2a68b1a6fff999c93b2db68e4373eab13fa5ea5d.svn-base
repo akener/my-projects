@@ -1,0 +1,49 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.WarnAndAlertDto;
+import com.esop.workbench.dto.WarnAndAlertDtoRetrun;
+import com.esop.workbench.service.WarnAndAlertService;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/6/10.
+ */
+@RestController
+public class WarnAndAlertRC {
+    @Autowired
+    WarnAndAlertService warnAndAlertService;
+    private static Logger logger = Logger.getLogger(WarnAndAlertRC.class);
+    //查询节点默认台账信息
+    @RequestMapping(value="/contractAlert")
+    public WarnAndAlertDtoRetrun getContractAlertInfo(WarnAndAlertDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= warnAndAlertService.getContractAlertList(parameter);
+
+        WarnAndAlertDtoRetrun warnAndAlertDtoRetrun = new WarnAndAlertDtoRetrun();
+        warnAndAlertDtoRetrun.setData(list);
+        warnAndAlertDtoRetrun.setCode("0000000");
+        warnAndAlertDtoRetrun.setMessage("Rest Request Success");
+
+        return warnAndAlertDtoRetrun;
+    }
+
+    @RequestMapping(value="/returnRemind")
+    public WarnAndAlertDtoRetrun getReturnRemindInfo(WarnAndAlertDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= warnAndAlertService.getReturnRemindList(parameter);
+
+        WarnAndAlertDtoRetrun warnAndAlertDtoRetrun = new WarnAndAlertDtoRetrun();
+        warnAndAlertDtoRetrun.setData(list);
+        warnAndAlertDtoRetrun.setCode("0000000");
+        warnAndAlertDtoRetrun.setMessage("Rest Request Success");
+
+        return warnAndAlertDtoRetrun;
+    }
+}

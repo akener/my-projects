@@ -1,0 +1,145 @@
+/**
+ * Created by wangxy on 2017/12/8.
+ */
+$(document).ready(function() {
+    queryGroupMember();
+    //selMemberInfo();
+});
+
+
+function queryGroupMember() {
+    var union_name = $("#union_name").val();
+    var union_code = $("#union_code").val();
+    var product_name = $("#product_name").val();
+    var product_code = $("#product_code").val();
+    var serviceNo = $("#serviceNo").val();
+    table = $('#member_info_list').DataTable( {
+        "bFilter": false,
+        bLengthChange:false,
+        "pageLength": 10,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax:{
+            url:"getMemberInfoList",
+            type:"POST",
+            data:{"union_name":union_name,
+                "union_code":union_code,
+                "product_name":product_name,
+                "product_code":product_code,
+                "serviceNo":serviceNo
+            }
+        },
+        columns: [
+            { data: "men_name" },
+            { data: "mem_telno" },
+            { data: "memStatus",
+                render: function ( data, type, row, meta ) {
+                    switch (parseInt(row.memStatus)){
+                        case 0 :
+                            return data = "正常";
+                        case 1 :
+                            return data = "新增申请中";
+                        case 2 :
+                            return data = "修改申请中";
+                    }
+                }
+            },
+            { data: "id",
+                render: function ( data, type, row, meta ) {
+                    return data = //"<button type='button' style='width: 50px' onclick='update_member(" + row.id + ")' name='" + row.id + "'>修改</button>&nbsp;&nbsp;" +
+                        "<button type='button' style='width: 50px' onclick='delete_member(" + row.id + ")' name='" + row.id + "'>删除</button>";
+                }
+            }
+        ],
+        buttons: []
+    })
+}
+
+
+
+
+
+
+/*
+function selMemberInfo() {
+    var union_name = $("#union_name").val();
+    var union_code = $("#union_code").val();
+    var product_name = $("#product_name").val();
+    var product_code = $("#product_code").val();
+    var serviceNo = $("#serviceNo").val();
+    $(this).text('查询中..')
+    $(this).attr("disabled",true);
+    var tr_list = "";
+    $.ajax({
+        type:"POST",
+        url:"getMemberInfoList",
+        data:{"union_name":union_name,"union_code":union_code,"product_name":product_name,"product_code":product_code,"serviceNo":serviceNo},
+        success:function(result){
+            $("#tbody_info").empty();
+            $.each(result.list, function (i, field) {
+                tr_list =  tr_list + "<tr class='tr-data-cc'>"+
+                            "	<td>"+field.men_name+"</td>"+
+                            "	<td>"+field.mem_telno+"</td>";
+                switch (parseInt(field.memStatus)){
+                    case 0 :
+                        tr_list = tr_list + "<td>正常</td>";break;
+                    case 1 :
+                        tr_list = tr_list + "<td>新增申请中</td>";break;
+                    case 2 :
+                        tr_list = tr_list + "<td>修改申请中</td>";break;
+                }
+
+                tr_list = tr_list + "<td>" +
+                                        "<div class='tc'>" +
+                                            "<a onclick='update_member("+field.id+")'>修改</a>&nbsp;&nbsp;" +
+                                            "<a onclick='delete_member("+field.id+")'>删除</a>" +
+                                        "</div>" +
+                                    "</td> "+
+                            "</tr>";
+            });
+            $("#tbody_info").append(tr_list);
+            $("#query_info").text('查询')
+            $("#query_info").removeAttr("disabled");
+        },error:function () {
+            alert("fail");
+        }
+    });
+}
+*/
+function update_member(id) {
+    location.href = "/esop/updateMemberNew?id="+id;
+}
+function delete_member(id) {
+    location.href = "/esop/delMemberNew?id="+id;
+}
+
+$("#add_member").on("click",function () {
+    location.href = "/esop/applyOrder" ;
+});
+
+
+$("#reset").on("click",function () {
+    $("#union_name").val("");
+    $("#union_code").val("");
+    $("#product_name").val("");
+    $("#product_code").val("");
+});
+
+function empty_all(value,value1,value2,value3) {
+    var flag = false;
+    if(value.length != 0){
+        flag = true;
+    }else if(value1.length != 0){
+        flag = true;
+    }else if(value2.length != 0){
+        flag = true;
+    }else if(value3.length != 0){
+        flag = true;
+    }
+    return flag;
+}
+

@@ -1,0 +1,74 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangxy on 2017/12/28.
+ */
+public class SeOpporInfo extends BaseDto {
+    private String unionCode;
+    private String unionName;
+    private String opporNo;
+    private String linkMan;
+    private String serviceNo;
+
+    private String operate_type;
+
+    private String spe_type_id;
+
+    public String getOperate_type() {
+        return operate_type;
+    }
+
+    public void setOperate_type(String operate_type) {
+        this.operate_type = operate_type;
+    }
+
+    public String getSpe_type_id() {
+        return spe_type_id;
+    }
+
+    public void setSpe_type_id(String spe_type_id) {
+        this.spe_type_id = spe_type_id;
+    }
+
+    public String getLinkMan() {
+        return linkMan;
+    }
+
+    public void setLinkMan(String linkMan) {
+        this.linkMan = linkMan;
+    }
+
+    public String getUnionCode() {
+        return unionCode;
+    }
+
+    public void setUnionCode(String unionCode) {
+        this.unionCode = unionCode;
+    }
+
+    public String getUnionName() {
+        return unionName;
+    }
+
+    public void setUnionName(String unionName) {
+        this.unionName = unionName;
+    }
+
+    public String getOpporNo() {
+        return opporNo;
+    }
+
+    public void setOpporNo(String opporNo) {
+        this.opporNo = opporNo;
+    }
+
+    public String getServiceNo() {
+        return serviceNo;
+    }
+
+    public void setServiceNo(String serviceNo) {
+        this.serviceNo = serviceNo;
+    }
+}

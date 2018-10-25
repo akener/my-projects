@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <select id="selectWorkAreaUrl"  parameterType="com.esop.base.dto.SessionDto" resultType="com.esop.base.dto.SessionDto" >
+        select role_code,b.work_area_url,login_no from ep_sys_loginmsg_new a,ep_sys_workarea_info b
+        where a.work_area=b.work_area and login_no=#{login_no}
+    </select>
+    <select id="selectLoginNoPassword"  parameterType="com.esop.base.dto.SessionDto" resultType="com.esop.base.dto.SessionDto" >
+        select login_no,password from ep_sys_loginmsg_new a
+        where login_no=#{login_no}
+    </select>
+    <select id="selectLoginNoInfo"  parameterType="com.esop.base.dto.SessionDto" resultType="com.esop.base.dto.SessionDto" >
+        select a.login_no,a.login_name,a.role_code,c.role_name,a.group_id as region_code,b.boss_org_code,a.group_id,
+        b.group_name,a.busi_boss_no,a.busi_password,grpusertype,grp_staff_number,need_remind,grp_role_code,is_grp_staff
+        from ep_sys_loginmsg_new a, ep_sys_group_info b, ep_sys_rolecode_new c
+        where a.group_id = b.group_id and trim(a.role_code) = trim(c.role_code)
+        and a.login_no = #{login_no}
+    </select>
+    <select id="insertLogInfo" parameterType="com.esop.base.dto.LogInfoDto" resultType="int" >
+    insert into ep_sys_log_info(op_code,login_no,op_time,ip_addr,login_no_4a)
+    values(#{op_code},#{login_no},sysdate,#{ip_addr},#{login_no_4a})
+    </select>
+</mapper>

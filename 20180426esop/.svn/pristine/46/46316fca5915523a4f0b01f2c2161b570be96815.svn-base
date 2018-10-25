@@ -1,0 +1,219 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/10/30.
+ */
+public class GroupFundReconciliationDailyRptDto extends BaseDto{
+    private String org_name;//分公司
+    private String business_center;//行业中心
+    private String out_group_name;//调出集团单位名称
+    private String out_group_no;//调出集团单位编码
+    private String into_group_name;//调入集团单位名称
+    private String into_group_no;//调入集团单位编码
+    private String regulation_money;//调账金额
+    private String regulation_apply_no;//调账申请单号
+    private String order_status;//工单状态
+    private String dealend_date;//工单办结日期
+    private String staff_name;//申请人
+    private String apply_date;//申请时间
+    private String check_code;//稽核人
+    private String check_date;//稽核日期
+    private String check_status;//稽核状态
+    private String insert_date;//数据入库日期
+    private String group_pay_code;//分公司编码
+
+    private String regulation_money_positive;//调入金额--正数
+    private String regulation_money_negative;//调出金额--负数
+
+    //筛选条件
+    private String org_id; //分公司ID
+    private String center_code; //行业中心编码
+    private String dealend_date_start;//工单办结时间-start
+    private String dealend_date_end;//工单办结时间-end
+
+    public String getGroup_pay_code() {
+        return group_pay_code;
+    }
+
+    public void setGroup_pay_code(String group_pay_code) {
+        this.group_pay_code = group_pay_code;
+    }
+
+    public String getOrg_name() {
+        return org_name;
+    }
+
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getOut_group_name() {
+        return out_group_name;
+    }
+
+    public void setOut_group_name(String out_group_name) {
+        this.out_group_name = out_group_name;
+    }
+
+    public String getOut_group_no() {
+        return out_group_no;
+    }
+
+    public void setOut_group_no(String out_group_no) {
+        this.out_group_no = out_group_no;
+    }
+
+    public String getInto_group_name() {
+        return into_group_name;
+    }
+
+    public void setInto_group_name(String into_group_name) {
+        this.into_group_name = into_group_name;
+    }
+
+    public String getInto_group_no() {
+        return into_group_no;
+    }
+
+    public void setInto_group_no(String into_group_no) {
+        this.into_group_no = into_group_no;
+    }
+
+    public String getRegulation_money() {
+        return regulation_money;
+    }
+
+    public void setRegulation_money(String regulation_money) {
+        this.regulation_money = regulation_money;
+    }
+
+    public String getRegulation_apply_no() {
+        return regulation_apply_no;
+    }
+
+    public void setRegulation_apply_no(String regulation_apply_no) {
+        this.regulation_apply_no = regulation_apply_no;
+    }
+
+    public String getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
+    }
+
+    public String getDealend_date() {
+        return dealend_date;
+    }
+
+    public void setDealend_date(String dealend_date) {
+        this.dealend_date = dealend_date;
+    }
+
+    public String getStaff_name() {
+        return staff_name;
+    }
+
+    public void setStaff_name(String staff_name) {
+        this.staff_name = staff_name;
+    }
+
+    public String getCheck_code() {
+        return check_code;
+    }
+
+    public void setCheck_code(String check_code) {
+        this.check_code = check_code;
+    }
+
+    public String getCheck_date() {
+        return check_date;
+    }
+
+    public void setCheck_date(String check_date) {
+        this.check_date = check_date;
+    }
+
+    public String getCheck_status() {
+        return check_status;
+    }
+
+    public void setCheck_status(String check_status) {
+        this.check_status = check_status;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getInsert_date() {
+        return insert_date;
+    }
+
+    public void setInsert_date(String insert_date) {
+        this.insert_date = insert_date;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getDealend_date_start() {
+        return dealend_date_start;
+    }
+
+    public void setDealend_date_start(String dealend_date_start) {
+        this.dealend_date_start = dealend_date_start;
+    }
+
+    public String getDealend_date_end() {
+        return dealend_date_end;
+    }
+
+    public void setDealend_date_end(String dealend_date_end) {
+        this.dealend_date_end = dealend_date_end;
+    }
+
+    public String getRegulation_money_positive() {
+        return regulation_money_positive;
+    }
+
+    public void setRegulation_money_positive(String regulation_money_positive) {
+        this.regulation_money_positive = regulation_money_positive;
+    }
+
+    public String getRegulation_money_negative() {
+        return regulation_money_negative;
+    }
+
+    public void setRegulation_money_negative(String regulation_money_negative) {
+        this.regulation_money_negative = regulation_money_negative;
+    }
+}

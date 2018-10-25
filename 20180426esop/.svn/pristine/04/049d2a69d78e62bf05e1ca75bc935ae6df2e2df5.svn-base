@@ -1,0 +1,239 @@
+2017-02-09
+application.properties为系统配置文件，配置数据库连接、服务日志、应用端口号等信息
+
+数据库连接池使用的是HikariCP,号称性能最优的java数据库连接池。
+创建数据库连接池的公用类为com.esop.common.dataBase.DataSourceConfig
+43行为设置mybatis的配置文件地址
+数据库密码加密使用的是Jasypt,对应的处理类为com.esop.common.dataBase.EncryptPropertyPlaceholderAutoConfiguration
+其中28行encryptor.setPassword("security");设置加密使用的key值，可以根据实际需要修改。
+21行 private static final String SECURITY_PROPERTIES_FILE = "security.properties";
+设置存放加密后参数的文件名称，文件地址为resources文件夹下。
+test\java目录下的test.ConfigEncryptUtils为进行数据库密码加密解密的工具类，注意20行的key值设置，
+与EncryptPropertyPlaceholderAutoConfiguration类中的key值要一致。
+
+Application类为springboot的启动类
+
+base包下为一个服务编写例子
+每个服务分三层controller为控制层，dto为与表映射的值对象类，service为业务处理类
+服务客户端调用类为test\java目录下的test.TestURL.
+请注意20行参数此处是application/x-www-form-urlencoded而不是application/json
+第22行，传入的参数格式为id=9&name=重庆，通过此种方式传值，服务端控制层接受的参数可由spring直接转换，不需要我们再编写数据转换处理类。
+
+公共包说明
+com.esop.common.dataBase为处理数据库连接的公用类
+com.esop.common.page为处理翻页查询的公用类
+com.esop.hello为调试程序，不必关注
+test\java目录下的test包下文件为数据库密码加密解密工具类和客户端调用服务测试类
+
+通过gradle build打包文件后，执行build/libs/esop-service-spring-0.1.1.war
+启动应用
+java -jar esop-service-spring-0.1.1.war
+注意：程序发布主机必须jdk1.7以上版本
+
+oracle数据库连接
+修改application.properties文件中对应的数据库连接参数
+修改build.gradle文件，将原有的compile('com.zaxxer:HikariCP-java6:2.3.13')
+修改为compile('com.zaxxer:HikariCP-java7:2.4.11'),针对不同版本的jdk引入的HikariCP不同。
+详细内容可见HikariCP官网https://github.com/brettwooldridge/HikariCP
+增加oracle驱动程序包，在程序文件夹下创建libs文件夹，将oracle的驱动程序包ojdbc6.jar(对应为oracle12c)拷贝到文件夹下。
+在build.gradle文件中增加compile files('libs/ojdbc6.jar')
+修改com.esop.common.dataBase.DataSourceConfig类文件，将59行到62行代码注释掉。
+修改security.properties文件中对应的数据库密码加密串
+
+2017-02-15
+特殊字符过滤
+第一种方法：简单粗暴的方式，重写spring-web包内org.springframework.web.util.WebUtils类
+662行getParametersStartingWith方法中values参数进行特殊字符替换
+                    String[] values = request.getParameterValues(paramName);
+                    if (values == null || values.length == 0) {
+                        // Do nothing, no values found at all.
+                    } else if (values.length > 1) {
+                        for(int i=0;i<values.length;i++){
+                            values[i]=values[i].replaceAll("<","&lt;");//处理特殊字符替换
+                        }
+                        params.put(unprefixed, values);
+                    } else {
+                        values[0]=values[0].replaceAll("<","&lt;");//处理特殊字符替换
+                        params.put(unprefixed, values[0]);
+                    }
+第二种方法：增加过滤器
+在com.esop.common.filter包下增加CharFilter类，此类实现javax.servlet.Filter接口。
+在项目的springBoot的启动类Application中增加
+@Bean
+    public CharFilter charFilter() {
+        return new CharFilter();
+    }
+通过注解@Bean加载过滤器类，Spring Boot监测到有javax.servlet.Filter的bean时就会自动加入过滤器调用链中。
+此处有一个麻烦事就是ServletRequest没有setParameter方法，想修改parameter中的值再放回去处理比较麻烦。
+org.apache.commons.lang3.StringEscapeUtils;可以做字符替换
+详见https://my.oschina.net/mousai/blog/88832
+
+2017-02-16
+操作日志记录
+通过spring aop进行操作日志记录，记录到每次操作访问的控制层方法。因为无法记录opcode，所以要建一个opcode与控制层方法的映射关系表。
+访问工号信息取自session中的信息，在session存放一个名字叫userMap的HashMap属性
+            HttpSession session
+            Map userMap = new HashMap();
+            userMap.put("login_no","ABCEDFG");
+            userMap.put("login_name","测试工号");
+            session.setAttribute("userMap", userMap);
+类说明com.esop.common.opLog包下，OPLogDto对应操作日志记录表的值对象。OPLogService执行日志记录数据库操作的服务类
+com.esop.common.aop.OPLogAspect进行日志记录操作的aop类
+mybatis数据库操作语句配置文件 resources\mapper\opLog\opLog.xml
+build.gradle文件中需要加入
+compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.4.3.RELEASE'
+实现对aop的支持
+表结构如下
+/*mysql*/
+/*操作日志记录表*/
+DROP TABLE IF EXISTS `opLog`;
+CREATE TABLE `opLog` (
+  `login_no` varchar(30) DEFAULT NULL,     /*工号信息*/
+  `url` varchar(200) DEFAULT NULL,         /*访问的url信息*/
+  `ip` varchar(20) DEFAULT NULL,           /*ip信息*/
+  `opDetails` varchar(100) DEFAULT NULL,   /*操作明细，对应具体的操作方法*/
+  `param` text,                            /*操作参数*/
+  `opDate` varchar(40) DEFAULT NULL        /*操作时间*/
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*操作日志与功能点对应关系表*/
+DROP TABLE IF EXISTS `op_details_code_rela`;
+create table `op_details_code_rela` (
+  `opDetails` varchar(100) DEFAULT NULL,   /*操作明细，对应具体的操作方法*/
+  `opCode` varchar(100) DEFAULT NULL,      /*opcode编码*/
+  `opName` varchar(100) DEFAULT NULL       /*对应的功能名称*/
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--oracle
+--操作日志记录表
+DROP TABLE opLog;
+CREATE TABLE  opLog  (
+   login_no   varchar2(30) DEFAULT NULL,       --工号信息
+   url        varchar2(200) DEFAULT NULL,      --访问的url信息
+   ip         varchar2(20) DEFAULT NULL,       --ip信息
+   opDetails  varchar2(100) DEFAULT NULL,      --操作明细，对应具体的操作方法
+   param      varchar2(4000),                  --操作参数
+   opDate     varchar2(40) DEFAULT NULL        --操作时间
+);
+--操作日志与功能点对应关系表
+DROP TABLE  op_details_code_rela ;
+create table  op_details_code_rela  (
+   opDetails  varchar2(100) DEFAULT NULL,      --操作明细，对应具体的操作方法
+   opCode     varchar2(100) DEFAULT NULL,      --opcode编码
+   opName     varchar2(100) DEFAULT NULL       --对应的功能名称
+);
+
+2017-02-20
+支持前后台分离
+／*webapp/static/jquery.js*／
+9443行
+// Main method
+ajax: function( url, options ) {
+9452-9456行增加以下代码，将所有对服务端的请求都跳转到invokeService控制器集中处理，增加serviceRequestMapping参数存放访问的服务器端方法地址
+    if(url.url != "/static/data/Chinese.json"){
+		var paramData = url.data;
+		paramData.serviceRequestMapping = url.url;
+		url.url = "invokeService";
+	}
+java代码增加com.esop.pub.	InvokeServiceController来调用后端服务，InvokeServiceController做为前端调用后端服务的唯一出口。
+com.esop.pub.ServiceUrlBean读取服务端地址
+在application.properties文件中增加服务器地址信息
+#服务端服务器地址;分割
+serviceUrl=localhost:8083;192.168.48.99:8083
+在com.esop.Application启动类中增加
+@Value("${serviceUrl}")
+    private String serviceUrl;
+    @Bean
+    public ServiceUrlBean getServiceUrlBean(){
+        return new ServiceUrlBean(serviceUrl);
+    }
+读取服务器地址信息，并对ServiceUrlBean进行初始化
+
+前段界面展现修改内容
+/*jquery.dataTables.js*/
+增加总记录数返回参数
+94-95行
+//增加总记录数参数
+var h_recordsTotal = 0
+4008行
+recordsTotal: h_recordsTotal,
+4098行
+h_recordsTotal = recordsTotal;
+------------------------------------------------
+/*jquery.dataTables.css*/
+72行增加,使列数据居中显示
+  text-align:center;
+-------------------------------------------------
+/*dataTables.tableTools.js*/
+460行
+增加 var
+2950行
+"sButtonText": "全选",
+2964行
+"sButtonText": "取消",
+增加中文显示
+-------------------------------------------------
+/*dataTables.editor.min.js*/
+453行
+将DT_RowId修改为dt_RowId
+因为spring返回的json格式字段名称前面两个字母为小写
+返回json数据中必须有dt_RowId字段
+-------------------------------------------------
+/*bootstrap.css*/
+1268行
+  font-size: 24px;
+  由36px修改为24px
+2262行
+ text-align: center;
+ 由left改为center
+
+2017-03-18
+文件上传实现
+gs-uploading-files-master为文件服务器程序负责处理文件上传到文件服务器和从文件服务器下载文件
+本地工程增加文件说明
+将uploadFile放到com.esop.common包下
+将common放到resources/mapper文件夹下，处理文件记录
+-- Create table 附件信息表
+create table ep_upload_file_info
+(
+id number(20), --流水编码
+path varchar2(40), --文件存放路径
+name varchar2(100), --文件名称
+related_id number(20),--关联id，建立与对应上传功能关联使用
+create_date date, --创建时间
+update_date date, --更新时间
+valid number(1) --1有效，0无效
+)
+--ep_upload_file_info表主键序列
+drop sequence s_ep_upload_file_info;
+create sequence s_ep_upload_file_info
+minvalue 1
+maxvalue 99999999999999999999
+start with 1
+increment by 1
+nocache;
+--ep_upload_file_info表关联id序列
+drop sequence s_ep_upload_file_info_r;
+create sequence s_ep_upload_file_info_r
+minvalue 1
+maxvalue 99999999999999999999
+start with 1
+increment by 1
+nocache;
+将productInfo放到webapp/view文件夹下
+在com.esop.pub.MenuController.java里增加
+@RequestMapping(value = "dem")
+    public String main() {
+        return "productInfo/design/demandInfo";
+    }
+在application.properties文件里增加
+    #文件服务器地址;此地址为你实际部署的文件服务器应用的地址
+    uploadFileService=172.21.3.91:8086
+启动文件服务器，启动本地应用
+在浏览器里执行http://localhost:8082/dem
+具体页面处理方法见webapp/view/productInfo/design/demandInfo.jsp页面
+
+com.esop.common.jaxb为处理xml转换代码
+com.esop.common.axis为处理webservice服务代码
+resources文件下的server-config.wsdd文件中配置服务名称
+com.esop.oa.service包下文件为服务端业务处理代码,ServiceDeployedOnStartup为一个测试程序.
+test.java.test.TestAxis为客户端调用测试程序
+

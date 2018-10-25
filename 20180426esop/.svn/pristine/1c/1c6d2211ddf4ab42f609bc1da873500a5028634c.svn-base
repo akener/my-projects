@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.service.BankDealDetail_AnnulSvr">
+
+    <!--新增调账申请信息-->
+    <select id="insertAdjustInfo" parameterType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto" resultType="int">
+        insert into ep_cap_adjust_apply_info (
+        work_order_flowNo,applicant,apply_date,grp_fund_acct_id,grp_cust_id,
+        grp_cust_name,bank_acct_id,blank_name,owner_org_id,status,balance,
+        now_balance,hold_balance,freeze_fee,out_group,out_grp_no,out_linkman,
+        out_link_phone,out_link_type,into_group,into_grp_no,into_linkman,into_link_phone,
+        into_link_type,adjust_reason,adjust_money,adjust_explain,xFile,order_status
+        ) values (
+        #{work_order_flowNo},#{applicant},#{apply_date},#{grp_fund_acct_id},#{grp_cust_id},#{grp_cust_name},
+        #{bank_acct_id},#{blank_name},#{owner_org_id},#{status},#{balance},#{now_balance},
+        #{hold_balance},#{freeze_fee},#{out_group},#{out_grp_no},#{out_linkman},#{out_link_phone},#{out_link_type},#{into_group},
+        #{into_grp_no},#{into_linkman},#{into_link_phone},#{into_link_type},#{adjust_reason},
+        #{adjust_money},#{adjust_explain},#{xFile},#{order_status}
+        )
+    </select>
+    <!--保存调账申请单流程发起信息-->
+    <select id="insertWorkFlowInfoOnAdjust" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto" resultType="int">
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{taskOrderId},
+        #{applicantNo},
+        #{nextDealPerson},
+        #{nodeId},
+        #{dealTime},
+        #{approveOpinion},
+        #{memo}
+        )
+    </select>
+    <!--调账申请列表查询-->
+    <select id="selectAdjustListInfo" parameterType="String" resultType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto">
+        select work_order_flowNo,applicant,apply_date,grp_fund_acct_id,grp_cust_id,
+        grp_cust_name,bank_acct_id,blank_name,owner_org_id,status,balance,
+        now_balance,hold_balance,freeze_fee,out_group,out_grp_no,out_linkman,
+        out_link_phone,out_link_type,into_group,into_grp_no,into_linkman,into_link_phone,
+        into_link_type,adjust_reason,adjust_money,adjust_explain,xFile,t2.login_name,
+        CASE
+        WHEN  order_status='1' THEN '未处理'
+        WHEN  order_status='2' THEN '审批中'
+        WHEN  order_status='3' THEN '已处理'
+        WHEN  order_status='4' THEN '作废' END  as order_status
+        from ep_cap_adjust_apply_info t1,
+        bs_systemuser_info t2,
+        ep_work_flow_info t3
+        where
+        t1.work_order_flowNo = t3.taskOrderId
+        and t3.applicantNo = t2.staff_code
+        and t1.order_status in ('1','2')
+        <if test="work_order_flowNo != ''">
+            and t1.work_order_flowNo = #{work_order_flowNo}
+        </if>
+        <if test="applicant !=''">
+            and t1.applicant = #{applicant}
+        </if>
+        <if test="nextDealPerson !=''">
+            and t3.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="start_date != ''">
+            and  t1.apply_date  >= #{start_date}
+        </if>
+        <if test="end_date != ''">
+            and  t1.apply_date  &lt;= #{end_date}
+        </if>
+        ORDER  by t1.apply_date DESC
+    </select>
+    <!--资金调账-审批信息查询-->
+    <select id="selectAdjustApproveQuery" parameterType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto" resultType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto">
+        select
+        a.work_order_flowNo,
+       ifnull( a.applicant,''),applicant,
+        ifnull(h.login_name,'' )as applicantName,
+        a.apply_date,
+        a.grp_fund_acct_id,
+        a.grp_cust_id,
+        a.grp_cust_name,
+        a.bank_acct_id,
+        a.blank_name,
+        t6.name as owner_org_id,
+        a. STATUS,
+        a.balance,
+        a.now_balance,
+        a.hold_balance,
+        a.freeze_fee,
+        a.out_group,
+        a.out_grp_no,
+        a.out_linkman,
+        a.out_link_phone,
+        a.out_link_type,
+        a.into_group,
+        a.into_grp_no,
+        a.into_linkman,
+        a.into_link_phone,
+        a.into_link_type,
+        a.adjust_reason,
+        a.adjust_money,
+        a.adjust_explain,
+        case b.applicantNo when 'CRM' then 'CRM' else	c.login_name end login_name,
+        b.dealTime,
+        case b.nextDealPerson when 'CRM' then 'CRM' else	g.login_name end nextDealPerson,
+        d.link_name,
+        b.nodeId,
+        t5.business_center,
+        t5.center_code,
+        t2.fen_gongs,
+        t2.group_pay_code,
+        t3.group_pay_name
+        from
+        ep_cap_adjust_apply_info a
+        left join ep_work_flow_info b on a.work_order_flowNo = b.taskOrderId
+--         left join bs_systemuser_info c on a.applicant = c.staff_code
+        left join bs_systemuser_info c on b.applicantNo = c.staff_code
+        left join bs_systemuser_info h on a.applicant = h.staff_code
+        left join bs_systemuser_info g on b.nextDealPerson = g.staff_code
+        left join bs_staff_info t1 on t1.staff_id = c.staff_id
+        left join se_orgid_rel t2 on t2.fen_gongs = substring(t1.org_id, 1, 8)
+        left join se_group_business_code t3 on t3.group_pay_code = t2.group_pay_code
+        left join se_business_center_staff_rel t4 on t4.staff_code = a.applicant
+        left join se_business_center t5 on t5.center_code = t4.center_code
+        left join ep_work_flow_dict d on b.nodeId = d.link_id,
+        se_contract_qddw t6
+        where
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        select
+        max(
+        str_to_date(
+        e.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        from
+        ep_work_flow_info e
+        where
+        e.taskOrderId = a.work_order_flowNo
+        )
+        and a.owner_org_id=t6.id
+        <if test="adjust_money_yuan !=''">
+            and a.adjust_money = #{adjust_money_yuan}
+        </if>
+        <if test="order_status !=''">
+            and a.order_status = #{order_status}
+        </if>
+        <if test="start_date != ''">
+            and  date_format(a.apply_date,'%Y-%m-%d')  >= #{start_date}
+        </if>
+        <if test="end_date != ''">
+            and  date_format(a.apply_date,'%Y-%m-%d')  &lt;= #{end_date}
+        </if>
+        <if test="applicant != ''">
+            and  a.applicant  = #{applicant}
+        </if>
+        <if test="nextDealPerson != ''">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="owner_org_id !='' and owner_org_id !=null">
+            and t2.fen_gongs  = #{owner_org_id}
+        </if>
+        <if test="businessCenter !='' and businessCenter !=null">
+            and t5.center_code = #{businessCenter}
+        </if>
+        <if test="login_no2 !='' and login_no2 !=null">
+            and #{login_no2}=(select nextDealPerson from ep_work_flow_info f where nodeId='13' and f.taskOrderId = a.work_order_flowNo)
+        </if>
+        <if test="xFile !='' and xFile !=null">
+            and a.applicant=#{xFile}
+        </if>
+        <if test="link_msg !='' and link_msg !=null">
+            and b.nodeId=#{link_msg}
+        </if>
+        order by
+        apply_date desc
+    </select>
+
+
+    <!--调账申请表详情页面信息查询-->
+    <select id="getAdjustInfoByOrderFlowNo" parameterType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto" resultType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto">
+        select
+            a.work_order_flowNo,
+            a.applicant,
+            a.apply_date,
+            a.grp_fund_acct_id,
+            a.grp_cust_id,
+            a.grp_cust_name,
+            a.bank_acct_id,
+            a.blank_name,
+            d.name as owner_org_id,
+            a. STATUS,
+            a.balance,
+            a.now_balance,
+            a.hold_balance,
+            a.freeze_fee,
+            a.out_group,
+            a.out_grp_no,
+            a.out_linkman,
+            a.out_link_phone,
+            a.out_link_type,
+            a.into_group,
+            a.into_grp_no,
+            a.into_linkman,
+            a.into_link_type,
+            a.adjust_reason,
+            a.adjust_money,
+            a.adjust_explain,
+            a.xFile,
+            a.order_status,
+            f.source_file_name as fileName,
+            c.login_name
+        from
+            ep_cap_adjust_apply_info a   left join tf_attach_file_info f on a.xFile = f.attach_file_id,
+            bs_systemuser_info c,
+            se_contract_qddw d
+        where
+            c.staff_code = a.applicant
+            and  work_order_flowNo = #{work_order_flowNo}
+            and  a.owner_org_id=d.id
+    </select>
+
+    <!--查询nodeId-->
+    <select id="getWorkFlowNodeIdByOrderFlowNo" parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto"  resultType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto">
+        SELECT
+        nodeId
+        FROM
+        ep_work_flow_info b
+        WHERE
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        ) = (
+        SELECT
+        max(
+        str_to_date(
+        b.dealTime,
+        '%Y-%m-%d %H:%i:%s'
+        )
+        )
+        FROM
+        ep_work_flow_info b
+        WHERE
+        b.taskOrderId = #{taskOrderId} )
+        and b.taskOrderId = #{taskOrderId}
+    </select>
+    <!--更改申请单状态-->
+    <select id="updateAdjustOrderStatus" parameterType="com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto" resultType="int">
+        UPDATE   ep_cap_adjust_apply_info SET order_status=#{order_status} where work_order_flowNo= #{work_order_flowNo};
+    </select>
+
+
+
+</mapper>

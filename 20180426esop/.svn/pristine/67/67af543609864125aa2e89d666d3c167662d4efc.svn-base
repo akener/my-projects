@@ -1,0 +1,613 @@
+package com.esop.visitInfo.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.esop.common.util.ParameterConversion;
+import com.esop.productInfo.dto.PromptInformationDto;
+import com.esop.visitInfo.dto.*;
+import com.esop.visitInfo.service.VisitDetailService;
+import com.esop.visitInfo.service.VisitProcessService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by subt on 2017/6/10 0010.
+ * 参观详情
+ */
+@RestController
+public class VisitDetailController {
+    private static Logger logger = Logger.getLogger(VisitDetailController.class);
+    @Autowired
+    VisitDetailService visitDetailService;
+    @RequestMapping(value = "/getProcessDetail",produces = {"application/xml", "application/json"})
+    public List getProcessDetail(VisitProcessDto param, HttpServletRequest request){
+        List list = new ArrayList();
+        PromptInformationDto dto=new PromptInformationDto();
+        //将HttpServletRequest中传入的参数转换存放到map集合中
+        Map paramMap = ParameterConversion.intoParameterConversion(request);
+        StringBuffer info = new StringBuffer();
+
+        if (paramMap.get("parameter")==null){
+            info.append("请输入parameter字段值！");
+        }else{
+            param = JSON.parseObject(paramMap.get("parameter").toString(),VisitProcessDto.class);
+        }
+//        if (param.getHv_distribution_room().equals("")){
+//            info.append("请输入高压配电室信息！");
+//        }
+//        if (param.getLv_distribution_room().equals("")){
+//            info.append("请输入低压变配电室信息！");
+//        }
+//        if (param.getEngine_room().equals("")){
+//            info.append("请输入油机室信息！");
+//        }
+//        if (param.getPower_battery_room().equals("")){
+//            info.append("请输入电力电池室信息！");
+//        }
+//        if (param.getPrecision_air().equals("")){
+//            info.append("请输入精密空调信息！");
+//        }
+//        if (param.getCommercial_tworoom().equals("")){
+//            info.append("请输入2楼商用机房信息！");
+//        }
+//        if (param.getCommercial_fiveroom().equals("")){
+//            info.append("请输入5楼商用机房信息！");
+//        }
+//        if (param.getCommercial_sixroom().equals("")){
+//            info.append("请输入6楼商用机房信息！");
+//        }
+//        if (param.getStorage_room().equals("")){
+//            info.append("请输入库房信息！");
+//        }
+//        if (param.getFocus_monitor_hall().equals("")){
+//            info.append("请输入集中监控大厅信息！");
+//        }
+//        if (param.getStation().equals("")){
+//            info.append("请输入工位信息！");
+//        }
+//        if (param.getCanteen().equals("")){
+//            info.append("请输入食堂信息！");
+//        }
+//        if (param.getSpecial_needs().equals("")){
+//            info.append("请输入特殊需求信息！");
+//        }
+//        if (param.getLarge_screen_greeting().equals("")){
+//            info.append("请输入大屏幕欢迎辞信息！");
+//        }
+//        if (param.getBoardroom_number().equals("")){
+//            info.append("请输入数量(会议室)信息！");
+//        }
+//        if (param.getCapacity().equals("")){
+//            info.append("请输入容量（会议室）信息！");
+//        }
+//        if (param.getProjector_curtain().equals("")){
+//            info.append("请输入投影仪及幕布信息！");
+//        }
+//        if (param.getFamous_brand().equals("")){
+//            info.append("请输入名牌信息！");
+//        }
+//        if (param.getRostrum().equals("")){
+//            info.append("请输入主席台信息！");
+//        }
+//        if (param.getMicrophone().equals("")){
+//            info.append("请输入麦克风信息！");
+//        }
+//        if (param.getMineral_water().equals("")){
+//            info.append("请输入矿泉水信息！");
+//        }
+//        if (param.getTea_water().equals("")){
+//            info.append("请输入茶水信息！");
+//        }
+//        if (param.getPaper_pen().equals("")){
+//            info.append("请输入纸笔信息！");
+//        }
+        /*if (param.getCar_number().equals("")){
+            info.append("请输入数量（车辆）信息！");
+        }
+        if (param.getModels_colour().equals("")){
+            info.append("请输入车型及颜色信息！");
+        }
+        if (param.getPlate_num().equals("")){
+            info.append("请输入车牌号码信息！");
+        }
+        if (param.getTable_number().equals("")){
+            info.append("请输入桌餐信息！");
+        }
+        if (param.getCanteen_number().equals("")){
+            info.append("请输入食堂（餐饮）信息！");
+        }*/
+
+        //如果提示信息长度大于0，则返回提示信息
+        if(info.length()>0){
+            dto.setInfo(info.toString());
+            list.add(dto);
+            return list;
+        }
+        List visit = visitDetailService.getProcessDetail(param);
+        if (visit.size()>0){
+            if (visitDetailService.updateProcessDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+        }else{
+            if (visitDetailService.insertProcessDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+        }
+
+        return list;
+    }
+    //数据中心详情
+    @RequestMapping(value = "/getDatacenterDetail",produces = {"application/xml", "application/json"})
+    public List getDatacenterDetail(VisitDatacenterDto param, HttpServletRequest request){
+        List list = new ArrayList();
+        PromptInformationDto dto=new PromptInformationDto();
+        //将HttpServletRequest中传入的参数转换存放到map集合中
+        Map paramMap = ParameterConversion.intoParameterConversion(request);
+        //判断map集合中是否有需要的系统参数，没有返回提示信息，有，则更新到查询参数中
+        StringBuffer info = new StringBuffer();
+        if (paramMap.get("parameter")==null){
+            info.append("请输入parameter字段值！");
+        }else{
+            param = JSON.parseObject(paramMap.get("parameter").toString(),VisitDatacenterDto.class);
+        }
+//
+//        if (param.getHv_distribution_room().equals("")){
+//            info.append("请输入高压配电室信息！");
+//        }
+//        if (param.getLv_distribution_room().equals("")){
+//            info.append("请输入低压变配电室信息！");
+//        }
+//        if (param.getEngine_room().equals("")){
+//            info.append("请输入油机室信息！");
+//        }
+//        if (param.getHtdc_pb_room().equals("")){
+//            info.append("请输入高压直流电力电池室信息！");
+//        }
+//        if (param.getOddc_pb_room().equals("")){
+//            info.append("请输入普通直流电力电池室信息！");
+//        }
+//        if (param.getOgac_pb_room().equals("")){
+//            info.append("请输入普通交流电力电池室信息！");
+//        }
+//        if (param.getIpdt_refrigerat_room().equals("")){
+//            info.append("请输入独立制冷室信息！");
+//        }
+//        if (param.getColumns_air_room().equals("")){
+//            info.append("请输入列间空调机房信息！");
+//        }
+//        if (param.getWater_door_room().equals("")){
+//            info.append("请输入水冷前门机房信息！");
+//        }
+//        if (param.getHeat_backplane_room().equals("")){
+//            info.append("请输入热管背板机房信息！");
+//        }
+//        if (param.getStorage_room().equals("")){
+//            info.append("请输入库房信息！");
+//        }
+//        if (param.getFocus_monitor_hall().equals("")){
+//            info.append("请输入集中监控大厅信息！");
+//        }
+//        if (param.getStation().equals("")){
+//            info.append("请输入工位信息！");
+//        }
+//        if (param.getGet_accommodation().equals("")){
+//            info.append("请输入住宿信息！");
+//        }
+//        if (param.getCanteen().equals("")){
+//            info.append("请输入食堂信息！");
+//        }
+//        if (param.getConference_room().equals("")){
+//            info.append("请输入会议室信息！");
+//        }
+//        if (param.getSpecial_needs().equals("")){
+//            info.append("请输入特殊需求信息！");
+//        }
+//        //接待要求
+//        if (param.getLarge_screen_greeting().equals("")){
+//            info.append("请输入大屏幕欢迎辞信息！");
+//        }
+//        if (param.getBoardroom_number().equals("")){
+//            info.append("请输入数量(会议室)信息！");
+//        }
+//        if (param.getCapacity().equals("")){
+//            info.append("请输入容量（会议室）信息！");
+//        }
+//        if (param.getProjector_curtain().equals("")){
+//            info.append("请输入投影仪及幕布信息！");
+//        }
+//        if (param.getFamous_brand().equals("")){
+//            info.append("请输入名牌信息！");
+//        }
+//        if (param.getRostrum().equals("")){
+//            info.append("请输入主席台信息！");
+//        }
+//        if (param.getMicrophone().equals("")){
+//            info.append("请输入麦克风信息！");
+//        }
+//        if (param.getMineral_water().equals("")){
+//            info.append("请输入矿泉水信息！");
+//        }
+//        if (param.getTea_water().equals("")){
+//            info.append("请输入茶水信息！");
+//        }
+//        if (param.getPaper_pen().equals("")){
+//            info.append("请输入纸笔信息！");
+//        }
+//        if (param.getCar_number().equals("")){
+//            info.append("请输入数量（车辆）信息！");
+//        }
+//        if (param.getModels_colour().equals("")){
+//            info.append("请输入车型及颜色信息！");
+//        }
+//        if (param.getPlate_num().equals("")){
+//            info.append("请输入车牌号码信息！");
+//        }
+//        if (param.getTable_number().equals("")){
+//            info.append("请输入桌餐信息！");
+//        }
+//        if (param.getCanteen_number().equals("")){
+//            info.append("请输入食堂（餐饮）信息！");
+//        }
+
+        //如果提示信息长度大于0，则返回提示信息
+        if(info.length()>0){
+            dto.setInfo(info.toString());
+            list.add(dto);
+            return list;
+        }
+        List visit = visitDetailService.getDatacenterDetail(param);
+        if (visit.size()>0) {
+            if (visitDetailService.updateDatacenterDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+
+        }else{
+            if(visitDetailService.insertDatacenterDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+        }
+
+        return list;
+    }
+
+    //测试表单
+    @RequestMapping(value = "/getTestDetail",produces = {"application/xml", "application/json"})
+    public List getTestDetail(TestFormDto param, HttpServletRequest request){
+        List list = new ArrayList();
+        PromptInformationDto dto=new PromptInformationDto();
+        //将HttpServletRequest中传入的参数转换存放到map集合中
+        Map paramMap = ParameterConversion.intoParameterConversion(request);
+        StringBuffer info = new StringBuffer();
+        if (paramMap.get("parameter")==null){
+            info.append("请输入parameter字段值！");
+        }else{
+            param = JSON.parseObject(paramMap.get("parameter").toString(),TestFormDto.class);
+        }
+//
+//        /*if (param.getRelevant_licenses().equals("")){
+//            info.append("请输入相关证照信息！");
+//        }*/
+//        if (param.getCpu_hanan().equals("")){
+//            info.append("请输入CPU物理机（哈南）信息！");
+//        }
+//        if (param.getMemory_hanan().equals("")){
+//            info.append("请输入内存物理机（哈南）信息！");
+//        }
+//        if (param.getStorage_hanan().equals("")){
+//            info.append("请输入存储物理机（哈南）信息！");
+//        }
+//        if (param.getDry_bandwidth_hanan().equals("")){
+//            info.append("请输入国干带宽物理机（哈南）信息！");
+//        }
+//        if (param.getProvince_bandwidth_hanan().equals("")){
+//            info.append("请输入省干带宽物理机（哈南）信息！");
+//        }
+//        if (param.getOperating_system_hanan().equals("")){
+//            info.append("请输入操作系统物理机（哈南）信息！");
+//        }
+//        if (param.getNetwork_ip_hanan().equals("")){
+//            info.append("请输入公网IP物理机（哈南）信息！");
+//        }
+//        if (param.getPort_hanan().equals("")){
+//            info.append("请输入端口物理机（哈南）信息！");
+//        }
+//        if (param.getCpu_village().equals("")){
+//            info.append("请输入CPU物理机（进乡）信息！");
+//        }
+//        if (param.getMemory_village().equals("")){
+//            info.append("请输入内存物理机（进乡）信息！");
+//        }
+//        if (param.getStorage_village().equals("")){
+//            info.append("请输入存储物理机（进乡）信息！");
+//        }
+//        if (param.getBandwidth_village().equals("")){
+//            info.append("请输入带宽物理机（进乡）信息！");
+//        }
+//        if (param.getOperating_system_village().equals("")){
+//            info.append("请输入操作系统物理机（进乡）信息！");
+//        }
+//        if (param.getNetwork_ip_village().equals("")){
+//            info.append("请输入公网IP物理机（进乡）信息！");
+//        }
+//        if (param.getPort_village().equals("")){
+//            info.append("请输入端口物理机（进乡）信息！");
+//        }
+//        if (param.getCpu_vm_ha().equals("")){
+//            info.append("请输入CPU虚拟机（哈南）信息！");
+//        }
+//        if (param.getMemory_vm_ha().equals("")){
+//            info.append("请输入内存虚拟机（哈南）信息！");
+//        }
+//        if (param.getStorage_vm_ha().equals("")){
+//            info.append("请输入存储虚拟机（哈南）信息！");
+//        }
+//        if (param.getDry_bandwidth_vm_ha().equals("")){
+//            info.append("请输入国干带宽虚拟机（哈南）信息！");
+//        }
+//        if (param.getProvince_bandwidth_vm_ha().equals("")){
+//            info.append("请输入省干带宽虚拟机（哈南）信息！");
+//        }
+//        if (param.getOperating_system_vm_ha().equals("")){
+//            info.append("请输入操作系统虚拟机（哈南）信息！");
+//        }
+//        if (param.getIp_vm_ha().equals("")){
+//            info.append("请输入IP虚拟机（哈南）信息！");
+//        }
+//        if (param.getPort_vm_ha().equals("")){
+//            info.append("请输入端口虚拟机（哈南）信息！");
+//        }
+//        if (param.getCpu_vm_jin().equals("")){
+//            info.append("请输入CPU虚拟机（进乡）信息！");
+//        }
+//        if (param.getMemory_vm_jin().equals("")){
+//            info.append("请输入内存虚拟机（进乡）信息！");
+//        }
+//        if (param.getStorage_vm_jin().equals("")){
+//            info.append("请输入存储虚拟机（进乡）信息！");
+//        }
+//        if (param.getBandwidth_vm_jin().equals("")){
+//            info.append("请输入带宽虚拟机（进乡）信息！");
+//        }
+//        if (param.getOperating_system_vm_jin().equals("")){
+//            info.append("请输入操作系统虚拟机（进乡）信息！");
+//        }
+//        if (param.getIp_vm_jin().equals("")){
+//            info.append("请输入IP虚拟机（进乡）信息！");
+//        }
+//        if (param.getPort_vm_jin().equals("")){
+//            info.append("请输入端口虚拟机（进乡）信息！");
+//        }
+//        if (param.getOther().equals("")){
+//            info.append("请输入其他信息！");
+//        }
+
+
+
+        //如果提示信息长度大于0，则返回提示信息
+        if(info.length()>0){
+            dto.setInfo(info.toString());
+            list.add(dto);
+            return list;
+        }
+        List visit = visitDetailService.getTestDetail(param);
+        if (visit.size()>0) {
+            if (visitDetailService.updatTestDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+
+        }else{
+            if(visitDetailService.insertTestDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+        }
+
+        return list;
+    }
+
+    //勘查资费资源
+    @RequestMapping(value = "/getPostageDetail",produces = {"application/xml", "application/json"})
+    public List getPostageDetail(ProspectingPostageDto param, HttpServletRequest request){
+        List list = new ArrayList();
+        PromptInformationDto dto=new PromptInformationDto();
+        //将HttpServletRequest中传入的参数转换存放到map集合中
+        Map paramMap = ParameterConversion.intoParameterConversion(request);
+        StringBuffer info = new StringBuffer();
+        if (paramMap.get("parameter")==null){
+            info.append("请输入parameter字段值！");
+        }else{
+            param = JSON.parseObject(paramMap.get("parameter").toString(),ProspectingPostageDto.class);
+        }
+
+        /*if (param.getRelevant_licenses().equals("")){
+            info.append("请输入相关证照信息！");
+        }*/
+
+//        if (param.getWater_door_frame_ha().equals("")){
+//            info.append("请输入哈南水冷前门机架（5kw）信息！");
+//        }
+//        if (param.getHeat_backplane_frame_fiveha().equals("")){
+//            info.append("请输入哈南热管背板机架（5kw）信息！");
+//        }
+//        if (param.getHeat_backplane_frame_sevenha().equals("")){
+//            info.append("请输入哈南热管背板机架（7kw）信息！");
+//        }
+//        if (param.getHeat_backplane_frame_tenha().equals("")){
+//            info.append("请输入哈南热管背板机架（10kw）信息！");
+//        }
+//        if (param.getPrecision_air_frame_jin().equals("")){
+//            info.append("请输入进乡精密空调机架（3kw）信息！");
+//        }
+//        if (param.getDry_bandwidth_ha().equals("")){
+//            info.append("请输入哈南国干带宽信息！");
+//        }
+//        if (param.getProvince_bandwidth_ha().equals("")){
+//            info.append("请输入哈南省干带宽信息！");
+//        }
+//        if (param.getBandwidth_jin().equals("")){
+//            info.append("请输入进乡带宽信息！");
+//        }
+//        if (param.getCpu_ha().equals("")){
+//            info.append("请输入CPU哈南公有云信息！");
+//        }
+//        if (param.getMemory_ha().equals("")){
+//            info.append("请输入内存哈南公有云信息！");
+//        }
+//        if (param.getRead_write_storage_ha().equals("")){
+//            info.append("请输入读写型存储哈南公有云信息！");
+//        }
+//        if (param.getData_storage_ha().equals("")){
+//            info.append("请输入数据型存储哈南公有云信息！");
+//        }
+//        if (param.getBackups_storage_ha().equals("")){
+//            info.append("请输入备份型存储哈南公有云信息！");
+//        }
+//        if (param.getOperating_system_ha().equals("")){
+//            info.append("请输入操作系统哈南公有云信息！");
+//        }
+//        if (param.getIp_ha().equals("")){
+//            info.append("请输入IP哈南公有云信息！");
+//        }
+//        if (param.getPort_ha().equals("")){
+//            info.append("请输入端口哈南公有云信息！");
+//        }
+//        if (param.getCpu_jin().equals("")){
+//            info.append("请输入CPU进乡公有云信息！");
+//        }
+//        if (param.getMemory_jin().equals("")){
+//            info.append("请输入内存进乡公有云信息！");
+//        }
+//        if (param.getRead_write_storage_jin().equals("")){
+//            info.append("请输入读写型存储进乡公有云信息！");
+//        }
+//        if (param.getData_storage_jin().equals("")){
+//            info.append("请输入数据型存储进乡公有云信息！");
+//        }
+//        if (param.getBackups_storage_jin().equals("")){
+//            info.append("请输入备份型存储进乡公有云信息！");
+//        }
+//        if (param.getOperating_system_jin().equals("")){
+//            info.append("请输入操作系统进乡公有云信息！");
+//        }
+//        if (param.getIp_jin().equals("")){
+//            info.append("请输入IP进乡公有云信息！");
+//        }
+//        if (param.getPort_jin().equals("")){
+//            info.append("请输入端口进乡公有云信息！");
+//        }
+//        if (param.getLoad_balancing().equals("")){
+//            info.append("请输入负载均衡信息！");
+//        }
+//        if (param.getFirewall().equals("")){
+//            info.append("请输入防火墙信息！");
+//        }
+//        if (param.getNetwork_service().equals("")){
+//            info.append("请输入网管服务信息！");
+//        }
+//        if (param.getFlow_cleaning().equals("")){
+//            info.append("请输入流量清洗信息！");
+//        }
+//        if (param.getSystem_monitoring().equals("")){
+//            info.append("请输入系统监测信息！");
+//        }
+//        if (param.getFlow_monitoring().equals("")){
+//            info.append("请输入流量监测信息！");
+//        }
+//        if (param.getDomain_name_resolution().equals("")){
+//            info.append("请输入域名解析信息！");
+//        }
+//        if (param.getMulti_line_access().equals("")){
+//            info.append("请输入多线接入信息！");
+//        }
+//        if (param.getCustomized_transformation().equals("")){
+//            info.append("请输入定制化改造信息！");
+//        }
+//        if (param.getSafety_reinforcement().equals("")){
+//            info.append("请输入安全加固信息！");
+//        }
+//        if (param.getRisk_assessment().equals("")){
+//            info.append("请输入风险评估信息！");
+//        }
+//        if (param.getSystem_integration_implement().equals("")){
+//            info.append("请输入系统集成与实施信息！");
+//        }
+//        if (param.getDepth_substitution().equals("")){
+//            info.append("请输入深度代维信息！");
+//        }
+//        if (param.getService_consulting().equals("")){
+//            info.append("请输入服务咨询信息！");
+//        }
+//        if (param.getVpn_access().equals("")){
+//            info.append("请输入VPN接入信息！");
+//        }
+        /*if (param.getOffice().equals("")){
+            info.append("请输入办公室信息！");
+        }
+        if (param.getStation().equals("")){
+            info.append("请输入工位信息！");
+        }
+        if (param.getConference_room().equals("")){
+            info.append("请输入会议室信息！");
+        }*/
+//        if (param.getOther_prospecting_needs().equals("")){
+//            info.append("请输入其他勘查需求信息！");
+//        }
+
+        //如果提示信息长度大于0，则返回提示信息
+        if(info.length()>0){
+            dto.setInfo(info.toString());
+            list.add(dto);
+            return list;
+        }
+        List visit = visitDetailService.getPostageDetail(param);
+        if (visit.size()>0) {
+            if (visitDetailService.updatePostageDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+
+        }else{
+            if(visitDetailService.insertPostageDetail(param)){
+                dto.setInfo("操作成功！");
+                list.add(dto);
+            }else{
+                dto.setInfo("操作失败，请联系接口开发人员！");
+                list.add(dto);
+            }
+        }
+
+        return list;
+    }
+}

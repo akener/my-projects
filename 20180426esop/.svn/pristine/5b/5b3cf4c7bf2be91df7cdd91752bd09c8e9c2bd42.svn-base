@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <!--产品信息查询-->
+    <select id="selectProductInfo" parameterType="String" resultType="com.esop.busiAnalysis.dto.EpProductHallDto">
+        select manager_no,region_name,product_id,product_name,show_content,product_fee,fee_desc,to_char(create_date,'yyyy-MM-dd') create_date,region_code,related_id,manager_name
+        ,'&lt;button type="button" class="btn btn-info pull-left mgr-20" onclick="updFile('''||product_id||''')" >修改&lt;/button>&lt;button type="button" class="btn btn-info pull-left" onclick="delFile('''||product_id||''')" >删除&lt;/button>' as operator_str
+        from ep_product_hall
+        where 1=1
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        <if test="product_id != ''">
+            and product_id = #{product_id}
+        </if>
+        <if test="product_name != ''">
+            and product_name like '%'||#{product_name}||'%'
+        </if>
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+    </select>
+    <!--产品信息插入-->
+    <select id="insProductInfo" parameterType="com.esop.busiAnalysis.dto.EpProductHallDto" resultType="int">
+        insert into ep_product_hall(show_content,product_id,product_name,region_code,region_name,product_fee,fee_desc,create_date,related_id,manager_no,manager_name)
+        values(#{show_content},#{product_id},#{product_name},#{region_code},#{region_name},#{product_fee},#{fee_desc},sysdate,#{related_id},#{manager_no},#{manager_name})
+    </select>
+    <!--获取产品id-->
+    <select id="getProductId" resultType="com.esop.busiAnalysis.dto.EpProductHallDto">
+        select seq_compete_id.Nextval product_id from dual
+    </select>
+    <!--产品信息删除-->
+    <select id="delProductInfo"  resultType="com.esop.busiAnalysis.dto.EpProductHallDto">
+        delete from ep_product_hall where product_id=#{product_id}
+    </select>
+    <!--产品信息修改-->
+    <select id="updProductInfo" parameterType="com.esop.busiAnalysis.dto.EpProductHallDto" resultType="int">
+        update ep_product_hall set product_id = #{product_id}
+        <if test="product_name != ''">
+            ,product_name=#{product_name}
+        </if>
+        <if test="show_content != ''">
+             ,show_content = #{show_content}
+        </if>
+        <if test="fee_desc != ''">
+            , fee_desc = #{fee_desc}
+        </if>
+        <if test="manager_no!=''">
+            ,manager_no = #{manager_no}
+        </if>
+        <if test="product_fee != ''">
+            ,product_fee = #{product_fee}
+        </if>
+        <if test="region_name !=''">
+            ,region_name = #{region_name}
+        </if>
+        <if test="region_code != ''">
+            ,region_code = #{region_code}
+        </if>
+        <if test="related_id !=''">
+            ,related_id = #{related_id}
+        </if>
+        where product_id =#{product_id}
+    </select>
+    <!--通过产品id查询产品信息-->
+    <select id="getProductInfoById" parameterType="com.esop.busiAnalysis.dto.EpProductHallDto" resultType="com.esop.busiAnalysis.dto.EpProductHallDto">
+        select a.manager_no,a.region_name,a.product_id,a.product_name,a.show_content,a.product_fee,a.fee_desc,a.create_date,a.region_code,a.related_id,a.manager_name,b.name relate_name,b.path relate_path,b.id
+        from ep_product_hall a,ep_upload_file_info b
+        where  a.related_id = b.related_id(+) and b.valid(+)='1'and product_id=#{product_id}
+    </select>
+   <!--app端产品大厅信息查询-->
+    <select id="qryProductHallInfo" parameterType="com.esop.busiAnalysis.dto.EpProductHallDto" resultType="com.esop.busiAnalysis.dto.EpProductHallDto">
+        select show_content,product_id,product_name,region_code,region_name,product_fee,fee_desc,create_date,related_id
+        from ep_product_hall
+        where 1=1
+        <if test="product_id != ''">
+            and product_id = #{product_id}
+        </if>
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        <if test="create_date != ''">
+            and to_char(create_date,'yyyy-MM-dd') = #{create_date}
+        </if>
+        <if test="product_name != ''">
+            and product_name like '%'||#{product_name}||'%'
+        </if>
+    </select>
+</mapper>

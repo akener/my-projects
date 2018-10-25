@@ -1,0 +1,45 @@
+package com.esop.menus.service;
+
+import com.esop.menus.dto.MenusShowDto;
+import com.esop.menus.dto.MenusShowDtoLoginpdomlist;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * Created by yanhao on 17/6/11.
+ */
+@Repository
+public class MenusShowService {
+    @Autowired
+    private static Logger logger = Logger.getLogger(MenusShowService.class);
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    //查询操作
+    public List<MenusShowDto> getMenusShowList(MenusShowDto parameter){
+        String selectTion = "";
+        selectTion = "selectMenusShow";
+        List<MenusShowDto> list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    public List getMenusShowOpcodeList(MenusShowDto parameter){
+        String selectTion = "";
+        selectTion = "selectMenusShowOpcode";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    //查询一级菜单
+    public List<MenusShowDto> getMenusShowFirstList(MenusShowDto parameter){
+        String selectTion = "";
+        selectTion = "selectMenusFirstShow";
+        List<MenusShowDto> list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

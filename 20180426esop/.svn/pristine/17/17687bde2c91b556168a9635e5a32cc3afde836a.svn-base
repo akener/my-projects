@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <!--esop与旗舰店接口问题-->
+    <!--客户经理信息查询接口-->
+    <select id="qryCustId" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="com.esop.cust.dto.GrpInterfaceParameterDto">
+        select distinct  cust_id from dcustmsg where  phone_no = rpad(#{phone_no},15,' ')
+    </select>
+    <select id="qryCustManagerMsg" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.CustManagerInfoDto">
+        select distinct  c.service_no ,c.name,c.phone_no as contact_phone
+        from dcustmsg a, dgrpcustmsg b,dgrpmanagermsg c
+        where a.cust_id = b.cust_id
+        and b.service_no = c.service_no
+        and a.cust_id =#{cust_id}
+    </select>
+    <!--在进行客户留言信息推送前查询一些信息-->
+    <select id="qryIdNo" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="com.esop.cust.dto.EpMesagePushDto">
+        select distinct id_no from dGrpMemberMsg where  phone_no = rpad(#{phone_no},15,' ')
+    </select>
+    <select id="qryMesagePushMsg" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="com.esop.cust.dto.EpMesagePushDto">
+        select a.name,a.gmember_status_code as man_type,a.unit_id,b.unit_name,a.phone_no
+        from dGrpMemberMsg a,dgrpcustmsg b,dcustmsg c
+        where a.unit_id = b.unit_id
+        and c.id_no = a.id_no
+        and a.id_no = #{id_no}
+    </select>
+    <!--客户经理留言信息推送-->
+    <select id="isSvrsMessage" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="int">
+        insert into ep_mesage_push
+        (login_no,phone_no,login_name,man_type,unit_id,unit_name,create_time,message,is_read,isServ_no)
+        values
+        (#{login_no},#{phone_no},#{name},#{man_type},#{unit_id},#{unit_name},sysdate,#{message},'Y','Y')
+    </select>
+    <!--客户留言信息推送-->
+    <select id="sMessage" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="int">
+        insert into ep_mesage_push
+        (login_no,phone_no,login_name,man_type,unit_id,unit_name,create_time,message,is_read,isServ_no)
+        values
+        (#{login_no},#{phone_no},#{name},#{man_type},#{unit_id},#{unit_name},sysdate,#{message},'N','N')
+    </select>
+    <!--查询推送的客户留言信息-->
+    <select id="qryEpMesagePushMsg" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="com.esop.cust.dto.EpMesagePushDto">
+        select distinct  login_no,phone_no,unit_id,unit_name,create_time,message,login_name,
+        decode(man_type,'0','普通成员','1','重要成员') as man_type,isServ_no
+        from  ep_mesage_push
+        where    phone_no = rpad(#{phone_no},15,' ')
+        and login_no = #{login_no}
+        <if test="is_read != null and is_read != ''">
+        and is_read =#{is_read}
+        </if>
+        <if test="isServ_no != null and isServ_no != ''">
+        and isServ_no = #{isServ_no}
+        </if>
+    </select>
+    <!--查询旗舰店客户列表-->
+    <select id="qryCustList" parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="com.esop.cust.dto.EpMesagePushDto">
+      select t.phone_no,
+       t.login_name,
+       t.unit_name,
+       t.unit_id,
+       t.message,
+       t1.count
+      from (select distinct a.phone_no,
+                            a.login_name,
+                            a.unit_name,
+                            a.unit_id,
+                            a.message
+              from ep_mesage_push a,
+                   (select phone_no, max(create_time) as create_time
+                      from ep_mesage_push
+                     where login_no = #{login_no}
+                      and isserv_no = 'N'
+                     group by phone_no) b
+             where 1 = 1
+               and a.phone_no = b.phone_no
+               and a.create_time = b.create_time
+               and login_no =  #{login_no}
+                and isserv_no = 'N'
+                ) t
+      left join (select phone_no, count(*) as count
+                   from ep_mesage_push
+                  where login_no = #{login_no}
+                    and is_read = 'N'
+                    and isserv_no = 'N'
+                  group by phone_no, login_name) t1 on 1 = 1
+                                                   and t.phone_no = t1.phone_no
+    </select>
+    <!--更改客户留言为已读信息-->
+    <select id="updateReaded"  parameterType="com.esop.cust.dto.EpMesagePushDto" resultType="com.esop.cust.dto.EpMesagePushDto">
+        update ep_mesage_push set is_read = 'Y' where phone_no in (rpad(#{phone_no},15,' '))  and login_no = #{login_no}
+    </select>
+    <!--集团概览-->
+    <!--客户经理查询自己维护的在网、离网集团数量，集团成员数量，集团重要成员数量接口-->
+    <select id="getGrpStatisticsInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpStatisticsInfoDto" >
+        select grpnums, membernums,impMembernums from
+        ( select count(*) as grpnums from dgrpcustmsg a where a.service_no=#{service_no}) t1,
+        (select count(*) membernums  from dgrpcustmsg c,dgrpmembermsg b where c.service_no=#{service_no}
+        and c.unit_id=b.unit_id
+        ) t2,
+        (select count(*) as impMembernums
+        from dGrpCustImpManMsg a, dgrpcustmsg b  where a.unit_id = b.unit_id
+        and  b.service_no=#{service_no}
+        ) t3
+    </select>
+    <!--通过客户经理工号查询所属集团成员数量、重要成员数量-->
+    <select id="qryGrpMemberNums" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpStatisticsDto">
+         select  membernums,impMembernums from
+        (select count(*) membernums  from dgrpcustmsg c,dgrpmembermsg b where c.service_no=#{service_no}
+        and c.unit_id=b.unit_id
+        ) t2,
+        (select count(*) as impMembernums
+        from dGrpCustImpManMsg a, dgrpcustmsg b  where a.unit_id = b.unit_id
+        and  b.service_no=#{service_no}
+        ) t3
+    </select>
+    <!--通过集团客户经理工号来对匹配的所属在网、离网集团进行查询-->
+    <select id="qryGrpList" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpListDto">
+        select unit_name,unit_id,grp_status,cust_id from dgrpcustmsg
+        where service_no=#{service_no}
+        and grp_status = #{grp_status}
+        <if test="unit_name != null and unit_name !=''">
+            and unit_name like  '%'||#{unit_name}||'%'
+        </if>
+    </select>
+    <!-- 通过集团客户经理工号来对匹配的所属潜在集团进行查询-->
+    <select id="qryGrpList_qz" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpListDto">
+        select unit_name,unit_id,grp_status,cust_id from dgrppremsg
+        where service_no=#{service_no}
+        and grp_status = '03'
+        <if test="unit_name != null and unit_name !=''">
+            and unit_name like  '%'||#{unit_name}||'%'
+        </if>
+    </select>
+    <!-- 通过集团客户经理工号来对匹配的所属竞争集团进行查询-->
+    <select id="qryGrpList_jz" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpListDto">
+        select unit_name,unit_id,grp_status,cust_id from dGrpCustpotMsg
+        where service_no=#{service_no}
+        and grp_status = '04'
+        <if test="unit_name != null and unit_name !=''">
+            and unit_name like   '%'||#{unit_name}||'%'
+        </if>
+    </select>
+    <!-- 通过集团客户经理工号来对匹配的所属集团进行查询-->
+    <select id="qryAllGrpList" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpListDto">
+        select t.unit_name,t.unit_id,t.grp_status,cust_id
+        from (
+        select unit_name,unit_id,grp_status,cust_id  from dgrpcustmsg
+        where service_no=#{service_no}
+        <if test="unit_name != null and unit_name !=''">
+            and unit_name like  '%'||#{unit_name}||'%'
+        </if>
+        union all
+        select unit_name,unit_id,grp_status,cust_id  from dgrppremsg
+        where service_no=#{service_no}
+        <if test="unit_name != null and unit_name !=''">
+            and unit_name like  '%'||#{unit_name}||'%'
+        </if>
+        and grp_status = '03'
+        union ALL
+        select unit_name,unit_id,grp_status,cust_id  from dgrpcustpotmsg
+        where service_no=#{service_no}
+        <if test="unit_name != null and unit_name !=''">
+            and unit_name like  '%'||#{unit_name}||'%'
+        </if>
+        and grp_status = '04'
+        ) t
+    </select>
+    <!--通过集团编号来对匹配的所属在网,离网集团基本信息进行查询-->
+    <select id="qryGrpBaseInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpBaseInfoDto">
+        select unit_addr,unit_zip,unit_code,trade_code,unit_name,owner_code as ent_type,person_num,mobile_num,leader_type,
+        cred_code,cycle_code,contact_mobile_phone,unit_leader,operate_code,contact_person,contact_phone
+        from dgrpcustmsg
+        where unit_id=#{unit_id}
+        and grp_status = #{grp_status}
+        order by unit_id
+    </select>
+    <!--通过集团编号来对匹配的所属竞争对手集团基本信息进行查询-->
+    <select id="qryGrpBaseInfo_jz" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpBaseInfoDto">
+        select unit_addr,unit_zip,unit_code,trade_code,unit_name,owner_code as ent_type,person_num,area_type,mobile_num,leader_type,
+        cred_code,cycle_code,contact_mobile_phone,unit_leader,operate_code,contact_person,contact_phone
+        from dgrpcustpotmsg
+        where unit_id=#{unit_id}
+        order by unit_id
+    </select>
+    <!--通过集团编号来对匹配的所属潜在集团基本信息进行查询-->
+    <select id="qryGrpBaseInfo_qz" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpBaseInfoDto">
+        select unit_addr,unit_zip,unit_code,trade_code,unit_name,owner_code as ent_type,person_num,area_type,mobile_num,leader_type,
+        cred_code,cycle_code,contact_mobile_phone,unit_leader,operate_code,contact_person,contact_phone
+        from dgrppremsg
+        where unit_id=#{unit_id}
+        order by unit_id
+    </select>
+    <!--集团基本信息录入-->
+    <select id="qrysMaxSysAccept" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpInterfaceParameterDto">
+        select sMaxSysAccept.nextval as update_accept from dual
+    </select>
+    <!-- 将在网集团信息插入集团信息历史表中-->
+    <select id="insertGrpCustMsgHis"  parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        insert into dGrpCustMsgHis(unit_id,unit_addr,unit_zip,unit_code,trade_code,unit_name,ent_type,area_type,mobile_num,
+        leader_type,contact_mobile_phone,unit_leader,contact_person,contact_phone,value_code,
+        update_login,update_accept,update_time,update_code,update_type,create_date)
+        select unit_id,unit_addr,unit_zip,unit_code,trade_code,unit_name,ent_type,area_type,mobile_num,
+        leader_type,contact_mobile_phone,unit_leader,contact_person,contact_phone,value_code,
+        #{update_login},#{update_accept},sysdate,#{update_code},'u',sysdate
+        from dgrpcustmsg
+        where  unit_id in(#{unit_id})
+    </select>
+    <!-- 当集团潜在集团时对dGrpPreMsgHis表进行插入-->
+    <select id="insertGrpPreMsgHis" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        insert into dGrpPreMsgHis(unit_id,unit_addr,unit_zip,unit_code,trade_code,unit_name,ent_type,area_type,mobile_num,
+        leader_type,contact_mobile_phone,unit_leader,contact_person,contact_phone,
+        update_login,update_accept,update_time,update_code,update_type,create_date)
+        select unit_id,unit_addr,unit_zip,unit_code,trade_code,unit_name,ent_type,area_type,mobile_num,
+        leader_type,contact_mobile_phone,unit_leader,contact_person,contact_phone,
+        #{update_login},#{update_accept},sysdate,#{update_code},'u',sysdate
+        from dgrppremsg
+        where  unit_id in(#{unit_id})
+    </select>
+    <!-- 当集团竞争对手集团时对dGrpCustPotMsgHis表进行插入-->
+    <select id="insertGrpCustPotMsgHis" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        insert into dGrpCustPotMsgHis(unit_id,unit_addr,unit_zip,unit_code,trade_code,unit_name,ent_type,area_type,mobile_num,
+        leader_type,contact_mobile_phone,unit_leader,contact_person,contact_phone,
+        update_login,update_accept,update_time,update_code,update_type,create_date)
+        select unit_id,unit_addr,unit_zip,unit_code,trade_code,unit_name,ent_type,area_type,mobile_num,
+        leader_type,contact_mobile_phone,unit_leader,contact_person,contact_phone,
+        #{update_login},#{update_accept},sysdate,#{update_code},'u',sysdate
+        from dGrpCustPotMsg
+        where  unit_id in(#{unit_id})
+    </select>
+    <!--更新集团信息-->
+    <select id="updateGrpBseInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        update dGrpCustMsg set
+        <if test="unit_addr !=null and unit_addr!= ''">
+            unit_addr = #{unit_addr},
+        </if>
+        <if test="contact_person !=null and contact_person!= ''">
+            contact_person = #{contact_person},
+        </if>
+        <if test="contact_phone !=null and contact_phone!= ''">
+            contact_phone = #{contact_phone}
+        </if>
+        where unit_id = #{unit_id}
+    </select>
+    <!--集团信息录入时集团潜在网对dGrpPreMsg进行更新-->
+    <select id="updatedGrpPreMsg" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        update dgrppremsg set
+        <if test="unit_addr !=null and unit_addr!= ''">
+            unit_addr = #{unit_addr},
+        </if>
+        <if test="contact_person !=null and contact_person!= ''">
+            contact_person = #{contact_person},
+        </if>
+        <if test="contact_phone !=null and contact_phone!= ''">
+            contact_phone = #{contact_phone}
+        </if>
+        where unit_id = #{unit_id}
+    </select>
+    <!--集团信息录入时集团在网对dGrpCustPotMsg进行更新-->
+    <select id="updateddCustPotMsg" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        update dGrpCustPotMsg set
+        <if test="unit_addr !=null and unit_addr!= ''">
+            unit_addr = #{unit_addr},
+        </if>
+        <if test="contact_person !=null and contact_person!= ''">
+            contact_person = #{contact_person},
+        </if>
+        <if test="contact_phone !=null and contact_phone!= ''">
+            contact_phone = #{contact_phone}
+        </if>
+        where unit_id = #{unit_id}
+    </select>
+
+
+    <!--在集团信息录入时，将相关的旧的集团信息添加历史表-->
+    <select id="insertGrpCustMsgAddHis" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        insert into dgrpcustmsgaddhis (cust_id,field_code,field_value,other_value,third_value,create_time,op_time,note,
+        update_time,update_type,update_code,update_login,update_accept,update_date)
+        select cust_id,field_code,field_value,other_value,third_value,create_time,op_time,note,
+        sysdate,#{update_type},#{update_code},#{update_login},#{update_accept},to_number(to_char(sysdate,'yyyymmdd'))
+        from dgrpcustmsgadd where  cust_id=#{cust_id} and field_code=#{field_code}
+    </select>
+    <!--集团为在网时查询是否存在服务等级-->
+    <select id="isExistServiceLevel" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpInterfaceParameterDto">
+        select cust_id from dgrpcustmsgadd where cust_id=#{cust_id}  and field_code=#{field_code}
+    </select>
+    <!--更新集团信息添加表-->
+    <select id="updateGrpCustMsgAdd" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        update dgrpcustmsgadd set field_value=#{field_value},op_time=sysdate where  cust_id=#{cust_id} and field_code = #{field_code}
+    </select>
+    <!--更新集团信息添加表当field_code为GZHY时-->
+    <select id="updateWhenGZHY" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        update dgrpcustmsgadd set field_value=#{field_value},other_value=#{other_value},op_time=sysdate,note=#{note}
+        where cust_id=#{cust_id} and field_code=#{field_code}
+    </select>
+    <!--集团为在网时查询不存在服务等级，对dGrpCustMsgAdd表添加--><!--field_value,other_value-->
+    <select id="insertGrpCustMsgAdd" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        insert into dGrpCustMsgadd(cust_id,field_code,field_value,other_value,third_value,create_time,op_time,note)
+        values (#{cust_id},#{field_code},#{field_value},#{other_value},#{third_value},sysdate,sysdate,#{note})
+    </select>
+
+
+
+
+    <!--集团重要成员信息录入-->
+    <!--根据集团编号查询重要成员列表-->
+    <select id="impMemberList" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpImpMemberDto">
+        select a.imp_id,a.phone_no,a.user_name,a.unit_id,a.cust_id,a.contact_addr,a.dept,a.duty,a.member_code,a.sex_code,a.birthday,b.service_no,b.unit_name
+        from dGrpCustImpManMsg a ,dGrpCustMsg b
+        where a.unit_id=b.unit_id
+        <if test="unit_id != null and unit_id != ''">
+            and a.unit_id=#{unit_id}
+        </if>
+       <if test="service_no != null and service_no != '' ">
+           and a.service_no = #{service_no}
+       </if>
+    </select>
+    <!--根据验证电话号码是否为重要成员中存在的电话号码 --><!--有一张集团dgrpmembermsg成员表-->
+    <select id="isImpMember" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpImpMemberDto">
+        select a.imp_id,a.phone_no,a.user_name,a.certi_type,a.certi_no,a.contact_addr,a.edu_code,a.sex_code,duty,unit_id,cust_id,dept,service_no
+        from dGrpCustImpManMsg a
+        where  trim(phone_no) = #{phone_no}
+    </select>
+    <!--查询在客户表中的信息-->
+    <select id="qryCust" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.CustMsgDto">
+        select id_no,cust_id,contract_no,ids,phone_no,sm_code,service_type,attr_code,user_passwd,open_time
+        ,belong_code,limit_owe,credit_code,credit_value,run_code,run_time,bill_date,bill_type,encrypt_prepay
+        ,cmd_right,last_bill_type,bak_field,group_id,stop_attr
+        from  dCustMsg
+        where trim(phone_no) = #{phone_no}
+    </select>
+    <!--集团重要成员添加的电话号码不是重要成员的号码的时候，查询信息在dCustDoc表中的信息-->
+    <select id="qryCustDoc" parameterType="com.esop.cust.dto.CustMsgDto" resultType="com.esop.cust.dto.CustDocDto">
+        select cust_id,region_code,district_code,town_code,cust_name,cust_passwd,cust_status,run_time
+        ,owner_grade,owner_type,cust_address,id_type,id_iccid,id_address,id_validdate,contact_person
+        ,contact_phone,contact_address,contact_post,contact_mailaddress,contact_fax,contact_emaill
+        ,org_code,create_time,close_time,parent_id,create_note,group_id,org_id
+        from dCustDoc
+        where cust_id=#{cust_id}
+    </select>
+    <!--重要成员添加时获取唯一标识-->
+    <select id="qryImpId" parameterType="com.esop.cust.dto.CustDocDto" resultType="com.esop.cust.dto.GrpImpMemberAddDto">
+        select seq_grp_imp_id.nextval as imp_id  from dual
+    </select>
+   <!-- 为集团重要成员添加时获取集团重要成员历史表的update_accept字段-->
+    <select id="qryUpdateAccept" parameterType="com.esop.cust.dto.CustDocDto" resultType="com.esop.cust.dto.GrpImpMemberAddDto">
+        select SEQ_WGRPLOGINOPR.nextval as update_accept  from dual
+    </select>
+    <!--重要成员信息录入是查询集团类别和成员级别-->
+    <select id="qryEntType"  resultType="com.esop.cust.dto.EntTypeDto">
+        select ent_type,ent_name from sGrpImpEntType
+    </select>
+    <select id="qryGrpImpEntTypeFirst"  resultType="com.esop.cust.dto.ImpLevelDto">
+        select imp_level,level_name from sGrpImpEntType01
+    </select>
+    <select id="qryGrpImpEntType"  resultType="com.esop.cust.dto.ImpLevelDto">
+        select imp_level,level_name  from sGrpImpEntType02
+    </select>
+    <!-- 集团重要成员录入将信息加入dGrpCustImpManMsg表中-->
+    <select id="insertCustImpManMsg" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="int">
+        insert into  dGrpCustImpManMsg (imp_id,phone_no,user_name,name,sex_code,duty,unit_id,dept,service_no,create_time)
+        values (#{imp_id},#{phone_no},#{user_name},#{user_name},#{sex_code},#{duty},#{unit_id},#{dept},#{service_no},sysdate)
+    </select>
+
+    <!--重要成员历史表增加重要成员信息-->
+    <select id="insertCustImpManMsgHis" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="int">
+        insert into  dGrpCustImpManMsgHis (imp_id,phone_no,user_name,name,sex_code,duty,unit_id,dept,service_no,
+        update_login,update_accept,update_time,update_code,update_type)
+        select imp_id,phone_no,user_name,name,sex_code,duty,unit_id,dept,service_no,
+        #{update_login},#{update_accept},to_date(#{update_time},'yyyy-mm-dd hh24:mi:ss'),#{update_code},#{update_type}
+        from dGrpCustImpManMsg
+        where imp_id in(#{imp_id})
+    </select>
+    <!--重要成员增加表添加新增重要成员信息-->
+    <select id="grpCustImpManMsgAdd" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="int">
+        insert into dGrpCustImpManMsgAdd(
+        imp_id,ent_type,imp_level)
+        values (#{imp_id},#{ent_type},#{imp_level})
+    </select>
+    <!--新增重要成员时，dGrpCustImpManMsgAddHis表添加重要成员信息-->
+    <select id="grpCustImpManMsgAddHis" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="int">
+        insert into dGrpCustImpManMsgAddHis(
+        imp_id,ent_type,imp_level,
+        update_login,update_accept,update_time,update_code,update_type)
+        select imp_id,ent_type,imp_level,
+        #{update_login},#{update_accept},to_date(#{update_time},'yyyy-mm-dd hh24:mi:ss'),#{update_code},#{update_type}
+        from dGrpCustImpManMsgAdd
+        where imp_id in(#{imp_id})
+    </select>
+    <!-- 更新集团重要成员信息，查询重要成员信息以便用以重要成员信息更新-->
+    <select id="qryGrpCustImpManMsg" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="com.esop.cust.dto.GrpImpMemberAddDto">
+        select
+        a.imp_id,a.phone_no,a.user_name,a.name,a.member_code,a.certi_type,a.certi_no,
+        a.contact_addr,a.edu_code,a.birthday,a.sex_code,a.duty,a.unit_id,a.cust_id,
+        a.dept,a.service_no,a.create_time,b.ent_type,b.imp_level,b.interest_code,
+        b.assess_code,b.role,b.age,b.attitudes,b.attitudes_reasion,b.design_rate,
+        b.design_scape,b.co_record,b.gift_record
+        from dGrpCustImpManMsg a,dGrpCustImpManMsgAdd b
+        where a.imp_id=b.imp_id and a.imp_id=#{imp_id}
+    </select>
+    <!--更新集团重要成员信息-->
+    <select id="updateGrpCustImpManMsg" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="int">
+      <if test="imp_id !=null and imp_id != ''">
+          update dgrpcustimpmanmsg set
+            <if test="phone_no !=null and phone_no != ''">
+                phone_no=#{phone_no},
+            </if>
+          <if test="user_name !=null and user_name != ''">
+              user_name=#{user_name},
+          </if>
+          duty=#{duty},
+          dept=#{dept}
+          where imp_id = #{imp_id}
+      </if>
+    </select>
+    <!--更新集团重要成员附加表-->
+    <select id="updateGrpCustImpManMsgAdd" parameterType="com.esop.cust.dto.GrpImpMemberAddDto" resultType="int">
+        update dGrpCustImpManMsgAdd set
+        ent_type=#{ent_type},imp_level=#{imp_level},interest_code=#{interest_code},
+        assess_code=#{assess_code},,age=#{age},attitudes=#{attitudes},
+        attitudes_reasion=#{attitudes_reasion},design_rate=#{design_rate},
+        design_scape=#{design_scape},co_record=#{co_record},gift_record=#{gift_record}
+        where imp_id =#{imp_id}
+    </select>
+
+    <!-- <if test="related_id != null and related_id != ''">
+                  select a.town_name,a.town_id,a.compete_person,a.compete_policy,a.import_degree,a.group_name,a.exp_data,a.service_no,a.group_id,a.compete_id,a.related_id,a.prc_name,a.charges,b.path,b.name
+                  from ep_compete_info a,ep_upload_file_info b
+                  where 1=1
+                  and a.related_id = b.related_id
+              </if>-->
+    <!-- 集团竞争对手详细查询-->
+    <select id="qryCompeteInfoMsg" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.CompeteInfoDto">
+
+        select a.town_name,a.town_id,a.compete_person,a.compete_policy,a.import_degree,a.group_name,a.exp_data,a.service_no,a.group_id,a.compete_id,a.related_id,a.prc_name,a.charges,b.path,b.name
+        from ep_compete_info a,ep_upload_file_info b
+        where 1=1
+        and a.related_id = b.related_id(+)
+        <if test="service_no != null and service_no != ''">
+            and service_no = #{service_no}
+        </if>
+
+        <if test="unit_id != null and unit_id != ''">
+            and a.group_id = #{unit_id}
+        </if>
+        <if test="compete_id != null and compete_id != '' ">
+            and compete_id = #{compete_id}
+        </if>
+        and to_date(exp_data,'yyyy-mm-dd') >= sysdate
+    </select>
+
+    <!--合同提前一个月到期提醒--><!--此处的提前天数需要改为30 -->
+    <select id="qryCnttInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.CnttInfoDto">
+        select unit_id,contract_no,contract_name,deal_time,complete_time,contract_loan,
+        trunc(abs(to_date(complete_time, 'yyyy/mm/dd hh24:mi:ss') - sysdate),0) as surplus_days,
+        decode(charge_flag,'0','打回','1','待审批','3','合同关闭','4','合同终止','5','归档','6','已续签','') as charge_flag
+        from dgrpcontractinfo
+        where 1=1 and create_login = #{create_login}
+        and trunc(abs(to_date(complete_time, 'yyyy/mm/dd hh24:mi:ss') - sysdate),0) &lt;= 30
+        and charge_flag = '5'
+    </select>
+    <!--重要成员提前一天生日提醒--> <!--此处查询条件还需要更改下：+5需要删掉,集团客户表的service_no和集团重要成员表的seervice_no有什么不同吗-->
+    <select id="qryImpManBirthDay" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpImpMemberDto" >
+        select distinct a.imp_id,a.phone_no,a.user_name,a.unit_id,a.cust_id,a.contact_addr,a.dept,
+        a.duty,a.sex_code,b.service_no,b.unit_name,birthday
+        from dGrpCustImpManMsg a ,dGrpCustMsg b
+        where a.unit_id=b.unit_id  and b.service_no=#{service_no}
+        and b.grp_status = '01'
+        and (to_number(to_char((birthday),'mm')) = to_number(to_char((sysdate),'mm')))
+        and (to_number(to_char((birthday),'dd')) = to_number(to_char((sysdate),'dd'))+1)
+    </select>
+    <!--集团重要成员生日祝福短信下发功能--><!--birth_remind为opcode可以在后台写死--><!--values中第二个sysdate为发送短信的时间-->
+    <select id="insertBirthMsg" parameterType="com.esop.cust.dto.SendBirthMsgDto" resultType="int">
+        insert into push_sms_crm_0
+        (seq,templateid,parameter,service_no,phone_no,insert_time,op_code,
+        login_no,serv_no,serv_name,sub_phone_seq,send_time,hold1,hold2,
+        hold3,hold4,hold5, real_send_time)
+        values(pushsms_seq.nextval, 'CRM_0558', '{"sms_release":"","tmpMsg":"'||#{tmpMsg}||'"}',
+        '', #{phone_no},sysdate,#{opCode},#{service_no}, '','', '',(sysdate+1),
+        '', '','', '','', null)
+    </select>
+    <!--权限校验-->
+    <select id="validateRoleType"  parameterType="com.esop.cust.dto.CnttExamineDto" resultType="com.esop.cust.dto.CnttExamineDto">
+      select count(*)  as role_zc from ep_sys_loginmsg_new t
+      where t.role_code in (select role_code
+                            from ep_sys_rolecode_new t
+                           where t.role_vilid_flag = '1'
+                                         and (t.role_name = '支撑人员' or t.role_name = '产品经理' or t.role_name = '业务管理')
+                                         and t.login_no = #{login_no}
+    </select>
+    <!--合同审批--><!--查询地区编码group_id-->
+    <select id="qryGoupId" parameterType="com.esop.cust.dto.CnttExamineDto" resultType="com.esop.cust.dto.DGrpGroupsDto">
+        select group_id as parent_group_id from ep_sys_loginmsg_new where login_no =#{login_no}
+    </select>
+    <!--查询查询待审批合同时的查询条件查询地区名和编码--><!--,tree_str,boss_org_code-->
+    <select id="qryGroupIdAndName" parameterType="com.esop.cust.dto.DGrpGroupsDto" resultType="com.esop.cust.dto.DGrpGroupsDto">
+        select group_id as parent_group_id ,trim(name) as name
+        from dGrpGroups where (active_flag='Y' or active_flag is null)
+        and parent_group_id= #{parent_group_id } order by tree_str
+    </select>
+    <!--查询合同列表时login_no和region_code 不能为空--><!--当查询具体信息时contract_id 不为空-->
+    <select id="qryCnttExamineList" parameterType="com.esop.cust.dto.CnttExamineDto"  resultType="com.esop.cust.dto.CnttExamineListDto">
+        select t.contract_id,t.unit_id,t.contract_no,t.contract_name,t.deal_time,
+        t.complete_time,t.contract_file,t.create_date,b.login_name,d.group_name,
+        t.note,t.contract_loan,t.renew_sign,t.charge_flag,t.goods_no,
+        t.goods_not,t.dept_no,t.dept_not,t.stop_not
+        from dgrpcontractinfo t, ep_sys_loginmsg_new b, ep_sys_group_info d
+        where 1 = 1
+        and t.create_login = b.login_no(+)
+        and t.org_code = d.group_id(+)
+        <if test="contract_id !=null and contract_id !=''">
+            and contract_no = #{contract_id}
+        </if>
+        <if test="deal_time !=null and deal_time !=''">
+            and deal_time = #{deal_time}
+        </if>
+        <if test="complete_time !=null and complete_time !=''">
+            and complete_time = #{complete_time}
+        </if>
+        <if test="login_no !=null and login_no != ''">
+            and t.goods_no =#{login_no}
+        </if>
+        <if test="parent_group_id !=null and parent_group_id != ''">
+            and t.charge_flag = '1'
+            and t.org_code in
+            (select group_id from ep_sys_group_rel where parent_group_id = #{parent_group_id})
+        </if>
+    </select>
+    <!--提交审批的合同-->
+    <select id="cnttExamine" parameterType="com.esop.cust.dto.CnttExamineDto" resultType="int">
+        <if test="charge_flag != null and charge_flag != '' and contract_id != null and contract_id != ''">
+            update dgrpcontractinfo set
+            charge_flag = #{charge_flag}
+            <if test="goods_not != null and goods_not != ''">
+                , goods_not = #{goods_not}
+            </if>
+            , goods_no = #{login_no}
+            where contract_id = #{contract_id}
+        </if>
+    </select>
+    <select id="insertgrpcontractinfohis"  parameterType="com.esop.cust.dto.CnttExamineDto" resultType="int">
+          insert into dgrpcontractinfohis
+          select a.*,#{login_no},to_char(sysdate,'yyyymmddhh24miss'),sysdate,#{zc_status},#{isOk}
+          from dgrpcontractinfo a where a.contract_id= #{contract_id}
+    </select>
+    <!--走访提醒-->
+    <select id="visitReminderList" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.VisitReminderDto">
+        select unit_id,unit_name,service_no,owner_code,return_date,surplus_days
+        from ep_returnRemind_info t where owner_code like 'A%' and t.surplus_days > 30
+        <if test="service_no != ''">
+            and t.service_no = #{service_no}
+        </if>
+        union all
+        select unit_id,unit_name,service_no,owner_code,return_date,surplus_days
+        from ep_returnRemind_info t where owner_code like 'B%' and t.surplus_days > 60
+        <if test="service_no != ''">
+            and t.service_no = #{service_no}
+        </if>
+        union all
+        select unit_id,unit_name,service_no,owner_code,return_date,surplus_days
+        from ep_returnRemind_info t where owner_code like 'C%' and t.surplus_days > 90
+        <if test="service_no != ''">
+            and t.service_no = #{service_no}
+        </if>
+    </select>
+    <!--公告-->
+    <!-- 查询未读公告的数目-->
+    <select id="qryNoteCount" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.NoteListSizeDto">
+        select count(distinct note_id) as note_list_size
+        from ep_sys_note_info
+        where note_id in
+        (select distinct (n.i)
+        from (select note_id i, read_flag r
+        from ep_sys_noteloginno_rel
+        where (login_no = #{login_no} and group_id = #{group_id})
+        or (login_no = '*' and group_id in (select parent_group_id
+        from ep_sys_group_rel
+        where group_id =#{group_id}))) n
+        where n.i not in (select note_id
+        from ep_sys_noteloginno_rel
+        where login_no = #{login_no}
+        and group_id = #{group_id}
+        and read_flag = #{read_flag})
+        and n.i not in(select note_id
+        from ep_sys_noteloginno_rel
+        where login_no = '*'
+        and group_id in (select parent_group_id
+        from ep_sys_group_rel
+        where group_id = #{group_id})
+        and read_flag = #{read_flag}))
+        AND TO_CHAR(pub_date, 'YYYY-MM-DD') &lt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        AND TO_CHAR(exp_date, 'YYYY-MM-DD') &gt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        and note_type_flag = #{note_type_flag}
+        and note_status = '1'
+        ORDER BY #{order_by} desc
+    </select>
+    <!-- 查询未读的公告-->
+    <select id="qryNoteList" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.NotListInfoDto">
+        select note_id, note_title,to_char(pub_date, 'yyyyMMdd') as pub_date, to_char(exp_date, 'yyyyMMdd') as exp_date,pub_loginno,
+        pub_groupid,note_type_flag,note_content
+        from ep_sys_note_info
+        where note_id in
+             (select distinct (n.i)
+             from (select note_id i, read_flag r
+                   from ep_sys_noteloginno_rel
+                    where (login_no = #{login_no} and group_id = #{group_id})
+                     or (login_no = '*' and group_id in (select parent_group_id
+                                                        from ep_sys_group_rel
+                                                        where group_id =#{group_id}))) n
+             where n.i not in (select note_id
+                                from ep_sys_noteloginno_rel
+                                where login_no = #{login_no}
+                                and group_id = #{group_id}
+                                and read_flag = #{read_flag})
+              and n.i not in(select note_id
+                             from ep_sys_noteloginno_rel
+                            where login_no = '*'
+                              and group_id in (select parent_group_id
+                                       from ep_sys_group_rel
+                                      where group_id = #{group_id})
+                              and read_flag = #{read_flag}))
+        AND TO_CHAR(pub_date, 'YYYY-MM-DD') &lt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        AND TO_CHAR(exp_date, 'YYYY-MM-DD') &gt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        and note_type_flag = #{note_type_flag}
+        and note_status = '1'
+        ORDER BY #{order_by} desc
+    </select>
+    <select id="qryReadNoteList"  parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.NotListInfoDto">
+         select note_id, note_title,to_char(pub_date, 'yyyyMMdd') as pub_date, to_char(exp_date, 'yyyyMMdd') as exp_date,pub_loginno,
+        pub_groupid,note_type_flag
+        from ep_sys_note_info
+        where note_id in
+        (select distinct (n.i)
+        from (select note_id i, read_flag r
+        from ep_sys_noteloginno_rel
+        where (login_no = #{login_no} and group_id = #{group_id})
+        or (login_no = '*' and
+        group_id in (select parent_group_id
+        from ep_sys_group_rel
+        where group_id = #{group_id}))) n
+        where n.r = 'Y')
+        AND TO_CHAR(pub_date, 'YYYY-MM-DD') &lt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        AND TO_CHAR(exp_date, 'YYYY-MM-DD') &gt;= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+        and note_type_flag = #{note_type_flag}
+        and note_status = '1'
+        ORDER BY pub_date desc
+    </select>
+    <!--查询公告详细信息-->
+    <select id="qryNoteInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.NoteInfoDto">
+        select note_id,note_title,note_content,pub_date,exp_date,note_type_flag,pub_loginno
+        from ep_sys_note_info
+        where note_id =#{note_id}
+        and pub_loginno = #{pub_loginno}
+    </select>
+    <!--读取详细信息后修改读取状态-->
+    <select id="updateReadFlag" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="int">
+        update ep_sys_noteloginno_rel set
+        read_flag = 'Y'
+        where note_id = #{note_id}
+    </select>
+</mapper>

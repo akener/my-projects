@@ -1,0 +1,40 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.SysLogQueryDto;
+import com.esop.base.service.SysLogQueryService;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class SysLogQueryRC {
+    @Autowired
+    SysLogQueryService sysLogQueryService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @RequestMapping(value="/sysLogMsgQuery")
+    public Result getSysLogMsgRCList(SysLogQueryDto parameter, HttpServletRequest request, boolean flag){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = sysLogQueryService.getSysLogMsgSvcList(parameter);
+        //JSONObject js = new
+        return result;
+    }
+}

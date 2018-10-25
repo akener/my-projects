@@ -1,0 +1,51 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import java.util.List;
+
+public class GroupChangeProdDto {
+    private Integer id;
+    private String region;
+    private String grpSubsId;
+    private String accessType;
+    private List<GroupContractProdDto> recProdList;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getGrpSubsId() {
+        return grpSubsId;
+    }
+
+    public void setGrpSubsId(String grpSubsId) {
+        this.grpSubsId = grpSubsId;
+    }
+
+    public String getAccessType() {
+        return accessType;
+    }
+
+    public void setAccessType(String accessType) {
+        this.accessType = accessType;
+    }
+
+    public List<GroupContractProdDto> getRecProdList() {
+        return recProdList;
+    }
+
+    public void setRecProdList(List<GroupContractProdDto> recProdList) {
+        this.recProdList = recProdList;
+    }
+}

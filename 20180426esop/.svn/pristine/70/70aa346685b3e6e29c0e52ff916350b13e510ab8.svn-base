@@ -1,0 +1,16 @@
+/**
+ * OrderCreateSvcImplService.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
+package com.esop.cqDevelopment.elecPack.service;
+
+public interface OrderCreateSvcImplService extends javax.xml.rpc.Service {
+    public String getOrderCreateSvcImplPortAddress();
+
+    public com.esop.cqDevelopment.elecPack.service.OrderCreateSvc getOrderCreateSvcImplPort() throws javax.xml.rpc.ServiceException;
+
+    public com.esop.cqDevelopment.elecPack.service.OrderCreateSvc getOrderCreateSvcImplPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
+}

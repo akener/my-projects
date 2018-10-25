@@ -1,0 +1,58 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.LogisticsCompanyDto;
+import com.esop.base.service.LogisticsCompanyService;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.esop.common.page.DataConversion;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class LogisticsCompanyRC {
+    @Autowired
+    LogisticsCompanyService logisticsCompanyService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @RequestMapping(value="/logisticCompanyManage")
+    public Result getLogisticCompanyList(LogisticsCompanyDto parameter, HttpServletRequest request, boolean flag){
+        System.out.println("--------------------LogisticsCompanyRC--------------------------");
+        Enumeration en = request.getParameterNames();
+        System.out.println("---------------------LogisticsCompanyRC-----------------------------");
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+           // requestStrB.append("&"+paramName+" = " + request.getParameter(paramName));
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("---------------------LogisticsCompanyRC-----------------------------");
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        int resultnum=0;//记录增加\修改\删除操作结果
+        if(option.equals("create")) {
+            dataConversion.objectMapping(request, parameter);
+            resultnum=logisticsCompanyService.insert(parameter);
+            result.setRecordsTotal(result.getRecordsTotal()+resultnum);
+        }else if(option.equals("edit")){
+            dataConversion.objectMapping(request, parameter);
+            resultnum=logisticsCompanyService.update(parameter);
+        }else if(option.equals("remove")){
+            dataConversion.objectMapping(request, parameter);
+            resultnum=logisticsCompanyService.delete(parameter);
+            result.setRecordsTotal(result.getRecordsTotal()-resultnum);
+        }else {
+            PageParameter page = dataConversion.setPageValues(request);
+            page.setRecordsTotal(result.getRecordsTotal());
+            parameter.setPage(page);
+            result = logisticsCompanyService.getLogisticCompanyList(parameter);
+        }
+        //JSONObject js = new
+        return result;
+    }
+}

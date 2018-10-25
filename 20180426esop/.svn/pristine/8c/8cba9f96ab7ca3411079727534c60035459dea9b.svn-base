@@ -1,0 +1,660 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: wangbl
+  Date: 16/8/4
+  Time: 上午9:04
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>台账填报</title>
+
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./assets/js/ie-emulation-modes-warning.js"></script>
+    <style type="text/css">
+        th,td{
+            text-align:center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<!--<hr />-->
+<body>
+<!--添加结果提示窗口-->
+<div class="modal fade" id="alertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">空账信息添加</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">此资源已添加,请不要重复添加!</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--资源树展现-->
+<div class="modal fade" id="resourcetreemodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="resourceModalLabel">资源类型&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" style="font-size: 14px;" id="resource_search" placeholder="搜索" /></h4>
+            </div>
+            <div class="modal-body">
+                <div id="resourcetree" class=""></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--编辑台账数据-->
+<div class="modal fade" id="editLedgerDetailsInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:800px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="a_identity">编辑台账数据</h4>
+            </div>
+            <div class="form-horizontal modal-body">
+                <html:hidden id="detail_id" />
+                <div class="form-group">
+                    <label class="col-sm-4 control-label" id="egroup_name">节点信息:武汉市(HB.WH.01)</label>
+                    <label class="col-sm-4 control-label" id="eledger_date">台账日期:2016-08-06</label>
+                    <label class="col-sm-4 control-label" id="eresource_name">当前资源:本级节点编辑中</label>
+                </div>
+            </div>
+            <div class="box box-solid box-default">
+                <div class="box-header">
+                    <h3 class="box-title">结存信息</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" id="elast_balance">上期结存:0</label>
+                        <label class="col-sm-3 control-label" id="enow_balance">本期结存:0</label>
+                        <label class="col-sm-3 control-label"></label>
+                        <label class="col-sm-3 control-label"></label>
+                    </div>
+                </div>
+                <div class="box-header">
+                    <h3 class="box-title">调拨信息</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" id="einput_godown">本期入库:0</label>
+                        <label class="col-sm-3 control-label" id="ewait_in">待入:0</label>
+                        <label class="col-sm-3 control-label" id="ewait_out">待出:0</label>
+                        <label class="col-sm-3 control-label"></label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" id="ehigher_allocation">上级调拨:0</label>
+                        <label class="col-sm-3 control-label" id="ereturn_higher">退回上级:0</label>
+                        <label class="col-sm-3 control-label" id="elower_return">下级退回:0</label>
+                        <label class="col-sm-3 control-label" id="eallocation_lower">拨给下级:0</label>
+                    </div>
+                </div>
+                <div class="box-header">
+                    <h3 class="box-title">销售信息</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group has-error">
+                        <label class="col-sm-12 control-label">小计 ＝ 普通销售 ＋ 折扣销售 ＋ 销售差异 ＋ 赠送 ＋ 赠送差异</label>
+                    </div>
+                    <div class="form-group has-error">
+                        <label class="col-sm-12 control-label">本期结存 ＝ 上期结存 ＋ 本期入库 － 本期退库 ＋ 上级下拨 ＋下级退回 －拨给下级 －退回上级 － 小计 － 业务用品领用</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" id="esubtotal">小计:0</label>
+                        <label class="col-sm-3 control-label" id="esales">普通销售:0</label>
+                        <label class="col-sm-3 control-label" id="ediscount_sales">折扣销售:0</label>
+                        <label class="col-sm-3 control-label" id="egive">赠送:0</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">普通销售差异:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" id="egeneral_difference">
+                        </div>
+                        <label class="col-sm-2 control-label">折扣销售差异:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" id="ediscount_difference">
+                        </div>
+                        <label class="col-sm-2 control-label">销售差异:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" id="esales_difference">
+                        </div>
+                        <label class="col-sm-2 control-label">赠送差异:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')" id="egive_difference">
+                        </div>
+                    </div>
+                    <div class="form-group has-error">
+                        <label class="col-sm-12 control-label">销售差异 ＝ 普通销售差异 ＋ 折扣销售差异</label>
+                    </div>
+                </div>
+                <div class="box-header">
+                    <h3 class="box-title">赠送详细（新：表示新用户 老：表示老用户）</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" id="enew_gotone">新全球通:0</label>
+                        <label class="col-sm-3 control-label" id="enew_easyown">新神州行:0</label>
+                        <label class="col-sm-3 control-label" id="enew_mzone">新动感地带:0</label>
+                        <label class="col-sm-3 control-label" id="enew_other">新其它:0</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" id="eold_gotone">老全球通:0</label>
+                        <label class="col-sm-3 control-label" id="eold_easyown">老神州行:0</label>
+                        <label class="col-sm-3 control-label" id="eold_mzone">老动感地带:0</label>
+                        <label class="col-sm-3 control-label" id="eold_other">老其它:0</label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">新差异:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"  id="enew_difference">
+                        </div>
+                        <label class="col-sm-2 control-label">老差异:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"  id="eold_difference">
+                        </div>
+                        <label class="col-sm-2 control-label"></label>
+                        <label class="col-sm-2 control-label"></label>
+                    </div>
+                    <div class="form-group has-error">
+                        <label class="col-sm-12 control-label">赠送差异 ＝ 新差异 ＋ 老差异</label>
+                    </div>
+                </div>
+                <div class="box-header">
+                    <h3 class="box-title">其它信息</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" id="bad_replace">坏卡更换:0</label>
+                        <label class="col-sm-2 control-label" id="day_return">隔日退回:0</label>
+                        <label class="col-sm-2 control-label">隔月退回:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"  id="month_return">
+                        </div>
+                        <label class="col-sm-2 control-label">业务用品领用:</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" onkeyup="this.value=this.value.replace(/[^\d]/g,'')"  id="service_use">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">差异原因:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control"  id="reason_difference">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="editButton" class="btn btn-primary">提交</button>
+                <button class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box">
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <div class="form-horizontal">
+                        <div class="box-body">
+                            <html:hidden id="ledger_id" />
+                            <html:hidden id="group_id" />
+                            <html:hidden id="submit_login" />
+                            <html:hidden id="resource_code" />
+                            <html:hidden id="new_resource_code" />
+                            <html:hidden id="region_group_id" />
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">节点信息</label>
+
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="group_name" readonly="true">
+                                </div>
+                                <label class="col-sm-2 control-label">当前日期</label>
+
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="sys_date" readonly="true">
+                                </div>
+                                <label class="col-sm-2 control-label"></label>
+
+                                <div class="col-sm-2"></div>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-bordered" id="ledger_table">
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th style="width: 15%">台账日期</th>
+                                        <th style="width: 35%">节点名称</th>
+                                        <th style="width: 15%">当前状态</th>
+                                        <th style="width: 15%">原因信息</th>
+                                        <th style="width: 120px">操作</th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="box-footer">
+                                <label class="col-sm-8"></label>
+                                <label class="col-sm-3">只有记账员可以编辑、提交台账信息</label>
+                                <button type="submit" class="btn btn-info pull-right" id="allSubmitLedgerInfo">批量提交</button>
+                            </div>
+                        </div>
+                        <div style="display:none" id="editLedgerInfo" class="box box-solid box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">数据维护</h3>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" id="totalnumLable"></label>
+                                    <html:hidden id="totalnum" />
+                                    <label class="col-sm-2 control-label">资源名称</label>
+                                    <div class="col-sm-2">
+                                        <div class="input-group">
+                                            <input class="form-control" id="resource_name" name="resource_name" readonly="true">
+                                            <span class="input-group-addon" id="resource_choose" style="cursor:pointer;"><i class="fa fa-home"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button class="btn btn-info pull-right" id="queryResource">查询</button>
+                                    </div>
+                                    <label class="col-sm-2 control-label">新增资源空账 资源</label>
+
+                                    <div class="col-sm-2">
+                                        <div class="input-group">
+                                            <input class="form-control" id="new_resource_name" name="new_resource_name" readonly="true">
+                                            <span class="input-group-addon" id="new_resource_choose" style="cursor:pointer;"><i class="fa fa-home"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <button  class="btn btn-info pull-right" id="emptyLedger">生成空账</button>
+                                    </div>
+                                </div>
+                            </div><!-- /.box-body -->
+                            <div class="box-body table-responsive" >
+                                <table class="table table-bordered" id="ledgerDetails_table">
+                                    <tr>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3">#</th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>资源父类</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>资源信息</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" colspan="11" rowspan="2" >资源调拨</th>
+                                        <th style="text-align:center;" colspan="7">出库</th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>本期结存</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>业务用品领用</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>隔日退回</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>隔月退回</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>操作</nobr></th>
+                                    </tr>
+                                    <tr>
+                                        <th class="text-center" colspan="3"><nobr>销售</nobr></th>
+                                        <th class="text-center" colspan="2"><nobr>赠送</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="2"><nobr>坏卡更换</nobr></th>
+                                        <th style="text-align:center;vertical-align: middle;" rowspan="2"><nobr>小计</nobr></th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width: 6%"><nobr>上期结存</nobr></th>
+                                        <th style="width: 6%"><nobr>本期入库</nobr></th>
+                                        <th style="width: 6%"><nobr>本期退库</nobr></th>
+                                        <th style="width: 6%"><nobr>上级下拨</nobr></th>
+                                        <th style="width: 6%"><nobr>退回上级</nobr></th>
+                                        <th style="width: 6%"><nobr>拨给下级</nobr></th>
+                                        <th style="width: 6%"><nobr>下级退回</nobr></th>
+                                        <th style="width: 6%"><nobr>待入</nobr></th>
+                                        <th style="width: 6%"><nobr>待出</nobr></th>
+                                        <th style="width: 6%"><nobr>下拨路过</nobr></th>
+                                        <th style="width: 6%"><nobr>回退路过</nobr></th>
+                                        <th style="width: 6%"><nobr>普通销售</nobr></th>
+                                        <th style="width: 6%"><nobr>折扣销售</nobr></th>
+                                        <th style="width: 6%"><nobr>销售差异</nobr></th>
+                                        <th style="width: 6%"><nobr>赠送</nobr></th>
+                                        <th style="width: 6%"><nobr>赠送差异</nobr></th>
+                                    </tr>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div><!-- /.box -->
+                        <!-- /.box-footer -->
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+
+//加载登陆信息
+   $.ajax({
+      type:"GET",
+      url: "getSessionInfo",
+      data:"&uid="+$("#uid").val()
+   }).then(function(data){
+       $('#submit_login').val(data.login_no);
+       $('#group_name').val(data.group_name);
+       $('#sys_date').val(data.sys_date);
+       $('#group_id').val(data.group_id);
+       $('#region_group_id').val(data.region_group_id);
+       defaultLedgerInfo(data.group_id);
+       if(data.identity_code!=1){
+           $("#allSubmitLedgerInfo").attr("disabled","true");
+       }
+   });
+   //获取待扎帐数据
+    function defaultLedgerInfo(group_id) {
+        //获值成功后往表格增加显示结果
+        var num = $("#ledger_table tr").filter("#ledtr").size();//获得表格行数
+        //移除表格数据重新加载
+        for (var i = 0; i < num; i++) {
+            $("#ledtr").remove();//移除表格数据重新加载
+        }
+        $.ajax({
+            type: "GET",
+            url: "defaultLedgerInfo",
+            data: {
+                "group_id":group_id,
+                "submit_login":$('#submit_login').val()
+            }
+        }).then(function (data) {
+            //获值成功后往表格增加显示结果
+            $.each(data, function (index, item) {
+                $("#ledger_table").append("<tr id='ledtr'><td>" + (index + 1) + ".</td><td>" + item.ledger_date + "</td><td>" + item.group_name + "</td><td>" + item.status + "</td><td>" + item.reason + "</td><td>" + item.opt + "</td><td hidden>" + item.ledger_id + "</td></tr>");
+            });
+            /*
+            //为表格增加点击变色属性
+            $("#ledger_table").each(function () {
+                var self = this;
+                // 选择行变色
+                $("tr", $(self)).click(function () {
+                    var trThis = this;
+                    if ($(trThis).get(0) == $("tr:first", $(self)).get(0)) {
+                        return;
+                    }
+                    $(self).find(".bg-info").removeClass('bg-info');
+                    $(trThis).addClass('bg-info');
+                    //alert( $("td",$(trThis)).get(1).innerHTML);
+                });
+            });
+            //获取表格点击选取行值
+            $("tr", $("#ledger_table")).click(function () {
+                //$("#sort_level").val($("td",this).get(7).innerHTML);
+            });
+            */
+        });
+    }
+    //提交台账信息
+    function submitLedgerInfo(ledger_id){
+        updateLedgerInfo(ledger_id,"");
+    }
+    //批量提交台账信息
+
+    $("#allSubmitLedgerInfo").click(function () {
+        updateLedgerInfo("",$("#group_id").val());
+    });
+    function updateLedgerInfo(ledger_id,group_id){
+        $("#editLedgerInfo").hide();
+        $.ajax({
+            type:"GET",
+            url: "updateLedgerInfo",
+            data:{
+                ledger_id:ledger_id,
+                group_id:group_id,
+                submit_login:$("#submit_login").val()
+            }
+        }).then(function(data){
+            defaultLedgerInfo($("#group_id").val());
+        });
+    }
+    //点编辑按钮查询台账明细列表数据
+    function editLedgerInfo(ledger_id){
+        $("#editLedgerInfo").show();
+        $("#ledger_id").val(ledger_id);
+        selectLedgerDetailsList("",true)
+    }
+    //输入资源名称,模糊查询台账明细列表数据
+    $("#queryResource").click(function () {
+        selectLedgerDetailsList($("#resource_code").val().toString(),true)
+    });
+    //设置台账明细信息表格数据
+    function setLedgerDetailsInfo(data,flag) {
+        if (flag) {
+            //获值成功后往表格增加显示结果
+            var num = $("#ledgerDetails_table tr").filter("#lditr").size();//获得表格行数
+            //移除表格数据重新加载
+            for (var i = 0; i < num; i++) {
+               $("#lditr").remove();//移除表格数据重新加载
+            }
+        }
+        $.each(data,function(index,item){
+            if(!flag){ index= parseInt($("#totalnum").val());}
+            $("#ledgerDetails_table").append("<tr id='lditr'><td hidden>"+item.resource_code+"</td><td>"+(index+1)+".</td><td>"+item.presource_name+"</td><td>"+item.resource_name+"</td><td>"+item.last_balance
+                    +"</td><td>"+item.input_godown+"</td><td>"+item.return_godown+"</td><td>"+item.higher_allocation+"</td><td>"+item.return_higher
+                    +"</td><td>"+item.allocation_lower+"</td><td>"+item.lower_return+"</td><td>"+item.wait_in+"</td><td>"+item.wait_out
+                    +"</td><td>"+item.allocation_passing+"</td><td>"+item.return_passing+"</td><td>"+item.sales+"</td><td>"+item.discount_sales
+                    +"</td><td>"+item.sales_difference+"</td><td>"+item.give+"</td><td>"+item.give_difference+"</td><td>"+item.bad_replace
+                    +"</td><td>"+item.subtotal+"</td><td>"+item.now_balance+"</td><td>"+item.service_use+"</td><td>"+item.day_return
+                    +"</td><td>"+item.month_return+"</td><td>"+item.opt+"</td></tr>");
+        });
+        //为表格增加点击变色属性
+        $("#ledgerDetails_table").each(function(){
+            var self = this;
+            // 选择行变色
+            $("tr", $(self)).click(function (){
+                var trThis = this;
+                if ($(trThis).get(0) == $("tr:first", $(self)).get(0)){
+                    return;
+                }
+                $(self).find(".bg-info").removeClass('bg-info');
+                $(trThis).addClass('bg-info');
+                //alert( $("td",$(trThis)).get(1).innerHTML);
+            });
+        });
+        //获取表格点击选取行值
+        $("tr", $("#ledgerDetails_table")).click(function (){
+            //$("#sort_level").val($("td",this).get(7).innerHTML);
+        });
+    }
+    //插入空账数据
+    $("#emptyLedger").click(function () {
+        //检查此资源是否已添加
+        var num = $("#ledgerDetails_table tr").filter("#lditr").size();//获得表格行数
+        for (var i = 0; i < num; i++) {
+            if($('#new_resource_code').val()==$("#ledgerDetails_table tr").filter("#lditr").eq(i).children('td').eq(0).html()){
+                var alertInfo="此资源已添加,请不要重复添加!"
+                $('#alertLabelInfo').html(alertInfo);
+                $("#alertInfo").modal('show');
+                return;
+            }
+        }
+        //插入空账数据
+        $.ajax({
+            type:"GET",
+            url: "insertLedgerDetailsInfo",
+            data:{
+                region_code:$("#region_group_id").val(),
+                ledger_id:$("#ledger_id").val(),
+                resource_code:$("#new_resource_code").val().toString()
+            }
+        }).then(function(data) {
+            if (data == 0) {
+                $('#alertInfo').modal('show');
+            }else{
+                selectLedgerDetailsList($("#new_resource_code").val().toString(), false);
+            }
+            //alert("返回结果:"+data);
+        });
+    });
+    //查询台账明细列表数据
+    function selectLedgerDetailsList(resource_code,flag){
+        //获取台账列表明细数据
+        $.ajax({
+            type:"GET",
+            url: "ledgerDetailsInfoByLedgerId",
+            data:{
+                ledger_id:$("#ledger_id").val(),
+                resource_code:resource_code
+            }
+        }).then(function(data){
+            setLedgerDetailsInfo(data,flag);
+        });
+        if(flag){
+            $.ajax({
+                type:"GET",
+                url: "ledgerDetailsInfoByLedgerIdCount",
+                data:{
+                    ledger_id:$("#ledger_id").val(),
+                    resource_code:resource_code
+                }
+            }).then(function(data){
+                $("#totalnum").val(data);
+                $("#totalnumLable").html("一共有"+$("#totalnum").val()+"条数据");
+            });
+        }else{
+            $("#totalnumLable").html("一共有"+(parseInt($("#totalnum").val())+1)+"条数据");
+        }
+    }
+    function editLedgerDetailsInfo(detail_id){
+        $("#detail_id").val(detail_id);
+        $.ajax({
+            type:"GET",
+            url: "selectLedgerDetailsInfo",
+            data:{
+                detail_id:detail_id
+            }
+        }).then(function(data){
+            $("#egroup_name").html("节点信息:"+data.group_name);
+            $("#eledger_date").html("台账日期:"+data.ledger_date);
+            $("#eresource_name").html("当前资源:"+data.resource_name);
+            $("#elast_balance").html("上期结存:"+data.last_balance);
+            $("#enow_balance").html("本期结存:"+data.now_balance);
+            $("#einput_godown").html("本期入库:"+data.input_godown);
+            $("#ewait_in").html("待入:"+data.wait_in);
+            $("#ewait_out").html("待出:"+data.wait_out);
+            $("#ehigher_allocation").html("上级调拨:"+data.higher_allocation);
+            $("#ereturn_higher").html("退回上级:"+data.return_higher);
+            $("#elower_return").html("下级退回:"+data.lower_return);
+            $("#eallocation_lower").html("拨给下级:"+data.allocation_lower);
+            $("#esubtotal").html("小计:"+data.subtotal);
+            $("#esales").html("普通销售:"+data.sales);
+            $("#ediscount_sales").html("折扣销售:"+data.discount_sales);
+            $("#egive").html("赠送:"+data.give);
+            $("#egeneral_difference").val(data.general_difference);
+            $("#ediscount_difference").val(data.discount_difference);
+            $("#esales_difference").val(data.sales_difference);
+            $("#egive_difference").val(data.give_difference);
+            $("#enew_gotone").html("新全球通:"+data.new_gotone);
+            $("#enew_easyown").html("新神州行:"+data.new_easyown);
+            $("#enew_mzone").html("新动感地带:"+data.new_mzone);
+            $("#enew_other").html("新其它:"+data.new_other);
+            $("#eold_gotone").html("老全球通:"+data.old_gotone);
+            $("#eold_easyown").html("老神州行:"+data.old_easyown);
+            $("#eold_mzone").html("老动感地带:"+data.old_mzone);
+            $("#eold_other").html("老其它:"+data.old_other);
+            $("#enew_difference").val(data.new_difference);
+            $("#eold_difference").val(data.old_difference);
+            $("#bad_replace").html("坏卡更换:"+data.bad_replace);
+            $("#day_return").html("隔日退回:"+data.day_return);
+            $("#month_return").val(data.month_return);
+            $("#service_use").val(data.service_use);
+            $("#reason_difference").val(data.reason_difference);
+            $('#editLedgerDetailsInfo').modal('show');
+        });
+    }
+    //提交台账明细更新信息
+    $("#editButton").click(function () {
+        $.ajax({
+            type:"GET",
+            url: "updateLedgerDetailsInfo",
+            data:{
+                detail_id:$("#detail_id").val(),
+                general_difference:$("#egeneral_difference").val(),
+                discount_difference:$("#ediscount_difference").val(),
+                sales_difference:$("#esales_difference").val(),
+                give_difference:$("#egive_difference").val(),
+                new_difference:$("#enew_difference").val(),
+                old_difference:$("#eold_difference").val(),
+                month_return:$("#month_return").val(),
+                service_use:$("#service_use").val(),
+                reason_difference:$("#reason_difference").val()
+            }
+        }).then(function(data){
+            $('#editLedgerDetailsInfo').modal('hide');
+            selectLedgerDetailsList("",true)
+        });
+    });
+    //excel导出台账明细列表数据
+    function excelLedgerInfo(ledger_date,group_name,ledger_id){
+        location.href = "excelLedgerInfo?ledger_id="+ledger_id+"&ledger_date="+ledger_date+"&group_name="+group_name;//具体为啥改用这个，是个坑。。强烈建议这个
+    }
+    var to = false;//组织树,资源类型树搜索参数
+    var resource_code_temp,resource_name_temp;
+    $("#resource_choose").click(function (){
+        resource_code_temp=$("#resource_code");
+        resource_name_temp=$("#resource_name");
+        resource_choose();
+    });
+$("#new_resource_choose").click(function (){
+    resource_code_temp=$("#new_resource_code");
+    resource_name_temp=$("#new_resource_name");
+    resource_choose();
+});
+    function resource_choose(){
+        //资源类型树加载
+        $('#resourcetree').jstree({
+            'core' : {
+                "check_callback" : true,
+                'data' : {
+                    "url" : "getResourceJSTree",
+                    "data" : function (node) {
+                        if(node.id=="#"){
+                            return {"id":'rscl',"region_code":$('#region_group_id').val(),"flag":true};
+                        }else{
+                            return { "id" : node.id,"region_code":$('#region_group_id').val() };
+                        }
+                    }
+                }
+            },
+            'plugins' : [ "search" ]
+        });
+        $('#resourcetreemodal').modal('show');
+    }
+    $('#resource_search').keyup(function () {
+        if(to) { clearTimeout(to); }
+        to = setTimeout(function () {
+            var v = $('#resource_search').val();
+            $('#resourcetree').jstree(true).search(v);
+        }, 200);
+    });
+    //表现为资源类型树jstree单击事件
+    $('#resourcetree').on("changed.jstree", function (e, data){
+        resource_code_temp.val(data.selected);
+        if(data.instance.is_leaf(data.instance.get_node(data.selected))){
+            resource_name_temp.val(data.instance.get_selected(true)[0].text);
+            $('#resource_search').val("");
+            $('#resourcetreemodal').modal('hide');
+        }else{
+            return;
+        }
+    });
+</script>
+</html>

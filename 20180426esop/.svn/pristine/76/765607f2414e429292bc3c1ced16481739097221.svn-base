@@ -1,0 +1,51 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/5.
+ */
+public class AmoutPaymentParamDto {
+    String employee_no = "";//客户经理编码
+    String in_time = ""; //查询月数格式yyyy-MM
+    String region_code = "";//地市编码
+    String rank_num = "";//查询排名前rank_num数量的值
+    String sort_flag = "";//Y按年排序，M按月排序
+    public String getEmployee_no() {
+        return employee_no;
+    }
+
+    public void setEmployee_no(String employee_no) {
+        this.employee_no = employee_no;
+    }
+
+    public String getIn_time() {
+        return in_time;
+    }
+
+    public void setIn_time(String in_time) {
+        this.in_time = in_time;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRank_num() {
+        return rank_num;
+    }
+
+    public void setRank_num(String rank_num) {
+        this.rank_num = rank_num;
+    }
+
+    public String getSort_flag() {
+        return sort_flag;
+    }
+
+    public void setSort_flag(String sort_flag) {
+        this.sort_flag = sort_flag;
+    }
+}

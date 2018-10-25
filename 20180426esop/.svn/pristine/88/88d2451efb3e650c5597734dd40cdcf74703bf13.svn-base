@@ -1,0 +1,186 @@
+package com.esop.Interface.controller;
+
+import com.esop.common.util.ParameterConversion;
+
+import com.esop.cust.dto.*;
+import org.apache.log4j.Logger;
+import com.esop.cust.service.KpiService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+
+/**
+ * Created by Administrator on 2017/6/1.
+ */
+@RestController
+public class KpiTargetController {
+    private static Logger logger = Logger.getLogger(EsopProvideController.class);
+    @Autowired
+    KpiService kpiService;
+
+    //统付收入统计
+    @RequestMapping(value = "/unitPayStatistics")
+    public List<UnitPayStatisticsDto> getUnitPayStaticInfo(HttpServletRequest request) {
+        KpiStatisParameterDto param = ParameterConversion.jsonToObject(request, KpiStatisParameterDto.class);
+        //#KpiStatisParameterDto param = new KpiStatisParameterDto();
+        List<UnitPayStatisticsDto> unitPayStatisticsList = kpiService.getUnitPayStaticInfo(param);
+        return unitPayStatisticsList;
+    }
+    //信息化收入统计
+    @RequestMapping(value = "/infomationIncomeStatic")
+    public List<InfomationIncomeStaticDto> getInfomationIncomeInfo(HttpServletRequest request){
+        KpiStatisParameterDto param = ParameterConversion.jsonToObject(request, KpiStatisParameterDto.class);
+        //#KpiStatisParameterDto param = new KpiStatisParameterDto();
+        List<InfomationIncomeStaticDto> infomationIncomeList = kpiService.getInfomationIncomeInfo(param);
+        return infomationIncomeList;
+    }
+    //新发展4G用户数
+    @RequestMapping(value = "/user4GStatistic")
+    public List<UserAmoutStatisDto> user4GStatistic(HttpServletRequest request){
+        KpiStatisParameterDto param = ParameterConversion.jsonToObject(request, KpiStatisParameterDto.class);
+        //#KpiStatisParameterDto param = new KpiStatisParameterDto();
+        List<UserAmoutStatisDto> userAmoutStatisList = kpiService.user4GStatistic(param);
+        return userAmoutStatisList;
+    }
+    //宽带（家庭宽带+集团宽带）累计办理量
+    @RequestMapping(value = "/getWidthNum")
+    public List<WidthStatisDto> getWidthNum(HttpServletRequest request){
+        WidthStatisParamDto param = ParameterConversion.jsonToObject(request, WidthStatisParamDto.class);
+        //WidthStatisParamDto param = new WidthStatisParamDto();
+        //param.setManager_no("aavg6G");
+        List<WidthStatisDto> widthStatisList = kpiService.widthStatis(param);
+        return widthStatisList;
+    }
+    //集团ab类保有率
+    @RequestMapping(value = "/unitAbretentionRate")
+    public List<UnitABRetentionRateDto> unitAbretentionRate(HttpServletRequest request){
+        KpiStatisParameterDto param = ParameterConversion.jsonToObject(request, KpiStatisParameterDto.class);
+        /*KpiStatisParameterDto param = new KpiStatisParameterDto();
+        param.setIn_time("2017-05");
+        param.setService_no("aavg6G");*/
+        List<UnitABRetentionRateDto> retentionList = kpiService.unitAbRetentionRate(param);
+        return retentionList;
+    }
+    //新签约
+    @RequestMapping(value = "/getUnitSign")
+    public List<NewUnitSignDto> getUnitSign(HttpServletRequest request){
+        KpiStatisParameterDto param = ParameterConversion.jsonToObject(request, KpiStatisParameterDto.class);
+        //#KpiStatisParameterDto param = new KpiStatisParameterDto();
+        List<NewUnitSignDto> unitSignList = kpiService.getUnitSign(param);
+        return unitSignList;
+    }
+    //量酬当月业务办理量
+    @RequestMapping(value = "/getBusDealInfo")
+    public  List<BusiDealInfoTempDto>  getBusDealInfo(HttpServletRequest request){
+        KpiStatisParameterDto param = ParameterConversion.jsonToObject(request, KpiStatisParameterDto.class);
+        /*KpiStatisParameterDto param = new KpiStatisParameterDto();
+        param.setService_no("aavg38");
+        param.setIn_time("201705");*/
+        List<BusiDealInfoTempDto> dealTempList = kpiService.getBusDealInfo(param);
+         /*BusDealInfoDto busDealDto = new BusDealInfoDto();
+
+       if(dealTempList != null && dealTempList.size() > 0){
+            busDealDto.setManager_name(dealTempList.get(0).getManager_name());
+            busDealDto.setManager_no(dealTempList.get(0).getManager_no());
+            busDealDto.setOpen_card("0");
+            busDealDto.setSpecial_line("0");
+            busDealDto.setTerminal("0");
+            busDealDto.setWidth("0");
+            busDealDto.setWage_change("0");
+            for(BusiDealInfoTempDto tempDto:dealTempList){
+                if(tempDto.getDirectory_name().equals("宽带")){
+                    busDealDto.setWidth(tempDto.getWork_count());
+                }
+            }
+        }*/
+        return dealTempList;
+    }
+    //绩效统计
+    @RequestMapping(value = "/getPerformanceInfo")
+    public List<PerformanceInfoDto> getPerformanceInfo(HttpServletRequest request){
+        PerformanceParamDto param = ParameterConversion.jsonToObject(request, PerformanceParamDto.class);
+        //PerformanceParamDto param = new PerformanceParamDto();
+        //param.setEmployee_no("20");
+        List<PerformanceInfoDto> performanceList = kpiService.getPerformanceInfo(param);
+        return performanceList;
+    }
+    //获取绩效考核名称
+    @RequestMapping(value = "/qryExamineName")
+    public List<PerformanceInfoDto> getExamineNameList(HttpServletRequest request){
+        PerformanceParamDto param = ParameterConversion.jsonToObject(request, PerformanceParamDto.class);
+        List<PerformanceInfoDto> examineNameList = kpiService.getExamineName(param);
+        return examineNameList;
+    }
+    //量酬报表
+    @RequestMapping(value = "/getAmoutPaymentInfo")
+    public List<AmoutPaymentInfoDto> getAmoutPaymentInfo(HttpServletRequest request){
+        AmoutPaymentParamDto param = ParameterConversion.jsonToObject(request, AmoutPaymentParamDto.class);
+        /*AmoutPaymentParamDto param = new AmoutPaymentParamDto();
+        param.setRank_num("30");
+        param.setSort_flag("M");
+        param.setRegion_code("10031");
+        param.setEmployee_no("afbr0c");*/
+        List<AmoutPaymentInfoDto> amoutList = kpiService.getAmoutPaymentInfo(param);
+        return amoutList;
+    }
+    //我的集团信息预览，成员级产品成员数
+    @RequestMapping(value = "/getPrcRoleNoInfo")
+    public List<GrpPrcRoleNoInfoDto> getPrcRoleNoInfo(HttpServletRequest request){
+        GrpPrcRoleNoParamDto param = ParameterConversion.jsonToObject(request, GrpPrcRoleNoParamDto.class);
+        //GrpPrcRoleNoParamDto param = new GrpPrcRoleNoParamDto();
+        //param.setManager_no("abvg8d");
+        List<GrpPrcRoleNoInfoDto> grpPrcRoleInfoList = kpiService.getPrcRoleNoInfo(param);
+        return grpPrcRoleInfoList;
+    }
+    //我的集团4G成员数、平均dou、平均arpu
+    @RequestMapping(value = "/getWebMemberInfo")
+    public List<GrpWebMemberDto> getWebMemberInfo(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request, GrpInterfaceParameterDto.class);
+        //#rpInterfaceParameterDto param = new GrpInterfaceParameterDto();
+        List<GrpWebMemberDto> webMemberList = kpiService.getWebMemberInfo(param);
+        return webMemberList;
+    }
+    //pc端kpi指标数据查询
+    @RequestMapping(value = "/qryKpiInfo")
+    public PcKpiInfoReturnDto qryKpiInfoList(PcKpiInfoParamDto param){
+        /*String login_no = request.getParameter("login_no");
+        String eff_date = request.getParameter("eff_date") != null ? request.getParameter("eff_date"):"";
+        param.setLogin_no(login_no);
+        param.setEff_date(eff_date);*/
+        /*param.setEff_date("2017-05");
+        param.setLanding_no("aavg38");*/
+        PcKpiInfoReturnDto retDto = new PcKpiInfoReturnDto();
+        List<PcKpiInfoDto> list = kpiService.getPcKpiInfo(param);
+        Map<String,String> retMap = new HashMap<String,String>();
+        retMap.put("unit_pay","0");
+        retMap.put("info_income","0");
+        retMap.put("new_4Guser_num","0");
+        retMap.put("retention_rate","0");
+        retMap.put("unitsign_num","0");
+        retMap.put("width_num","0");
+        if(list != null && list.size() > 0){
+
+            for(int i=0; i< list.size();i++){
+                retMap.put(list.get(i).getKpi_target(),list.get(i).getKpi_value());
+            }
+
+        }/*else{
+            retDto.setCode("999999");
+            retDto.setMessage("Rest Request failed");
+            retDto.setPromptMsg("User Operate failed");
+        }*/
+        retDto.setData(retMap);
+        retDto.setCode("000000");
+        retDto.setMessage("Rest Request Success");
+        retDto.setPromptMsg("User Operate Success");
+        System.out.println("controller打印测试-----"+list);
+        return retDto;
+    }
+}

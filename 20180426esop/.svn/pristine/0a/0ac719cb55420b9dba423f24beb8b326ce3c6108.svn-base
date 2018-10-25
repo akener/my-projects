@@ -1,0 +1,367 @@
+package com.esop.common.word;
+
+import org.apache.el.lang.ELArithmetic;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xwpf.usermodel.*;
+import org.apache.xmlbeans.*;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Text;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTDecimalNumber;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
+
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.Writer;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/11/29.
+ */
+public class CreatXml {
+
+    //开始创建xml
+    public void createXml(String modelName,String model_word_path,String model_xml_path) throws Exception{
+        org.dom4j.Document xmlDocument = DocumentHelper.createDocument();
+
+        Element ROOT = xmlDocument.addElement("ROOT");//创建根节点
+        Element PARAGRAPH_LIST = ROOT.addElement("PARAGRAPH_LIST");//创建paragraph_list节点
+        PARAGRAPH_LIST = readWord(PARAGRAPH_LIST,modelName,model_word_path);
+        ////用于格式化xml内容和设置头部标签
+        OutputFormat format = OutputFormat.createPrettyPrint();
+        format.setEncoding("UTF-8");
+        Writer out;
+        out = new FileWriter(model_xml_path+modelName+".xml");
+        XMLWriter writer = new XMLWriter(out,format);
+        writer.write(xmlDocument);
+        writer.close();
+    }
+
+    //读取word，并根据里面的内容和格式写入xml
+    private Element readWord(Element PARAGRAPH_LIST ,String modelName,String model_word_path) throws Exception{
+        InputStream is = new FileInputStream(model_word_path+modelName+".docx");
+        XWPFDocument doc = new XWPFDocument(is);
+
+        Iterator<IBodyElement> bodyElement = doc.getBodyElementsIterator();
+
+        List<XWPFParagraph> paragraphList = doc.getParagraphs();
+         int a = paragraphList.get(3).getSpacingBeforeLines();
+        while (bodyElement.hasNext()){
+            IBodyElement element = bodyElement.next();
+            BodyElementType elementType = element.getElementType();
+            Element PARAGRAPH = PARAGRAPH_LIST.addElement("PARAGRAPH");
+
+            if (elementType == BodyElementType.PARAGRAPH){//当节点是段落的时候
+                XWPFParagraph paragraph = (XWPFParagraph)element;
+
+                String alignment = paragraph.getAlignment().toString();//获取对齐方式
+                Element ALIGNMENT_CLASS = PARAGRAPH.addElement("ALIGNMENT_CLASS");
+                ALIGNMENT_CLASS.addAttribute("type","string");
+                if (alignment.equals("CENTER")){
+                    alignment = "ALIGN_CENTER";
+                }else if (alignment.equals("LEFT")){
+                    alignment = "ALIGN_LEFT";
+                }else if (alignment.equals("RIGHT")){
+                    alignment = "ALIGN_RIGHT";
+                }
+                ALIGNMENT_CLASS.addText(alignment);//添加对齐方式
+
+                int spacingBefore = paragraph.getSpacingBefore();//获取段落前面的空格长度
+                Element SPACING_BEFORE = PARAGRAPH.addElement("SPACING_BEFORE");
+                SPACING_BEFORE.addAttribute("type","string");
+                SPACING_BEFORE.addText("6");//添加空格前面长度
+
+                int firstLineIndent = paragraph.getFirstLineIndent();//首行缩进长度
+
+                Element FIRST_LINE_INDENT = PARAGRAPH.addElement("FIRST_LINE_INDENT");
+                FIRST_LINE_INDENT.addAttribute("type","string");
+                FIRST_LINE_INDENT.addText("5");//添加首行缩进长度
+                Element TEXT_LIST = PARAGRAPH.addElement("TEXT_LIST");//生成text_list
+
+                List<XWPFRun> runList = paragraph.getRuns();
+
+                for (XWPFRun run:runList){
+                    int size = run.getFontSize();//获取字体大小
+                    String fontClass = run.getFontFamily();//获取字体类型
+                    String isUnderline = run.getUnderline().toString();//是否有下划线
+                    String value = run.getText(0);//获取这句话里面的内容
+                    boolean border = run.isBold();
+
+                    Element TEXT = TEXT_LIST.addElement("TEXT");//生成text SINGLE
+
+                    Element TEXT_TYPE = TEXT.addElement("TEXT_TYPE");//添加是否是需要填空的内容
+                    TEXT_TYPE.addAttribute("type","string");
+                    Element TEXT_VALUE = TEXT.addElement("TEXT_VALUE");//添加内容
+                    TEXT_VALUE.addAttribute("type","string");
+                    Element FONT_CLASS = TEXT.addElement("FONT_CLASS");//添加字体
+                    FONT_CLASS.addAttribute("type","string");
+
+                    if (isUnderline.equals("NONE")){//当不是下划线（即正常内容的时候）
+                        TEXT_TYPE.addText("0");//设置下划线的值
+                        if(border && (size >=20)){
+                            FONT_CLASS.addText("titleFont");//一级标题
+                            FIRST_LINE_INDENT.setText("5");//添加首行缩进长度
+                            SPACING_BEFORE.setText("0");
+                            //添加空格前面长度
+                        }else if(border && (size < 20)){
+                            FONT_CLASS.addText("titleFont1");//加粗文字
+                            FIRST_LINE_INDENT.setText("0");//添加首行缩进长度
+                            SPACING_BEFORE.setText("6");//添加空格前面长度
+                        }else if(!border){
+                            FONT_CLASS.addText("contextFont");//正文
+                            FIRST_LINE_INDENT.setText("25");//添加首行缩进长度
+                        }
+                        if(!StringUtils.isEmpty(value)){
+                            TEXT_VALUE.addText(value);
+                        }
+                    }else{//是下划线（即需要填空的时候）
+                        TEXT_TYPE.addText("1");
+                        FONT_CLASS.addText("underlineFont");
+                        TEXT_VALUE.addText(value);
+                    }
+                }
+
+            }else if (elementType == BodyElementType.TABLE){//当样式是表格的时候
+                XWPFTable table = (XWPFTable) element;
+
+                Element PARAGRAPH_TYPE = PARAGRAPH.addElement("PARAGRAPH_TYPE");//是表格的时候添加额外的属性，标记为表格
+                PARAGRAPH_TYPE.addAttribute("type","string");
+                PARAGRAPH_TYPE.addText("TABLE");
+
+                int colsNumber = 0;
+                int rowsNumber = table.getNumberOfRows();//行数
+                Element TABLE_ROW_SPAN = PARAGRAPH.addElement("TABLE_ROW_SPAN");
+                TABLE_ROW_SPAN.addAttribute("type","string");
+                TABLE_ROW_SPAN.addText(rowsNumber+"");
+
+
+                Element AUTO_FILL_FLAG = PARAGRAPH.addElement("AUTO_FILL_FLAG");
+                AUTO_FILL_FLAG.addAttribute("type","string");
+                AUTO_FILL_FLAG.addText("Y");//自动填满
+
+                Element BORDER_WIDTH = PARAGRAPH.addElement("BORDER_WIDTH");
+                BORDER_WIDTH.addAttribute("type","string");
+                BORDER_WIDTH.addText(1+"");
+
+                int tableWidth = table.getWidth();
+                Element TABLE_WIDTH = PARAGRAPH.addElement("TABLE_WIDTH");
+                TABLE_WIDTH.addAttribute("type","string");
+                TABLE_WIDTH.addText("100");
+
+                Element TEXT_LIST = PARAGRAPH.addElement("TEXT_LIST");//生成text_list
+                List<XWPFTableRow> rowList = table.getRows();
+                String cells_width = "";
+                for(int i = 0;i < table.getRows().size();i++){
+                    if (table.getRow(i).getTableCells().size() > colsNumber){
+                        colsNumber = table.getRow(i).getTableCells().size();
+                    }
+                    for(int j=0;j<table.getRow(i).getTableCells().size();j++){
+                        Element TEXT = TEXT_LIST.addElement("TEXT");
+                        //获取该单元格
+                        XWPFTableCell cell = table.getRow(i).getCell(j);
+                        //获取该单元格属性
+                        CTTcPr tcPr = cell.getCTTc().getTcPr();
+                        int colspan = getColspan(tcPr);//获取占了多少列
+                        List<Boolean> list = new ArrayList<>();
+                        getRowspan(table, i, j, list);
+                        int rowspan = list.size() + 1;//获取占了多少行
+
+                        String textValue = cell.getText();
+                        Element TEXT_TYPE = TEXT.addElement("TEXT_TYPE");
+                        TEXT_TYPE.addAttribute("type","string");
+                        if (StringUtils.isEmpty(textValue)){
+                            TEXT_TYPE.addText("1");
+                        }else{
+                            TEXT_TYPE.addText("0");
+                        }
+                        Element TEXT_VALUE = TEXT.addElement("TEXT_VALUE");//写入内容
+                        TEXT_VALUE.addAttribute("type","string");
+                        TEXT_VALUE.addText(textValue);
+
+                        Element FONT_CLASS = TEXT.addElement("FONT_CLASS");//写入字体
+                        FONT_CLASS.addAttribute("type","string");
+                        FONT_CLASS.addText("contextFont");
+
+                        Element ROW_SPAN = TEXT.addElement("ROW_SPAN");//写入rowspan
+                        ROW_SPAN.addAttribute("type","string");
+                        ROW_SPAN.addText(rowspan+"");
+
+                        Element COL_SPAN = TEXT.addElement("COL_SPAN");//写入colspan
+                        COL_SPAN.addAttribute("type","string");
+                        COL_SPAN.addText(colspan+"");
+
+                        Element VERTICAL_ALIGNMENT = TEXT.addElement("VERTICAL_ALIGNMENT");//写入VERTICAL_ALIGNMENT
+                        VERTICAL_ALIGNMENT.addAttribute("type","string");
+                        VERTICAL_ALIGNMENT.addText("ALIGN_MIDDLE");
+
+                        Element HORIZONTAL_ALIGNMENT = TEXT.addElement("HORIZONTAL_ALIGNMENT");//写入HORIZONTAL_ALIGNMENT
+                        HORIZONTAL_ALIGNMENT.addAttribute("type","string");
+                        HORIZONTAL_ALIGNMENT.addText("ALIGN_CENTER");
+
+                    }
+                }
+
+                String cell_widths = "30";
+                for (int i = 0;i<colsNumber-1;i++){
+                    cell_widths = cell_widths +",30";
+                }
+
+                Element CELLS_WIDTH = PARAGRAPH.addElement("CELLS_WIDTH");
+                CELLS_WIDTH.addAttribute("type","string");
+                CELLS_WIDTH.addText(cell_widths);
+
+                Element TABLE_COL_SPAN = PARAGRAPH.addElement("TABLE_COL_SPAN");
+                TABLE_COL_SPAN.addAttribute("type","string");
+                TABLE_COL_SPAN.addText(colsNumber+"");
+
+
+            }
+
+
+        }
+
+
+        is.close();
+        return PARAGRAPH_LIST;
+    }
+
+    /**
+     * 获取当前单元格的colspan属性
+     *
+     * @param tcPr
+     * @return
+     */
+    public int getColspan(CTTcPr tcPr) {
+        // 判断是否存在列合并
+        CTDecimalNumber gridSpan = null;
+        if ((gridSpan = tcPr.getGridSpan()) != null) { // 合并的起始列
+            // 获取合并的列数
+            BigInteger num = gridSpan.getVal();
+            return num.intValue();
+        } else { // 其他被合并的列或正常列
+            return 1;
+        }
+    }
+
+    /**
+     * 获取当前单元格的rowspan属性
+     *
+     * @param table
+     * @param row
+     * @param col
+     * @param list
+     */
+    public void getRowspan(XWPFTable table, int row, int col, List<Boolean> list) {
+
+        XWPFTableCell cell = table.getRow(row).getCell(col);
+        if (!isContinueRow(cell) && !isRestartRow(cell)) { // 正常单元格
+            return;
+        }
+        if (row + 1 >= table.getNumberOfRows()) { // 行数超界
+            return;
+        }
+        int standWidth = getCellWidth(table, row, col);
+        int standLeftWidth = getLeftWidth(table, row, col);
+
+        row = row + 1;
+        int colsNum = table.getRow(row).getTableCells().size();
+        for (int i = 0; i < colsNum; i++) {
+            XWPFTableCell testTable = table.getRow(row).getCell(i);
+            if (isContinueRow(testTable)) { // 为合并单元格的中间行
+                if (getCellWidth(table, row, i) == standWidth
+                        && getLeftWidth(table, row, i) == standLeftWidth) { // 是目标单元格(即是上一行对应单元格的下一级单元格)
+                    list.add(true);
+                    addOmitCell(row, i);
+                    getRowspan(table, row, col, list);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断是否是合并行的起始行单元格
+     *
+     * @param tableCell
+     * @return
+     */
+    public boolean isRestartRow(XWPFTableCell tableCell) {
+        CTTcPr tcPr = tableCell.getCTTc().getTcPr();
+        if (tcPr.getVMerge() == null) {
+            return false;
+        }
+        if (tcPr.getVMerge().getVal() == null) {
+            return false;
+        }
+        if (tcPr.getVMerge().getVal().toString().equalsIgnoreCase("restart")) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否是合并行的中间行单元格
+     *
+     * @param tableCell
+     * @return
+     */
+    public boolean isContinueRow(XWPFTableCell tableCell) {
+        CTTcPr tcPr = tableCell.getCTTc().getTcPr();
+        if (tcPr.getVMerge() == null) {
+            return false;
+        }
+        if (tcPr.getVMerge().getVal() == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public int getLeftWidth(XWPFTable table, int row, int col) {
+        int leftWidth = 0;
+        for (int i = 0; i < col; i++) {
+            leftWidth += getCellWidth(table, row, i);
+        }
+        return leftWidth;
+    }
+
+    public int getCellWidth(XWPFTable table, int row, int col) {
+        BigInteger width = table.getRow(row).getCell(col).getCTTc().getTcPr().getTcW().getW();
+        return width.intValue();
+    }
+    /**
+     * 添加忽略的单元格(poi区分不出合并的行，故需要手动区分)
+     *
+     * @param row
+     * @param col
+     * @param rowspan
+     */
+    public void addOmitCell(int row, int col) {
+        String omitCellStr = generateOmitCellStr(row, col);
+        omitCellsList.add(omitCellStr);
+    }
+
+    /**
+     * 保存需要被忽略的单元格
+     */
+    private List<String> omitCellsList = new ArrayList<>();
+
+    /**
+     * 生成忽略的单元格列表中的格式
+     *
+     * @param row
+     * @param col
+     * @return
+     */
+    public String generateOmitCellStr(int row, int col) {
+        return row + ":" + col;
+    }
+
+}

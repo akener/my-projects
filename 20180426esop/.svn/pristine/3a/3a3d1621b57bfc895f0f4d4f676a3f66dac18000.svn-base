@@ -1,0 +1,125 @@
+package com.esop.visitInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.visitInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by subt on 2017/6/7 0007.
+ */
+
+@Repository
+public class VisitDetailService {
+    private static Logger logger = Logger.getLogger(VisitDetailService.class);
+    @Autowired
+    SqlE sqlE;
+    //查询参观流程详情信息
+    public List<VisitProcessDto> getProcessDetail(VisitProcessDto param){
+        return sqlE.selectM("getProcessDetail",param);
+    }
+    //新增详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertProcessDetail(VisitProcessDto param){
+        if (sqlE.insertM("insertProcessDetail",param)>0){
+            logger.info("新增参观流程表单详情信息成功");
+            return true;
+        }
+        logger.info("新增参观流程表单详情信息失败");
+        return false;
+    }
+    //更新详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateProcessDetail(VisitProcessDto param){
+        if (sqlE.updateM("updateProcessDetail",param)>0){
+            logger.info("更新参观流程表单详情信息成功");
+            return true;
+        }
+        logger.info("更新参观流程表单详情信息失败");
+        return false;
+    }
+    //查询参观流程(数据中心)详情信息
+    public List<VisitDatacenterDto> getDatacenterDetail(VisitDatacenterDto param){
+        return sqlE.selectM("getDatacenterDetail",param);
+    }
+    //新增(数据中心)详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertDatacenterDetail(VisitDatacenterDto param){
+        if (sqlE.insertM("insertDatacenterDetail",param)>0){
+            logger.info("新增参观流程表单(数据中心)详情信息成功");
+            return true;
+        }
+        logger.info("新增参观流程表单(数据中心)详情信息失败");
+        return false;
+    }
+    //更新(数据中心)详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateDatacenterDetail(VisitDatacenterDto param){
+        if (sqlE.updateM("updateDatacenterDetail",param)>0){
+            logger.info("更新参观流程表单(数据中心)详情信息成功");
+            return true;
+        }
+        logger.info("更新参观流程表单(数据中心)详情信息失败");
+        return false;
+    }
+
+    //查询测试流程表单详情信息
+    public List<TestFormDto> getTestDetail(TestFormDto param){
+        return sqlE.selectM("getTestDetail",param);
+    }
+    //新增测试流程表单数据详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertTestDetail(TestFormDto param){
+        if (sqlE.insertM("insertTestDetail",param)>0){
+            logger.info("新增测试流程表单数据详情信息成功");
+            return true;
+        }
+        logger.info("新增测试流程表单数据详情信息失败");
+        return false;
+    }
+    //更新测试流程表单数据详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updatTestDetail(TestFormDto param){
+        if (sqlE.updateM("updatTestDetail",param)>0){
+            logger.info("更新测试流程表单数据详情信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("更新测试流程表单数据详情信息失败");
+        return false;
+    }
+    //查询勘查、资费、资源流程表单详情信息
+    public List<ProspectingPostageDto> getPostageDetail(ProspectingPostageDto param){
+        logger.info("getProspectingPostage入参:"+param.toString());
+        List list = sqlE.selectM("getPostageDetail",param);
+        logger.info("getProspectingPostage入参:"+list);
+        return list;
+    }
+    //新增勘查、资费、资源流程表单数据详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertPostageDetail(ProspectingPostageDto param){
+        if (sqlE.insertM("insertPostageDetail",param)>0){
+            logger.info("新增勘查、资费、资源流程表单数据详情信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("新增勘查、资费、资源流程表单数据详情信息失败");
+        return false;
+    }
+    //更新勘查、资费、资源流程表单数据详情信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updatePostageDetail(ProspectingPostageDto param){
+        if (sqlE.updateM("updatePostageDetail",param)>0){
+            logger.info("更新勘查、资费、资源流程表单数据详情信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("更新勘查、资费、资源流程表单数据详情信息失败");
+        return false;
+    }
+}

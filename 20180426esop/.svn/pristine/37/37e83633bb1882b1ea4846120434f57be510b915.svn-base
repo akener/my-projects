@@ -1,0 +1,126 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var login_no = "<%=login_no%>";
+        var table;
+
+        $(document).ready(function () {
+            capitalClaimApproveQuery();
+        });
+
+        function capitalClaimApproveQuery() {
+            table = $('#example').DataTable({
+                "scrollX": true,
+                processing: true,
+//                serverSide: true,
+                destroy: true,
+                "bFilter": false,
+                "pageLength": 5,//设置每页显示多少条记录
+                //"bSort":false,
+                "bLengthChange": false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                "ajax": {
+                    url: "/getOffsetNeedReleaseInfoList",
+                    type: "POST",
+                    "data": {
+                        applicant: login_no
+                    }
+                },
+                "columns": [
+                    {
+                        "width": "10%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<button type='button' class='ui-btn mgr-10' style='width: 60px' onclick=aprrove_button('"+row.taskOrderId+"','"+row.outGroupNo+"','"+row.historyOffsetAmount_yuan+ "','"+row.historyOffsetAmount_yuan+"')>解冻</button>";
+                        }
+                    },
+                    {data: "taskOrderId"},
+                    {data: "dealTime"},
+                    {data: "login_name"},
+                    {data: "ownerorgname"},
+                    {data: "holdbalance_yuan"},
+                    {data: "historyOffsetAmount_yuan"},
+                    {data: "outGroup"},
+                    {data: "outGroupNo"},
+                    {data: "runningWarterNo"}
+
+
+                ],
+                select: true
+            });
+        }
+
+        function aprrove_button(gongdan_bianhao,jituan_bianhao,shiyong_jine) {
+            if(window.confirm('确定释放该工单占用的资金？')){
+                $.ajax({
+                    url:"/updateCapitalUseFund",
+                    type:"POST",
+                    data:{
+                        gongdan_bianhao:gongdan_bianhao,
+                        jituan_bianhao:jituan_bianhao,
+                        shiyong_jine:shiyong_jine,
+                        shenqingren:login_no
+                    },
+                    success:function (data) {
+                        if(data == 1){
+                            alert("释放成功!");
+                            capitalClaimApproveQuery();
+                        }else{
+                            alert("释放失败!");
+                        }
+                    }
+                })
+            }
+        }
+
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金使用释放</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="cost-table" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center">操作</th>
+                                <th class="text-center">ESOP工单号码</th>
+                                <th class="text-center">申请时间</th>
+                                <th class="text-center">申请人</th>
+                                <th class="text-center">归属分公司</th>
+                                <th class="text-center">占用资金(元)</th>
+                                <th class="text-center">本次申请使用金额(元)</th>
+                                <th class="text-center">出账集团</th>
+                                <th class="text-center">出账集团编号</th>
+                                <th class="text-center">交易流水号</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

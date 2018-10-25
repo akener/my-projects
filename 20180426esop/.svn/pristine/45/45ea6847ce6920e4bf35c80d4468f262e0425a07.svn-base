@@ -1,0 +1,64 @@
+package com.esop.callServiceOtherSys.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class CallServiceCrmDto extends BaseDto {
+
+    String ippowercode = "";
+    String iploginno = "";
+    String ipgroupid = "";
+    String idopcode = "";
+    String idloginno = "";
+    String iopflag = "";
+
+    public String getIppowercode() {
+        return ippowercode;
+    }
+
+    public void setIppowercode(String ippowercode) {
+        this.ippowercode = ippowercode;
+    }
+
+    public String getIploginno() {
+        return iploginno;
+    }
+
+    public void setIploginno(String iploginno) {
+        this.iploginno = iploginno;
+    }
+
+    public String getIpgroupid() {
+        return ipgroupid;
+    }
+
+    public void setIpgroupid(String ipgroupid) {
+        this.ipgroupid = ipgroupid;
+    }
+
+    public String getIdopcode() {
+        return idopcode;
+    }
+
+    public void setIdopcode(String idopcode) {
+        this.idopcode = idopcode;
+    }
+
+    public String getIdloginno() {
+        return idloginno;
+    }
+
+    public void setIdloginno(String idloginno) {
+        this.idloginno = idloginno;
+    }
+
+    public String getIopflag() {
+        return iopflag;
+    }
+
+    public void setIopflag(String iopflag) {
+        this.iopflag = iopflag;
+    }
+}

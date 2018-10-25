@@ -1,0 +1,114 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <input type="hidden" value="<%=login_no%>" id="login_no"/><!--获取当前登录人-->
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编码：</th>
+                            <td>
+                                <input type="text" id="out_grp_no" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请人工号：</th>
+                            <td>
+                                <input type="text" id="applicant" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th> 申请开始时间 </th>
+                            <td>
+                                <input type=text id="start_date" class="input-sty04 form-ipt" maxlength="11"  >
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     onclick="WdatePicker({el:'start_date',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>
+                                申请结束时间
+                            </th>
+                            <td>
+                                <input type=text id="end_date" class="input-sty04 form-ipt" maxlength="11"  >
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     onclick="WdatePicker({el:'end_date',dateFmt:'yyyy-MM-dd'})"
+
+                                     title="选择时间" />
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="qryAnnulApplyList()">查询</button>
+                            <button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>反撤申请待办列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                    <table class="table table-bordered" id="epCapAnnulApplyList" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th  class="text-center">操作</th>
+                            <th  class="text-center">申请单编号</th>
+                            <th  class="text-center">申请人</th>
+                            <th  class="text-center">申请时间</th>
+                            <th  class="text-center">出账集团</th>
+                            <th  class="text-center">出账集团编码</th>
+                            <th  class="text-center">资金联系人</th>
+                            <th  class="text-center">联系人电话</th>
+                            <th  class="text-center">联系人类型 </th>
+                            <th  class="text-center">账本余额(元)</th>
+                            <th  class="text-center">可用金額(元)</th>
+                            <th  class="text-center">反撤金额(元)</th>
+                            <th  class="text-center">反撤说明</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!--待审批页面-->
+        <div class="modal fade bs-example-modal-lg" id="doAnnulApplyApprove" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+            <div class="modal-dialog" role="document" style="width:80%;">
+                <div class="modal-content">
+                    <%@ include file="annulDoApprove.jsp"%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/withdrawal/annulApply.js"></script>
+</html>

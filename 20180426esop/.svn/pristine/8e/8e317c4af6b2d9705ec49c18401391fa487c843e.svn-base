@@ -1,0 +1,140 @@
+package com.esop.visitInfo.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.common.util.ParameterConversion;
+import com.esop.productInfo.dto.PromptInformationDto;
+import com.esop.visitInfo.dto.*;
+import com.esop.visitInfo.service.VisitProcessService;
+import com.esop.visitInfo.service.VisitSercice;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+/**
+ * Created by subt on 2017/6/13 0013.
+ * 查询参观审批信息
+ */
+@RestController
+public class VisitContentController {
+    private static Logger logger = Logger.getLogger(VisitContentController.class);
+    @Autowired
+    VisitSercice visitSercice;
+
+    /*@RequestMapping(value = "/getVisitContent")
+    public String getVisitContent(VisitContentDto param){
+        List<VisitContentDto> list = visitProcessService.getVisitContent(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }*/
+    //查询进乡参观流程表单信息
+    @RequestMapping(value = "/getProcessApply")
+    public String getProcessApply(VisitProcessDto param){
+        List<VisitProcessDto> list = visitSercice.getProcessApply(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getProcessUndertake")
+    public String getProcessUndertake(VisitProcessDto param){
+        List<VisitProcessDto> list = visitSercice.getProcessUndertake(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getProDetail")
+    public String getProDetail(VisitProcessDto param){
+        List<VisitProcessDto> list = visitSercice.getProDetail(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+    //查询数据中心参观流程表单基本信息
+    @RequestMapping(value = "/getDatacenterApply")
+    public String getDatacenterApply(VisitDatacenterDto param){
+        List<VisitDatacenterDto> list = visitSercice.getDatacenterApply(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getDatacenterUndertake")
+    public String getDatacenterUndertake(VisitDatacenterDto param){
+        List<VisitDatacenterDto> list = visitSercice.getDatacenterUndertake(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getDataDetail")
+    public String getDataDetail(VisitDatacenterDto param){
+        List<VisitDatacenterDto> list = visitSercice.getDataDetail(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    //查询测试参观流程表单基本信息
+    @RequestMapping(value = "/getTestApply")
+    public String getTestApply(TestFormDto param){
+        List<TestFormDto> list = visitSercice.getTestApply(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getTestUndertake")
+    public String getTestUndertake(TestFormDto param){
+        List<TestFormDto> list = visitSercice.getTestUndertake(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getTestForDetail")
+    public String getTestForDetail(TestFormDto param){
+        List<TestFormDto> list = visitSercice.getTestForDetail(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    //查询勘查、资费、资源流程表单基本信息
+    @RequestMapping(value = "/getPostageApply")
+    public String getPostageApply(VisitContentDto param){
+        List<VisitContentDto> list = visitSercice.getPostageApply(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getProspectingUndertake")
+    public String getProspectingUndertake(ProspectingPostageDto param){
+        List<ProspectingPostageDto> list = visitSercice.getProspectingUndertake(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    @RequestMapping(value = "/getPostageForDetail")
+    public String getPostageForDetail(ProspectingPostageDto param){
+        List<ProspectingPostageDto> list = visitSercice.getPostageForDetail(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+
+}

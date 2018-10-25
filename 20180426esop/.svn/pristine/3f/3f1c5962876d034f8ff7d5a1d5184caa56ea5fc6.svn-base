@@ -1,0 +1,168 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+    <script type="text/javascript" language="javascript" src="view/cqDevelopment/elecPack/openGroupProd.js" ></script>
+    <script type="text/javascript" language="javascript" src="view/cqDevelopment/elecPack/openGroupProdwf.js" ></script>
+
+    <title>受理集团产品开户</title>
+</head>
+<body class="bg-ff">
+
+
+<div class="work-order-box overh">
+    <div class="row col-12 bg-white">
+        <div class="market-name-box pdlr-10 clearfix">
+            <span class="fl font-cols"><b style="border: 4px solid #eca100;"></b>集团产品开户合同信息</span>
+        </div>
+    </div>
+    <div class="row col-12">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <form id="groupDetailInfo">
+                    <table id="contractInfo" class="table-infor-7 width-th" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>合同编号</th>
+                            <td>
+                                <input id="contract_id" name="contract_id" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>合同名称</th>
+                            <td>
+                                <input id="contract_name" name="contract_name" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <%--  <th>产品名称</th>
+                              <td>
+                                  <input id="product_name" name="product_name" type="text" class="input-sty04 form-ipt">
+                                  <input type="hidden" id="product_id" name="product_id" type="text" class="input-sty04 form-ipt">
+                              </td>--%>
+                            <th>合同描述</th>
+                            <td>
+                                <input id="contract_desc" name="contract_desc" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>甲方集团编号</th>
+                            <td>
+                                <input id="first_party_code" name="first_party_code" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>甲方负责人</th>
+                            <td>
+                                <input id="first_party_charge" name="first_party_charge" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>甲方地址</th>
+                            <td>
+                                <input id="first_party_address" name="first_party_address" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>甲方电话</th>
+                            <td>
+                                <input id="first_party_phone" name="first_party_phone" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>变更产品</th>
+                            <td>
+                                <span id="prod_id"></span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="work-order-box overh">
+    <div class="row col-12 bg-white">
+        <div class="market-name-box pdlr-10 clearfix">
+            <span class="fl font-cols"><b style="border: 4px solid #eca100;"></b>集团产品开户订单信息</span>
+        </div>
+    </div>
+    <div class="row col-12">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <form id="openGroupProd">
+                    <table id="requestInfo" class="table-infor-7 width-th" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>订单标题</th>
+                            <td>
+                                <input id="order_title" name="order_title" type="text" class="input-style10 form-ipt">
+                                <input id="request_num" type="hidden" name="request_num" type="text" class="input-style10 form-ipt">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>订单描述</th>
+                            <td>
+                                <textarea name="notes" id="notes" cols="60" rows="5"></textarea>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <th>上一步</th>
+                            <td>
+                                <input id="last_step" name="last_step" type="text" value="无" class="input-sty08 form-ipt" disabled="true">
+                            </td>
+                            <th>下一步 </th>
+                            <td>
+                                <select id="next_step" name="next_step">
+                                    <option>请选择</option>
+                                    <option value="20170001">思特奇员工</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+                <div class="row mgt-20">
+                    <div class="btn-box">
+                        <button class="ui-btn mgr-10" onclick="savekhjg()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    /**
+     * 初始化
+     */
+    $(function(){
+
+        var contract_id="2017120892";
+        var request_num="1512889405639";
+        $.post("/checkOpenGroupProdInit", { "contract_id": contract_id,"request_num": request_num},
+            function(data){
+                $("#contract_id").val(data.contractInfo.contract_id);
+                $("#contract_name").val(data.contractInfo.contract_name);
+                $("#prod_id").text(data.prod_name);//查询
+                $("#product_id").val(data.contractInfo.product_id);
+                $("#first_party_code").val(data.contractInfo.first_party_code);
+                $("#first_party_charge").val(data.contractInfo.first_party_charge);
+                $("#first_party_address").val(data.contractInfo.first_party_address);
+                $("#open_time").val(data.contractInfo.open_time);
+                $("#contract_desc").val(data.contractInfo.contract_desc);
+                $("#first_party_phone").val(data.contractInfo.first_party_phone);
+                $("#order_title").val(data.requestInfo.order_title);
+                $("#notes").val(data.requestInfo.notes);
+                $("#request_num").val(data.requestInfo.request_num);
+            });
+        $("#contractInfo input").attr("disabled","true");
+        $("#order_title").attr("disabled","true");
+        $("#notes").attr("readonly","true");
+    })
+</script>
+</body>
+</html>

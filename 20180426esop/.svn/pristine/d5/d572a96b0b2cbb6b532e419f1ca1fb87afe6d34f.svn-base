@@ -1,0 +1,44 @@
+package com.esop.Interface.controller;
+
+import com.esop.common.util.ParameterConversion;
+import com.esop.cust.dto.*;
+import com.esop.cust.service.GrpStatisticsInfoService;
+import com.esop.productInfo.dto.PromptInformationDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//提供给pc端轮播
+@RestController
+public class NoteInfoController {
+    private static Logger logger = Logger.getLogger(NoteInfoController.class);
+    @Autowired
+    GrpStatisticsInfoService grpStatisticsInfoService;
+    //查询公告
+    @RequestMapping(value = "/qryNoteInfoList")
+    public NoteInfoReturnDto qryNoteList(GrpInterfaceParameterDto param,HttpServletRequest request){
+        param.setLogin_no(request.getParameter("landing_no"));
+
+        System.out.println("pc查询公告:");
+        List<NotListInfoDto> list = grpStatisticsInfoService.qryNoteList(param);
+        NoteInfoReturnDto dto = new NoteInfoReturnDto();
+        if(list.size()>0){
+            dto.setMessage("查询成功");
+            dto.setCode("0000000");
+            dto.setData(list);
+        }else {
+            dto.setMessage("未查询到相关数据");
+            dto.setCode("-1");
+        }
+        return dto;
+    }
+}

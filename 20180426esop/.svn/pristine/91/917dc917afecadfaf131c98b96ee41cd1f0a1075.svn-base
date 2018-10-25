@@ -1,0 +1,20 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.InDTO;
+
+/**
+ * 实收：查询同一集团账户是否存在未开票的申请工单InDTO
+ *
+ * @author daish 2017/11/20
+ */
+public class QryAcctSSInvOrderInDTO extends InDTO {
+    private String grpAcctId;//集团账户编号
+
+    public String getGrpAcctId() {
+        return grpAcctId;
+    }
+
+    public void setGrpAcctId(String grpAcctId) {
+        this.grpAcctId = grpAcctId;
+    }
+}

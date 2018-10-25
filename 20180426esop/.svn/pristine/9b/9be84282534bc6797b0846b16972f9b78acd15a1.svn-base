@@ -1,0 +1,165 @@
+package com.esop.common;
+
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpOutputMessage;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.*;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
+import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
+import org.springframework.http.converter.xml.SourceHttpMessageConverter;
+import org.springframework.util.*;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver;
+import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor;
+import org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URLDecoder;
+import java.util.HashSet;
+import java.util.List;
+import java.nio.charset.Charset;
+import java.util.Set;
+import javax.xml.transform.Source;
+
+/**
+ * Created by wangbl on 2017/2/10.
+ */
+//@Configuration
+public class WebConfiguration extends WebMvcConfigurerAdapter {
+    //@Bean
+    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+        return new MappingJackson2HttpMessageConverter() {
+            //重写writeInternal方法，在返回内容前首先进行加密
+            @Override
+            public boolean canRead(Class<?> clazz, MediaType mediaType) {
+                System.out.println("只是验证是否执行此方法-------read-------------");
+                return canRead(clazz, null, mediaType);
+            }
+            @Override
+            protected void writeInternal(Object object, Type type, HttpOutputMessage outputMessage)
+                    throws IOException, HttpMessageNotWritableException {
+System.out.println("只是验证是否执行此方法--------------------");
+                MediaType contentType = outputMessage.getHeaders().getContentType();
+                JsonEncoding encoding = getJsonEncoding(contentType);
+                JsonGenerator generator = this.objectMapper.getFactory().createGenerator(outputMessage.getBody(), encoding);
+                try {
+                    writePrefix(generator, object);
+
+                    Class<?> serializationView = null;
+                    FilterProvider filters = null;
+                    Object value = object;
+                    JavaType javaType = null;
+                    if (object instanceof MappingJacksonValue) {
+                        MappingJacksonValue container = (MappingJacksonValue) object;
+                        value = container.getValue();
+                        serializationView = container.getSerializationView();
+                        filters = container.getFilters();
+                    }
+                    if (type != null && value != null && TypeUtils.isAssignable(type, value.getClass())) {
+                        javaType = getJavaType(type, null);
+                    }
+                    ObjectWriter objectWriter;
+                    if (serializationView != null) {
+                        objectWriter = this.objectMapper.writerWithView(serializationView);
+                    }
+                    else if (filters != null) {
+                        objectWriter = this.objectMapper.writer(filters);
+                    }
+                    else {
+                        objectWriter = this.objectMapper.writer();
+                    }
+                    if (javaType != null && javaType.isContainerType()) {
+                        objectWriter = objectWriter.forType(javaType);
+                    }
+                    SerializationConfig config = objectWriter.getConfig();
+
+                    objectWriter.writeValue(generator, value);
+
+                    writeSuffix(generator, object);
+                    generator.flush();
+
+                }
+                catch (JsonProcessingException ex) {
+                    throw new HttpMessageNotWritableException("Could not write content: " + ex.getMessage(), ex);
+                }
+            }
+        };
+    }
+    //@Bean
+    public AllEncompassingFormHttpMessageConverter formHttpMessageConverter() {
+        return new AllEncompassingFormHttpMessageConverter() {
+            //重写writeInternal方法，在返回内容前首先进行加密
+            @Override
+            public boolean canRead(Class<?> clazz, MediaType mediaType) {
+                System.out.println("是否自此处读取数据。。。。。。。Read。。。。。。。false");
+                return false;
+            }
+            @Override
+            public boolean canWrite(Class<?> clazz, MediaType mediaType) {
+                //System.out.println("是否自此处读取数据。。。。。AllEncompassingFormHttpMessageConverter。。。。。。。。。false");
+                return false;
+            }
+
+            @Override
+            public MultiValueMap<String, String> read(Class<? extends MultiValueMap<String, ?>> clazz,
+                                                      HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+
+                MediaType contentType = inputMessage.getHeaders().getContentType();
+                Charset charset = (contentType.getCharset() != null ? contentType.getCharset() : Charset.forName("UTF-8"));
+                String body = StreamUtils.copyToString(inputMessage.getBody(), charset);
+
+                String[] pairs = StringUtils.tokenizeToStringArray(body, "&");
+                System.out.println("是否自此处读取数据。。。。。。。。。。。。。。");
+                MultiValueMap<String, String> result = new LinkedMultiValueMap<String, String>(pairs.length);
+                for (String pair : pairs) {
+                    int idx = pair.indexOf('=');
+                    if (idx == -1) {
+                        result.add(URLDecoder.decode(pair, charset.name()), null);
+                    }
+                    else {
+                        String name = URLDecoder.decode(pair.substring(0, idx), charset.name());
+                        String value = URLDecoder.decode(pair.substring(idx + 1), charset.name())+"909";
+                        result.add(name, value);
+                    }
+                }
+                return result;
+            }
+        };
+    }
+    //@Bean
+    public SourceHttpMessageConverter<Source> resourceHttpMessageConverter() {
+        return new SourceHttpMessageConverter<Source>() {
+
+            @Override
+            public boolean canRead(Class<?> clazz, MediaType mediaType) {
+                System.out.println("是否自此处读取数据。。。。。。。Read。。。。。。。false");
+                return false;
+            }
+
+        };
+    }
+    public void configureMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
+        System.out.println("init convert is start !!!!!");
+        messageConverters.add(formHttpMessageConverter());
+        messageConverters.add(resourceHttpMessageConverter());
+        System.out.println("init convert is stop !!!!!");
+        for(HttpMessageConverter h:messageConverters){
+            System.out.println(h.getClass());
+        }
+    }
+}

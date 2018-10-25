@@ -1,0 +1,28 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/22.
+ */
+//用于查询合同审批的地区编码和名字
+public class DGrpGroupsDto {
+    String parent_group_id = "";//地区编码，查询出来是group_id 用as重命的名
+    String name = "";//地区名
+   /* String tree_str = "";//
+    String boss_org_code = "";//*/
+
+    public String getParent_group_id() {
+        return parent_group_id;
+    }
+
+    public void setParent_group_id(String parent_group_id) {
+        this.parent_group_id = parent_group_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

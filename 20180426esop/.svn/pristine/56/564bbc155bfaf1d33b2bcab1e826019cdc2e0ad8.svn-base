@@ -1,0 +1,114 @@
+package com.esop.capAdjustApply.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/10/21.
+ */
+    //模拟接口，出账集团信息表映射类
+public class EpCapOutGrpInfo extends BaseDto {
+    private String  out_id ; //
+    private String  out_grp_name ;//出账集团名称
+    private String  out_grp_no ;//编号
+    private String out_linkman ;//资金联系人
+    private String  out_link_phone;//联系人电话
+    private String  out_link_type ;//联系人类型
+    private String  out_balance ;//账本余额
+    private String out_usable_balance;//可用余额
+    @Override
+    public String toString() {
+        return "EpCapOutGrpInfo{" +
+                "out_id='" + out_id + '\'' +
+                ", out_grp_name='" + out_grp_name + '\'' +
+                ", out_grp_no='" + out_grp_no + '\'' +
+                ", out_linkman='" + out_linkman + '\'' +
+                ", out_link_phone='" + out_link_phone + '\'' +
+                ", out_link_type='" + out_link_type + '\'' +
+                ", out_balance='" + out_balance + '\'' +
+                ", out_usable_balance='" + out_usable_balance + '\'' +
+                '}';
+    }
+
+    public EpCapOutGrpInfo() {
+    }
+
+    public EpCapOutGrpInfo(String out_id, String out_grp_name, String out_grp_no, String out_linkman, String out_link_phone, String out_link_type, String out_balance, String out_usable_balance) {
+        this.out_id = out_id;
+        this.out_grp_name = out_grp_name;
+        this.out_grp_no = out_grp_no;
+        this.out_linkman = out_linkman;
+        this.out_link_phone = out_link_phone;
+        this.out_link_type = out_link_type;
+        this.out_balance = out_balance;
+        this.out_usable_balance = out_usable_balance;
+    }
+
+    public String getOut_id() {
+        return out_id;
+    }
+
+    public void setOut_id(String out_id) {
+        this.out_id = out_id;
+    }
+
+    public String getOut_grp_name() {
+        return out_grp_name;
+    }
+
+    public void setOut_grp_name(String out_grp_name) {
+        this.out_grp_name = out_grp_name;
+    }
+
+    public String getOut_grp_no() {
+        return out_grp_no;
+    }
+
+    public void setOut_grp_no(String out_grp_no) {
+        this.out_grp_no = out_grp_no;
+    }
+
+    public String getOut_linkman() {
+        return out_linkman;
+    }
+
+    public void setOut_linkman(String out_linkman) {
+        this.out_linkman = out_linkman;
+    }
+
+    public String getOut_link_phone() {
+        return out_link_phone;
+    }
+
+    public void setOut_link_phone(String out_link_phone) {
+        this.out_link_phone = out_link_phone;
+    }
+
+    public String getOut_link_type() {
+        return out_link_type;
+    }
+
+    public void setOut_link_type(String out_link_type) {
+        this.out_link_type = out_link_type;
+    }
+
+    public String getOut_balance() {
+        return out_balance;
+    }
+
+    public void setOut_balance(String out_balance) {
+        this.out_balance = out_balance;
+    }
+
+    public String getOut_usable_balance() {
+        return out_usable_balance;
+    }
+
+    public void setOut_usable_balance(String out_usable_balance) {
+        this.out_usable_balance = out_usable_balance;
+    }
+
+
+
+
+
+}

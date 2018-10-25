@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto">
+
+    <insert id="insertGroupPayContacter" parameterType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto" useGeneratedKeys="true"  keyProperty="id" >
+    insert into se_group_pay_contact(link_man,mobile_no,address,id_number,email,union_name,union_code,account_name,account_code,
+    region_code,contract_id,create_name,create_no,create_time,state,seq_relation_info,important,role_type,valid,bpm_state,bak1,bak2
+      )
+    values (#{link_man},#{mobile_no},#{address},#{id_number},#{email},#{union_name},#{union_code},#{account_name}, #{account_code},
+    #{region_code}, #{contract_id},#{create_name},#{create_no}, #{create_time}, #{state}, #{seq_relation_info},#{important},#{role_type},#{valid},#{bpm_state},#{bak1},#{bak2}
+      )
+  </insert>
+    <update id="updateGroupPayContacter" parameterType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto">
+        update se_group_pay_contact
+        SET state=#{state},valid=#{valid},bpm_state=#{bpm_state}
+        where id=#{id}
+    </update>
+
+    <update id="updateGroupPayContacterInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto">
+        update se_group_pay_contact
+        SET link_man=#{link_man},mobile_no=#{mobile_no},address=#{address},id_number=#{id_number},
+        email=#{email},modify_time=#{modify_time}
+        where id=#{id}
+    </update>
+
+    <select id="selectGroupPayContacter"  parameterType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto" resultType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto">
+        SELECT *
+        from se_group_pay_contact
+        WHERE 1=1
+        <if test="region_code !=null and region_code !=''">
+            AND region_code=#{region_code}
+        </if>
+        <if test="union_name !=null and union_name !=''">
+            AND union_name like concat(concat('%',#{union_name}),'%')
+        </if>
+        <if test="union_code !=null and union_code !=''">
+            AND union_code=#{union_code}
+        </if>
+        <if test="account_name !=null and account_name !=''">
+            AND account_name like concat(concat('%',#{account_name}),'%')
+        </if>
+        <if test="account_code !=null and account_code !=''">
+            AND account_code=#{account_code}
+        </if>
+        <if test="link_man !=null and link_man !=''">
+            AND link_man like concat(concat('%',#{link_man}),'%')
+        </if>
+        <if test="mobile_no !=null and mobile_no !=''">
+            AND mobile_no=#{mobile_no}
+        </if>
+        AND   bpm_state='0' AND valid !='N'
+    </select>
+
+
+    <select id="selectGroupPayContacterInfo" parameterType="String"  resultType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto">
+        SELECT  *
+        from se_group_pay_contact
+        where id=#{id}
+    </select>
+
+    <select id="selectSeNewContractInfoDto" parameterType="String" resultType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        select *
+        from se_new_contract_info
+        where contract_id=#{contract_id}
+    </select>
+
+    <select id="selectSeAccountInfoDto2" parameterType="String" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto">
+        select *
+        from se_contract_account_info
+        where contract_id=#{contract_id} AND state='1'
+    </select>
+
+    <update id="updateBpmState" parameterType="String">
+        UPDATE  se_group_pay_contact
+        SET bpm_state='1'
+        WHERE  id=#{id}
+    </update>
+    <update id="updateDelOrUpState" parameterType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto">
+        UPDATE se_group_pay_contact
+        SET del_up_state=#{del_up_state}
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateInstState" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto">
+        UPDATE or_requestinst_info
+        <trim prefix="set" suffixOverrides=",">
+            <if test="modify_no !=null and modify_no !=''">
+                modify_no=#{modify_no},
+            </if>
+            <if test="modify_date !=null and modify_date !=''">
+                modify_date=#{modify_date},
+            </if>
+            <if test="manage_grade !=null and manage_grade !=''">
+                manage_grade=#{manage_grade},
+            </if>
+            <if test="invali_date !=null and invali_date !=''">
+                region_code=#{region_code},
+            </if>
+            <if test="eff_date !=null and eff_date !=''">
+                eff_date=#{eff_date},
+            </if>
+            <if test="audit_no !=null and audit_no !=''">
+                audit_no=#{audit_no},
+            </if>
+            <if test="audit_date !=null and audit_date !=''">
+                audit_date=#{audit_date},
+            </if>
+            <if test="oper_no !=null and oper_no !=''">
+                oper_no=#{oper_no},
+            </if>
+            <if test="notes !=null and notes !=''">
+                notes=#{notes},
+            </if>
+            <if test="state !=null and state !=''">
+                state=#{state},
+            </if>
+            <if test="state_date !=null and state_date !=''">
+                state_date=#{state_date},
+            </if>
+            <if test="finish_date !=null and finish_date !=''">
+                finish_date=#{finish_date},
+            </if>
+        </trim>
+        WHERE  request_num=#{request_num}
+    </update>
+
+
+    <update id="updateGroupPayContacterState"  parameterType="com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto">
+        update se_group_pay_contact
+        SET state=#{state},valid=#{valid}
+        where id=#{id}
+    </update>
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

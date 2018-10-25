@@ -1,0 +1,119 @@
+package test;
+/*
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
+import javax.xml.namespace.QName;
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.client.Options;
+import org.apache.axis2.rpc.client.RPCServiceClient;
+*/
+
+public class CallXmlTest4A
+{
+/*    public static String WS_4A = "http://10.117.70.45:8083/admincenter/service/ApplicationAccountWSService";
+
+    public String To4AService1(String method, String clientIP, String login_no, Map param)
+            throws AxisFault
+    {
+        String result;
+        Date current = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss");
+
+        RPCServiceClient serviceClient = new RPCServiceClient();
+
+        Options options = serviceClient.getOptions();
+
+        EndpointReference targetEPR = new EndpointReference(WS_4A);
+        options.setTo(targetEPR);
+
+        QName opAddEntry = new QName(
+                "http://service.application.module.iam.boco.com", method);
+
+        StringBuffer xml = new StringBuffer();
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><request><head><appId>8aeeef423656f40e01365d38e8940038</appId><appName>ESOP</appName><requestTime>" +
+                sdf.format(current) +
+                "</requestTime>" + "<accId>" + login_no + "</accId>" + "<clientIP>" +
+                clientIP + "</clientIP>" + "<sign>数字签名</sign>" + "</head>" + "<body>" +
+                "<method>" + method + "</method>" + "<page>" +
+                "<totalrow>1</totalrow>" + "<pagesize>0</pagesize>" +
+                "<currentpage>1</currentpage>" + "</page>" + "<values>");
+
+        if (method.equals("userModify"))
+            xml.append
+                    ("<object><key><parameter><appField>userid</appField><fieldValue>" +
+                            param.get("userid") + "</fieldValue>" + "</parameter>" + "</key>");
+        else if (method.equals("roleModify"))
+            xml.append("<object><key><parameter><appField>roleid</appField><fieldValue>" +
+                    param.get("roleid") + "</fieldValue>" +
+                    "</parameter>" + "</key>");
+        else if (method.equals("organizationModify"))
+            xml.append("<object><key><parameter><appField>orgid</appField><FieldValue>" +
+                    param.get("orgid") + "</FieldValue>" +
+                    "</parameter>" + "</key>");
+
+        xml.append("<object>");
+        Iterator iterator = param.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = (String)iterator.next();
+            String value = (String)param.get(key);
+            xml.append("<parameter><appField>" + key + "</appField>" +
+                    "<fieldValue>" + value + "</fieldValue>" + "</parameter>");
+        }
+        if ((method.equals("userModify")) || (method.equals("roleModify")) ||
+                (method.equals("organizationModify")))
+            xml.append("</object>");
+
+        xml.append("</object></values></body></request>");
+
+        Object[] opAddEntryArgs = { xml.toString() };
+        Class[] returnTypes = { String.class };
+        Object[] response = serviceClient.invokeBlocking(opAddEntry,
+                opAddEntryArgs, returnTypes);
+
+        if (((String)response[0]).indexOf("成功") > 0)
+            result = "同步4A成功";
+        else
+            result = "同步4A失败";
+
+        return result;
+    }
+
+    public static void main(String[] args1) throws AxisFault
+    {
+        CallXmlTest4A callXmlTest = new CallXmlTest4A();
+        Map param=new HashMap();
+        param.put("userid", "aavg90");
+        param.put("username", "test");
+        param.put("userpassword", "abc123");
+        param.put("phone", "13466866081");
+        param.put("email", "www.sitech.com");
+        param.put("roleid", "02");
+        param.put("orgid", "10031");
+        //新增的必填字段
+        param.put("status", "1");       //工号是否可用
+        //String tempPassword = des.decrypt(passWord);
+        param.put("passWord", "abc123");
+        param.put("reloginflag", "Y");   //重复登陆标示
+        param.put("ipbindflag", "N");
+        param.put("bindip", "");
+        param.put("allowbegin", "20160630");     //允许登陆的时间     start
+        param.put("allowend", "20500630");         //允许登陆的时间     end
+        param.put("regioncode", "01");     //归属地市
+
+
+
+        String tempRetMsg=callXmlTest.To4AService1("userAdd","10.110.26.23", "aavg38", param);
+        //logger.info("resulXml=返回xml报文"+resulXml);
+
+        System.out.println("resulXml=返回xml报文"+tempRetMsg);
+        //return tempRetMsg;
+    }*/
+}

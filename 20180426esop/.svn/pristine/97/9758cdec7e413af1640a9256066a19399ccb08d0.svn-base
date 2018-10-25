@@ -1,0 +1,13 @@
+package com.esop.basicManagement.dto;
+
+public class ProductListDto {
+    String unit_id ="";
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+}

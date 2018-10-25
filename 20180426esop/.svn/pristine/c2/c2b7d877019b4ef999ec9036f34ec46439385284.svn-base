@@ -1,0 +1,68 @@
+package com.esop.workbench.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.PersonnelStatisticsDto;
+import com.esop.workbench.service.PersonnelStatisticsService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/5.
+ */
+@RestController
+public class PersonnelStatisticsController {
+    @Autowired
+    PersonnelStatisticsService personnelStatisticsService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    private static Logger logger = Logger.getLogger(PersonnelStatisticsController.class);
+    @RequestMapping(value = "/personnelStatistics")
+    public List getAllRoleCount(PersonnelStatisticsDto personnelStatisticsDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        personnelStatisticsDto.setRegion_code(region_code);
+        return personnelStatisticsService.getAllRoleCount(personnelStatisticsDto);
+    }
+    @RequestMapping(value = "/getCountByRole")
+    public List getCountByRole(PersonnelStatisticsDto personnelStatisticsDto, HttpServletRequest request){
+        String person_role = request.getParameter("person_role");
+        personnelStatisticsDto.setRegion_code(person_role);
+        return personnelStatisticsService.getCountByRole(personnelStatisticsDto);
+    }
+    @RequestMapping(value = "/getTownRole")
+    public List getTownRole(PersonnelStatisticsDto personnelStatisticsDto, HttpServletRequest request){
+        String person_role = request.getParameter("person_role");
+        String region_code = request.getParameter("region_code");
+        personnelStatisticsDto.setPerson_role(person_role);
+        personnelStatisticsDto.setRegion_code(region_code);
+        return personnelStatisticsService.getTownRole(personnelStatisticsDto);
+    }
+    @RequestMapping(value = "/getTownPersonList")
+    public Result getTownPersonList(PersonnelStatisticsDto personnelStatisticsDto, HttpServletRequest request){
+        String town_code = request.getParameter("town_code");
+        String person_role = request.getParameter("person_role");
+        personnelStatisticsDto.setTown_code(town_code);
+        personnelStatisticsDto.setPerson_role(person_role);
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            // requestStrB.append("&"+paramName+" = " + request.getParameter(paramName));
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        //String option = request.getParameter("action")==null?"":request.getParameter("action");
+        //int resultnum=0;//记录增加\修改\删除操作结果
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        personnelStatisticsDto.setPage(page);
+        result = personnelStatisticsService.getTownPersonList(personnelStatisticsDto);
+        return result;
+    }
+}

@@ -1,0 +1,12 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtDiscountCreditAuditCfg;
+import java.util.List;
+
+public interface CtDiscountCreditAuditCfgMapper {
+    int insert(CtDiscountCreditAuditCfg record);
+
+    List<CtDiscountCreditAuditCfg> selectAll();
+
+    CtDiscountCreditAuditCfg select4Apprival(CtDiscountCreditAuditCfg auditCfg);
+}

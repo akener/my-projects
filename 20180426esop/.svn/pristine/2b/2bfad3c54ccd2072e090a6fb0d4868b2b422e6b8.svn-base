@@ -1,0 +1,438 @@
+package com.esop.workOrderInfo.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.workOrderInfo.dto.OweRecordDto;
+import com.esop.workOrderInfo.service.OweRecordService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
+
+/**
+ * Created by qiaojian on 2017/5/31.
+ */
+@RestController
+public class OweRecordController {
+    private static Logger logger = Logger.getLogger(OweRecordController.class);
+
+
+    @Autowired
+    OweRecordService oweRecordService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    @Value("${billingService}")
+    private String billingService;
+
+    //获取所有未下发工单数据
+    @RequestMapping(value = "/getAllRecord")
+    public Result getAllRecord(OweRecordDto parameter, HttpServletRequest request){
+
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        parameter.setRecord_status("01");
+        result = oweRecordService.getAllRecord(parameter);
+        return result;
+    }
+    //获取批次号
+    @RequestMapping(value = "/getRecordId")
+    public List<OweRecordDto> getRecordId(OweRecordDto parameter){
+        List list = oweRecordService.getRecordId(parameter);
+        return list;
+    }
+
+    //省管理员下发工单
+    @RequestMapping(value = "/sendAllRecord")
+    @ResponseBody
+    public int sendAllRecord(OweRecordDto parameter,HttpServletRequest request){
+        int res ;
+        try{
+            int result = oweRecordService.sendAllRecord(parameter);
+            //下发成功
+            res  = 1;
+        }catch (Exception e){
+            //下发失败
+            res = 2;
+        }
+        return res;
+    }
+
+    //查询各地市所有未转发客户经理工单数据
+    @RequestMapping(value = "/getRecordByGroup")
+    public Result getRecordByGroup(OweRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        //TODO
+        //待修改 根据工号获取当前操作管理员的org_code（group_id） 查询该地市数据
+        //parameter.setOrg_code("10031");
+        result = oweRecordService.getRecordByGroup(parameter);
+        return result;
+    }
+
+    //地市转发工单到客户经理
+    @RequestMapping("/sendRecordToService")
+    @ResponseBody
+    public int sendRecordToService(OweRecordDto parameter,HttpServletRequest request){
+        int res;
+        //TODO
+        //获取当前操作员的org_code 下该地市工单至客户经理
+        //parameter.setOrg_code("10031");
+        //给客户经理发送短信
+
+        List<OweRecordDto> list = oweRecordService.getRecordByGroupList(parameter);
+        int size = list.size();
+
+        List inertList = new ArrayList();
+        //System.out.println("size---------------------"+size);
+        for(int i = 0; i < size; i++ ){
+            OweRecordDto oweRecordDto = list.get(i);
+            String cust_id = oweRecordDto.getCust_id();
+            String cust_name = oweRecordDto.getCust_name();
+            String product_id = oweRecordDto.getProduct_id();
+            String product_name = oweRecordDto.getProduct_name();
+            String service_no = oweRecordDto.getService_no();
+            String service_name = oweRecordDto.getService_name();
+            String phone_no = "";//客户经理手机号码
+            Map queryMap = new HashMap();
+            queryMap.put("SERVICE_NO",service_no);
+            Map map = oweRecordService.getPhoneNoOfService(queryMap);
+            if(map == null || map.size() == 0){
+                continue;
+            }else{
+                phone_no = (String)map.get("PHONE_NO");
+            }
+            //TODO
+            //获取当前工号
+            String login_no = parameter.getLogin_no();
+            //短信发送时间 当前时间后一分钟
+            String send_time = getTimeByMinute(1);
+            //System.out.println("send_time---------------"+send_time);
+            //短信内容
+            String s_msgCnt = service_name+"您好，您所负责的【"+cust_name+"】集团(集团编码："+cust_id+")的【"+product_name+"】产品(产品ID："+product_id+")欠费工单已经下发，请及时处理【中国移动】";
+            String param = "{\"sms_release\":\"\",\"tmpMsg\":\""+s_msgCnt+"\"}";
+            //TODO
+            //获取op_code
+            String op_code = "4203";
+
+            Map insertMap = new HashMap();
+            insertMap.put("PHONE_NO",phone_no);
+            insertMap.put("PARAM",param);
+            insertMap.put("SEND_TIME",send_time);
+            insertMap.put("LOGIN_NO",login_no);
+            insertMap.put("OP_CODE",op_code);
+
+            inertList.add(insertMap);
+        }
+        //下发工单并发送短信
+        try{
+            int result = oweRecordService.sendRecordToService(parameter,inertList);
+            //下发成功
+            res  = 1;
+        }catch (Exception e){
+            //下发失败
+            res = 2;
+        }
+        return res;
+    }
+    //获取客户经理名下的工单
+    @RequestMapping(value = "/getAllRecordByService")
+    public List<OweRecordDto> getAllRecordByService(OweRecordDto parameter){
+        List list;
+        //TODO
+        //获取客户经理名下的工单
+        //parameter.setService_no("aavg38");
+        list = oweRecordService.getAllRecordByService(parameter);
+        return list;
+    }
+    //根据record_id和product_id获取一条工单，因为每一批次产品id唯一
+    @RequestMapping(value = "/getOneRecordByService")
+    public OweRecordDto getOneRecordByService(OweRecordDto parameter){
+        OweRecordDto oweRecordDto;
+        oweRecordDto = oweRecordService.getOneRecordByService(parameter);
+        return oweRecordDto;
+    }
+    //工单催缴失败 status = 05
+    @RequestMapping(value = "/setRecordFail")
+    public int setRecordFail(OweRecordDto parameter){
+        int res;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String resend = parameter.getResend();
+        if("".equals(resend)){
+            //可重新派单
+            parameter.setResend("1");
+        }else{
+            //不可重新派单
+            parameter.setResend("0");
+        }
+        //设置客户经理操作时间
+        parameter.setEnding_time(sdf.format(new Date()));
+        try{
+            oweRecordService.setRecordFail(parameter);
+            res = 1;
+        }catch (Exception e){
+            res = -1;
+        }
+
+        return res;
+    }
+    //工单催缴成功 status = 04
+    @RequestMapping(value = "/setRecordSuccess")
+    public int setRecordSuccess(OweRecordDto parameter){
+        int res;
+        //TODO
+        //查询集团产品余额，校验改集团产品是否欠费
+        Map map = oweRecordService.getUserNoByProductId(parameter);
+        if(map != null && map.size() != 0){
+            String user_no = (String)map.get("USER_NO");
+            //调用服务查询余额
+            String out_param = callService(user_no);
+            if("-1".equals(out_param)){
+                res = -3;
+            }else{
+                System.out.println("out_param================="+out_param);
+                //余额
+                //String prepay_fee = out_param.split("<ax245:buffer>")[1].split("</ax245:buffer>")[0];
+                String prepay_fee = out_param.split("<ax27:buffer>")[1].split("</ax27:buffer>")[0];
+                double fee = Double.parseDouble(prepay_fee);
+                //System.out.println("fee========="+fee);
+                if(fee >= 0){
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    parameter.setEnding_time(sdf.format(new Date()));
+                    res = oweRecordService.setRecordSuccess(parameter);
+                    res = 1;
+                }else{
+                    //集团产品仍处于欠费状态
+                    res = -1;
+                }
+            }
+
+        }else{
+            //集团产品数据不存在
+            res = -2;
+        }
+
+        return res;
+    }
+    //获取客户经理催缴失败返回地市管理员工单
+    @RequestMapping(value = "/getReturnRecordFromService")
+    public List<OweRecordDto> getReturnRecordFromService(OweRecordDto parameter){
+        List list;
+        //TODO
+        //获取当前操作工号的org_code
+        //parameter.setOrg_code("10031");
+        list = oweRecordService.getReturnRecordFromService(parameter);
+        return list;
+    }
+    //对客户经理退回的工单重新派发
+    @RequestMapping(value = "/resendRecordToService")
+    public int resendRecordToService(OweRecordDto parameter){
+
+        int res;
+
+        //parameter.setLogin_no("aavg38");//设置操作工号
+        parameter.setRecord_status("03");//转至客户经理处理状态
+        try{
+            res = oweRecordService.resendRecordToService(parameter);
+            res = 1;
+        }catch (Exception e){
+            res = -1;
+        }
+
+        return res;
+    }
+    //工单回退至省欠费管理员处
+    @RequestMapping(value = "/backToProvince")
+    public int backToProvince(OweRecordDto parameter){
+
+        int res;
+        //parameter.setLogin_no("aavg38");//设置操作工号
+        parameter.setRecord_status("06");//回退至省欠费管理员
+        try{
+            res = oweRecordService.backToProvince(parameter);
+            res = 1;
+        }catch (Exception e){
+            res = -1;
+        }
+        return res;
+    }
+    //获取一条工单信息明细
+    @RequestMapping(value = "/getOneRecordDetail")
+    public OweRecordDto getOneRecordDetail(OweRecordDto parameter){
+        OweRecordDto oweRecordDto;
+        oweRecordDto = oweRecordService.getOneRecordDetail(parameter);
+        return oweRecordDto;
+    }
+    //获取地市退回工单数据
+    @RequestMapping(value = "/getReturnRecordFromGroup")
+    public List<OweRecordDto> getReturnRecordFromGroup(OweRecordDto parameter){
+        List list;
+        parameter.setRecord_status("06");
+        list = oweRecordService.getReturnRecordFromGroup(parameter);
+        return list;
+    }
+    //省管理员结单
+    @RequestMapping(value = "/endRecord")
+    public int endRecord(OweRecordDto parameter){
+        //TODO
+        //设置操作人员工号
+        int res;
+        //parameter.setLogin_no("aavg38");
+        parameter.setRecord_status("07");
+        try{
+            oweRecordService.endRecord(parameter);
+            res = 1;
+        }catch (Exception e){
+            res = -1;
+        }
+        return res;
+    }
+
+    //调用esb服务，查询余额
+    public String callService(String user_no){
+        String resp = "";
+        try {
+            //服务集成平台测试
+            //URL wsUrl = new URL("http://10.110.26.23:61000/esbWS/services/bs_GetOweWS/callService?params="+user_no);
+            //服务集成平台生产
+            String url = billingService+"bs_GetOweWS/callService?params=";
+            //URL wsUrl = new URL("http://10.110.0.100:51001/esbWS/services/bs_GetOweWS/callService?params="+user_no);
+            URL wsUrl = new URL(url+user_no);
+            HttpURLConnection conn = (HttpURLConnection) wsUrl.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Accept-Charset", "UTF-8");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+
+            OutputStream os = conn.getOutputStream();
+            InputStream is = conn.getInputStream();
+            byte[] b = new byte[1024];
+            int len = 0;
+
+            while ((len = is.read(b)) != -1) {
+                String ss = new String(b, 0, len, "UTF-8");
+                resp += ss;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp = "-1";
+        }
+        return resp;
+    }
+
+    //省管理员工单查询
+    @RequestMapping(value = "/getAllRecordByProvince")
+    public Result getAllRecordByProvince(OweRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        result = oweRecordService.getAllRecordByProvince(parameter);
+        System.out.println("nums--------------"+result.getRecordsTotal());
+        System.out.println("parameter--------------"+parameter.toString());
+        return result;
+    }
+    //地市管理员工单查询
+    @RequestMapping(value = "/getAllRecordByGroup")
+    public Result getAllRecordByGroup(OweRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        //TODO
+        //获取地市的org_code
+        //parameter.setOrg_code("10031");
+        result = oweRecordService.getAllRecordByGroup(parameter);
+        return result;
+    }
+    //客户经理工单查询
+    @RequestMapping(value = "/getRecordByService")
+    public Result getRecordByService(OweRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        //TODO
+        //获取客户经理工号service_no
+        //parameter.setService_no("aavg38");
+        return oweRecordService.getRecordByService(parameter);
+    }
+    //省管理员获取批次号
+    @RequestMapping(value = "/getRecordIdByProvince")
+    public List<OweRecordDto> getRecordIdByProvince(OweRecordDto parameter){
+        return oweRecordService.getRecordIdByProvince(parameter);
+    }
+    //地市管理员获取批次号
+    @RequestMapping(value = "/getRecordIdByGroup")
+    public List<OweRecordDto> getRecordIdByGroup(OweRecordDto parameter){
+        //TODO
+        //获取地市管理员的org_code
+        //parameter.setOrg_code("10031");
+        return oweRecordService.getRecordIdByGroup(parameter);
+    }
+    //客户经理获取批次号
+    @RequestMapping(value = "/getRecordIdByService")
+    public List<OweRecordDto> getRecordIdByService(OweRecordDto parameter){
+        //TODO
+        //获取客户经理工号service_no
+        //parameter.setService_no("aavg38");
+        return oweRecordService.getRecordIdByService(parameter);
+    }
+
+    //获取当前时间的前后几分钟
+    public static String getTimeByMinute(int minute) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.add(Calendar.MINUTE, minute);
+
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+
+    }
+
+
+    @RequestMapping(value = "/doOweRecordImport")
+    public int oweRecordImport(OweRecordDto parameter){
+        System.out.println(parameter);
+        Map map = new HashMap();
+
+        String org_code = parameter.getOrg_code();
+        map.put("ORG_CODE",org_code);
+        String org_name = oweRecordService.getOrgName(map);
+        parameter.setOrg_name(org_name);
+        return oweRecordService.insertOweRecord(parameter);
+    }
+
+    //获取工单上传的附件
+    @RequestMapping(value = "/getFileOfOweRecord")
+    public List<UploadFileInfoDto> getFileOfOweRecord(UploadFileInfoDto parameter){
+        return oweRecordService.getFileOfOweRecord(parameter);
+    }
+    //获取最新下发工单批次号
+    @RequestMapping(value = "/getRecordIdOfSend")
+    public OweRecordDto getRecordIdOfSend(OweRecordDto parameter){
+        OweRecordDto dto = oweRecordService.getRecordIdOfSend(parameter);
+        /*String record_id = dto.getRecord_id();
+        return record_id;*/
+        return dto;
+    }
+
+}

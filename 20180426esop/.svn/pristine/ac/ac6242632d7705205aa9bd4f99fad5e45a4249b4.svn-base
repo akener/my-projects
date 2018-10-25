@@ -1,0 +1,122 @@
+* html {
+	background-image: url(about:blank);
+	background-attachment: fixed;
+}
+
+.pd-l-r-30 {
+	padding: 0 30px;
+}
+.pd-l-r-20 {
+	padding: 0 20px;
+}
+.pd-20 {
+	padding: 20px;
+}
+.mgt-3{
+	 margin-top:3px;}
+.mgt-15 {
+	margin-top: 15px;
+}
+.mgt-10 {
+	margin-top: 10px;
+}
+
+.mgl-30 {
+	margin-left: 30px;
+}
+
+.mgl-60 {
+	margin-left: 60px;
+}
+
+.mgl-20 {
+	margin-left: 20px;
+}
+
+.pos-rel {
+	position: relative;
+}
+
+.header-box {
+	background: #01aef2;
+	width: 100%;
+}
+
+.position-0-0 {
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 100;
+}
+
+.fl {
+	float: left;
+}
+
+.fr {
+	float: right;
+}
+
+.mgt-20 {
+	margin-top: 20px;
+}
+
+.mgt-10 {
+	margin-top: 10px;
+}
+
+.mgt-60 {
+	margin-top: 60px;
+}
+
+.mgr-10 {
+	margin-right: 10px;
+}
+
+.mgr-15 {
+	margin-right: 15px;
+}
+
+.mgr-80 {
+	margin-right: 80px;
+}
+
+.mgl-5 {
+	margin-left: 5px;
+}
+
+.mgl-220 {
+	margin-left: 220px;
+}
+
+.mgt-5 {
+	margin-top: 5px;
+}
+
+.mgb-5 {
+	margin-bottom: 5px;
+}
+.mgb-20{
+	margin-bottom: 20px;
+	}
+.pdt-20 {
+	padding-top: 20px !important;
+}
+.over-hid{ overflow:hidden;}
+.input{ width:60%; line-height:30px; height:30px;color:#000; padding-left:10px; border:solid 1px #e2e2e2; background:#fff;}
+.grid-form-label{ color:#666; width:30%; text-align:right; display:inline-block; display:inline-block;}
+.data-input{ background:#fff url(../images/rili-icon.png) no-repeat 95% center;}
+.grid-form-setion{ float:left; width:33.3%; text-align:center; margin:10px 0;}
+.grid-form-box{ overflow:hidden;}
+.grid-from-button button{ display:inline-block;font-size:14px; color:#fff; padding:2px 15px; margin-right:20px; border-radius:5px; border:none;}
+.grid-from-button button:hover,.grid-from-icon a:hover{opacity: 0.8;filter:alpha(opacity=80);}
+.btn-blue{ background:#00adf5;}
+.btn-gray{background:#d1d1d2;}
+.text-center{ text-align:center;}
+.grid-from-icon{ position:relative; top:3px;}
+.grid-from-icon a{ display:inline-block; width:17px; height:17px; margin:0 5px;}
+.icon-export{ background:#fff url(../images/icon-export.png) no-repeat center center;}
+.icon-print{ background:#fff url(../images/icon-print.png) no-repeat center center;}
+.slide-btn{ width:40px; height:9px; margin:5px auto; background:url(../images/slide-up.png) no-repeat center center; cursor:pointer;}
+.slide-btn.on{background:url(../images/slide-down.png) no-repeat center center;}
+.slide-box{ border:solid 1px #f5f5f5; background:url(../images/slide-box-bg.png) repeat-x 0 center;}

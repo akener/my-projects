@@ -1,0 +1,386 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>资金管理查询</title>
+  <%@ include file="../../pub/cqDevelopment.jsp"%>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+  <!-- 工单列表 S -->
+  <div class="work-order-box overh">
+    <!--标题-->
+    <div class="row col-12 bg-white">
+      <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金管理查询</span>
+      </div>
+    </div>
+    <!--地市详情-->
+    <div class="row col-12">
+      <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+        <div class="row">
+          <table class="table-infor-7" width="100%">
+            <tbody>
+
+            <tr>
+              <th>到账日期：</th>
+              <td>
+                <input type="text" class="input-sty04 form-ipt">
+              </td>
+              <th>来款客户：</th>
+              <td>
+                <input type="text" class="input-sty04 form-ipt">
+
+              </td>
+              <th>来款账号：</th>
+              <td>
+                <input type="text" class="input-sty04 form-ipt">
+
+              </td>
+            </tr>
+            <tr>
+              <th>集团单位名称：</th>
+              <td>
+                <input type="text" class="input-sty04 form-ipt">
+              </td>
+              <th>集团账号：</th>
+              <td>
+                <input type="text" class="input-sty04 form-ipt">
+
+              </td>
+              <th>集团联系人：</th>
+              <td>
+                <input type="text" class="input-sty04 form-ipt">
+
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="row mgt-20">
+            <div class="btn-box">
+              <button class="ui-btn mgr-10">查询</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--标题-->
+    <div class="row col-12 bg-white">
+      <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金管理信息列表</span>
+      </div>
+    </div>
+    <div class="row col-12">
+      <div class="pd-20 pos-rel" style="background-color:#fff;">
+        <div class="active-cost-box" style="padding-bottom:0;">
+          <table class="cost-table" width="100%;">
+            <tbody>
+            <tr>
+              <th>选择</th>
+              <th>到账金额</th>
+              <th>到账户名</th>
+              <th>到账账号</th>
+              <th>发布日期</th>
+              <th>摘要</th>
+              <th>入账申请时间</th>
+              <th>联系人电话</th>
+              <th>联系人类型</th>
+              <th>账务员</th>
+              <th>关联时间</th>
+              <th>关联来款户名</th>
+              <th>关联来款账号</th>
+              <th>操作</th>
+            </tr>
+            <tr class="tr-data">
+              <td>
+                <input type="checkbox" class="chbox-ipt"/>
+              </td>
+              <td>
+                98765
+              </td>
+              <td>
+                思特奇
+              </td>
+              <td>
+                5678921
+              </td>
+              <td>
+                20171019
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                13312345678
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                李XX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                张XX
+              </td>
+              <td>
+                987654321
+              </td>
+              <td>
+                <a class="btn-icon icon-delete mgl-10 ditor-bg"></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox" class="chbox-ipt"/>
+              </td>
+              <td>
+                98765
+              </td>
+              <td>
+                思特奇
+              </td>
+              <td>
+                5678921
+              </td>
+              <td>
+                20171019
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                13312345678
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                李XX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                张XX
+              </td>
+              <td>
+                987654321
+              </td>
+              <td>
+                <a class="btn-icon icon-delete mgl-10 ditor-bg"></a>
+              </td>
+            </tr>
+            <tr class="tr-data">
+              <td>
+                <input type="checkbox" class="chbox-ipt"/>
+              </td>
+              <td>
+                98765
+              </td>
+              <td>
+                思特奇
+              </td>
+              <td>
+                5678921
+              </td>
+              <td>
+                20171019
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                13312345678
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                李XX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                张XX
+              </td>
+              <td>
+                987654321
+              </td>
+              <td>
+                <a class="btn-icon icon-delete mgl-10 ditor-bg"></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox" class="chbox-ipt"/>
+              </td>
+              <td>
+                98765
+              </td>
+              <td>
+                思特奇
+              </td>
+              <td>
+                5678921
+              </td>
+              <td>
+                20171019
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                13312345678
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                李XX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                张XX
+              </td>
+              <td>
+                987654321
+              </td>
+              <td>
+                <a class="btn-icon icon-delete mgl-10 ditor-bg"></a>
+              </td>
+            </tr>
+            <tr class="tr-data">
+              <td>
+                <input type="checkbox" class="chbox-ipt"/>
+              </td>
+              <td>
+                98765
+              </td>
+              <td>
+                思特奇
+              </td>
+              <td>
+                5678921
+              </td>
+              <td>
+                20171019
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                13312345678
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                李XX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                张XX
+              </td>
+              <td>
+                987654321
+              </td>
+              <td>
+                <a class="btn-icon icon-delete mgl-10 ditor-bg"></a>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <input type="checkbox" class="chbox-ipt"/>
+              </td>
+              <td>
+                98765
+              </td>
+              <td>
+                思特奇
+              </td>
+              <td>
+                5678921
+              </td>
+              <td>
+                20171019
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                13312345678
+              </td>
+              <td>
+                XXXX
+              </td>
+              <td>
+                李XX
+              </td>
+              <td>
+                20171020
+              </td>
+              <td>
+                张XX
+              </td>
+              <td>
+                987654321
+              </td>
+              <td>
+                <a class="btn-icon icon-delete mgl-10 ditor-bg"></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row col-12">
+      <div class="tr pdr-10">
+        <ul class="in-page pagination mgt-0 mgb-5">
+          <li class="disabled"><a href="#" class="mgl-5">首页</a></li>
+          <li class="disabled"><a href="#" class="mgl-5">上一页</a></li>
+          <li class="active"><a href="#" class="mgl-5">1</a></li>
+          <li><a href="#" class="mgl-5">2</a></li>
+          <li><a href="#" class="mgl-5">3</a></li>
+          <li><a href="#" class="mgl-5">下一页</a></li>
+          <li><a href="#" class="mgl-5">末页</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+  <script src="/esop/static/cqDevelopment/pub-ui/js/jquery-1.7.2.min.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/esop/static/cqDevelopment/assets/js/My97DatePicker/WdatePicker.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,65 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import java.util.Date;
+
+/**
+ * Created by Administrator on 2017/11/15.
+ */
+public class SeProductMgrRelDto {//产品经理和产品关联类
+    private int id;
+    private String prodmgr_no;//产品经理工号
+    private String prodmgr_name;//产品经理姓名
+    private String prod_code;//一级产品编码
+    private String state;//状态
+    private Date oper_time;//操作时间
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Date getOper_time() {
+        return oper_time;
+    }
+
+    public void setOper_time(Date oper_time) {
+        this.oper_time = oper_time;
+    }
+
+    public String getProdmgr_no() {
+        return prodmgr_no;
+    }
+
+    public void setProdmgr_no(String prodmgr_no) {
+        this.prodmgr_no = prodmgr_no;
+    }
+
+    public String getProdmgr_name() {
+        return prodmgr_name;
+    }
+
+    public void setProdmgr_name(String prodmgr_name) {
+        this.prodmgr_name = prodmgr_name;
+    }
+
+    public String getProd_code() {
+        return prod_code;
+    }
+
+    public void setProd_code(String prod_code) {
+        this.prod_code = prod_code;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+}

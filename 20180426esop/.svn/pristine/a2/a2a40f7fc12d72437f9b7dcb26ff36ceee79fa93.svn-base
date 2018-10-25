@@ -1,0 +1,186 @@
+package com.esop.visitInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.visitInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by subt on 2017/7/7 0007.
+ */
+@Repository
+public class DevelopmentService {
+    private static Logger logger = Logger.getLogger(DevelopmentService.class);
+    @Autowired
+    SqlE sqlE;
+    //查询行业拓展信息
+    public List<DevelopmentDto> getDevelopmentInfo(DevelopmentDto param){
+        logger.info("DevelopmentService.getDevelopmentInfo入参:"+param.toString());
+        List list = sqlE.selectM("getDevelopmentInfo",param);
+        logger.info("DevelopmentService.getDevelopmentInfo出参:"+list);
+        return list;
+    }
+    //新增行业拓展信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertDevelopmentinfo(DevelopmentDto param){
+        if (sqlE.insertM("insertDevelopmentinfo",param)>0){
+            logger.info("新增行业拓展信息成功");
+            return true;
+        }
+        logger.info("新增行业拓展信息失败");
+        return false;
+    }
+    //更新行业拓展信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateDevelopmentinfo(DevelopmentDto param){
+        if (sqlE.updateM("updateDevelopmentinfo",param)>0){
+            logger.info("更新行业拓展信息信息成功");
+            return true;
+        }
+        logger.info("更新行业拓展信息信息失败");
+        return false;
+    }
+    //查询信息化应用需求
+    public List<DevelopmentDto> getInfdemandRel(DevelopmentDto param){
+        logger.info("DevelopmentService.getInfdemandRel入参:"+param.toString());
+        List list = sqlE.selectM("getInfdemandRel",param);
+        logger.info("DevelopmentService.getInfdemandRel出参:"+list);
+        return list;
+    }
+    //新增信息化应用需求
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertInfdemandRel(DevelopmentDto param){
+        if (sqlE.insertM("insertInfdemandRel",param)>0){
+            logger.info("新增信息化应用需求信息成功");
+            return true;
+        }
+        logger.info("新增信息化应用需求信息失败");
+        return false;
+    }
+    //更新信息化应用需求
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateInfdemandRel(DevelopmentDto param){
+        if (sqlE.updateM("updateInfdemandRel",param)>0){
+            logger.info("更新信息化应用需求信息成功");
+            return true;
+        }
+        logger.info("更新信息化应用需求信息失败");
+        return false;
+    }
+    //查看地市
+    public List<DevelopmentDto> getCity(DevelopmentDto param){
+        return sqlE.selectM("getCity",param);
+    }
+    //查看所属行业
+    public List<DevelopmentDto> getProfession(DevelopmentDto param){
+        return sqlE.selectM("getProfession",param);
+    }
+    //查看应用需求
+    public List<DevelopmentDto> getDemandApp(DevelopmentDto param){
+        return sqlE.selectM("getDemandApp",param);
+    }
+    //获取主键ID
+    public String getpdmandNextval(){
+        return sqlE.selectM("getpdmandNextval").get(0).toString();
+    }
+
+    //查询行业拓展信息摸底统计
+    public Result getDiagnStatistics(DiagnStatisticsDto param){
+        logger.info("getDiagnStatistics入参:"+param.toString());
+        Result result = sqlE.selectPage("getDiagnStatistics",param);
+        logger.info("getDiagnStatistics出参:"+result);
+        return result;
+    }
+    //根据条件查询行业拓展信息摸底统计
+    public Result getDiagnStatist(DiagnStatisticsDto param){
+        logger.info("getDiagnStatistics入参:"+param.toString());
+        Result result = sqlE.selectPage("getDiagnStatist",param);
+        logger.info("getDiagnStatistics出参:"+result);
+        return result;
+    }
+
+    //修改密码
+    public int updatePasswordInfo(SuperviseDto param){
+        int supervise =sqlE.updateM("updatePasswordInfo",param);
+        if (supervise>0){
+            logger.info("修改密码成功！");
+        }
+        logger.info("修改密码失败！");
+        return supervise;
+    }
+
+    //新增管理办法
+    public int insertSuperviseInfo(SuperviseDto param){
+        int intsuper = sqlE.insertM("insertSuperviseInfo",param);
+        if (intsuper>0){
+            logger.info("新增管理办法信息成功！");
+        }
+        logger.info("新增管理办法信息失败！");
+        return intsuper;
+    }
+
+    //归属系统
+    public List<LogManagementDto> getOutsystemDuf(LogManagementDto param){
+        return sqlE.selectM("getOutsystemDuf",param);
+    }
+    //操作人员
+    public List<LogManagementDto> getloginmsg(LogManagementDto param){
+        return sqlE.selectM("getloginmsg",param);
+    }
+    //日志管理
+    public Result getlogManageInff(LogManagementDto param){
+        logger.info("日志管理入参:"+param.toString());
+        Result result = sqlE.selectPage("getlogManageInff",param);
+        logger.info("日志管理出参:"+result);
+        return result;
+    }
+    //查询合同审批管理信息
+    public Result getControBusin(ControactBusDto param){
+        logger.info("合同审批管理入参:"+param.toString());
+        Result result = sqlE.selectPage("getControBusin",param);
+        logger.info("合同审批管理出参:"+result);
+        return result;
+    }
+    //根据条件查询合同审批管理信息
+    public Result getControactdinfo(ControactBusDto param){
+        logger.info("合同审批管理入参:"+param.toString());
+        Result result = sqlE.selectPage("getControactdinfo",param);
+        logger.info("合同审批管理出参:"+result);
+        return result;
+    }
+    //根据合同序列查询
+    public List<ControactBusDto> getControbusman(ControactBusDto param){
+        logger.info("根据合同序列查询入参:"+param.toString());
+        List list = sqlE.selectM("getControbusman",param);
+        logger.info("根据合同序列查询出参:"+list);
+        return list;
+    }
+    //新增合同审批信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertControbus(ControactBusDto param){
+        if (sqlE.insertM("insertControbus",param)>0){
+            logger.info("新增信息化应用需求信息成功");
+            return true;
+        }
+        logger.info("新增信息化应用需求信息失败");
+        return false;
+    }
+    //更新合同审批信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateControbus(ControactBusDto param){
+        if (sqlE.updateM("updateControbus",param)>0){
+            logger.info("更新信息化应用需求信息成功");
+            return true;
+        }
+        logger.info("更新信息化应用需求信息失败");
+        return false;
+    }
+
+
+}

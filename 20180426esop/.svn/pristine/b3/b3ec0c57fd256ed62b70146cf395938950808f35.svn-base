@@ -1,0 +1,43 @@
+package com.esop.workflow.model;
+
+public class CtProcInstParamsInfo {
+    private String procInstId;
+
+    private String paramKey;
+
+    private String paramValue;
+
+    private String paramType;
+
+    public String getProcInstId() {
+        return procInstId;
+    }
+
+    public void setProcInstId(String procInstId) {
+        this.procInstId = procInstId;
+    }
+
+    public String getParamKey() {
+        return paramKey;
+    }
+
+    public void setParamKey(String paramKey) {
+        this.paramKey = paramKey;
+    }
+
+    public String getParamValue() {
+        return paramValue;
+    }
+
+    public void setParamValue(String paramValue) {
+        this.paramValue = paramValue;
+    }
+
+    public String getParamType() {
+        return paramType;
+    }
+
+    public void setParamType(String paramType) {
+        this.paramType = paramType;
+    }
+}

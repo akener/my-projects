@@ -1,0 +1,75 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo;
+import com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+@Repository
+public class UnionContractService {
+
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+
+    public List<Map> getUnionInfo(String operNo){
+        List<Map> list = sqlSessionTemplate.selectList("getUnionInfo", operNo);
+        return  list;
+    }
+
+    public List<SeNewContractInfoDto> getSeNewContractInfoList(String operNo, String unionCode){
+        SeNewContractInfoDto infoDto = new SeNewContractInfoDto();
+        infoDto.setFirst_party_code(unionCode);
+        infoDto.setSecond_party_code(operNo);
+        List<SeNewContractInfoDto> list = sqlSessionTemplate.selectList("getSeNewContractList", infoDto);
+        return list;
+    }
+
+    public SeNewContractInfoDto getSeNewContractInfo(String contractId){
+        SeNewContractInfoDto contractInfo = sqlSessionTemplate.selectOne("getSeNewContractInfo", contractId);
+        List<SeContractChargesInfo> list = sqlSessionTemplate.selectList("getSeContractChargesInfos", contractId);
+        contractInfo.setContractChargeList(list);
+        return contractInfo;
+    }
+
+    public List<SeContractChargesInfo> getSeContractChargesInfos(String contractId){
+        List<SeContractChargesInfo> list = sqlSessionTemplate.selectList("getSeContractChargesInfos", contractId);
+        return list;
+    }
+
+    public Map getRegionInfo(String operNo){
+        Map map = sqlSessionTemplate.selectOne("getRegionInfo",operNo);
+        return map;
+    }
+
+    /**
+     * 通过合同编号查询一个合同
+     * @param contractId
+     * @return
+     */
+    public SeNewContractInfoDto getOneSeNewContractInfo(String contractId){
+        SeNewContractInfoDto contractInfo = sqlSessionTemplate.selectOne("getOneSeNewContractInfo", contractId);
+        return contractInfo;
+    }
+
+    public int insertOneContractAccountInfo(SeContractAccountInfoDto insertdto){
+        int i = sqlSessionTemplate.insert("insertOneContractAccountInfo", insertdto);
+        return i;
+    }
+
+    /**
+     * 根据合同资费信息查询产品列表
+     * @param chargesInfo
+     * @return
+     */
+    public List<SeContractChargesInfo> selectProdList(SeContractChargesInfo chargesInfo){
+
+        List<SeContractChargesInfo> list = sqlSessionTemplate.selectList("selectprodlist", chargesInfo);
+        return list;
+    }
+
+}

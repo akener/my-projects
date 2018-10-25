@@ -1,0 +1,9 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//竞争对手出参
+public class CompeteMsgOutDto {
+
+}

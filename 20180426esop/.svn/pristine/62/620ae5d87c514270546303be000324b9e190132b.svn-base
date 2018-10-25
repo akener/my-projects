@@ -1,0 +1,180 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/tableList.jsp" %>
+<%@ include file="../pub/dataTables.jsp" %>
+<%
+    String region_code = request.getParameter("region_code");
+    String town_code = request.getParameter("town_code");
+
+%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" language="javascript" class="init">
+        var editor; // use a global for the submit and return data rendering in the examples
+        var table;
+        function IncomeListQuery() {
+            table = $('#example').DataTable({
+                "processing": true,
+                "serverSide": true,
+                destroy: true,
+                "bFilter": false,
+                //"bSort":false,
+                "bLengthChange": false,
+                "language": {
+                    "url": "/static/data/Chinese.json"
+                }, //多语言配置
+                "ajax": {
+                    url: "/thisInformationIncomeList",
+                    type: "POST",
+                    "data": {
+                        region_code: $("#region_code").val(),
+                        town_code: $("#town_code").val()
+                    }
+                },
+                "columns": [
+                    {data: "region_code"},
+                    {data: "region_name"},
+                    {data: "town_code"},
+                    {data: "town_name"},
+                    {data: "manager_no"},
+                    {data: "manager_name"},
+                    {data: "income"}
+                ],
+                select: true,
+                buttons: []
+            });
+            /*editor.on('submitSuccess',function ( e, type ) {
+             alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+             } );*/
+        }
+        function CityListQuery() {
+            if ($("#region_code").val() != "") {
+                $.ajax({
+                    type: "get",
+                    url: "/cityCodeListShow",
+                    data: {
+                        region_code: $("#region_code").val()
+                    },
+                    cache: false,
+                    success: function (result) {
+                        city_data = "<option value=''>全市</option>";
+                        $.each(result, function (i, field) {
+                            //拼接json数据集字符串
+                            city_data += "<option value='" + field.group_id + "' ";
+                            if ("<%=town_code%>" == field.group_id) {
+                                city_data += " selected";
+                            }
+                            city_data += ">" + field.group_name + "</option>";
+                        });
+                        $("#town_code").empty();
+                        $("#town_code").append(city_data);
+                        IncomeListQuery();
+                    },
+                    error: function () {
+                        alert("请求超时，请重试！");
+                    }
+                });
+            } else {
+                $("#town_code").empty();
+            }
+        }
+        function init_region() {
+            var region_code_region = "<%=region_code%>";
+            var region_code_town = "<%=town_code%>";
+            $(".selector_region").find("option[value='" + region_code_region + "']").attr("selected", true);
+            CityListQuery();
+        }
+        $(document).ready(function () {
+            var region_code_tp = "<%=region_code%>";
+            if (region_code_tp != '' && region_code_tp != null) {
+                init_region();
+            } else {
+                IncomeListQuery();
+            }
+        });
+    </script>
+
+</head>
+
+<!--<hr />-->
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12" style="min-height:200px;">
+            <div class="pd-20 pos-rel pos-bg1">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>选择地市</th>
+                            <td>
+                                <select name="region_code" id="region_code" class="selector_region"
+                                        onchange="CityListQuery()">
+                                    <option value="">
+                                        全省
+                                    </option>
+                                    <option value="10031">哈尔滨</option>
+                                    <option value="10032">齐齐哈尔</option>
+                                    <option value="10033">牡丹江</option>
+                                    <option value="10034">佳木斯</option>
+                                    <option value="10035">双鸭山</option>
+                                    <option value="10036">七台河</option>
+                                    <option value="10037">鸡西</option>
+                                    <option value="10038">鹤岗</option>
+                                    <option value="10039">伊春</option>
+                                    <option value="10040">黑河</option>
+                                    <option value="10041">绥化</option>
+                                    <option value="10042">大兴安岭</option>
+                                    <option value="10043">大庆</option>
+                                </select>
+                            </td>
+                            <th>区县</th>
+                            <td>
+                                <select name="town_code" id="town_code" class="selector_town">
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-30">
+                        <div class="btn-box pdb-20">
+                            <button class="btn btn-info pull-right" id="queryLedgerInfo" onclick="IncomeListQuery()">
+                                查询
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel">
+                <div class="active-cost-box">
+                    <table id="example" class="display" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th class="text-center">地市编码</th>
+                            <th class="text-center">地市名称</th>
+                            <th class="text-center">区县编码</th>
+                            <th class="text-center">区县名称</th>
+                            <th class="text-center">客户经理工号</th>
+                            <th class="text-center">客户经理姓名</th>
+                            <th class="text-center">收入</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

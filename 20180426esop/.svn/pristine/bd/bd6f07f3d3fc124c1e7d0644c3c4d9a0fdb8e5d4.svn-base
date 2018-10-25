@@ -1,0 +1,235 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+    <title>修改工号密码</title>
+</head>
+<body>
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">原密码不匹配，请重试</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">密码修改成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="ok" name="ok" class="btn btn-info">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">密码修改失败</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice4">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo4">新密码与重复输入密码不匹配</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">请输入原密码</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice6">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo6">请输入新密码</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice7">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo7">请输入重复密码</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="login_no" value="${login_no}">
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">密码重置</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">原密码</label>
+                            <div class="col-sm-2">
+                                <input type="password" class="form-control" id="password" maxlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">新密码</label>
+                            <div class="col-sm-2">
+                                <input type="password" class="form-control" id="passwordnew" maxlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">重复密码</label>
+                            <div class="col-sm-2">
+                                <input type="password" class="form-control" id="passwordnew1" maxlength="6">
+                            </div>
+                        </div>
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-info pull-right" id="dosubmit">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no = $("#login_no").val();
+    $("#dosubmit").click(function () {
+
+        var pwd = $("#password").val();
+        var pwdNew = $("#passwordnew").val();
+        var pwdNew1 = $("#passwordnew1").val();
+
+        if(pwd == ""){
+            $("#fault5").modal('show');
+            return ;
+        }
+        if(pwdNew == ""){
+            $("#fault6").modal('show');
+            return ;
+        }
+        if(pwdNew1 == ""){
+            $("#fault7").modal('show');
+            return ;
+        }
+        if(pwdNew != pwdNew1){
+            $("#fault4").modal('show');
+            return ;
+        }
+
+
+        $.ajax({
+            type: "GET",
+            url: "checkPassword",
+            data:{
+                login_no:login_no,
+                password:$("#password").val()
+            }
+        }).then(function (data) {
+            if(data == -1){
+                $("#fault1").modal('show');
+            }else{
+                $.ajax({
+                    type: "GET",
+                    url: "pwdUpdate",
+                    data:{
+                        login_no:login_no,
+                        password:$("#passwordnew").val()
+                    }
+                }).then(function (data) {
+                    if(data == 1){
+                        $("#fault2").modal('show');
+                        //location.href="prt";
+                    }else{
+                        $("#fault3").modal('show');
+                    }
+                });
+            }
+        });
+    });
+
+    $("#ok").click(function () {
+        location.href="pue";
+    });
+
+</script>
+</html>

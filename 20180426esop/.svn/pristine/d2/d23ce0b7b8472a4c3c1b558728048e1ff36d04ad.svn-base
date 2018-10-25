@@ -1,0 +1,43 @@
+package com.esop.cqDevelopment.elecPack.controller.PostUtil;
+
+import org.json.JSONObject;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Created by 缪毅 on 2017/12/14.
+ * 读取配置数据处理类
+ */
+@Repository
+public class PropertiesUtil {
+    @Autowired
+    protected  SqlSessionTemplate sqlSessionTemplate;
+    private static Logger logger =
+            LoggerFactory.getLogger(GetBossToken.class);
+    /**
+     * 获取接口请求地址
+     * @param reqCode
+     * @return
+     */
+    public  String getReqAddress(String reqCode){
+        return sqlSessionTemplate.selectOne("selReqAddress",reqCode);
+    }
+
+    public String getBossToken(){
+        String accessToken="";
+        String tokenIP = getReqAddress("reqBossToken");
+        String msg = getReqAddress("reqBossInfo");
+        logger.info(tokenIP);
+        logger.info(msg);
+        String result = HttpMsgSend.sendHttpReqBossMsg(tokenIP,msg,"POST");
+        logger.info(result);
+        if(result!=null){
+            JSONObject jobject=new JSONObject(result);
+            accessToken=jobject.getString("access_token");
+        }
+        return accessToken;
+    }
+}

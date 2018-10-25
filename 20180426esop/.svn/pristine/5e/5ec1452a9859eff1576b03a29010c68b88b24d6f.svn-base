@@ -1,0 +1,312 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+</head>
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>集团业务申请单统计表</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <select id="org_id" class="input-sty04 form-ipt" onchange="getBusinessCenter(this.value)">
+                                    <option value="">请选择</option>
+                                   <%-- <option value="hc">11</option>--%>
+
+
+                                </select>
+                            </td>
+                            <th>业务组织（行业中心）：</th>
+                            <td>
+                                   <select id="center_code" class="input-sty04 form-ipt">
+                                       <option value="">请选择</option>
+                                    <%--  // <option value="hc7904">111</option>--%>
+
+
+                                   </select>
+                            </td>
+                            <th>开始时间：</th>
+                            <td>
+                                <input type=text id="start_time" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true" >
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'start_time',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>结束时间：</th>
+                            <td>
+                                <input type=text id="over_time" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true" >
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'over_time',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="groupBusAppluCountQuery()">查询</button>
+                            <button class="ui-btn btn-success mgr-10" onclick="exportReportQuery()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="cost-table" id="groupBusApplyCountReport" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center">分公司</th>
+                                <th class="text-center">行业中心</th>
+                                <th class="text-center">集团编号</th>
+                                <th class="text-center">集团名称</th>
+                                <th class="text-center">客户经理</th>
+                                <th class="text-center">申请单类型</th>
+                                <th class="text-center">申请单号</th>
+                                <th class="text-center">申请单状态</th>
+                                <th class="text-center">账务员</th>
+                                <th class="text-center">申请时间</th>
+                                <th class="text-center">是否生成业务受理工单</th>
+                                <th class="text-center">申请单生成的业务受理单编号</th>
+                                <th class="text-center">业务受理单状态</th>
+                            </tr>
+                            </thead>
+                            <tfoot id="list_info">
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript" class="init">
+    var roleCode = '<%=role_codes %>';
+    var rootOrgId = '<%=root_org_id%>';
+    $(document).ready(function() {
+
+        $("#start_time").val(getFormatDate(-1));
+        $("#over_time").val(getFormatDate(-1));
+      //  $("#start_time").val(getFormatDate());
+      /*  if(roleCode.indexOf('23064') > -1){
+            $.ajax({
+                url:"/getOrgAndCenterByLoginNo",
+                type:"POST",
+                data:{group_pay_code:
+                success:function (data) {
+                   $("#org_id").empty();
+                     $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+
+                   $("#center_code").empty();
+                    var centerStr = "";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").append(centerStr);
+                }
+            });*/
+     //   }else{
+            if(rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B'){
+                $.ajax({
+                    url:"/getOrgInfos",
+                    type:"POST",
+                    success:function (data) {
+                        //console.log(data);
+                        var orgStr = "<option value=''>重庆市</option>";
+                        for(var i=0;i<data.length;i++){
+                            orgStr += "<option value='"+data[i].group_pay_code+"'>"+data[i].group_pay_name+"</option>";
+                        }
+                    $("#org_id").empty();
+                       $("#org_id").append(orgStr);
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:"/getOrgAndCenterByLoginNo",
+                    type:"POST",
+                    data:{group_pay_code:'<%=login_no%>'},
+
+                    success:function (data) {
+                     $("#org_id").empty();
+                       $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+                        var centerStr = "";
+                        for(var i=0;i<data.length;i++){
+                            centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                        }
+                        $("#center_code").empty();
+                        $("#center_code").append(centerStr);
+                      //  getBusinessCenter($("#org_id").val());
+                        if($("#center_code option").length==1&&$("#center_code option").eq(0).val()==""){
+                            getBusinessCenter($("#org_id option").eq(0).val());
+                        }
+                    }
+                });
+            }
+       // }
+
+
+    } );
+    function getBusinessCenter(code) {
+        if(code != ""){
+            $.ajax({
+                url:"/getBusinessCenterInfos",
+                type:"POST",
+                data:{group_pay_code:code},
+                success:function (data) {
+                    //console.log(data);
+                    var centerStr = "<option value=''>请选择</option>";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").empty();
+                    $("#center_code").append(centerStr);
+                }
+            })
+        }else{
+            $("#center_code").empty();
+            $("#center_code").append("<option value=''>请选择</option>");
+        }
+
+    }
+    //导出报表
+    var start_time ="";
+    var over_time ="";
+    function exportReportQuery(){
+         start_time = $("#start_time").val();
+         over_time = $("#over_time").val();
+        if(start_time == null || start_time == "" ){
+            alert("开始时间不能为空");
+            return false;
+        }
+        if(over_time == null || over_time == "" ){
+            alert("结束时间不能为空");
+            return false;
+        }
+
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='expertBusAppRecorded?org_id='+$("#org_id").find("option:selected").text()
+
+            +'&branch_company='+$("#org_id").val()
+            +'&center_code='+$("#center_code").find("option:selected").text()
+            +'&business_center='+$("#center_code").find("option:selected").val()
+            +'&start_time='+start_time
+            +'&over_time='+over_time;
+        f.action = actionUrl;
+        f.submit();
+    }
+    //报表查询
+    function groupBusAppluCountQuery() {
+
+        $("html").showLoading();
+        var report_data = "";
+        $.ajax({
+            type: "get",
+            url: "groupBusApplyCountReport",
+            data: {
+                branch_company: $("#org_id").val(),
+                business_center: $("#center_code").val(),
+                start_time: $("#start_time").val(),
+                over_time: $("#over_time").val()
+
+            },
+            cache: false,
+            success: function (result) {
+                $("html").hideLoading();
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    report_data += "<tr>";
+                    report_data += "<td nowrap='nowrap'>" + field.name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_center + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.groupNo + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.groupName + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.managerName + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.type_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.taskOrderId + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.order_status + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.clerk + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.applyDate + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.isFormAcceptOrder + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.busAcceptOrderId + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.acceptStatus + "</td>";
+                    report_data += "</tr>";
+                });
+                $("#list_info").empty();
+                $("#list_info").append(report_data);
+            },
+            error: function () {
+                $("html").hideLoading();
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate()-1;
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+
+    function getFormatDate(index) {
+        var date = new Date();
+        date.setTime(date.getTime() + 24*60*60*1000*index);
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate();
+        if(month >= 1 && month <= 9){
+            month = "0"+month;
+        }
+        if(day >= 0 && day <= 9){
+            day = "0"+day;
+        }
+        var dateStr = year+"-"+month+"-"+day;
+        return dateStr;
+    }
+</script>

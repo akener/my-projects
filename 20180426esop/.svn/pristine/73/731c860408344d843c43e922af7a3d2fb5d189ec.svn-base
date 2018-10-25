@@ -1,0 +1,189 @@
+package com.esop.workbench.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by liuxiao on 2017/6/3.
+ */
+public class AllPayIncomeDto extends BaseDto{
+    String DT_RowId = "";     //dataTables.editor使用参数,如果没有此参数,编辑功能不可用.
+    String region_code = "";//  地市代码
+    String region_name = "";// 地市名称
+    String town_code = "";//  区县代码
+    String town_name = "";//   区县名称
+    String manager_no = "";//     客户经理工号
+    String manager_name = "";//客户经理名称
+    String unit_id = "";//      集团编号
+    String unit_name = "";//集团名称
+    String prc_name = "";//      产品名称
+    String prc_roleno = "";//    产品成员数
+    String prc_brand = "";//     产品品牌
+    String income = "";//     收入（税后），精确到小数点后两位，可以不填
+    String extax_unify_fee = "";//     统付收入
+    String op_time = "";//       开户时间
+    String trade_code = "";//    行业代码
+    String trade_name = "";//  集团所属行业（20大行业）
+    String incomes = "";
+    String rownum = "";
+    String eff_date = "";//日期
+
+    public String getRownum() {
+        return rownum;
+    }
+
+    public void setRownum(String rownum) {
+        this.rownum = rownum;
+    }
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getExtax_unify_fee() {
+        return extax_unify_fee;
+    }
+
+    public void setExtax_unify_fee(String extax_unify_fee) {
+        this.extax_unify_fee = extax_unify_fee;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getPrc_name() {
+        return prc_name;
+    }
+
+    public void setPrc_name(String prc_name) {
+        this.prc_name = prc_name;
+    }
+
+    public String getPrc_roleno() {
+        return prc_roleno;
+    }
+
+    public void setPrc_roleno(String prc_roleno) {
+        this.prc_roleno = prc_roleno;
+    }
+
+    public String getPrc_brand() {
+        return prc_brand;
+    }
+
+    public void setPrc_brand(String prc_brand) {
+        this.prc_brand = prc_brand;
+    }
+
+    public String getIncome() {
+        return income;
+    }
+
+    public void setIncome(String income) {
+        this.income = income;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getTrade_code() {
+        return trade_code;
+    }
+
+    public void setTrade_code(String trade_code) {
+        this.trade_code = trade_code;
+    }
+
+    public String getTrade_name() {
+        return trade_name;
+    }
+
+    public void setTrade_name(String trade_name) {
+        this.trade_name = trade_name;
+    }
+
+    public String getIncomes() {
+        return incomes;
+    }
+
+    public void setIncomes(String incomes) {
+        this.incomes = incomes;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

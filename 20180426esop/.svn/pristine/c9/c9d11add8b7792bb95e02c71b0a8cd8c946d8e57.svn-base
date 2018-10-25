@@ -1,0 +1,16 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtElecWoBaseInfo;
+import java.util.List;
+
+public interface CtElecWoBaseInfoMapper {
+    int deleteByPrimaryKey(String woNo);
+
+    int insert(CtElecWoBaseInfo record);
+
+    CtElecWoBaseInfo selectByPrimaryKey(String woNo);
+
+    List<CtElecWoBaseInfo> selectAll();
+
+    int updateByPrimaryKey(CtElecWoBaseInfo record);
+}

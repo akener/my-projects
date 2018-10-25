@@ -1,0 +1,171 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/3.
+ */
+//重要成员
+public class GrpImpMemberDto {
+    String imp_id = "";//重要成员编号
+    String phone_no ="";//手机号
+    String user_name = "";//用户姓名
+    /*  String name = "";//姓名*/
+    String certi_type = "";//证件类型
+    String certi_no = "";//证件号码
+    String contact_addr = "";//家庭地址
+    String haveSpeForAll ="";//电子邮箱
+    String edu_code = "";//文化程度
+    String sex_code = "";//性别
+    String duty = "";//职务
+    //查询重要成员列表
+    String unit_id = "";//集团编号
+    String cust_id = "";//客户编号
+    String dept = "";//部门
+    String service_no = "";//客户经理工号
+    String unit_name = "";//集团名
+    String birthday = "";//生日
+    String role = "";//角色
+    String member_code = "";//重要成员类型
+    public String getImp_id() {
+        return imp_id;
+    }
+
+    public void setImp_id(String imp_id) {
+        this.imp_id = imp_id;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
+    }
+
+    public String getCerti_type() {
+        return certi_type;
+    }
+
+    public void setCerti_type(String certi_type) {
+        this.certi_type = certi_type;
+    }
+
+    public String getCerti_no() {
+        return certi_no;
+    }
+
+    public void setCerti_no(String certi_no) {
+        this.certi_no = certi_no;
+    }
+
+    public String getContact_addr() {
+        return contact_addr;
+    }
+
+    public void setContact_addr(String contact_addr) {
+        this.contact_addr = contact_addr;
+    }
+
+    public String getHaveSpeForAll() {
+        return haveSpeForAll;
+    }
+
+    public void setHaveSpeForAll(String haveSpeForAll) {
+        this.haveSpeForAll = haveSpeForAll;
+    }
+
+    public String getEdu_code() {
+        return edu_code;
+    }
+
+    public void setEdu_code(String edu_code) {
+        this.edu_code = edu_code;
+    }
+
+    public String getSex_code() {
+        return sex_code;
+    }
+
+    public void setSex_code(String sex_code) {
+        this.sex_code = sex_code;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getMember_code() {
+        return member_code;
+    }
+
+    public void setMember_code(String member_code) {
+        this.member_code = member_code;
+    }
+}

@@ -1,0 +1,243 @@
+package com.esop.workflow.model;
+
+public class CtProcStepRel {
+    private String cfgId;
+
+    private String procId;
+
+    private String stepId;
+
+    private String stepName;
+
+    private String stepType;
+
+    private String filterId;
+
+    private String jspPath;
+
+    private String nextFlag;
+
+    private String bizStatus;
+
+    private String timeFlag;
+
+    private String timeLimitType;
+
+    private String timeLimit;
+
+    private String timeBean;
+
+    private String multiFlag;
+
+    private String redoFlag;
+
+    private String taskType;
+
+    private String preCallback;
+
+    private String htmlPath;
+
+    private String androidBaseActivity;
+
+    private String androidAttachActivity;
+
+    private String androidProctraceActivity;
+
+    private String androidDealActivity;
+
+    private String androidFuncValid;
+
+    private String h5Path;
+
+    public String getCfgId() {
+        return cfgId;
+    }
+
+    public void setCfgId(String cfgId) {
+        this.cfgId = cfgId;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public String getStepName() {
+        return stepName;
+    }
+
+    public void setStepName(String stepName) {
+        this.stepName = stepName;
+    }
+
+    public String getStepType() {
+        return stepType;
+    }
+
+    public void setStepType(String stepType) {
+        this.stepType = stepType;
+    }
+
+    public String getFilterId() {
+        return filterId;
+    }
+
+    public void setFilterId(String filterId) {
+        this.filterId = filterId;
+    }
+
+    public String getJspPath() {
+        return jspPath;
+    }
+
+    public void setJspPath(String jspPath) {
+        this.jspPath = jspPath;
+    }
+
+    public String getNextFlag() {
+        return nextFlag;
+    }
+
+    public void setNextFlag(String nextFlag) {
+        this.nextFlag = nextFlag;
+    }
+
+    public String getBizStatus() {
+        return bizStatus;
+    }
+
+    public void setBizStatus(String bizStatus) {
+        this.bizStatus = bizStatus;
+    }
+
+    public String getTimeFlag() {
+        return timeFlag;
+    }
+
+    public void setTimeFlag(String timeFlag) {
+        this.timeFlag = timeFlag;
+    }
+
+    public String getTimeLimitType() {
+        return timeLimitType;
+    }
+
+    public void setTimeLimitType(String timeLimitType) {
+        this.timeLimitType = timeLimitType;
+    }
+
+    public String getTimeLimit() {
+        return timeLimit;
+    }
+
+    public void setTimeLimit(String timeLimit) {
+        this.timeLimit = timeLimit;
+    }
+
+    public String getTimeBean() {
+        return timeBean;
+    }
+
+    public void setTimeBean(String timeBean) {
+        this.timeBean = timeBean;
+    }
+
+    public String getMultiFlag() {
+        return multiFlag;
+    }
+
+    public void setMultiFlag(String multiFlag) {
+        this.multiFlag = multiFlag;
+    }
+
+    public String getRedoFlag() {
+        return redoFlag;
+    }
+
+    public void setRedoFlag(String redoFlag) {
+        this.redoFlag = redoFlag;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public String getPreCallback() {
+        return preCallback;
+    }
+
+    public void setPreCallback(String preCallback) {
+        this.preCallback = preCallback;
+    }
+
+    public String getHtmlPath() {
+        return htmlPath;
+    }
+
+    public void setHtmlPath(String htmlPath) {
+        this.htmlPath = htmlPath;
+    }
+
+    public String getAndroidBaseActivity() {
+        return androidBaseActivity;
+    }
+
+    public void setAndroidBaseActivity(String androidBaseActivity) {
+        this.androidBaseActivity = androidBaseActivity;
+    }
+
+    public String getAndroidAttachActivity() {
+        return androidAttachActivity;
+    }
+
+    public void setAndroidAttachActivity(String androidAttachActivity) {
+        this.androidAttachActivity = androidAttachActivity;
+    }
+
+    public String getAndroidProctraceActivity() {
+        return androidProctraceActivity;
+    }
+
+    public void setAndroidProctraceActivity(String androidProctraceActivity) {
+        this.androidProctraceActivity = androidProctraceActivity;
+    }
+
+    public String getAndroidDealActivity() {
+        return androidDealActivity;
+    }
+
+    public void setAndroidDealActivity(String androidDealActivity) {
+        this.androidDealActivity = androidDealActivity;
+    }
+
+    public String getAndroidFuncValid() {
+        return androidFuncValid;
+    }
+
+    public void setAndroidFuncValid(String androidFuncValid) {
+        this.androidFuncValid = androidFuncValid;
+    }
+
+    public String getH5Path() {
+        return h5Path;
+    }
+
+    public void setH5Path(String h5Path) {
+        this.h5Path = h5Path;
+    }
+}

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="query" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="com.esop.noteinformation.dto.NoteinfoDTO" >
+        select note_id,
+        note_title,
+        to_char(pub_date, 'yyyyMMdd') pub_date,
+        to_char(exp_date, 'yyyyMMdd') exp_date,
+        pub_loginno,
+        pub_groupid,
+        note_type_flag
+        from ep_sys_note_info
+        where (note_id in (select distinct (n.i) from (select note_id i, read_flag r
+        from ep_sys_noteloginno_rel
+        where (login_no = #{login_no} and group_id = #{group_id})
+        or (login_no = '*' and
+        group_id in
+        (select parent_group_id
+        from ep_sys_group_rel
+        where group_id = #{group_id}))) n where
+        n.i not in (select note_id
+        from ep_sys_noteloginno_rel
+        where login_no = #{login_no}
+        and group_id = #{group_id}
+        and read_flag = #{read_flag})) or pub_loginno=#{login_no})
+        and note_type_flag = #{note_type_flag}
+        and note_status = '1'
+        <![CDATA[  AND TO_CHAR(pub_date, 'YYYY-MM-DD') <= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+           AND TO_CHAR(exp_date, 'YYYY-MM-DD') >= TO_CHAR(SYSDATE, 'YYYY-MM-DD')  ]]>
+    </select>
+
+    <select id="qrynoteinfo" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="com.esop.noteinformation.dto.NoteinfoDTO" >
+        select note_id,
+        note_title,
+        to_char(pub_date, 'yyyyMMdd') pub_date,
+        to_char(exp_date, 'yyyyMMdd') exp_date,
+        pub_loginno,
+        pub_groupid,
+        note_type_flag
+        from ep_sys_note_info
+        where note_id in (select distinct (n.i) from (select note_id i, read_flag r
+        from ep_sys_noteloginno_rel
+        where (login_no = #{login_no} and group_id = #{group_id})
+        or (login_no = '*' and
+        group_id in
+        (select parent_group_id
+        from ep_sys_group_rel
+        where group_id = #{group_id}))) n where
+         n.r = #{read_flag})
+        and note_type_flag = #{note_type_flag}
+        and note_status = '1'
+        <if test="note_title != ''">
+            and note_title LIKE '%'||#{note_title}||'%'
+        </if>
+        <if test="pub_date != ''">
+            <![CDATA[   and TO_CHAR(pub_date,'YYYY-MM-DD') >=#{pub_date} ]]>
+        </if>
+        <![CDATA[  AND TO_CHAR(pub_date, 'YYYY-MM-DD') <= TO_CHAR(SYSDATE, 'YYYY-MM-DD')
+           AND TO_CHAR(exp_date, 'YYYY-MM-DD') >= TO_CHAR(SYSDATE, 'YYYY-MM-DD')  ]]>
+
+
+    </select>
+
+
+    <select id="qryNoteId" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="com.esop.noteinformation.dto.NoteinfoDTO" >
+    select power_right,note_title,key_word,note_content,to_char(pub_date,'YYYY-MM-DD') pub_date,to_char(exp_date,'YYYY-MM-DD') exp_date,note_type_flag from ep_sys_note_info where note_id=#{note_id} and
+     note_status='1'
+
+    </select>
+    <select id="qryName" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="com.esop.noteinformation.dto.NoteinfoDTO" >
+     select path||'|'||name filename from ep_upload_file_info where related_id=#{related_id}
+
+    </select>
+    <select id="insertnote" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="int" >
+        insert into ep_sys_note_info
+  (note_id,
+   note_title,
+   note_content,
+   key_word,
+   note_status,
+   note_level,
+   in_time,
+   pub_date,
+   exp_date,
+   out_sys_id,
+   pub_loginno,
+   pub_groupid,
+   phone_no,
+   e_mail,
+   op_notes,
+   power_right,
+   note_type_flag)
+  select #{note_id},
+         #{note_title},
+         #{note_content},
+         #{key_word},
+         #{note_status},
+         '',
+         sysdate,
+         to_date(#{pub_date}, 'yyyy-mm-dd'),
+         to_date(#{exp_date}, 'yyyy-mm-dd'),
+         '0',
+         a.login_no,
+         a.group_id,
+         a.contract_phone,
+         '',
+         '',
+         #{power_right},
+         #{note_type_flag}
+    from ep_sys_loginmsg_new a
+   where trim(login_no) = #{login_no}
+    </select>
+
+    <select id="insertnoterel" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="int" >
+       insert into ep_sys_noteloginno_rel
+  (note_id, login_no, group_id,read_date,read_flag)
+  select #{note_id}, a.login_no, a.group_id,'','N'
+    from ep_sys_loginmsg_new a
+   where trim(login_no) = #{login_no}
+    </select>
+    <select id="insnoterel" parameterType="com.esop.noteinformation.dto.NoteinfoDTO" resultType="int" >
+        insert into ep_sys_noteloginno_rel
+        (note_id, login_no, group_id,read_date,read_flag)
+       values( #{note_id}, #{login_no}, #{group_id},'','N')
+
+    </select>
+
+    <select id="qrynoterel" parameterType="com.esop.noteinformation.dto.NoterelDTO" resultType="com.esop.noteinformation.dto.NoterelDTO" >
+        select trim(login_no) login_no ,trim(login_name) login_name from ep_sys_loginmsg_new
+           where group_id= #{group_id}
+    </select>
+
+    <select id="qrygroupinfo" parameterType="com.esop.noteinformation.dto.NoterelDTO" resultType="com.esop.noteinformation.dto.NoterelDTO" >
+select a.group_id,
+       a.group_name,
+       b.denorm_level,
+       b.parent_group_id,
+       trim(decode(a.root_distance, '3', '1', a.has_child)) root
+  from ep_sys_group_info a, ep_sys_group_rel b
+ where a.group_id = b.group_id
+   and b.denorm_level = 1
+   and parent_group_id = #{parent_group_id}
+ order by group_id
+    </select>
+
+    <select id="qrynoteseq"  resultType="int" >
+        select NOTE_SEQ.NEXTVAL from dual
+    </select>
+
+    <select id="updateNote" parameterType="com.esop.noteinformation.dto.NoterelDTO">
+        update ep_sys_noteloginno_rel set read_flag='Y' where note_id=#{note_id} and login_no=#{login_no}
+    </select>
+</mapper>
+

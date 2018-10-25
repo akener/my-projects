@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Hello CORS</title>
+        <script src="jquery.js"></script>
+        <script src="hello.js"></script>
+    </head>
+
+    <body>
+        <div>
+            <p class="greeting-id">The ID is ddd</p>
+            <p class="greeting-content">The content is </p>
+        </div>
+        <div class="box-body">
+            <table class="table table-bordered" id="product_table">
+                <tr>
+                    <th style="width: 10px">#</th>
+                    <th style="width: 40%">一级类别</th>
+                    <th style="width: 20%">二级类别</th>
+                    <th style="width: 20%">产品名称</th>
+                    <th style="width: 120px">操作</th>
+                </tr>
+            </table>
+        </div>
+    </body>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.ajax({
+                type: "post",
+                url: 'http://localhost:8082/esop/productListQuery',
+                async: false
+            }).then(function (data) {
+                var result=data.ROOT.OUT_DATA.PRODUCT_LIST.PRODUCT_INFO;
+                $.each(result, function (index, item) {
+                    $("#product_table").append("<tr id='ledtr'><td align=\"center\">"
+                        + (index + 1) + ".</td><td align='right'>" + item.ACCOUNT_ID + "</td><td>" + item.PROD_NAME + "</td><td>" + item.Run_Name + "</td><td><a class='badge bg-red'>编辑</a></td></tr>");
+                });
+                //$("#form1").attr("action", data);
+                //$("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + $('#username').val() + "&portalUrl=" + data);
+                //$("#form1").submit();
+            });
+            //$("#form1").attr("action", $('#href_url').val());
+            //alert($("#form1").action);
+            //$("#form1").submit();
+            //this.form.submit();
+            //location.href="http://"+window.location.host+"/"+$('#href_url').val();
+            //location.href=direct;
+        });
+    </script>
+</html>

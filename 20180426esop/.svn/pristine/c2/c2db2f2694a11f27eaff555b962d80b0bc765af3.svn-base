@@ -1,0 +1,23 @@
+package com.esop.cust.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cust.dto.MarketingPolicyDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/29.
+ */
+//营销
+@Repository
+public class MarketingPolicyService {
+    @Autowired
+    SqlE sqlE;
+    public List qryMarketing(){
+
+        return  sqlE.selectM("qryMarketing");
+    }
+}

@@ -1,0 +1,87 @@
+package com.esop.cqDevelopment.refund.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto;
+import com.esop.cqDevelopment.refund.dto.EpAdjustInfoDto;
+import com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by user on 2017/11/29.
+ */
+//入账反撤流程
+@Repository
+public class AdjustService {
+    private static Logger logger = Logger.getLogger(AdjustService.class);
+    @Autowired
+    SqlE sqlE;
+    //新增调账申请单基本信息
+//    @Transactional(propagation= Propagation.REQUIRED)
+    public int insertAdjustInfo(EpAdjustInfoDto param){
+        int result = sqlE.insertM("insertAdjustInfo",param);
+        logger.info("新增调账申请单基本信息成功!");
+        return result;
+    }
+    //保存调账申请单流程发起信息
+    public int insertWorkFlowInfoOnAdjust(WorkFlowInfoDto param){
+        int result = sqlE.insertM("insertWorkFlowInfoOnAdjust",param);
+        logger.info("保存调账申请单流程发起信息成功!");
+        return result;
+    }
+    //调账申请列表(包括待办、已办)
+    public Result getAdjustListInfo(EpAdjustInfoDto parameter){
+        Result result = sqlE.selectPage("selectAdjustListInfo",parameter);
+        return result;
+    }
+    //审批信息查询
+    public Result getAdjustApproveQuery(EpAdjustInfoDto parameter){
+        String selectTion = "selectAdjustApproveQuery";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+
+    //根据工单流水号查单条数据明细
+    public EpAdjustInfoDto getAdjustInfoByOrderFlowNo(EpAdjustInfoDto  epAdjustInfoDto){
+        logger.info("根据工单流水号查单条数据明细:"+ epAdjustInfoDto.toString());
+        return (EpAdjustInfoDto)sqlE.selectM("getAdjustInfoByOrderFlowNo",epAdjustInfoDto).get(0);
+    }
+    //查询当前环节nodeId
+    public List getWorkFlowNodeIdByOrderFlowNo(WorkFlowInfoDto parameter) {
+        List list = sqlE.selectM("getWorkFlowNodeIdByOrderFlowNo", parameter);
+        return list;
+    }
+    //更改申请单状态
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateAdjustOrderStatus(EpAdjustInfoDto param){
+        if (sqlE.updateM("updateAdjustOrderStatus",param)>0){
+            logger.info("更改申请单状态成功");
+            return true;
+        }
+        logger.info("更改失败");
+        return false;
+    }
+    //保存调账流程审批信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertAdjustDoApproveInfo(WorkFlowInfoDto param){
+        if (sqlE.insertM("insertWorkFlowInfoOnAdjust",param)>0){
+            logger.info("保存反撤流程审批信息成功");
+            return true;
+        }
+        logger.info("保存失败");
+        return false;
+    }
+    //调账审批进度导出EXCEL
+    public List<EpAdjustInfoDto> adjustReportList(EpAdjustInfoDto parameter){
+        logger.info("调账审批进度导出EXCEL--->>>>>>>>>>>>");
+        List list = sqlE.selectM("selectAdjustApproveQuery",parameter);
+        return list;
+    }
+
+}

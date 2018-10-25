@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <insert id="insertStateOfWorkInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.StateOfWorkOptDto" >
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{ORDER_NUMBER},
+        'CRM',
+        '',
+		#{ORDER_STATUS},
+        CURRENT_TIMESTAMP(),
+        '',
+        #{STATUS_EXPLAIN}
+        )
+    </insert>
+</mapper>

@@ -1,0 +1,142 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * @Description:
+ * @Date: Created by yuansp on 2017/6/19.
+ * @Modify by:
+ */
+public class CountyMonitorExtraDto extends BaseDto {
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    String DT_RowId         = "";
+
+    private String group_name = "";//区县名称
+    private String group_id = "";//区县编码
+    private int workCount = 0;//现场办公次数
+    private int workTotal = 0;//现场办公任务数
+    private int workPercent = 0;//宽带完成率
+
+    private int sign = 0;//签约
+    private int signTotal = 0;//签约任务数
+    private int signPercent = 0;//签约完成率
+
+    private int recover = 0;//欠费回收
+    private int recoverTotal = 0;//欠费回收任务数
+    private int recoverPercent = 0;//欠费回收完成率
+
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public int getWorkCount() {
+        return workCount;
+    }
+
+    public void setWorkCount(int workCount) {
+        this.workCount = workCount;
+    }
+
+    public int getWorkTotal() {
+        return workTotal;
+    }
+
+    public void setWorkTotal(int workTotal) {
+        this.workTotal = workTotal;
+    }
+
+    public int getWorkPercent() {
+        return workPercent;
+    }
+
+    public void setWorkPercent(int workPercent) {
+        this.workPercent = workPercent;
+    }
+
+    public int getSign() {
+        return sign;
+    }
+
+    public void setSign(int sign) {
+        this.sign = sign;
+    }
+
+    public int getSignTotal() {
+        return signTotal;
+    }
+
+    public void setSignTotal(int signTotal) {
+        this.signTotal = signTotal;
+    }
+
+    public int getSignPercent() {
+        return signPercent;
+    }
+
+    public void setSignPercent(int signPercent) {
+        this.signPercent = signPercent;
+    }
+
+    public int getRecover() {
+        return recover;
+    }
+
+    public void setRecover(int recover) {
+        this.recover = recover;
+    }
+
+    public int getRecoverTotal() {
+        return recoverTotal;
+    }
+
+    public void setRecoverTotal(int recoverTotal) {
+        this.recoverTotal = recoverTotal;
+    }
+
+    public int getRecoverPercent() {
+        return recoverPercent;
+    }
+
+    public void setRecoverPercent(int recoverPercent) {
+        this.recoverPercent = recoverPercent;
+    }
+
+    @Override
+    public String toString() {
+        return "CountyMonitorExtraDto{" +
+                "DT_RowId='" + DT_RowId + '\'' +
+                ", group_name='" + group_name + '\'' +
+                ", group_id='" + group_id + '\'' +
+                ", workCount=" + workCount +
+                ", workTotal=" + workTotal +
+                ", workPercent=" + workPercent +
+                ", sign=" + sign +
+                ", signTotal=" + signTotal +
+                ", signPercent=" + signPercent +
+                ", recover=" + recover +
+                ", recoverTotal=" + recoverTotal +
+                ", recoverPercent=" + recoverPercent +
+                '}';
+    }
+}

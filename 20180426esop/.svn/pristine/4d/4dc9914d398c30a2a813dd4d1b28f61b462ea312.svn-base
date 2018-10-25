@@ -1,0 +1,72 @@
+package com.esop.invoice.dto;
+
+import com.esop.invoice.model.EpInvPreprintActInfo;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.model.EpInvRedPartInfo;
+import com.esop.workflow.dto.InDTO;
+import com.esop.workflow.model.CtProcInstInfo;
+import com.esop.workflow.vo.Param;
+
+import java.util.List;
+
+/**
+ * 预打发票申请InDTO
+ *
+ * @author daish 2017/11/20
+ */
+public class InvAppInDTO extends InDTO {
+    private EpInvPreprintAppInfo appInfo;
+    private List<EpInvPreprintActInfo> actInfos;
+    private List<EpInvRedPartInfo> redPartInfos;
+    private CtProcInstInfo instInfo;
+    private Param[] params;
+    private String[] attachs;
+
+    public EpInvPreprintAppInfo getAppInfo() {
+        return appInfo;
+    }
+
+    public void setAppInfo(EpInvPreprintAppInfo appInfo) {
+        this.appInfo = appInfo;
+    }
+
+    public List<EpInvPreprintActInfo> getActInfos() {
+        return actInfos;
+    }
+
+    public void setActInfos(List<EpInvPreprintActInfo> actInfos) {
+        this.actInfos = actInfos;
+    }
+
+    public List<EpInvRedPartInfo> getRedPartInfos() {
+        return redPartInfos;
+    }
+
+    public void setRedPartInfos(List<EpInvRedPartInfo> redPartInfos) {
+        this.redPartInfos = redPartInfos;
+    }
+
+    public CtProcInstInfo getInstInfo() {
+        return instInfo;
+    }
+
+    public void setInstInfo(CtProcInstInfo instInfo) {
+        this.instInfo = instInfo;
+    }
+
+    public Param[] getParams() {
+        return params;
+    }
+
+    public void setParams(Param[] params) {
+        this.params = params;
+    }
+
+    public String[] getAttachs() {
+        return attachs;
+    }
+
+    public void setAttachs(String[] attachs) {
+        this.attachs = attachs;
+    }
+}

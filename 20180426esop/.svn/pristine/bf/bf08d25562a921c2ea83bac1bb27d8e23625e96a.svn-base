@@ -1,0 +1,41 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class OrRequestDetailInfoService {
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+    public int InsertOrRequestDetailInfoDto(OrRequestDetailInfoDto OrRequestDetailInfo) {
+        int  i =sqlSessionTemplate.insert("insertOrRequestDetailInfoDto",OrRequestDetailInfo);
+        return i;
+    }
+
+    /**
+     * 查询订单附表信息
+     * @param OrRequestDetailInfo
+     * @return
+     */
+    public List<OrRequestDetailInfoDto> selectOrRequestDetailInfoDtoList(OrRequestDetailInfoDto OrRequestDetailInfo) {
+        List<OrRequestDetailInfoDto> dtos =sqlSessionTemplate.selectList("selectOrRequestDetailInfoDtos",OrRequestDetailInfo);
+        return dtos;
+    }
+
+    /**
+     * 更新表单信息
+     * @param OrRequestDetailInfo
+     * @return
+     */
+    public int upOneOrRequestDetailInfoDto(OrRequestDetailInfoDto OrRequestDetailInfo) {
+        int i =sqlSessionTemplate.update("upOneOrRequestDetailInfoDto",OrRequestDetailInfo);
+        return i;
+    }
+
+
+
+}

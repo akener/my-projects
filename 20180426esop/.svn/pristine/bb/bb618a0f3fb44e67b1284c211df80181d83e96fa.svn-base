@@ -1,0 +1,190 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="refundDetailInfo" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> 资金回退申请单</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input type="hidden" id="id" value="">
+                        <input type="hidden" id="node_id" value="">
+                        <input type="hidden" id="refund_id" value="">
+                        <input type="hidden" id="first_node_id" value="">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>退款申请人</th>
+                                <td>
+                                    <input id="refund_applicant1"  class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                                <th>申请日期</th>
+                                <td>
+                                    <input type=text id="apply_date1" class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true" disabled="disabled">
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <th>出账集团</th>
+                                <td>
+                                    <input id="expenditure_presentation_group1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                                <th>集团编号</th>
+                                <td>
+                                    <input id="group_num1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>资金联系人</th>
+                                <td>
+                                    <input id="capital_contact1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                                <th>联系电话</th>
+                                <td>
+                                    <input id="telphone1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>联系人类型</th>
+                                <td>
+                                    <input id="contact_type1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+
+                                </td>
+                                <th>账本余额</th>
+                                <td>
+                                    <input id="book_balance1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>可用余额</th>
+                                <td colspan="4">
+                                    <input id="available_balance1" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th colspan="4" style="text-align: center;font-size: medium">关联银行到账信息</th>
+                            </tr>
+                            <tr>
+                                <th>来款账号</th>
+                                <td>
+                                    <input id="account1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>来款户名</th>
+                                <td>
+                                    <input id="userid1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>到账账号</th>
+                                <td>
+                                    <input id="arrive_account1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>到账户名</th>
+                                <td>
+                                    <input id="arrive_account_name1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>到账日期</th>
+                                <td>
+                                    <input type=text id="arrive_date1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>到账金额</th>
+                                <td>
+                                    <input id="arrival_amount1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>入账日期</th>
+                                <td>
+                                    <input type=text id="billing_date1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>账务员</th>
+                                <td>
+                                    <input id="account_clerk1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>摘要</th>
+                                <td colspan="4">
+                                    <textarea id="abstracts1" type="text" disabled="disabled"  class="input-sty04 form-ipt" style="width:70%;height:80%" ></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>上传附件</th>
+                                <td colspan="4">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label class="btn btn-info pull-left" for="xFile" >上传附件(word,ppt,pdf格式)</label>
+                                            <form id="upload-form" method="post" enctype="multipart/form-data">
+                                                <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                            </form>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="form-group" id="fileList">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: center;font-size: medium">退款信息</th>
+                            </tr>
+                            <tr>
+                                <th>退款账号</th>
+                                <td>
+                                    <input id="refund_account1" type="text" class="input-sty04 form-ipt">
+                                </td>
+                                <th>退款户名</th>
+                                <td>
+                                    <input id="refund_account_name1" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>退款开户行</th>
+                                <td>
+                                    <input id="refund_opening_bank1" type="text" class="input-sty04 form-ipt">
+                                </td>
+                                <th>退款金额</th>
+                                <td>
+                                    <input id="refund_amount1" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mgt-20" style="margin-bottom: 5px;">
+                <div class="btn-box">
+                   <%-- <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="saveDoApproveRefundInfo()">提交</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

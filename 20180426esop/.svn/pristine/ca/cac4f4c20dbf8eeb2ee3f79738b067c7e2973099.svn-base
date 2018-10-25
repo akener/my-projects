@@ -1,0 +1,45 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.MarketingActivitiesDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/21.
+ */
+@Repository
+public class MarketingActivitiesService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(MarketingActivitiesService.class);
+    //查询操作
+    public Result getMarketingActivitiesList(MarketingActivitiesDto parameter){
+        Result result= sqlE.selectPage("selectMarketingActivities",parameter);
+        return result;
+    }
+    //新增操作
+    public int insertMarketingActivities(MarketingActivitiesDto parameter){
+        return sqlE.insertM("insertMarketingActivities",parameter);
+    }
+    //修改操作
+    public int updateMarketingActivities(MarketingActivitiesDto parameter){
+        return sqlE.updateM("updateMarketingActivities",parameter);
+    }
+    public int selectMaxMarketNo(MarketingActivitiesDto parameter){
+        int total = 0;
+        List list =   sqlE.selectM("selectMaxMarkeNo",parameter);
+        /*System.out.println("+++++++----------------------+++++++++++"+list.get(0));
+        System.out.println(list.get(0)==null);*/
+        if(list.get(0)!=null){
+            total = (Integer) list.get(0);
+        }else{
+            total = 1000000000;
+        }
+        return total;
+    }
+}

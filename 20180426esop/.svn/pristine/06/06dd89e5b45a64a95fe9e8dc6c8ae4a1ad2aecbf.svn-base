@@ -1,0 +1,630 @@
+package com.esop.workOrderInfo.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.*;
+import com.esop.workOrderInfo.service.ProCaseSendService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by lilei on 2017/6/5.
+ */
+@RestController
+public class ProCaseSendController {
+    private static Logger logger = Logger.getLogger(ProCaseSendController.class);
+    @Autowired
+    ProCaseSendService proCaseSendService;
+    @Autowired
+    DataConversion dataConversion;
+
+    Result result = new Result();
+
+
+    @RequestMapping(value = "/proManagerRecordImport")
+    public int oweRecordImport(ProCaseSendDto parameter){
+
+        return proCaseSendService.importProRecord(parameter);
+    }
+
+
+
+    //数据展示
+    @RequestMapping(value = "/showProInfo")
+    public Result showProInfo(ProCaseSendDto in, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setStatus("01");
+        result=proCaseSendService.showProRecord(in);
+        return result;
+    }
+
+
+    //营销活动展示
+    @RequestMapping(value = "/qryCaseActivity")
+    public  Result showCaseActivity(ProCaseInfoDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setRegion_code(request.getParameter("group_id"));
+        //in.setRegion_code("10041");
+        result=proCaseSendService.showCaseActInfo(in);
+        return result;
+    }
+    //营销活动下发到地市
+    @RequestMapping(value = "/sendCaseToRegionInfo")
+    public int sendCaseToRes(HttpServletRequest request){
+
+        //活动编码
+        String marketNoBuf=request.getParameter("marketNoList");
+        String marketNoList[]=marketNoBuf.split(",");
+
+        //地市
+        String regionBuf=request.getParameter("regionList");
+        String regionList[]=regionBuf.split(",");
+        //集团编码
+        String unitIdBuf=request.getParameter("unitIdList");
+        String unitIdList[]=unitIdBuf.split(",");
+        //批次号
+        String batchBuf=request.getParameter("batchList");
+        String batchList[]=batchBuf.split(",");
+        //工单截止日期
+        String end_time =request.getParameter("eTimes");
+
+        //取工号
+        String login_no=request.getParameter("login_no");
+        int flag=0;
+        //派单日期
+        SimpleDateFormat sm=new SimpleDateFormat("yyyy-MM");
+        String nowDate=sm.format(new Date());
+        for(int i=0;i<unitIdList.length;i++){
+            ProCaseSendDto dto=new ProCaseSendDto();
+            Date dt=new Date();
+            String locnum=dt.getTime()+"";
+
+            //工单号码
+            dto.setLocal_number(locnum);
+            dto.setBatch_no(batchList[i]);
+            dto.setUnit_id(unitIdList[i]);
+            dto.setRegion_id(regionList[i]);
+            dto.setEnd_time(end_time);
+            dto.setDispatch_time(nowDate);
+            dto.setStatus(request.getParameter("status"));
+            int result =proCaseSendService.sendCaseToRegion(dto);
+            logger.debug("下发结果："+result);
+            if(result != -1){
+                //下发成功
+                flag  = 1;
+            }else{
+                //下发失败
+                flag = 2;
+               break;
+            }
+
+        }
+
+        //过滤重复的批次号
+        ArrayList list = new ArrayList();
+        for (int i = 0; i < batchList.length; i++)
+        {
+            if (!list.contains(batchList[i]))
+            {
+                list.add(batchList[i]);
+            }
+        }
+        int size=list.size();
+        String[] newBatch = (String[])list.toArray(new String[size]) ;
+
+        String marketNameList="";
+        //查询营销活动名称
+        for(int i=0;i<marketNoList.length;i++){
+            CaseRelDto dto=new CaseRelDto();
+            dto.setMarket_no(marketNoList[i]);
+            List<CaseRelDto> lsst= proCaseSendService.qryMarketName(dto);
+            for(CaseRelDto cDto:lsst){
+                String newMarketName=cDto.getMarket_name();
+                marketNameList+=newMarketName+",";
+            }
+        }
+        String marketNameArr[]=marketNameList.split(",");
+        //把批次号，活动编码,活动名称ep_market_rel
+        for(int i=0;i<marketNoList.length;i++){
+            for(int j=0;j<newBatch.length;j++){
+                CaseRelDto relDto=new CaseRelDto();
+                relDto.setMarket_no(marketNoList[i]);
+                relDto.setMarket_name(marketNameArr[i]);
+                relDto.setBatch_no(batchList[j]);
+                int res=proCaseSendService.insertRel(relDto);
+
+            }
+
+        }
+
+
+        //短信下发
+        ArrayList lists = new ArrayList();
+        for (int i = 0; i < regionList.length; i++)
+        {
+            if (!lists.contains(regionList[i]))
+            {
+                lists.add(regionList[i]);
+            }
+        }
+        int sizes=lists.size();
+        String[] newRegion = (String[])lists.toArray(new String[sizes]) ;
+
+        for(int i=0;i<newRegion.length;i++){
+            SendMsgDto dto=new SendMsgDto();
+            dto.setGroup_id(newRegion[i]);
+            List<SendMsgDto> lsst=proCaseSendService.getCustPhoneNoByService(dto);
+            for(SendMsgDto outDto:lsst){
+                Map inMap=new HashMap();
+                //短信发送时间 当前时间后一分钟
+                String send_time = getTimeByMinute(1);
+                inMap.put("PHONE_NO",outDto.getContract_phone());
+                inMap.put("SEND_TIME",send_time);
+                inMap.put("LOGIN_NO",outDto.getLogin_no());
+                inMap.put("OP_CODE","4212");
+
+                int resultMsg =proCaseSendService.sendMsgToRegion(inMap);
+                if (resultMsg != -1){
+                    flag=1;
+                }else{
+                    flag = 2;
+                }
+            }
+        }
+
+       return flag;
+    }
+
+    //获取当前时间的前后几分钟
+    public static String getTimeByMinute(int minute) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.add(Calendar.MINUTE, minute);
+
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+
+    }
+
+    //查询省下发地市的营销活动和批次号
+    @RequestMapping(value = "/qryProSendRegion")
+    public Result qryRegionCaseInfo(CaseRelDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        logger.debug("进来了************************");
+        in.setPage(page);
+        //in.setRegion_id("10031");
+        in.setRegion_id(request.getParameter("group_id"));
+        in.setStatus(request.getParameter("status"));
+        result=proCaseSendService.qryProSendToRegionCase(in);
+        return result;
+
+    }
+
+    //模糊查询营销活动
+    @RequestMapping(value = "/likeQryCaseRecordInfo")
+    public Result selectCaseRecordBylike(ProCaseInfoDto in,HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        String qryName=request.getParameter("inputName");
+        in.setRegion_code(request.getParameter("group_id"));
+        //in.setRegion_code("10031");
+        in.setMarket_name(qryName);
+        result=proCaseSendService.qryLikeCaseByName(in);
+        //System.out.print("eeee");
+        return result;
+    }
+
+
+
+    //地市营销活动添加省下发工单中
+    @RequestMapping(value = "/addRegionCaseToProCase")
+    public int addRegionCaseToProSend(HttpServletRequest request){
+
+        String marketNoBuf= request.getParameter("marketNoList");
+        String marketNoList[]=marketNoBuf.split(",");
+
+        String batchNoList[]= request.getParameter("batchList").split(",");
+
+        String marketNameList="";
+        for(int j=0;j<marketNoList.length;j++){
+            CaseRelDto dto=new CaseRelDto();
+            dto.setMarket_no(marketNoList[j]);
+            //取market_name
+            List<CaseRelDto> list= proCaseSendService.qryMarketName(dto);
+            for(CaseRelDto cDto:list){
+                String newMarketName=cDto.getMarket_name();
+                marketNameList+=newMarketName+",";
+            }
+
+        }
+        logger.info(marketNameList);
+        String marketNameArr[]=marketNameList.split(",");
+
+        //过滤重复的批次号
+        ArrayList list = new ArrayList();
+        for (int i = 0; i < batchNoList.length; i++)
+        {
+            if (!list.contains(batchNoList[i]))
+            {
+                list.add(batchNoList[i]);
+            }
+        }
+
+        int size=list.size();
+        String[] newBatch = (String[])list.toArray(new String[size]) ;
+
+
+        ProCaseSendDto proDto=new ProCaseSendDto();
+        proDto.setStatus(request.getParameter("status"));
+
+        int result=0;
+            for(int i=0;i<marketNoList.length;i++){
+                for(int j=0;j<newBatch.length;j++){
+                    CaseRelDto relDto=new CaseRelDto();
+                    relDto.setMarket_no(marketNoList[i]);
+                    relDto.setMarket_name(marketNameArr[i]);
+                    relDto.setBatch_no(newBatch[j]);
+                    int res= proCaseSendService.insertRel(relDto);
+                    if(res !=-1){
+                        //成功
+                        result=1;
+                    }else{
+                        //失败
+                        result=2;
+                    }
+
+                }
+        }
+
+        return result;
+    }
+    //地市管理员删除省下发的工单
+    @RequestMapping(value = "/deleteProSendCaseInfo")
+    public int RegionDelProSendCase(HttpServletRequest request){
+
+                CaseRelDto delDto=new CaseRelDto();
+                delDto.setMkid(request.getParameter("mkid"));
+                int result=0;
+                int res=proCaseSendService.delProSendCaseByBatchNoAndUnitId(delDto);
+                if(res !=-1){
+                    //成功
+                    result=1;
+                }else{
+                    //失败
+                    result=2;
+                }
+
+        return result;
+    }
+
+    //地市管理员下发给客户经理
+    @RequestMapping(value="/showRegionCaseSendCust")
+    public int RegionSendToCustManager(HttpServletRequest request){
+
+        ProCaseSendDto dto=new ProCaseSendDto();
+        //dto.setRegion_id("10031");
+        dto.setRegion_id(request.getParameter("group_id"));
+        dto.setStatus(request.getParameter("status"));
+
+        int result=0;
+        int res=proCaseSendService.regionSendToCust(dto);
+        if(res !=-1){
+            result=1;//成功
+        }else{
+            result=2;//失败
+        }
+        return  result;
+    }
+
+    //地市管理员根据批次追加活动
+    @RequestMapping(value = "/RegionAlreadySend")
+    public Result qryRegionAlreadySend(CaseRelDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        //in.setRegion_id("10031");
+        in.setRegion_id(request.getParameter("group_id"));
+        in.setStatus(request.getParameter("status"));
+        result=proCaseSendService.qryProSendToRegionCase(in);
+        return result;
+
+    }
+
+    //查询客户经理工号下的工单
+    @RequestMapping(value = "/qryCustCaseInfo")
+    public Result qryWorkOrderInfoOfCust(ProCaseSendDto in,HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setRegion_id(request.getParameter("group_id"));
+        in.setLogin_no(request.getParameter("login_no"));
+        in.setStatus(request.getParameter("status"));
+
+
+        result=proCaseSendService.selectCustOfWorkOrderInfo(in);
+        return result;
+    }
+    //客户回退地市status从前台传
+    @RequestMapping(value = "/custBackRegionManage")
+    public int custBackCaseToRegion(ProCaseSendDto in,HttpServletRequest request){
+        int result=0;
+        String backMsg=request.getParameter("testList");
+        if(backMsg !=null || backMsg!=""){
+            in.setBack_reason(backMsg);
+        }
+        int res=proCaseSendService.mgBackToRegion(in);
+        if(res !=-1){
+            result=1;//成功
+        }else{
+            result=2;//失败
+        }
+        return result;
+    }
+
+    //客户经理结单
+    @RequestMapping(value = "/custEndCaseInfo")
+    public int custEndCaseRecordInfo(ProCaseSendDto in,HttpServletRequest request){
+        int result=0;
+        int res=proCaseSendService.custManagerEndCase(in);
+        if(res !=-1){
+            result=1;//成功
+        }else{
+            result=2;//失败
+        }
+        return result;
+    }
+
+    //客户经理办理查询对应下发的营销活动
+    @RequestMapping(value = "/qryCustOfRecordByLoginNo")
+    public Result qryRecordByCustLoginNo(CaseRelDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        String loginNo= request.getParameter("login_no");
+        String status=request.getParameter("status");
+        in.setLogin_no(loginNo);
+        in.setStatus(status);
+        result=proCaseSendService.selCustRecordByCustLoginNo(in);
+        return result;
+    }
+
+    //地市管理员查询客户经理回退工单
+    @RequestMapping(value = "/qryCustReturnCaseInfo")
+    public Result qryRegionCaseOfCustBack(ProCaseSendDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        //in.setRegion_id("10031");
+        in.setRegion_id(request.getParameter("group_id"));
+        in.setStatus(request.getParameter("status"));
+        result=proCaseSendService.qryCustManagerReturnRecordInfo(in);
+        return result;
+
+    }
+
+    //地市回退工单到上一级status从前台传
+    @RequestMapping(value = "/RegionBackCaseRecordToPro")
+    public int regionBackRecordToPro(HttpServletRequest request){
+        int result=0;
+
+        ProCaseSendDto dto=new ProCaseSendDto();
+        dto.setStatus(request.getParameter("status"));
+        dto.setRegion_id(request.getParameter("group_id"));
+        //dto.setRegion_id("10031");
+        int res=proCaseSendService.regionBackToProvice(dto);
+        if(res !=-1){
+            result=1;//成功
+        }else{
+            result=2;//失败
+        }
+
+
+        return result;
+    }
+
+
+    //查询所有回退到省的工单
+    @RequestMapping(value = "/qryCustReturnCaseMsg")
+    public Result qryAllCaseBackToProMsg(ProCaseSendDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setStatus(request.getParameter("status"));
+        result=proCaseSendService.qryOfProviceAllBackCase(in);
+        return result;
+    }
+
+    //省管理员结单
+    @RequestMapping(value = "/proEndRecordInfo")
+    public int proEndAllRecord(HttpServletRequest request){
+        int result=0;
+        String status=request.getParameter("status");
+            ProCaseSendDto dto=new ProCaseSendDto();
+            dto.setStatus(status);
+            int res=proCaseSendService.proviceOverCase(dto);
+            if(res !=-1){
+                result=1;//成功
+            }else{
+                result=2;//失败
+            }
+
+        return result;
+    }
+
+    //查询客户经理导入工单数据,地市查客户经理提交数据
+    @RequestMapping(value = "/qryCustManagerImportMsg")
+    public Result showCustManagerImportMsg(ProCaseSendDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setStatus(request.getParameter("status"));
+        in.setRegion_id(request.getParameter("group_id"));
+        in.setLogin_no(request.getParameter("login_no"));
+        /*in.setRegion_id("10031");*/
+        result=proCaseSendService.qryCustManagerReturnRecordInfo(in);
+        return result;
+    }
+
+    //客户经理提交工单给地市管理员，地市管理员审核，提交上一级或回退给客户经理
+    @RequestMapping(value = "/custSbuRecordToRegionManager")
+    public int custSubRecordInfoToRgeion(HttpServletRequest request){
+
+        //地市
+        String regionBuf=request.getParameter("regionList");
+        String regionList[]=regionBuf.split(",");
+        //集团编码
+        String unitIdBuf=request.getParameter("unitIdList");
+        String unitIdList[]=unitIdBuf.split(",");
+        //批次号
+        String batchBuf=request.getParameter("batchList");
+        String batchList[]=batchBuf.split(",");
+        String status=request.getParameter("status");
+        int flag=0;
+
+
+        for(int i=0;i<unitIdList.length;i++){
+            ProCaseSendDto dto=new ProCaseSendDto();
+            dto.setBatch_no(batchList[i]);
+            dto.setUnit_id(unitIdList[i]);
+            dto.setRegion_id(regionList[i]);
+            dto.setStatus(status);
+            int result =proCaseSendService.custsendCaseToRegionManagers(dto);
+            //logger.debug("下发结果："+result);
+            if(result != -1){
+                //下发成功
+                flag  = 1;
+            }else{
+                //下发失败
+                flag = 2;
+                break;
+            }
+
+        }
+        return flag;
+    }
+    //省管理员查询某个月已下发工单和营销活动
+    @RequestMapping(value = "/proQryAlreadySendCaseByTime")
+    public Result qryAllCaseByDate(ProCaseSendDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        String sendTime= request.getParameter("selTime");
+        in.setDispatch_time(sendTime);
+        result=proCaseSendService.selectAllRecordByYearAndMon(in);
+        return result;
+    }
+
+    //查询一条工单对应的营销活动
+    @RequestMapping(value = "/qryManyCaseByOneRecord")
+    public Result qryOneRecordHavesCase(CaseRelDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        String reId= request.getParameter("reId");
+        in.setReid(reId);
+        result=proCaseSendService.selectCaseByOneToMany(in);
+        return result;
+    }
+
+    //客户经理关闭省和地市回退工单
+    @RequestMapping(value = "/custManagerCloseRecord")
+    public int custManagerCloseRecordInfo(HttpServletRequest request){
+
+
+        String unitIdBuf=request.getParameter("unitIdList");
+        String unitIdList[]=unitIdBuf.split(",");
+
+        String batchBuf=request.getParameter("batchList");
+        String batchList[]=batchBuf.split(",");
+
+        String status=request.getParameter("status");
+        int flag=0;
+
+
+        for(int i=0;i<unitIdList.length;i++){
+            ProCaseSendDto dto=new ProCaseSendDto();
+            dto.setBatch_no(batchList[i]);
+            dto.setUnit_id(unitIdList[i]);
+            dto.setStatus(status);
+            int result =proCaseSendService.closeAllRecordByBackOfProAndRegion(dto);
+
+            if(result != -1){
+                //关闭成功
+                flag  = 1;
+            }else{
+                //关闭失败
+                flag = 2;
+                break;
+            }
+
+        }
+        return flag;
+    }
+
+    //客户经理修改省和地市回退工单（删除回退数据，跳转到客户经理导入数据页面）
+    @RequestMapping(value = "/custManagerDeleteRecord")
+    public int custManagerDeleteRecordInfo(HttpServletRequest request){
+
+
+        String unitIdBuf=request.getParameter("unitIdList");
+        String unitIdList[]=unitIdBuf.split(",");
+
+        String batchBuf=request.getParameter("batchList");
+        String batchList[]=batchBuf.split(",");
+
+        String status=request.getParameter("status");
+        int flag=0;
+
+
+        for(int i=0;i<unitIdList.length;i++){
+            ProCaseSendDto dto=new ProCaseSendDto();
+            dto.setBatch_no(batchList[i]);
+            dto.setUnit_id(unitIdList[i]);
+            dto.setStatus(status);
+            int result =proCaseSendService.DeleteAllBackOfProAndRegion(dto);
+
+            if(result != -1){
+                //删除成功
+                flag  = 1;
+            }else{
+                //删除失败
+                flag = 2;
+                break;
+            }
+
+        }
+        return flag;
+    }
+
+
+    //监控预警工单-省级督办单
+    @RequestMapping(value = "/municipalEarlyWarningWorkOrder")
+    public Result lookProEarlyWarningOrder(EarlyWarningDto in, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        result=proCaseSendService.EarlyWarningWorkLookAt(in);
+        return result;
+    }
+
+    //查询导入数据前后的数据条数
+    @RequestMapping(value = "/selectNowRecordNum")
+    public int selectNowRecordNums(){
+        int num = proCaseSendService.qryRecordCountNow();
+      return num;
+    }
+}

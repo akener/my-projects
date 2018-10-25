@@ -1,0 +1,12 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtElecWoExtInfo;
+import java.util.List;
+
+public interface CtElecWoExtInfoMapper {
+    int insert(CtElecWoExtInfo record);
+
+    List<CtElecWoExtInfo> selectAll();
+
+    CtElecWoExtInfo selectByWoNoAndParamKey(CtElecWoExtInfo retrievalCondition);
+}

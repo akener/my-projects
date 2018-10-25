@@ -1,0 +1,116 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+</head>
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>冲销历史短款</span>
+            </div>
+            <input type="hidden" value="<%=login_no%>" id="login_no"/>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>工单流水号：</th>
+                            <td>
+                                <input type="text" id="taskOrderId" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请人：</th>
+                            <td>
+                                <input type="text" id="applicant" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请日期：</th>
+                            <td>
+                                <input type=text id="apply_date_start" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'apply_date_start',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>至</th>
+                            <td>
+                                <input type=text id="apply_date_end" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'apply_date_end',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="offsetApproveQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>冲销历史短款待办列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <input type="hidden" id="loginCode" value="">
+                        <table class="cost-table" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center">操作</th>
+                                <th class="text-center">申请人</th>
+                                <th class="text-center">申请日期</th>
+                                <th class="text-center">工单流水号</th>
+                                <th class="text-center">出账集团</th>
+                                <th class="text-center">出账集团编号</th>
+                                <th class="text-center">资金联系人</th>
+                                <th class="text-center">联系人电话</th>
+                                <th class="text-center">联系人类型</th>
+                                <th class="text-center">本次申请使用金额(元)</th>
+                                <th class="text-center">冲减历史短款金额(元)</th>
+                                <th class="text-center">备注</th>
+                                <th class="text-center">归属分公司</th>
+                                <th class="text-center">账户余额(元)</th>
+                                <th class="text-center">可用余额(元)</th>
+                                <th class="text-center">占用资金(元)</th>
+                                <th class="text-center">冻结资金(元)</th>
+                                <th class="text-center">交易流水号</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ <!--待审批页面-->
+<div class="modal fade bs-example-modal-lg" id="HistoryOffsetDoApprove" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document" style="width:60%;">
+        <div class="modal-content">
+            <%@ include file="historyOffsetApprove.jsp"%>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/historyOffset/offsetApply.js"></script>

@@ -1,0 +1,49 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+public class GroupContractProdDto {
+    private Integer id;
+    private String prodId;
+    private String effectType;
+    private String opType;
+    private String attrPara;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getProdId() {
+        return prodId;
+    }
+
+    public void setProdId(String prodId) {
+        this.prodId = prodId;
+    }
+
+    public String getEffectType() {
+        return effectType;
+    }
+
+    public void setEffectType(String effectType) {
+        this.effectType = effectType;
+    }
+
+    public String getOpType() {
+        return opType;
+    }
+
+    public void setOpType(String opType) {
+        this.opType = opType;
+    }
+
+    public String getAttrPara() {
+        return attrPara;
+    }
+
+    public void setAttrPara(String attrPara) {
+        this.attrPara = attrPara;
+    }
+}

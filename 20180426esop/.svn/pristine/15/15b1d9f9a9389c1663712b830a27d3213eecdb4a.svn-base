@@ -1,0 +1,144 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Administrator on 2017/6/29.
+ */
+public class EpBusiSolutionDto extends BaseDto {
+    String region_name = "";//地市名称
+    String region_code ="";//地市编码
+    String solution_name ="";//行业解决方案名称
+    String solution_id = "";//方案编码
+    String solution_desc = "";//方案描述
+    String related_id = "";
+    String manager_no = "";//客户经理编码
+    String manager_name = "";//客户经理名称
+    String create_date = "";//附件创建时间
+    String solution_type = "";
+    String solution_level = "";
+    String relate_path = "";
+    String relate_name = "";
+    String operator_str = "";
+    String id="";//附件id
+
+    public String getSolution_type() {
+        return solution_type;
+    }
+
+    public void setSolution_type(String solution_type) {
+        this.solution_type = solution_type;
+    }
+
+    public String getSolution_level() {
+        return solution_level;
+    }
+
+    public void setSolution_level(String solution_level) {
+        this.solution_level = solution_level;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getRelate_path() {
+        return relate_path;
+    }
+
+    public void setRelate_path(String relate_path) {
+        this.relate_path = relate_path;
+    }
+
+    public String getRelate_name() {
+        return relate_name;
+    }
+
+    public void setRelate_name(String relate_name) {
+        this.relate_name = relate_name;
+    }
+
+    public String getOperator_str() {
+        return operator_str;
+    }
+
+    public void setOperator_str(String operator_str) {
+        this.operator_str = operator_str;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getSolution_name() {
+        return solution_name;
+    }
+
+    public void setSolution_name(String solution_name) {
+        this.solution_name = solution_name;
+    }
+
+    public String getSolution_id() {
+        return solution_id;
+    }
+
+    public void setSolution_id(String solution_id) {
+        this.solution_id = solution_id;
+    }
+
+    public String getSolution_desc() {
+        return solution_desc;
+    }
+
+    public void setSolution_desc(String solution_desc) {
+        this.solution_desc = solution_desc;
+    }
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+}

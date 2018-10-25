@@ -1,0 +1,69 @@
+package test;
+
+/**
+ * Created by yanhao on 2017/7/14.
+ */
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import javax.xml.namespace.QName;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+public class xmlYiJiESOPAnalysis {
+    public static void main(String[] args) {
+        try {
+            String xmlOLEsopParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><REQUEST_INFO>";
+            xmlOLEsopParamter+="<loginNo>aavg38</loginNo>";
+            xmlOLEsopParamter+="<orgCode>10031</orgCode>";
+            xmlOLEsopParamter+="<opCode>451e</opCode>";
+            xmlOLEsopParamter+="<Action>1</Action>";
+            xmlOLEsopParamter+="<StaffNumber>451aavg38</StaffNumber>";
+            xmlOLEsopParamter+="<CompanyID>451</CompanyID>";
+            xmlOLEsopParamter+="<Mobile>13466866081</Mobile>";
+            xmlOLEsopParamter+="<RoleType>1,4</RoleType>";
+            xmlOLEsopParamter+="<BusiType>1,2,3,4,5,6,7</BusiType>";
+            xmlOLEsopParamter+="<Type>2</Type>";
+            xmlOLEsopParamter+="<Location>4510</Location>";
+            xmlOLEsopParamter+="<NeedRemind>1</NeedRemind>";
+            xmlOLEsopParamter+="<DisplayName>陈滨杰</DisplayName>";
+            xmlOLEsopParamter+="<Notes></Notes>";
+            xmlOLEsopParamter+="</REQUEST_INFO></ROOT>";
+            System.out.println("+++++++++++++++++++++++++ xmlParamter = "+xmlOLEsopParamter);
+
+
+            String serviceName = "s451eWSXML";
+            String serviceUrl = "http://10.110.26.23:61000/esbWS/services/s451eWSXML/callService";
+            //String serviceUrl = crmService+serviceName+"/callService";
+            //String serviceUrl = "http://10.110.0.100:51001/esbWS/services/"+serviceName+"/callService";
+
+            Service service = new Service();
+            Call call = (Call) service.createCall();
+            String namespace = "http://ws.sitech.com";
+            call.setTargetEndpointAddress(serviceUrl);
+
+            call.setOperationName(new QName(namespace,serviceName));
+            call.addParameter("name", org.apache.axis.encoding.XMLType.XSD_DATE, javax.xml.rpc.ParameterMode.IN);
+            call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);
+
+            String result = (String)call.invoke(new Object[]{xmlOLEsopParamter});
+            System.out.println("+++++++++++++++++++++++++ result = "+result);
+
+            Document dom= DocumentHelper.parseText(result);
+            Element R=dom.getRootElement();
+            String return_code=R.element("RETURN_CODE").getText();
+            String return_msg=R.element("RETURN_MSG").getText();
+            System.out.println(return_code);
+            System.out.println(return_msg);
+
+
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            String returnMsgInfo = "service calling failed !!!";
+        }
+    }
+}

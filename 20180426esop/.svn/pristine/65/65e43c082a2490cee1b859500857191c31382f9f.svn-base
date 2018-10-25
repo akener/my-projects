@@ -1,0 +1,92 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+public class OrRequestDetailInfoDto {
+    private Integer id;
+
+    private String request_num;
+
+    private Integer attr_id;
+
+    private String attr_code;
+
+    private String bak1;
+
+    private String bak2;
+    private String attr_value;
+
+    private String other_char;
+
+    private String notes;
+
+    public String getAttr_value() {
+        return attr_value;
+    }
+
+    public void setAttr_value(String attr_value) {
+        this.attr_value = attr_value == null ? null : attr_value.trim();
+    }
+
+    public String getOther_char() {
+        return other_char;
+    }
+
+    public void setOther_char(String other_char) {
+        this.other_char = other_char == null ? null : other_char.trim();
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes == null ? null : notes.trim();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getRequest_num() {
+        return request_num;
+    }
+
+    public void setRequest_num(String request_num) {
+        this.request_num = request_num == null ? null : request_num.trim();
+    }
+
+    public Integer getAttr_id() {
+        return attr_id;
+    }
+
+    public void setAttr_id(Integer attr_id) {
+        this.attr_id = attr_id;
+    }
+
+    public String getAttr_code() {
+        return attr_code;
+    }
+
+    public void setAttr_code(String attr_code) {
+        this.attr_code = attr_code == null ? null : attr_code.trim();
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1 == null ? null : bak1.trim();
+    }
+
+    public String getBak2() {
+        return bak2;
+    }
+
+    public void setBak2(String bak2) {
+        this.bak2 = bak2 == null ? null : bak2.trim();
+    }
+}

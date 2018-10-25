@@ -1,0 +1,430 @@
+package com.esop.ledger.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class LedgerDetailsInfoDto {
+    String ledger_date = "";        //台账日期
+    String group_name = "";         //节点信息
+    String ledger_id = "";          //台账ID
+    String detail_id = "";          //流水
+    String presource_code = "";     //父类资源编码
+    String presource_name = "";     //父类资源编码
+    String resource_code = "";      //资源编码
+    String resource_name = "";      //资源名称
+    String last_balance = "";       //上期结存
+    String input_godown = "";       //本期入库
+    String return_godown = "";      //本期退库
+    String higher_allocation = "";  //上级调拨
+    String return_higher = "";      //回退上级
+    String allocation_lower = "";   //拨给下级
+    String lower_return = "";       //下级退回
+    String wait_in = "";            //待入
+    String wait_out = "";           //待出
+    String allocation_passing = ""; //下拨路过
+    String return_passing = "";     //回退路过
+    String sales = "";              //销售
+    String discount_sales = "";     //折扣销售
+    String give = "";               //赠送
+    String sales_difference = "";   //销售差异
+    String discount_difference = "";//折扣差异
+    String general_difference = ""; //普通销售差异
+    String give_difference = "";    //赠送差异
+    String new_gotone = "";         //新全球通
+    String old_gotone = "";         //老全球通
+    String new_easyown = "";        //新神州行
+    String old_easyown = "";        //老神州行
+    String new_mzone = "";          //新动感地带
+    String old_mzone = "";          //老动感地带
+    String bad_replace = "";        //坏卡更换
+    String subtotal = "";           //小计
+    String now_balance = "";        //本期结存
+    String service_use = "";        //业务领用
+    String day_return = "";         //隔日退回
+    String month_return = "";       //隔越退回
+    String new_other = "";          //新其它
+    String old_other = "";          //老其它
+    String new_difference = "";     //新差异
+    String old_difference = "";     //老差异
+    String reason_difference = "";  //差异原因
+    String create_login = "";       //创建工号
+    String create_date = "";        //创建时间
+    String opt ="";                 //操作类型
+    String region_code="";          //地区编码
+
+    public String getLedger_date() {
+        return ledger_date;
+    }
+
+    public void setLedger_date(String ledger_date) {
+        this.ledger_date = ledger_date;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getLedger_id() {
+        return ledger_id;
+    }
+
+    public void setLedger_id(String ledger_id) {
+        this.ledger_id = ledger_id;
+    }
+
+    public String getDetail_id() {
+        return detail_id;
+    }
+
+    public void setDetail_id(String detail_id) {
+        this.detail_id = detail_id;
+    }
+
+    public String getPresource_code() {
+        return presource_code;
+    }
+
+    public void setPresource_code(String presource_code) {
+        this.presource_code = presource_code;
+    }
+
+    public String getPresource_name() {
+        return presource_name;
+    }
+
+    public void setPresource_name(String presource_name) {
+        this.presource_name = presource_name;
+    }
+
+    public String getResource_code() {
+        return resource_code;
+    }
+
+    public void setResource_code(String resource_code) {
+        this.resource_code = resource_code;
+    }
+
+    public String getResource_name() {
+        return resource_name;
+    }
+
+    public void setResource_name(String resource_name) {
+        this.resource_name = resource_name;
+    }
+
+    public String getLast_balance() {
+        return last_balance;
+    }
+
+    public void setLast_balance(String last_balance) {
+        this.last_balance = last_balance;
+    }
+
+    public String getInput_godown() {
+        return input_godown;
+    }
+
+    public void setInput_godown(String input_godown) {
+        this.input_godown = input_godown;
+    }
+
+    public String getReturn_godown() {
+        return return_godown;
+    }
+
+    public void setReturn_godown(String return_godown) {
+        this.return_godown = return_godown;
+    }
+
+    public String getHigher_allocation() {
+        return higher_allocation;
+    }
+
+    public void setHigher_allocation(String higher_allocation) {
+        this.higher_allocation = higher_allocation;
+    }
+
+    public String getReturn_higher() {
+        return return_higher;
+    }
+
+    public void setReturn_higher(String return_higher) {
+        this.return_higher = return_higher;
+    }
+
+    public String getAllocation_lower() {
+        return allocation_lower;
+    }
+
+    public void setAllocation_lower(String allocation_lower) {
+        this.allocation_lower = allocation_lower;
+    }
+
+    public String getLower_return() {
+        return lower_return;
+    }
+
+    public void setLower_return(String lower_return) {
+        this.lower_return = lower_return;
+    }
+
+    public String getWait_in() {
+        return wait_in;
+    }
+
+    public void setWait_in(String wait_in) {
+        this.wait_in = wait_in;
+    }
+
+    public String getWait_out() {
+        return wait_out;
+    }
+
+    public void setWait_out(String wait_out) {
+        this.wait_out = wait_out;
+    }
+
+    public String getAllocation_passing() {
+        return allocation_passing;
+    }
+
+    public void setAllocation_passing(String allocation_passing) {
+        this.allocation_passing = allocation_passing;
+    }
+
+    public String getReturn_passing() {
+        return return_passing;
+    }
+
+    public void setReturn_passing(String return_passing) {
+        this.return_passing = return_passing;
+    }
+
+    public String getSales() {
+        return sales;
+    }
+
+    public void setSales(String sales) {
+        this.sales = sales;
+    }
+
+    public String getDiscount_sales() {
+        return discount_sales;
+    }
+
+    public void setDiscount_sales(String discount_sales) {
+        this.discount_sales = discount_sales;
+    }
+
+    public String getGive() {
+        return give;
+    }
+
+    public void setGive(String give) {
+        this.give = give;
+    }
+
+    public String getSales_difference() {
+        return sales_difference;
+    }
+
+    public void setSales_difference(String sales_difference) {
+        this.sales_difference = sales_difference;
+    }
+
+    public String getDiscount_difference() {
+        return discount_difference;
+    }
+
+    public void setDiscount_difference(String discount_difference) {
+        this.discount_difference = discount_difference;
+    }
+
+    public String getGeneral_difference() {
+        return general_difference;
+    }
+
+    public void setGeneral_difference(String general_difference) {
+        this.general_difference = general_difference;
+    }
+
+    public String getGive_difference() {
+        return give_difference;
+    }
+
+    public void setGive_difference(String give_difference) {
+        this.give_difference = give_difference;
+    }
+
+    public String getNew_gotone() {
+        return new_gotone;
+    }
+
+    public void setNew_gotone(String new_gotone) {
+        this.new_gotone = new_gotone;
+    }
+
+    public String getOld_gotone() {
+        return old_gotone;
+    }
+
+    public void setOld_gotone(String old_gotone) {
+        this.old_gotone = old_gotone;
+    }
+
+    public String getNew_easyown() {
+        return new_easyown;
+    }
+
+    public void setNew_easyown(String new_easyown) {
+        this.new_easyown = new_easyown;
+    }
+
+    public String getOld_easyown() {
+        return old_easyown;
+    }
+
+    public void setOld_easyown(String old_easyown) {
+        this.old_easyown = old_easyown;
+    }
+
+    public String getNew_mzone() {
+        return new_mzone;
+    }
+
+    public void setNew_mzone(String new_mzone) {
+        this.new_mzone = new_mzone;
+    }
+
+    public String getOld_mzone() {
+        return old_mzone;
+    }
+
+    public void setOld_mzone(String old_mzone) {
+        this.old_mzone = old_mzone;
+    }
+
+    public String getBad_replace() {
+        return bad_replace;
+    }
+
+    public void setBad_replace(String bad_replace) {
+        this.bad_replace = bad_replace;
+    }
+
+    public String getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(String subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public String getNow_balance() {
+        return now_balance;
+    }
+
+    public void setNow_balance(String now_balance) {
+        this.now_balance = now_balance;
+    }
+
+    public String getService_use() {
+        return service_use;
+    }
+
+    public void setService_use(String service_use) {
+        this.service_use = service_use;
+    }
+
+    public String getDay_return() {
+        return day_return;
+    }
+
+    public void setDay_return(String day_return) {
+        this.day_return = day_return;
+    }
+
+    public String getMonth_return() {
+        return month_return;
+    }
+
+    public void setMonth_return(String month_return) {
+        this.month_return = month_return;
+    }
+
+    public String getNew_other() {
+        return new_other;
+    }
+
+    public void setNew_other(String new_other) {
+        this.new_other = new_other;
+    }
+
+    public String getOld_other() {
+        return old_other;
+    }
+
+    public void setOld_other(String old_other) {
+        this.old_other = old_other;
+    }
+
+    public String getNew_difference() {
+        return new_difference;
+    }
+
+    public void setNew_difference(String new_difference) {
+        this.new_difference = new_difference;
+    }
+
+    public String getOld_difference() {
+        return old_difference;
+    }
+
+    public void setOld_difference(String old_difference) {
+        this.old_difference = old_difference;
+    }
+
+    public String getReason_difference() {
+        return reason_difference;
+    }
+
+    public void setReason_difference(String reason_difference) {
+        this.reason_difference = reason_difference;
+    }
+
+    public String getCreate_login() {
+        return create_login;
+    }
+
+    public void setCreate_login(String create_login) {
+        this.create_login = create_login;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getOpt() {
+        return opt;
+    }
+
+    public void setOpt(String opt) {
+        this.opt = opt;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+}

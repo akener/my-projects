@@ -1,0 +1,7 @@
+@XmlSchema(
+        namespace = "http://nm.cmcc.com/PCMP/ESOPSrv/ESOPMethod/ESOP000001/",
+        elementFormDefault = XmlNsForm.QUALIFIED)
+package com.esop.common.jaxb;
+
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;

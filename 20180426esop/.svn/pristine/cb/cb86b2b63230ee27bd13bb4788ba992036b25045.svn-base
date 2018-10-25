@@ -1,0 +1,66 @@
+package com.esop.callServiceOtherSys.controller;
+
+
+
+import com.esop.callServiceOtherSys.dto.CallServiceCrmDto;
+import com.esop.common.jaxb.CallCrmService;
+import com.esop.common.jaxb.JsonToXml;
+import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+@RestController
+public class CallServiceCrmRC {
+    @Autowired
+    CallCrmService callCrmService;
+    //crm增加工号权限
+    @RequestMapping(value="/callCrmService_UserFuncAdd")
+    public String crmLoginAdd(CallServiceCrmDto parameter){
+
+        //取当前时间
+        Date current = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String dateNow = sdf.format(current);
+        dateNow+="000001";
+        try {
+            String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root>";
+            xmlParamter+="<ippowercode>"+parameter.getIppowercode()+"</ippowercode>";
+            xmlParamter+="<iploginno>"+parameter.getIploginno()+"</iploginno>";
+            xmlParamter+="<ipgroupid>"+parameter.getIpgroupid()+"</ipgroupid>";
+            xmlParamter+="<idopcode>"+parameter.getIdopcode()+"</idopcode>";
+            xmlParamter+="<idloginno>"+parameter.getIdloginno()+"</idloginno>";
+            xmlParamter+="<iopcode>8058</iopcode>";
+            xmlParamter+="<iloginAccept></iloginAccept>";
+            xmlParamter+="<ioptime>"+dateNow+"</ioptime>";
+            xmlParamter+="<iopflag>"+parameter.getIopflag()+"</iopflag>";
+            xmlParamter+="<ibegtime>"+dateNow+"</ibegtime>";
+            xmlParamter+="<iendtime>20500101</iendtime>";
+            xmlParamter+="<ioacode>ESOP创建</ioacode>";
+            xmlParamter+="<ioatitle>ESOP创建</ioatitle>";
+            xmlParamter+="</root>";
+            System.out.println("+++++++++++++++++++++++++ xmlParamter = "+xmlParamter);
+            String resulXml = callCrmService.CrmWebserviceCall("sLoginPdVestWS_XML",xmlParamter);
+            System.out.println("+++++++++++++++++++++++++ resulXml = "+resulXml);
+            //logger.info("resulXml=返回xml报文"+resulXml);
+
+            Document dom= DocumentHelper.parseText(resulXml);
+            Element R=dom.getRootElement();
+            String return_code_boss=R.element("RETURN_CODE").getText();
+            String return_msg_boss=R.element("RETURN_MSG").getText();
+            String result = return_code_boss+","+return_msg_boss;
+            System.out.println("+++++++++++++++++++++++++ result = "+result);
+
+            return "1";
+        }catch (Exception e){
+            return "9999";
+        }
+    }
+}

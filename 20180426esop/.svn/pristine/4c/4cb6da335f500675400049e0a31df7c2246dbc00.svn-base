@@ -1,0 +1,316 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <title>入账反撤发起</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <!--分公司-->
+        <input type="hidden" id="AREAID" value="<%=root_org_id%>"/>
+        <!--客户经理(编号)-->
+        <input type="hidden" id="CUSTMGR" value="<%=login_no%>" />
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>起始交易日期【必】：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="STARTTRADEDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" value="" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'STARTTRADEDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止交易日期【必】：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="ENDTRADEDATE" class="input-sty04 form-ipt"
+                                       maxlength="11"  value=""  readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'ENDTRADEDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                           <th>查询类型：</th>
+                           <td nowrap='nowrap'>
+                               <select id="QRYTYPE" class="selector_region input-sty04 form-ipt" disabled="disabled">
+                                   <option value="3">已认领</option>
+                               </select>
+                           </td>
+                           <th>稽核标识码：</th>
+                           <td nowrap='nowrap'>
+                               <input type="text" id="CLAIMOID" value="" class="input-sty04 form-ipt">
+                           </td>
+
+                        </tr>
+
+                        <tr>
+                            <th>起始申请时间：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="STARTAPPLYDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'STARTAPPLYDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止申请日期：</th>
+                            <td nowrap='nowrap'>
+                                <input type=text id="ENDAPPLYDATE" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'ENDAPPLYDATE',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>入账集团单位：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="GRPCUSTID" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>账务员：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="ACCOUNTCLERK" value="" class="input-sty04 form-ipt">
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <th>金额(元)：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="FEE" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="qryBankTradeInfo()">查询</button>
+                            <%--<button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>银行交易明细查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <input type="hidden" id="first_node_id" value="">
+                        <input type="hidden" id="node" value="">
+                        <table class="table table-bordered" id="BankTradeDetailInfo" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>操作</th>
+                                <th class="text-center" nowrap='nowrap'>资金认领申请单号</th>
+                                <th class="text-center" nowrap='nowrap'>银行账号</th>
+                                <th class="text-center" nowrap='nowrap'>到账户名</th>
+                                <th class="text-center" nowrap='nowrap'>对方账号</th>
+                                <th class="text-center" nowrap='nowrap'>对方户名</th>
+                                <th class="text-center" nowrap='nowrap'>摘要</th>
+                                <th class="text-center" nowrap='nowrap'>用途</th>
+                                <th class="text-center" nowrap='nowrap'>稽核标识码</th>
+                                <th class="text-center" nowrap='nowrap'>营业员工号</th>
+                                <th class="text-center" nowrap='nowrap'>金额</th>
+                                <th class="text-center" nowrap='nowrap'>交易时间</th>
+                                <th class="text-center" nowrap='nowrap'>缴款方式</th>
+                                <th class="text-center" nowrap='nowrap'>支票号</th>
+                                <th class="text-center" nowrap='nowrap'>银行网点编号</th>
+                                <th class="text-center" nowrap='nowrap'>入账集团单位名称</th>
+                                <th class="text-center" nowrap='nowrap'>唯一标识码</th>
+                                <th class="text-center" nowrap='nowrap'>申请人</th>
+                                <th class="text-center" nowrap='nowrap'>申请时间</th>
+                                <th class="text-center" nowrap='nowrap'>处理状态</th>
+                                <th class="text-center" nowrap='nowrap'>处理时间</th>
+                                <th class="text-center" nowrap='nowrap'>账务员</th>
+                                <th class="text-center" nowrap='nowrap'>入账备注</th>
+                                <th class="text-center" nowrap='nowrap'>客户经理工号</th>
+                                <th class="text-center" nowrap='nowrap'>客户经理</th>
+                                <th class="text-center" nowrap='nowrap'>集团编码</th>
+                            </tr>
+
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript" class="init">
+    var table = "";
+    $(document).ready(function () {
+        nowDate();
+    });
+    //银行交易明细查询列表
+    function qryBankTradeInfo() {
+        var startDate=$("#STARTTRADEDATE").val();
+        var endDate=$("#ENDTRADEDATE").val();
+        if(startDate =='' || endDate==''){
+            alert("请选择起始交易日期和终止交易日期！");
+            return;
+        }
+        var AREAID = $("#AREAID").val();//分公司
+        var CUSTMGR = $("#CUSTMGR").val();//客户经理(编号)
+        var FEE = $("#FEE").val();//金额(元)
+        var FEE_fen = Math.round(Number(FEE)*100);//金额(分)
+        table = $('#BankTradeDetailInfo').DataTable({
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "bSort":false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax: {
+                url:"/getRelBankInfoFromBoss",
+                type:"POST",
+                data:{
+                    OPERTYPE:"2",
+                    ISQRYCOUNT:"2",
+                    STARTTRADEDATE:$("#STARTTRADEDATE").val(),
+                    ENDTRADEDATE:$("#ENDTRADEDATE").val(),
+                    AREAID:AREAID,
+                    ENTERORG:"",
+                    CUSTMGR:CUSTMGR,
+                    QRYTYPE:$("#QRYTYPE").val(),
+                    CLAIMOID:$("#CLAIMOID").val(),
+                    FEE:FEE == "" ? "" : FEE_fen,
+                    GRPCUSTID:$("#GRPCUSTID").val(),
+                    ACCOUNTCLERK:$("#ACCOUNTCLERK").val(),
+                    STARTAPPLYDATE:$("#STARTAPPLYDATE").val(),
+                    ENDAPPLYDATE:$("#ENDAPPLYDATE").val(),
+                    PAGES:$("#PAGES").val()
+                }
+            },
+            columns: [
+                { data: "claimoid",
+                    "width": "15%",
+                    render: function ( data, type, row, meta ) {
+                        return data= "<button type='button' style='width: 85px'  class='ui-btn mgr-10' " +
+                            "onclick=showAnnulModal('"+row.esoporderid+"','"+row.fromacctid+"','"+encodeURI(row.fromacctname)+"','" +row.bankacctid+"','"+encodeURI(row.bankacctname)+"','"+row.transdate+"','"+row.infee+"','"+row.statusdate+"','"+row.accountclerk+"','"+encodeURI(row.summary)+"','"+row.groupid+"','"+row.bankformnum+"','"+row.claimoid+"','"+row.infee_yuan+"','"+row.outfee_yuan+"','"+row.servfee_yuan+"','"+row.groupmgr+"','"+row.accountclerk_zhongwen+"')>反撤申请</button>";
+                    }
+                },
+                { data:"esoporderid"},
+                { data: "bankacctid"},
+                { data: "bankacctname"},
+                { data: "fromacctid"},
+                { data: "fromacctname"},
+                { data: "summary"},
+                { data: "usage"},
+                { data: "checkcode"},
+                { data: "bankopid"},
+                { data: "infee_yuan"},
+                { data: "transdate"},
+                { data: "chargetype"},
+                { data: "checknum"},
+                { data: "bankorgid"},
+                { data: "groupname"},
+                { data: "claimoid"},
+                { data: "applyopid_zhongwen"},
+                { data: "applydate"},
+                { data: "status"},
+                { data: "statusdate"},
+                { data: "accountclerk_zhongwen"},
+                { data: "note"},
+       //         { data: "333333d"},
+                { data: "groupmgr"},
+                { data: "groupmgr_zhongwen"},
+                { data: "groupid"}
+            ],
+            select: true,
+            buttons: [
+            ]
+        })
+    }
+
+    var custmgr_aa ="";
+    function showAnnulModal(esoporderid,fromacctid,fromacctname,bankacctid,bankacctname,transdate,infee,statusdate,accountclerk,summary,groupid,bankformnum,claimoid,infee_yuan,outfee_yuan,servfee_yuan,groupmgr,accountclerk_zhongwen) {
+       custmgr_aa = $("#CUSTMGR").val();
+       if(custmgr_aa !=groupmgr){
+            alert("只能反撤归属自己的银行交易明细,请重新选择");
+            return false;
+        }
+        //不予许对跨月（以自然月算的上月）认领的资金进行入账反撤操作  20171227102227
+        var date = new Date(statusdate.substring(0,4),parseInt(statusdate.substring(4,6),10)-1,statusdate.substring(6,8));
+        //取当前月的第一天
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth()+1;
+        if(month < 10){
+            month = '0'+month;
+        }
+        var lastDay = getLastDay(year,month);
+        var lastDate = year+"-"+month+"-"+lastDay; //取当前月的最后一天
+        var fdate = new Date( year,parseInt(month,10)-1,01);
+
+        if(date < fdate){
+            alert("不予许对跨月认领的资金进行入账反撤操作!");
+            return false;
+        }else{
+
+        var url="/esop/fcsq?renling_shenqingdan="+esoporderid+"&fromacctid="+fromacctid+"&fromacctname="+encodeURI(fromacctname)+"&bankacctid="+bankacctid+"&bankacctname="+encodeURI(bankacctname)+"&transdate="+transdate+"&infee="+infee+"&statusdate="+statusdate+"&accountclerk="+accountclerk+"&summary="+summary+"&groupid="+groupid+"&bankformnum="+bankformnum+"&claimoid="+claimoid+"&infee_yuan="+infee_yuan+"&outfee_yuan="+outfee_yuan+"&servfee_yuan="+servfee_yuan+"&login_no="+"<%=login_no%>"+"&login_name="+"<%=login_name%>"+"&accountclerk_zhongwen="+encodeURI(accountclerk_zhongwen);
+            window.open(url);
+            return true;
+        }
+        var url="/esop/fcsq?renling_shenqingdan="+esoporderid+"&fromacctid="+fromacctid+"&fromacctname="+encodeURI(fromacctname)+"&bankacctid="+bankacctid+"&bankacctname="+encodeURI(bankacctname)+"&transdate="+transdate+"&infee="+infee+"&statusdate="+statusdate+"&accountclerk="+accountclerk+"&summary="+summary+"&groupid="+groupid+"&bankformnum="+bankformnum+"&claimoid="+claimoid+"&infee_yuan="+infee_yuan+"&outfee_yuan="+outfee_yuan+"&servfee_yuan="+servfee_yuan+"&login_no="+"<%=login_no%>"+"&login_name="+"<%=login_name%>"+"&accountclerk_zhongwen="+encodeURI(accountclerk_zhongwen);
+        window.open(url);
+    }
+    function getLastDay(year,month){
+        var new_year = year;        //取当前的年份
+        var new_month = month++;    //取下一个月的第一天，方便计算（最后一天不固定）
+        if(month>12){                //如果当前大于12月，则年份转到下一年
+            new_month -=12;            //月份减
+            new_year++;                //年份增
+        }
+        var new_date = new Date(new_year,new_month,1);   // 取当年当月的 下个 月中的第一天
+        // 获取当月最后一天日期
+        return (new Date(new_date.getTime()-1000*60*60*24)).getDate();
+    }
+    function nowDate() {
+        var now=getNowFormatDate();
+        $("#STARTTRADEDATE").val(now);
+        $("#ENDTRADEDATE").val(now);
+    }
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+</script>
+

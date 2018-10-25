@@ -1,0 +1,65 @@
+package com.esop.invoice.model;
+
+import java.math.BigDecimal;
+
+public class EpInvRedPartInfo {
+    private Integer recSerialNo;
+
+    private String applicationNo;
+
+    private String groupAccountId;
+
+    private String groupAccountName;
+
+    private BigDecimal invoiceAmount;
+
+    private String invoiceNo;
+
+    public Integer getRecSerialNo() {
+        return recSerialNo;
+    }
+
+    public void setRecSerialNo(Integer recSerialNo) {
+        this.recSerialNo = recSerialNo;
+    }
+
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getGroupAccountId() {
+        return groupAccountId;
+    }
+
+    public void setGroupAccountId(String groupAccountId) {
+        this.groupAccountId = groupAccountId;
+    }
+
+    public String getGroupAccountName() {
+        return groupAccountName;
+    }
+
+    public void setGroupAccountName(String groupAccountName) {
+        this.groupAccountName = groupAccountName;
+    }
+
+    public BigDecimal getInvoiceAmount() {
+        return invoiceAmount;
+    }
+
+    public void setInvoiceAmount(BigDecimal invoiceAmount) {
+        this.invoiceAmount = invoiceAmount;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+}

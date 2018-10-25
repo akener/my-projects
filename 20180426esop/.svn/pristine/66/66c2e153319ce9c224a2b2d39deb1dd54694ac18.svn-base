@@ -1,0 +1,1375 @@
+package com.esop.bwossrv.controller;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.visitInfo.controller.VisitDetailController;
+import com.esop.visitInfo.dto.TestFormDto;
+import com.esop.visitInfo.dto.VisitContentDto;
+import com.esop.visitInfo.dto.VisitDatacenterDto;
+import com.esop.visitInfo.dto.VisitProcessDto;
+import com.esop.visitInfo.service.VisitProcessService;
+import com.esop.visitInfo.service.VisitSercice;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.esop.bwossrv.controller.BwosWebSrvPortType;
+import com.esop.bwossrv.controller.BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator;
+
+
+
+/**
+ * 调用OA的接口
+ * 进乡参观流程表单
+ * subt
+ */
+@RestController
+public class SendAlertMsg {
+	private static Logger logger = Logger.getLogger(SendAlertMsg.class);
+	@Autowired
+	VisitSercice visitSercice;
+	@RequestMapping(value = "/visitInfoOa")
+	public String process(VisitProcessDto param) {
+		String str = "";
+		Map<String,Object> map = new HashMap<>();
+		VisitProcessDto visitProcessDto;
+		List visit = visitSercice.getProcessApply(param);
+		logger.info("visit是:"+visit);
+		for (int i = 0; i < visit.size(); i++) {
+			String retXml = null;
+			try {
+				visitProcessDto = (VisitProcessDto)visit.get(i);
+				String visit_unit = visitProcessDto.getVisit_unit();//参观单位
+				String grop_id = visitProcessDto.getGrop_id();//集团编码
+				String visit_address =visitProcessDto.getVisit_address();//参观地址
+				String visit_number =visitProcessDto.getVisit_number();//参观人数
+				String visit_date =visitProcessDto.getVisit_date();//参观时间
+				String grop_escort_people =visitProcessDto.getGrop_escort_people();//集团客户部陪同人员
+				String interface_man =visitProcessDto.getInterface_man();//接口人
+				String connection_phone =visitProcessDto.getConnection_phone();//联系电话
+				//参观内容
+				String hv_distribution_room = visitProcessDto.getHv_distribution_room();//高压配电室
+				String lv_distribution_room = visitProcessDto.getLv_distribution_room();//低压变配电室
+				String engine_room = visitProcessDto.getEngine_room();//油机室
+				String power_battery_room = visitProcessDto.getPower_battery_room();//电力电池室
+				String precision_air = visitProcessDto.getPrecision_air();//精密空调
+				String commercial_tworoom = visitProcessDto.getCommercial_tworoom();//2楼商用机房
+				String commercial_fiveroom = visitProcessDto.getCommercial_fiveroom();//5楼商用机房
+				String commercial_sixroom = visitProcessDto.getCommercial_sixroom();//6楼商用机房
+				String storage_room = visitProcessDto.getStorage_room();//库房
+				String focus_monitor_hall = visitProcessDto.getFocus_monitor_hall();//集中监控大厅
+				String station = visitProcessDto.getStation();//工位
+				String canteen = visitProcessDto.getCanteen();//食堂
+				String special_needs = visitProcessDto.getSpecial_needs();//特殊需求
+				//接待要求
+				String large_screen_greeting = visitProcessDto.getLarge_screen_greeting();//大屏幕欢迎辞
+				String boardroom_number = visitProcessDto.getBoardroom_number();//数量(会议室)
+				String capacity = visitProcessDto.getCapacity();//容量（会议室）
+				String projector_curtain = visitProcessDto.getProjector_curtain();//投影仪及幕布
+				String famous_brand = visitProcessDto.getFamous_brand();//名牌
+				String rostrum  = visitProcessDto.getRostrum();//主席台
+				String microphone = visitProcessDto.getMicrophone();//麦克风
+				String mineral_water = visitProcessDto.getMineral_water();//矿泉水
+				String tea_water = visitProcessDto.getTea_water();//茶水
+				String paper_pen = visitProcessDto.getPaper_pen();//纸笔
+				String car_number = visitProcessDto.getCar_number();//数量（车辆）
+				String models_colour = visitProcessDto.getModels_colour();//车型及颜色
+				String plate_num = visitProcessDto.getPlate_num();//车牌号码
+				String table_number = visitProcessDto.getTable_number();//桌餐
+				String canteen_number = visitProcessDto.getCanteen_number();//食堂（餐饮）
+				//入参
+				logger.info("服务启动");
+				String xmldata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+						"<Message xmlns=\"http://nm.cmcc.com/ESOP/BWOSSrv/BWOSMethod/BWOS00012/\">" +
+						"<Header>" +
+						"<AppID>ESOP</AppID>" +
+						"<Provide_AppID>BWOS</Provide_AppID>" +
+						"</Header>" +
+						"<body>" +
+						"<MsgHeader>" +
+						"<SYSTEM_ID>ESOP</SYSTEM_ID>" +
+						"<SYSTEM_NAME>端对端系统</SYSTEM_NAME>" +
+						"<EMP_NUMBER>44000000</EMP_NUMBER>" +
+						"<DocumentAuthor>wangzhe</DocumentAuthor>" +
+						"<Department>省公司/集团客户部</Department>" +
+						"<order_identifier>ESOP00000001</order_identifier>" +
+						"</MsgHeader>" +
+						"<canguandanwei>" +
+						visit_unit+
+						"</canguandanwei>" +
+						"<jituanbianma>" +
+						grop_id +
+						"</jituanbianma>" +
+						"<canguandidian>" +
+						visit_address +
+						"</canguandidian>" +
+						"<canguanrenshu>" +
+						visit_number +
+						"</canguanrenshu>" +
+						"<canguanshijian>" +
+						visit_date +
+						"</canguanshijian>" +
+						"<peitongrenyuan>" +
+						grop_escort_people +
+						"</peitongrenyuan>" +
+						"<jiekouren>" +
+						interface_man +
+						"</jiekouren>" +
+						"<lianxidianhua>" +
+						connection_phone +
+						"</lianxidianhua>" +
+						"<gaoyapeidianshiSQF>" +
+						hv_distribution_room +
+						"</gaoyapeidianshiSQF>" +
+						"<diyapeidianshiSQF>" +
+						lv_distribution_room +
+						"</diyapeidianshiSQF>" +
+						"<youjishiSQF>" +
+						engine_room +
+						"</youjishiSQF>" +
+						"<dianlidianchishiSQF>" +
+						power_battery_room +
+						"</dianlidianchishiSQF>" +
+						"<jingmikongtiaoSQF>" +
+						precision_air +
+						"</jingmikongtiaoSQF>" +
+						"<shangyongjifang2SQF>" +
+						commercial_tworoom +
+						"</shangyongjifang2SQF>" +
+						"<shangyongjifang5SQF>" +
+						commercial_fiveroom +
+						"</shangyongjifang5SQF>" +
+						"<shangyongjifang6SQF>" +
+						commercial_sixroom +
+						"</shangyongjifang6SQF>" +
+						"<kufangSQF>" +
+						storage_room +
+						"</kufangSQF>" +
+						"<jizhongjiankongdatingSQF>" +
+						focus_monitor_hall +
+						"</jizhongjiankongdatingSQF>" +
+						"<gongweiSQF>" +
+						station +
+						"</gongweiSQF>" +
+						"<shitangSQF>" +
+						canteen +
+						"</shitangSQF>" +
+						"<teshuxuqiuSQF>" +
+						special_needs +
+						"</teshuxuqiuSQF>" +
+						"<dapingmuhuanyingciSQF>" +
+						large_screen_greeting +
+						"</dapingmuhuanyingciSQF>" +
+						"<shuliangSQF>" +
+						boardroom_number +
+						"</shuliangSQF>" +
+						"<rongliangSQF>" +
+						capacity +
+						"</rongliangSQF>" +
+						"<touyingyijimubuSQF>" +
+						projector_curtain +
+						"</touyingyijimubuSQF>" +
+						"<mingpaiSQF>" +
+						famous_brand +
+						"</mingpaiSQF>" +
+						"<zhuxitaiSQF>" +
+						rostrum +
+						"</zhuxitaiSQF>" +
+						"<maikefengSQF>" +
+						microphone +
+						"</maikefengSQF>" +
+						"<kuangquanshuiSQF>" +
+						mineral_water +
+						"</kuangquanshuiSQF>" +
+						"<chashuiSQF>" +
+						tea_water +
+						"</chashuiSQF>" +
+						"<zhibiSQF>" +
+						paper_pen +
+						"</zhibiSQF>" +
+						"<CLJCRshuliangSQF>" +
+						car_number +
+						"</CLJCRshuliangSQF>" +
+						"<chexingjiyanseSQF>" +
+						models_colour +
+						"</chexingjiyanseSQF>" +
+						"<chepaihaomaSQF>" +
+						plate_num +
+						"</chepaihaomaSQF>" +
+						"<canzhuoSQF>" +
+						table_number +
+						"</canzhuoSQF>" +
+						"<CYshitangSQF>" +
+						canteen_number +
+						"</CYshitangSQF>" +
+						"</body>" +
+						"</Message>";
+				logger.info("xmldata参数是:" + xmldata);
+				logger.info("=========================" + i);
+
+				BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator serviceClient = new BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator();
+				logger.info("serviceClient是:"+serviceClient);
+				BwosWebSrvPortType service = serviceClient.getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPort();
+				logger.info("service是:"+service);
+				retXml = service.BWOSMethod(xmldata, "ESOP", "BWOS00012");
+				logger.info("retXml是:"+retXml);
+				Map MessageMap = new HashMap();
+				Document doc = DocumentHelper.parseText(retXml);
+				Element Message1 = doc.getRootElement();
+				Iterator paraItems = Message1.elementIterator();
+				Map MessageMap1 = new HashMap();
+				while (paraItems.hasNext()) {
+					Element aParam = (Element) paraItems.next();
+					Iterator paraItems1 = aParam.elementIterator();
+					Map MessageMap2 = new HashMap();
+					while (paraItems1.hasNext()) {
+						Element aParam1 = (Element) paraItems1.next();
+						MessageMap2.put(aParam1.getName(),
+								aParam1.getTextTrim());
+					}
+					MessageMap1.put(aParam.getName(), MessageMap2);
+					MessageMap.put(Message1.getName(), MessageMap1);
+				}
+				Map Message2 = (Map) MessageMap.get("Message");
+				Map Body = (Map) Message2.get("Body");
+				String RESULT_FLAG = (String) Body.get("RESULT_FLAG");
+				//logger.info("开始");
+				if ("0".equals(RESULT_FLAG)){
+					str = "成功！";
+					map.put("info",str);
+					//logger.info(str);
+				}else if ("1".equals(RESULT_FLAG)){
+					str = "失败！";
+					map.put("info",str);
+				}
+
+			} catch (Exception e) {
+				logger.info("");
+				try {
+					if("".equals(retXml)&& null==retXml){
+						retXml=e.getMessage();
+					}
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
+		String json =  JSONObject.toJSONString(map);
+		return json;
+	}
+
+
+	//数据中心
+	@RequestMapping(value = "/datacenterInfoOa")
+	public String datacenterInfoOa(VisitDatacenterDto param) {
+		String str = "";
+		Map<String,Object> map = new HashMap<>();
+		VisitDatacenterDto visitDatacenterDto;
+		List visit = visitSercice.getDatacenterApply(param);
+		//logger.info("visit是:"+visit);
+		for (int i = 0; i < visit.size(); i++) {
+			String retXml = null;
+			try {
+				visitDatacenterDto = (VisitDatacenterDto)visit.get(i);
+				String visit_unit = visitDatacenterDto.getVisit_unit();//参观单位
+				String grop_id = visitDatacenterDto.getGrop_id();//集团编码
+				String visit_address =visitDatacenterDto.getVisit_address();//参观地址
+				String visit_number =visitDatacenterDto.getVisit_number();//参观人数
+				String visit_date =visitDatacenterDto.getVisit_date();//参观时间
+				String grop_escort_people =visitDatacenterDto.getGrop_escort_people();//集团客户部陪同人员
+				String interface_man =visitDatacenterDto.getInterface_man();//接口人
+				String connection_phone =visitDatacenterDto.getConnection_phone();//联系电话
+				//参观内容
+				String hv_distribution_room = visitDatacenterDto.getHv_distribution_room();//高压配电室
+				String lv_distribution_room = visitDatacenterDto.getLv_distribution_room();//低压变配电室
+				String engine_room = visitDatacenterDto.getEngine_room();//油机室
+				String htdc_pb_room = visitDatacenterDto.getHtdc_pb_room();//高压直流电力电池室
+				String oddc_pb_room = visitDatacenterDto.getOddc_pb_room();//普通直流电力电池室
+				String ogac_pb_room = visitDatacenterDto.getOgac_pb_room();//普通交流电力电池室
+				String ipdt_refrigerat_room = visitDatacenterDto.getIpdt_refrigerat_room();//独立制冷室
+				String columns_air_room = visitDatacenterDto.getColumns_air_room();//列间空调机房
+				String water_door_room = visitDatacenterDto.getWater_door_room();//水冷前门机房
+				String heat_backplane_room = visitDatacenterDto.getHeat_backplane_room();//热管背板机房
+				String storage_room = visitDatacenterDto.getStorage_room();//库房
+				String focus_monitor_hall = visitDatacenterDto.getFocus_monitor_hall();//集中监控大厅
+				String station = visitDatacenterDto.getStation();//工位
+				String get_accommodation = visitDatacenterDto.getGet_accommodation();//住宿
+				String canteen = visitDatacenterDto.getCanteen();//食堂
+				String conference_room = visitDatacenterDto.getConference_room();//会议室
+				String special_needs = visitDatacenterDto.getSpecial_needs();//特殊需求
+				//接待要求
+				String large_screen_greeting = visitDatacenterDto.getLarge_screen_greeting();//大屏幕欢迎辞
+				String boardroom_number = visitDatacenterDto.getBoardroom_number();//数量(会议室)
+				String capacity = visitDatacenterDto.getCapacity();//容量（会议室）
+				String projector_curtain = visitDatacenterDto.getProjector_curtain();//投影仪及幕布
+				String famous_brand = visitDatacenterDto.getFamous_brand();//名牌
+				String rostrum  = visitDatacenterDto.getRostrum();//主席台
+				String microphone = visitDatacenterDto.getMicrophone();//麦克风
+				String mineral_water = visitDatacenterDto.getMineral_water();//矿泉水
+				String tea_water = visitDatacenterDto.getTea_water();//茶水
+				String paper_pen = visitDatacenterDto.getPaper_pen();//纸笔
+				String car_number = visitDatacenterDto.getCar_number();//数量（车辆）
+				String models_colour = visitDatacenterDto.getModels_colour();//车型及颜色
+				String plate_num = visitDatacenterDto.getPlate_num();//车牌号码
+				String table_number = visitDatacenterDto.getTable_number();//桌餐
+				String canteen_number = visitDatacenterDto.getCanteen_number();//食堂（餐饮）
+				//入参
+				logger.info("服务启动");
+				String xmldata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+						"<Message xmlns=\"http://nm.cmcc.com/ESOP/BWOSSrv/BWOSMethod/BWOS00013/\">" +
+						"<Header>" +
+						"<AppID>ESOP</AppID>" +
+						"<Provide_AppID>BWOS</Provide_AppID>" +
+						"</Header>" +
+						"<body>" +
+						"<MsgHeader>" +
+						"<SYSTEM_ID>ESOP</SYSTEM_ID>" +
+						"<SYSTEM_NAME>端对端系统</SYSTEM_NAME>" +
+						"<EMP_NUMBER>44000000</EMP_NUMBER>" +
+						"<DocumentAuthor>wangzhe</DocumentAuthor>" +
+						"<Department>省公司/集团客户部</Department>" +
+						"<order_identifier>ESOP00000001</order_identifier>" +
+						"</MsgHeader>" +
+						"<canguandanwei>" +
+						visit_unit+
+						"</canguandanwei>" +
+						"<jituanbianma>" +
+						grop_id +
+						"</jituanbianma>" +
+						"<canguandidian>" +
+						visit_address +
+						"</canguandidian>" +
+						"<canguanrenshu>" +
+						visit_number +
+						"</canguanrenshu>" +
+						"<canguanshijian>" +
+						visit_date +
+						"</canguanshijian>" +
+						"<peitongrenyuan>" +
+						grop_escort_people +
+						"</peitongrenyuan>" +
+						"<jiekouren>" +
+						interface_man +
+						"</jiekouren>" +
+						"<lianxidianhua>" +
+						connection_phone +
+						"</lianxidianhua>" +
+						"<gaoyapeidianshiSQF>" +
+						hv_distribution_room +
+						"</gaoyapeidianshiSQF>" +
+						"<diyapeidianshiSQF>" +
+						lv_distribution_room +
+						"</diyapeidianshiSQF>" +
+						"<youjishiSQF>" +
+						engine_room +
+						"</youjishiSQF>" +
+						"<gaoyazhiliudianlidianchishiSQF>" +
+						htdc_pb_room +
+						"</gaoyazhiliudianlidianchishiSQF>" +
+         				"<putongzhiliudianlidianchishiSQF>" +
+						oddc_pb_room +
+						"</putongzhiliudianlidianchishiSQF>" +
+						"<putongjiaoliudianlidianchishiSQF>" +
+						ogac_pb_room +
+						"</putongjiaoliudianlidianchishiSQF>" +
+						"<dulizhilengzhanSQF>" +
+						ipdt_refrigerat_room +
+						"</dulizhilengzhanSQF>" +
+						"<liejiankongtiaojifangSQF>" +
+						columns_air_room +
+						"</liejiankongtiaojifangSQF>" +
+						"<shuilengqianmenjifangSQF>" +
+						water_door_room +
+						"</shuilengqianmenjifangSQF>" +
+						"<reguanbeibanjifangSQF>" +
+						heat_backplane_room +
+						"</reguanbeibanjifangSQF>" +
+						"<kufangSQF>" +
+						storage_room +
+						"</kufangSQF>" +
+						"<jizhongjiankongdatingSQF>" +
+						focus_monitor_hall +
+						"</jizhongjiankongdatingSQF>" +
+						"<gongweiSQF>" +
+						station +
+						"</gongweiSQF>" +
+						"<zhusuSQF>" +
+						get_accommodation +
+						"</zhusuSQF>" +
+						"<shitangSQF>" +
+						canteen +
+						"</shitangSQF>" +
+						"<huiyishiSQF>" +
+						conference_room +
+						"</huiyishiSQF>" +
+						"<teshuxuqiuSQF>" +
+						special_needs +
+						"</teshuxuqiuSQF>" +
+						"<dapingmuhuanyingciSQF>" +
+						large_screen_greeting +
+						"</dapingmuhuanyingciSQF>" +
+						"<shuliangSQF>" +
+						boardroom_number +
+						"</shuliangSQF>" +
+						"<rongliangSQF>" +
+						capacity +
+						"</rongliangSQF>" +
+						"<touyingyijimubuSQF>" +
+						projector_curtain +
+						"</touyingyijimubuSQF>" +
+						"<mingpaiSQF>" +
+						famous_brand +
+						"</mingpaiSQF>" +
+						"<zhuxitaiSQF>" +
+						rostrum +
+						"</zhuxitaiSQF>" +
+						"<maikefengSQF>" +
+						microphone +
+						"</maikefengSQF>" +
+						"<kuangquanshuiSQF>" +
+						mineral_water +
+						"</kuangquanshuiSQF>" +
+						"<chashuiSQF>" +
+						tea_water +
+						"</chashuiSQF>" +
+						"<zhibiSQF>" +
+						paper_pen +
+						"</zhibiSQF>" +
+						"<CLJCRshuliangSQF>" +
+						car_number +
+						"</CLJCRshuliangSQF>" +
+						"<chexingjiyanseSQF>" +
+						models_colour +
+						"</chexingjiyanseSQF>" +
+						"<chepaihaomaSQF>" +
+						plate_num +
+						"</chepaihaomaSQF>" +
+						"<canzhuoSQF>" +
+						table_number +
+						"</canzhuoSQF>" +
+						"<CYshitangSQF>" +
+						canteen_number +
+						"</CYshitangSQF>" +
+						"</body>" +
+						"</Message>";
+				logger.info("xmldata参数是:" + xmldata);
+				logger.info("=========================" + i);
+
+				BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator serviceClient = new BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator();
+				BwosWebSrvPortType service = serviceClient.getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPort();
+				retXml = service.BWOSMethod(xmldata, "ESOP", "BWOS00013");
+				logger.info("retXml是:"+retXml);
+				Map MessageMap = new HashMap();
+				Document doc = DocumentHelper.parseText(retXml);
+				Element Message1 = doc.getRootElement();
+				Iterator paraItems = Message1.elementIterator();
+				Map MessageMap1 = new HashMap();
+				while (paraItems.hasNext()) {
+					Element aParam = (Element) paraItems.next();
+					Iterator paraItems1 = aParam.elementIterator();
+					Map MessageMap2 = new HashMap();
+					while (paraItems1.hasNext()) {
+						Element aParam1 = (Element) paraItems1.next();
+						MessageMap2.put(aParam1.getName(),
+								aParam1.getTextTrim());
+					}
+					MessageMap1.put(aParam.getName(), MessageMap2);
+					MessageMap.put(Message1.getName(), MessageMap1);
+				}
+				Map Message2 = (Map) MessageMap.get("Message");
+				Map Body = (Map) Message2.get("Body");
+				String RESULT_FLAG = (String) Body.get("RESULT_FLAG");
+				if ("0".equals(RESULT_FLAG)){
+					str = "成功！";
+					map.put("info",str);
+				}else if ("1".equals(RESULT_FLAG)){
+					str = "失败！";
+					map.put("info",str);
+				}
+
+			} catch (Exception e) {
+				logger.info("");
+				try {
+					if("".equals(retXml)&& null==retXml){
+						retXml=e.getMessage();
+					}
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
+		String json =  JSONObject.toJSONString(map);
+		return json;
+	}
+
+
+	//测试表单
+	@RequestMapping(value = "/testFormInfoOa")
+	public String testFormInfoOa(TestFormDto param) {
+		String str = "";
+		Map<String,Object> map = new HashMap<>();
+		TestFormDto testFormDto;
+		List visit = visitSercice.getTestApply(param);
+		//logger.info("==========="+visit);
+		for (int i = 0; i < visit.size(); i++) {
+			String retXml = null;
+			try {
+				testFormDto = (TestFormDto)visit.get(i);
+				String customer_name                =testFormDto.getCustomer_name();//客户名称
+				String customer_address             =testFormDto.getCustomer_address();//客户地址
+				String business_attribute           =testFormDto.getBusiness_attribute();//业务属性
+				String relevant_licenses            =testFormDto.getRelevant_licenses();//相关证照
+				String idc_basics                   =testFormDto.getIdc_basics();//IDC基础
+				String customer_people              =testFormDto.getCustomer_people();//客户侧联系人
+				String customer_phone               =testFormDto.getCustomer_phone();//联系电话（客户侧）
+				String customer_mail                =testFormDto.getCustomer_mail();//联系邮箱（客户侧）
+				String account_manager              =testFormDto.getAccount_manager();//客户经理
+				String manager_phone                =testFormDto.getManager_phone();//联系电话（客户经理）
+				String manager_mail                 =testFormDto.getManager_mail();//联系邮箱（客户经理）
+				String test_start_time              =testFormDto.getTest_start_time();//测试开始时间
+				String test_end_time                =testFormDto.getTest_end_time();//测试结束时间(距离测试开始时间不超过15天)
+				String this_whether_delay_test      =testFormDto.getThis_whether_delay_test();//本次是否是延期测试
+				String last_delay_end_time          =testFormDto.getLast_delay_end_time();//上次延期结束时间
+				//测试需求
+				//物理机（哈南）
+				String cpu_hanan                    =testFormDto.getCpu_hanan();//CPU
+				String memory_hanan                 =testFormDto.getMemory_hanan();//内存
+				String storage_hanan                =testFormDto.getStorage_hanan();//存储
+				String dry_bandwidth_hanan          =testFormDto.getDry_bandwidth_hanan();//国干带宽
+				String province_bandwidth_hanan     =testFormDto.getProvince_bandwidth_hanan();//省干带宽
+				String operating_system_hanan       =testFormDto.getOperating_system_hanan();//操作系统
+				String network_ip_hanan             =testFormDto.getNetwork_ip_hanan();//公网IP
+				String port_hanan                   =testFormDto.getPort_hanan();//端口
+				//物理机（进乡）
+				String cpu_village                  =testFormDto.getCpu_village();//CPU
+				String memory_village               =testFormDto.getMemory_village();//内存
+				String storage_village              =testFormDto.getStorage_village();//存储
+				String bandwidth_village            =testFormDto.getBandwidth_village();//带宽
+				String operating_system_village     =testFormDto.getOperating_system_village();//操作系统
+				String network_ip_village           =testFormDto.getNetwork_ip_village();//公网IP
+				String port_village                 =testFormDto.getPort_village();//端口
+				//虚拟机（哈南）
+				String cpu_vm_ha                    =testFormDto.getCpu_vm_ha();//CPU
+				String memory_vm_ha                 =testFormDto.getMemory_vm_ha();//内存
+				String storage_vm_ha                =testFormDto.getStorage_vm_ha();//存储
+				String dry_bandwidth_vm_ha          =testFormDto.getDry_bandwidth_vm_ha();//国干带宽
+				String province_bandwidth_vm_ha     =testFormDto.getProvince_bandwidth_vm_ha();//省干带宽
+				String operating_system_vm_ha       =testFormDto.getOperating_system_vm_ha();//操作系统
+				String ip_vm_ha                     =testFormDto.getIp_vm_ha();//IP
+				String port_vm_ha                   =testFormDto.getPort_vm_ha();//端口
+				//虚拟机（进乡）
+				String cpu_vm_jin                   =testFormDto.getCpu_vm_jin();//CPU
+				String memory_vm_jin                =testFormDto.getMemory_vm_jin();//内存
+				String storage_vm_jin               =testFormDto.getStorage_vm_jin();//存储
+				String bandwidth_vm_jin             =testFormDto.getBandwidth_vm_jin();//带宽
+				String operating_system_vm_jin      =testFormDto.getOperating_system_vm_jin();//操作系统
+				String ip_vm_jin                    =testFormDto.getIp_vm_jin();//IP
+				String port_vm_jin                  =testFormDto.getPort_vm_jin();//端口
+				String other                        =testFormDto.getOther();//其他
+				//入参
+				logger.info("服务启动");
+				String xmldata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+						"<Message xmlns=\"http://nm.cmcc.com/ESOP/BWOSSrv/BWOSMethod/BWOS00014/\">" +
+						"<Header>" +
+						"<AppID>ESOP</AppID>" +
+						"<Provide_AppID>BWOS</Provide_AppID>" +
+						"</Header>" +
+						"<body>" +
+						"<MsgHeader>" +
+						"<SYSTEM_ID>ESOP</SYSTEM_ID>" +
+						"<SYSTEM_NAME>端对端系统</SYSTEM_NAME>" +
+						"<EMP_NUMBER>44000000</EMP_NUMBER>" +
+						"<DocumentAuthor>wangzhe</DocumentAuthor>" +
+						"<Department>省公司/集团客户部</Department>" +
+						"<order_identifier>ESOP00000001</order_identifier>" +
+						"</MsgHeader>" +
+						"<kehumingcheng>" +
+						customer_name +
+						"</kehumingcheng>" +
+						"<kehudizhi>" +
+						customer_address +
+						"</kehudizhi>" +
+						"<yewushuxing>" +
+						business_attribute +
+						"</yewushuxing>" +
+						"<xiangguanzhengjian>" +
+						relevant_licenses +
+						"</xiangguanzhengjian>" +
+						"<jichushujubiao>" +
+						idc_basics +
+						"</jichushujubiao>" +
+						"<kehucelianxiren>" +
+						customer_people +
+						"</kehucelianxiren>" +
+						"<lianxirenlianxidianhua>" +
+						customer_phone +
+						"</lianxirenlianxidianhua>" +
+						"<lianxirenlianxiyouxiang>" +
+						customer_mail +
+						"</lianxirenlianxiyouxiang>" +
+						"<kehujingli>" +
+						account_manager +
+						"</kehujingli>" +
+						"<jinglilianxidianhua>" +
+						manager_phone +
+						"</jinglilianxidianhua>" +
+						"<jinglilianxiyouxiang>" +
+						manager_mail +
+						"</jinglilianxiyouxiang>" +
+						"<WLJHNcpuSQF>" +
+						cpu_hanan +
+						"</WLJHNcpuSQF>" +
+						"<WLJHNneicunSQF>" +
+						memory_hanan +
+						"</WLJHNneicunSQF>" +
+						"<WLJHNcunchuSQF>" +
+						storage_hanan +
+						"</WLJHNcunchuSQF>" +
+						"<WLJHNguogankuandaiSQF>" +
+						dry_bandwidth_hanan +
+						"</WLJHNguogankuandaiSQF>" +
+						"<WLJHNshenggankuandaiSQF>" +
+						province_bandwidth_hanan +
+						"</WLJHNshenggankuandaiSQF>" +
+						"<WLJHNcaozuoxitongSQF>" +
+						operating_system_hanan +
+						"</WLJHNcaozuoxitongSQF>" +
+						"<WLJHNgongwangipSQF>" +
+						network_ip_hanan +
+						"</WLJHNgongwangipSQF>" +
+						"<WLJHNduankouSQF>" +
+						port_hanan +
+						"</WLJHNduankouSQF>" +
+						"<WLJJXcpuSQF>" +
+						cpu_village +
+						"</WLJJXcpuSQF>" +
+						"<WLJJXneicunSQF>" +
+						memory_village +
+						"</WLJJXneicunSQF>" +
+						"<WLJJXcunchuSQF>" +
+						storage_village +
+						"</WLJJXcunchuSQF>" +
+						"<WLJJXkuandaiSQF>" +
+						bandwidth_village +
+						"</WLJJXkuandaiSQF>" +
+						"<WLJJXcaozuoxitongSQF>" +
+						operating_system_village +
+						"</WLJJXcaozuoxitongSQF>" +
+						"<WLJJXgongwangipSQF>" +
+						network_ip_village +
+						"</WLJJXgongwangipSQF>" +
+						"<WLJJXduankouSQF>" +
+						port_village +
+						"</WLJJXduankouSQF>" +
+						"<XNJHNcpuSQF>" +
+						cpu_vm_ha +
+						"</XNJHNcpuSQF>" +
+						"<XNJHNneicunSQF>" +
+						memory_vm_ha +
+						"</XNJHNneicunSQF>" +
+						"<XNJHNcunchuSQF>" +
+						storage_vm_ha +
+						"</XNJHNcunchuSQF>" +
+						"<XNJHNguogankuandaiSQF>" +
+						dry_bandwidth_vm_ha +
+						"</XNJHNguogankuandaiSQF>" +
+						"<XNJHNshenggankuandaiSQF>" +
+						province_bandwidth_vm_ha +
+						"</XNJHNshenggankuandaiSQF>" +
+						"<XNJHNcaozuoxitongSQF>" +
+						operating_system_vm_ha +
+						"</XNJHNcaozuoxitongSQF>" +
+						"<XNJHNipSQF>" +
+						ip_vm_ha +
+						"</XNJHNipSQF>" +
+						"<XNJHNduankouSQF>" +
+						port_vm_ha +
+						"</XNJHNduankouSQF>" +
+						"<XNJJXcpuSQF>" +
+						cpu_vm_jin +
+						"</XNJJXcpuSQF>" +
+						"<XNJJXneicunSQF>" +
+						memory_vm_jin +
+						"</XNJJXneicunSQF>" +
+						"<XNJJXcunchuSQF>" +
+						storage_vm_jin +
+						"</XNJJXcunchuSQF>" +
+						"<XNJJXkuandaiSQF>" +
+						bandwidth_vm_jin +
+						"</XNJJXkuandaiSQF>" +
+						"<XNJJXcaozuoxitongSQF>" +
+						operating_system_vm_jin +
+						"</XNJJXcaozuoxitongSQF>" +
+						"<XNJJXipSQF>" +
+						ip_vm_jin +
+						"</XNJJXipSQF>" +
+						"<XNJJXduankouSQF>" +
+						port_vm_jin +
+						"</XNJJXduankouSQF>" +
+						"<qitaSQF>" +
+						other +
+						"</qitaSQF>" +
+						"<ceshikaishishijian>" +
+						test_start_time +
+						"</ceshikaishishijian>" +
+						"<ceshijieshushijian>" +
+						test_end_time +
+						"</ceshijieshushijian>" +
+						"<yanqiceshi>" +
+						this_whether_delay_test +
+						"</yanqiceshi>" +
+						"<yanqijieshushijian>" +
+						last_delay_end_time +
+						"</yanqijieshushijian>" +
+						"</body>" +
+						"</Message>";
+						logger.info("xmldata参数是" + xmldata);
+				logger.info("=========================" + i);
+
+				BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator serviceClient = new BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator();
+				BwosWebSrvPortType service = serviceClient.getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPort();
+				retXml = service.BWOSMethod(xmldata, "ESOP", "BWOS00014");
+				logger.info("retXml是:"+retXml);
+				Map MessageMap = new HashMap();
+				Document doc = DocumentHelper.parseText(retXml);
+				Element Message1 = doc.getRootElement();
+				Iterator paraItems = Message1.elementIterator();
+				Map MessageMap1 = new HashMap();
+				while (paraItems.hasNext()) {
+					Element aParam = (Element) paraItems.next();
+					Iterator paraItems1 = aParam.elementIterator();
+					Map MessageMap2 = new HashMap();
+					while (paraItems1.hasNext()) {
+						Element aParam1 = (Element) paraItems1.next();
+						MessageMap2.put(aParam1.getName(),
+								aParam1.getTextTrim());
+					}
+					MessageMap1.put(aParam.getName(), MessageMap2);
+					MessageMap.put(Message1.getName(), MessageMap1);
+				}
+				Map Message2 = (Map) MessageMap.get("Message");
+				Map Body = (Map) Message2.get("Body");
+				String RESULT_FLAG = (String) Body.get("RESULT_FLAG");
+				if ("0".equals(RESULT_FLAG)){
+					str = "成功！";
+					map.put("info",str);
+				}else if ("1".equals(RESULT_FLAG)){
+					str = "失败！";
+					map.put("info",str);
+				}
+
+			} catch (Exception e) {
+				logger.info("");
+				try {
+					if("".equals(retXml)&& null==retXml){
+						retXml=e.getMessage();
+					}
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
+		String json =  JSONObject.toJSONString(map);
+		return json;
+	}
+
+	//勘查，资费，资源
+	@RequestMapping(value = "/postageApplyInfoOa")
+	public String postageApplyInfoOa(VisitContentDto param) {
+		String str = "";
+		Map<String,Object> map = new HashMap<>();
+		VisitContentDto visitContentDto;
+		List visit = visitSercice.getPostageApply(param);
+		//logger.info("==========="+visit);
+		for (int i = 0; i < visit.size(); i++) {
+			String retXml = null;
+			try {
+				visitContentDto = (VisitContentDto)visit.get(i);
+				String work_type                    =visitContentDto.getWork_type();//工单类型
+				String customer_name                =visitContentDto.getCustomer_name();//客户名称
+				String customer_address             =visitContentDto.getCustomer_address();//客户地址
+				String business_attribute           =visitContentDto.getBusiness_attribute();//业务属性
+				String relevant_licenses            =visitContentDto.getRelevant_licenses();//相关证照
+				String grop_id                      =visitContentDto.getGrop_id();//集团编码
+				String account_manager              =visitContentDto.getAccount_manager();//客户经理
+				String manager_phone                =visitContentDto.getManager_phone();//联系电话（客户经理）
+				String manager_mail                 =visitContentDto.getManager_mail();//联系邮箱（客户经理）
+				String prt_result_start_time        =visitContentDto.getPrt_result_start_time();//勘查结果预占开始时间
+				String prt_result_end_time          =visitContentDto.getPrt_result_end_time();//勘查结果预占结束时间
+				//资费流程
+				String total_amount                 =visitContentDto.getTotal_amount();//总金额
+				String payment_type                 =visitContentDto.getPayment_type();//付费类型
+				String payment_method               =visitContentDto.getPayment_method();//付费方式
+				String charging_start_time          =visitContentDto.getCharging_start_time();//预计计费开始时间
+				String comprehensive                =visitContentDto.getComprehensive();//综合自评
+				//资费流程（新增）
+				String need_feedback_form           =visitContentDto.getNeed_feedback_form();//需要反馈给客户的调研表格
+				String need_feedback_form_save      =visitContentDto.getNeed_feedback_form_save();//需要反馈给客户的调研表格附件保存文件名称
+				String need_feedback_form_file      =visitContentDto.getNeed_feedback_form_file();//需要反馈给客户的调研表格附件可见名称
+				String construction_time            =visitContentDto.getConstruction_time();//施工交付时间
+				String customer_time                =visitContentDto.getCustomer_time();//客户进场时间
+				String agreement_amount             =visitContentDto.getAgreement_amount();//协议金额
+				String payment_type_new             =visitContentDto.getPayment_type_new();//付费类型(新增)
+				String payment_method_new           =visitContentDto.getPayment_method_new();//付费方式(新增)
+				String charging_start_time_new      =visitContentDto.getCharging_start_time_new();//预计计费开始时间(新增)
+				String price_basis                  =visitContentDto.getPrice_basis();//价格审批依据
+				String price_basis_result           =visitContentDto.getPrice_basis_result();//价格审批依据审核结果
+				String construction_apply           =visitContentDto.getConstruction_apply();//是否准许发起施工申请并进入施工阶段
+				//资源流程（回收）
+				String contract_money_recovery      =visitContentDto.getContract_money_recovery();//回收后合同金额
+				String payment_type_recovery        =visitContentDto.getPayment_type_recovery();//付费类型（回收）
+				String payment_method_recovery      =visitContentDto.getPayment_method_recovery();//付费方式（回收）
+				String charging_end_time            =visitContentDto.getCharging_end_time();//预计计费停止时间
+				String grop_audit                    =visitContentDto.getGrop_audit();//集团客户部审核
+				//上传附件
+				String other_prospecting_needs      =visitContentDto.getOther_prospecting_needs();//其他勘查需求
+				String other_prospecting_needs_z    =visitContentDto.getOther_prospecting_needs_z();//资费申请
+				String other_prospecting_needs_save  =visitContentDto.getOther_prospecting_needs_save();//其他勘查需求附件保存文件名称
+				String other_prospecting_needs_file  =visitContentDto.getOther_prospecting_needs_file();//其他勘查需求附件可见名称
+				//机架
+				String water_door_frame_ha              =visitContentDto.getWater_door_frame_ha();//哈南水冷前门机架（5kw）
+				String water_door_frame_ha_v            =visitContentDto.getWater_door_frame_ha_v();//VIP机笼+独立门禁
+				String water_door_frame_ha_z            =visitContentDto.getWater_door_frame_ha_z();//资费申请
+				String heat_backplane_frame_fiveha      =visitContentDto.getHeat_backplane_frame_fiveha();//哈南热管背板机架（5kw）
+				String heat_backplane_frame_fiveha_v    =visitContentDto.getHeat_backplane_frame_fiveha_v();//VIP机笼+独立门禁
+				String heat_backplane_frame_fiveha_z    =visitContentDto.getHeat_backplane_frame_fiveha_z();//资费申请
+				String heat_backplane_frame_sevenha     =visitContentDto.getHeat_backplane_frame_sevenha();//哈南热管背板机架（7kw）
+				String heat_backplane_frame_sevenha_v   =visitContentDto.getHeat_backplane_frame_sevenha_v();//VIP机笼+独立门禁
+				String heat_backplane_frame_sevenha_z   =visitContentDto.getHeat_backplane_frame_sevenha_z();//资费申请
+				String heat_backplane_frame_tenha       =visitContentDto.getHeat_backplane_frame_tenha();//哈南热管背板机架（10kw）
+				String heat_backplane_frame_tenha_v     =visitContentDto.getHeat_backplane_frame_tenha_v();//VIP机笼+独立门禁
+				String heat_backplane_frame_tenha_z     =visitContentDto.getHeat_backplane_frame_tenha_z();//资费申请
+				String precision_air_frame_jin          =visitContentDto.getPrecision_air_frame_jin();//进乡精密空调机架（3kw）
+				String precision_air_frame_jin_v        =visitContentDto.getPrecision_air_frame_jin_v();//VIP机笼+独立门禁
+				String precision_air_frame_jin_z        =visitContentDto.getPrecision_air_frame_jin_z();//资费申请
+				//互联网接入
+				String dry_bandwidth_ha                 =visitContentDto.getDry_bandwidth_ha();//哈南国干带宽
+				String dry_bandwidth_ha_j               =visitContentDto.getDry_bandwidth_ha_j();//计费方式
+				String dry_bandwidth_ha_z               =visitContentDto.getDry_bandwidth_ha_z();//资费申请
+				String province_bandwidth_ha            =visitContentDto.getProvince_bandwidth_ha();//哈南省干带宽
+				String province_bandwidth_ha_j          =visitContentDto.getProvince_bandwidth_ha_j();//计费方式
+				String province_bandwidth_ha_z          =visitContentDto.getProvince_bandwidth_ha_z();//资费申请
+				String bandwidth_jin                    =visitContentDto.getBandwidth_jin();//进乡带宽
+				String bandwidth_jin_j                  =visitContentDto.getBandwidth_jin_j();//计费方式
+				String bandwidth_jin_z                  =visitContentDto.getBandwidth_jin_z();//资费申请
+				//哈南公有云
+				String cpu_ha                           =visitContentDto.getCpu_ha();//CPU
+				String cpu_ha_z                         =visitContentDto.getCpu_ha_z();//资费申请
+				String memory_ha                        =visitContentDto.getMemory_ha();//内存
+				String memory_ha_z                      =visitContentDto.getWater_door_frame_ha_z();//资费申请
+				String read_write_storage_ha            =visitContentDto.getWater_door_frame_ha();//读写型存储
+				String read_write_storage_ha_z          =visitContentDto.getRead_write_storage_ha_z();//资费申请
+				String data_storage_ha                  =visitContentDto.getAccount_manager();//数据型存储
+				String data_storage_ha_z                =visitContentDto.getData_storage_ha_z();//资费申请
+				String backups_storage_ha               =visitContentDto.getBackups_storage_ha();//备份型存储
+				String backups_storage_ha_z             =visitContentDto.getBackups_storage_ha_z();//资费申请
+				String operating_system_ha              =visitContentDto.getOperating_system_ha();//操作系统
+				String operating_system_ha_z            =visitContentDto.getOperating_system_ha_z();//资费申请
+				String ip_ha                            =visitContentDto.getIp_ha();//IP
+				String ip_ha_z                          =visitContentDto.getIp_ha_z();//资费申请
+				String port_ha                          =visitContentDto.getPort_ha();//端口
+				String port_ha_z                        =visitContentDto.getAccount_manager();//资费申请
+				//进乡公有云
+				String cpu_jin                          =visitContentDto.getCpu_jin();//CPU
+				String cpu_jin_z                        =visitContentDto.getCpu_jin_z();//资费申请
+				String memory_jin                       =visitContentDto.getMemory_jin();//内存
+				String memory_jin_z                     =visitContentDto.getMemory_jin_z();//资费申请
+				String read_write_storage_jin           =visitContentDto.getRead_write_storage_jin();//读写型存储
+				String read_write_storage_jin_z         =visitContentDto.getRead_write_storage_jin_z();//资费申请
+				String data_storage_jin                 =visitContentDto.getData_storage_jin();//数据型存储
+				String data_storage_jin_z               =visitContentDto.getOther_prospecting_needs_z();//资费申请
+				String backups_storage_jin              =visitContentDto.getBackups_storage_jin();//备份型存储
+				String backups_storage_jin_z            =visitContentDto.getBackups_storage_jin_z();//资费申请
+				String operating_system_jin             =visitContentDto.getOperating_system_jin();//操作系统
+				String operating_system_jin_z           =visitContentDto.getOther_prospecting_needs_z();//资费申请
+				String ip_jin                           =visitContentDto.getIp_jin();//IP
+				String ip_jin_z                         =visitContentDto.getIp_jin_z();//资费申请
+				String port_jin                         =visitContentDto.getPort_jin();//端口
+				String port_jin_z                       =visitContentDto.getPort_jin_z();//资费申请
+				//增值服务
+				String load_balancing                   =visitContentDto.getAccount_manager();//负载均衡
+				String load_balancing_z                 =visitContentDto.getLoad_balancing_z();//资费申请
+				String firewall                         =visitContentDto.getAccount_manager();//防火墙
+				String firewall_z                       =visitContentDto.getFirewall_z();//资费申请
+				String network_service                  =visitContentDto.getAccount_manager();//网管服务
+				String network_service_z                =visitContentDto.getBandwidth_jin_z();//资费申请
+				String flow_cleaning                    =visitContentDto.getFlow_cleaning();//流量清洗
+				String flow_cleaning_z                  =visitContentDto.getOther_prospecting_needs_z();//资费申请
+				String system_monitoring                =visitContentDto.getAccount_manager();//系统监测
+				String system_monitoring_z              =visitContentDto.getOther_prospecting_needs_z();//资费申请
+				String flow_monitoring                  =visitContentDto.getFlow_monitoring();//流量监测
+				String flow_monitoring_z                =visitContentDto.getOther_prospecting_needs_z();//资费申请
+				String domain_name_resolution           =visitContentDto.getDomain_name_resolution();//域名解析
+				String domain_name_resolution_z         =visitContentDto.getBandwidth_jin_z();//资费申请
+				String multi_line_access                =visitContentDto.getAccount_manager();//多线接入
+				String multi_line_access_z              =visitContentDto.getMulti_line_access_z();//资费申请
+				String customized_transformation        =visitContentDto.getAccount_manager();//定制化改造
+				String customized_transformation_z      =visitContentDto.getCustomized_transformation_z();//资费申请
+				String safety_reinforcement             =visitContentDto.getSafety_reinforcement();//安全加固
+				String safety_reinforcement_z           =visitContentDto.getSafety_reinforcement_z();//资费申请
+				String risk_assessment                  =visitContentDto.getRisk_assessment();//风险评估
+				String risk_assessment_z                =visitContentDto.getRisk_assessment_z();//资费申请
+				String system_integration_implement     =visitContentDto.getSystem_integration_implement();//系统集成与实施
+				String system_integration_implement_z   =visitContentDto.getSystem_integration_implement_z();//资费申请
+				String depth_substitution               =visitContentDto.getDepth_substitution();//深度代维
+				String depth_substitution_z             =visitContentDto.getAccount_manager();//资费申请
+				String service_consulting               =visitContentDto.getAccount_manager();//服务咨询
+				String service_consulting_z             =visitContentDto.getAccount_manager();//资费申请
+				String vpn_access                       =visitContentDto.getVpn_access();//VPN接入
+				String vpn_access_z                     =visitContentDto.getVpn_access_z();//资费申请
+				//综合配套
+				String office                           =visitContentDto.getOffice();//办公室
+				String office_z                         =visitContentDto.getOffice_z();//资费申请
+				String station                          =visitContentDto.getStation();//工位
+				String station_z                        =visitContentDto.getAccount_manager();//资费申请
+				String conference_room                  =visitContentDto.getAccount_manager();//会议室
+				String conference_room_z                =visitContentDto.getConference_room_z();//资费申请
+				//入参
+				logger.info("服务启动");
+				String xmldata = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+						"<Message xmlns=\"http://nm.cmcc.com/ESOP/BWOSSrv/BWOSMethod/BWOS00015/\">" +
+						"<Header>" +
+						"<AppID>ESOP</AppID>" +
+						"<Provide_AppID>BWOS</Provide_AppID>" +
+						"</Header>" +
+						"<body>" +
+						"<MsgHeader>" +
+						"<SYSTEM_ID>ESOP</SYSTEM_ID>" +
+						"<SYSTEM_NAME>端对端系统</SYSTEM_NAME>" +
+						"<EMP_NUMBER>44000000</EMP_NUMBER>" +
+						"<DocumentAuthor>wangzhe</DocumentAuthor>" +
+						"<Department>省公司/集团客户部</Department>" +
+						"<order_identifier>ESOP00000001</order_identifier>" +
+						"</MsgHeader>" +
+						"<gongdanleixing>" +
+						work_type +
+						"</gongdanleixing>" +
+						"<kehumingcheng>" +
+						customer_name +
+						"</kehumingcheng>" +
+						"<kehudizhi>" +
+						customer_address +
+						"</kehudizhi>" +
+						"<yewushuxing>" +
+						business_attribute +
+						"</yewushuxing>" +
+						"<xiangguanzhengzhao>" +
+						relevant_licenses +
+						"</xiangguanzhengzhao>" +
+						"<jituanbianma>" +
+						grop_id +
+						"</jituanbianma>" +
+						"<kehujingli>" +
+						account_manager +
+						"</kehujingli>" +
+						"<jinglilianxidianhua>" +
+						manager_phone +
+						"</jinglilianxidianhua>" +
+						"<jinglilianxiyouxiang>" +
+						manager_mail +
+						"</jinglilianxiyouxiang>" +
+						"<HNshuilengqianmenjijia5SQF>" +
+						water_door_frame_ha +
+						"</HNshuilengqianmenjijia5SQF>" +
+         				"<HNshuilengqianmenjijia5VIP>" +
+						water_door_frame_ha_v +
+						"</HNshuilengqianmenjijia5VIP>" +
+         				"<HNshuilengqianmenjijia5ZFSQ>" +
+						water_door_frame_ha_z +
+						"</HNshuilengqianmenjijia5ZFSQ>" +
+						"<HNreguanbeibanjijia5SQF>" +
+						heat_backplane_frame_fiveha +
+						"</HNreguanbeibanjijia5SQF>" +
+						"<HNreguanbeibanjijia5VIP>" +
+						heat_backplane_frame_fiveha_v +
+						"</HNreguanbeibanjijia5VIP>" +
+						"<HNreguanbeibanjijia5ZFSQ>" +
+						heat_backplane_frame_fiveha_z +
+						"</HNreguanbeibanjijia5ZFSQ>" +
+						"<HNreguanbeibanjijia7SQF>" +
+						heat_backplane_frame_sevenha +
+						"</HNreguanbeibanjijia7SQF>" +
+						"<HNreguanbeibanjijia7VIP>" +
+						heat_backplane_frame_sevenha_v +
+						"</HNreguanbeibanjijia7VIP>" +
+						"<HNreguanbeibanjijia7ZFSQ>" +
+						heat_backplane_frame_sevenha_z +
+						"</HNreguanbeibanjijia7ZFSQ>" +
+						"<HNreguanbeibanjijia10SQF>" +
+						heat_backplane_frame_tenha +
+						"</HNreguanbeibanjijia10SQF>" +
+						"<HNreguanbeibanjijia10VIP>" +
+						heat_backplane_frame_tenha_v +
+						"</HNreguanbeibanjijia10VIP>" +
+						"<HNreguanbeibanjijia10ZFSQ>" +
+						heat_backplane_frame_tenha_z +
+						"</HNreguanbeibanjijia10ZFSQ>" +
+						"<JXjingmikongtiaojijia3SQF>" +
+						precision_air_frame_jin +
+						"</JXjingmikongtiaojijia3SQF>" +
+						"<JXjingmikongtiaojijia3VIP>" +
+						precision_air_frame_jin_v +
+						"</JXjingmikongtiaojijia3VIP>" +
+						"<JXjingmikongtiaojijia3ZFSQ>" +
+						precision_air_frame_jin_z +
+						"</JXjingmikongtiaojijia3ZFSQ>" +
+						"<HNguogankuandaiSQF>" +
+						dry_bandwidth_ha +
+						"</HNguogankuandaiSQF>" +
+						"<HNguogankuandaiVIP>" +
+						dry_bandwidth_ha_j +
+						"</HNguogankuandaiVIP>" +
+						"<HNguogankuandaiZFSQ>" +
+						dry_bandwidth_ha_z +
+						"</HNguogankuandaiZFSQ>" +
+         				"<HNshenggankuandaiSQF>" +
+						province_bandwidth_ha +
+						"</HNshenggankuandaiSQF>" +
+						"<HNshenggankuandaiVIP>" +
+						province_bandwidth_ha_j +
+						"</HNshenggankuandaiVIP>" +
+						"<HNshenggankuandaiZFSQ>" +
+						province_bandwidth_ha_z +
+						"</HNshenggankuandaiZFSQ>" +
+						"<JXkuandaiSQF>" +
+						bandwidth_jin +
+						"</JXkuandaiSQF>" +
+						"<JXkuandaiVIP>" +
+						bandwidth_jin_j +
+						"</JXkuandaiVIP>" +
+						"<JXkuandaiZFSQ>" +
+						bandwidth_jin_z +
+						"</JXkuandaiZFSQ>" +
+						"<HNGYYcpuSQF>" +
+						cpu_ha +
+						"</HNGYYcpuSQF>" +
+						"<HNGYYcpuZFSQ>" +
+						cpu_ha_z +
+						"</HNGYYcpuZFSQ>" +
+						"<HNGYYneicunSQF>" +
+						memory_ha +
+						"</HNGYYneicunSQF>" +
+         				"<HNGYYneicunZFSQ>" +
+						memory_ha_z +
+						"</HNGYYneicunZFSQ>" +
+						"<HNGYYduxiexingcunchuSQF>" +
+						read_write_storage_ha +
+						"</HNGYYduxiexingcunchuSQF>" +
+         				"<HNGYYduxiexingcunchuZFSQ>" +
+						read_write_storage_ha_z +
+						"</HNGYYduxiexingcunchuZFSQ>" +
+						"<HNGYYshujuxingcunchuSQF>" +
+						data_storage_ha +
+						"</HNGYYshujuxingcunchuSQF>" +
+         				"<HNGYYshujuxingcunchuZFSQ>" +
+						data_storage_ha_z +
+						"</HNGYYshujuxingcunchuZFSQ>" +
+         				"<HNGYYbeifenxingcunchuSQF>" +
+						backups_storage_ha +
+						"</HNGYYbeifenxingcunchuSQF>" +
+         				"<HNGYYbeifenxingcunchuZFSQ>" +
+						backups_storage_ha_z +
+						"</HNGYYbeifenxingcunchuZFSQ>" +
+						"<HNGYYcaozuoxitongSQF>" +
+						operating_system_ha +
+						"</HNGYYcaozuoxitongSQF>" +
+         				"<HNGYYcaozuoxitongZFSQ>" +
+						operating_system_ha_z +
+						"</HNGYYcaozuoxitongZFSQ>" +
+						"<HNGYYipSQF>" +
+						ip_ha +
+						"</HNGYYipSQF>" +
+         				"<HNGYYipZFSQ>" +
+						ip_ha_z +
+						"</HNGYYipZFSQ>" +
+						"<HNGYYduankouSQF>" +
+						port_ha +
+						"</HNGYYduankouSQF>" +
+         				"<HNGYYduankouZFSQ>" +
+						port_ha_z +
+						"</HNGYYduankouZFSQ>" +
+						"<JXGYYcpuSQF>" +
+						cpu_jin +
+						"</JXGYYcpuSQF>" +
+         				"<JXGYYcpuZFSQ>" +
+						cpu_jin_z +
+						"</JXGYYcpuZFSQ>" +
+						"<JXGYYneicunSQF>" +
+						memory_jin +
+						"</JXGYYneicunSQF>" +
+         				"<JXGYYneicunZFSQ>" +
+						memory_jin_z +
+						"</JXGYYneicunZFSQ>" +
+						"<JXGYYduxiexingcunchuSQF>" +
+						read_write_storage_jin +
+						"</JXGYYduxiexingcunchuSQF>" +
+         				"<JXGYYduxiexingcunchuZFSQ>" +
+						read_write_storage_jin_z +
+						"</JXGYYduxiexingcunchuZFSQ>" +
+         				"<JXGYYshujuxingcunchuSQF>" +
+						data_storage_jin +
+						"</JXGYYshujuxingcunchuSQF>" +
+         				"<JXGYYshujuxingcunchuZFSQ>" +
+						data_storage_jin_z +
+						"</JXGYYshujuxingcunchuZFSQ>" +
+						"<JXGYYbeifenxingcunchuSQF>" +
+						backups_storage_jin +
+						"</JXGYYbeifenxingcunchuSQF>" +
+         				"<JXGYYbeifenxingcunchuZFSQ>" +
+						backups_storage_jin_z +
+						"</JXGYYbeifenxingcunchuZFSQ>" +
+						"<JXGYYcaozuoxitongSQF>" +
+						operating_system_jin +
+						"</JXGYYcaozuoxitongSQF>" +
+         				"<JXGYYcaozuoxitongZFSQ>" +
+						operating_system_jin_z +
+						"</JXGYYcaozuoxitongZFSQ>" +
+						"<JXGYYipSQF>" +
+						ip_jin +
+						"</JXGYYipSQF>" +
+         				"<JXGYYipZFSQ>" +
+						ip_jin_z +
+						"</JXGYYipZFSQ>" +
+						"<JXGYYduankouSQF>" +
+						port_jin +
+						"</JXGYYduankouSQF>" +
+         				"<JXGYYduankouZFSQ>" +
+						port_jin_z +
+						"</JXGYYduankouZFSQ>" +
+						"<fuzaijunhengSQF>" +
+						load_balancing +
+						"</fuzaijunhengSQF>" +
+						"<fuzaijunhengZFSQ>" +
+						load_balancing_z +
+						"</fuzaijunhengZFSQ>" +
+					 	"<fanghuoqiangSQF>" +
+						firewall +
+						"</fanghuoqiangSQF>" +
+					 	"<fanghuoqiangZFSQ>" +
+						firewall_z +
+						"</fanghuoqiangZFSQ>" +
+					 	"<wangguanfuwuSQF>" +
+						network_service +
+						"</wangguanfuwuSQF>" +
+					 	"<wangguanfuwuZFSQ>" +
+						network_service_z +
+						"</wangguanfuwuZFSQ>" +
+					 	"<liuliangqingxiSQF>" +
+						flow_cleaning +
+						"</liuliangqingxiSQF>" +
+					 	"<liuliangqingxiZFSQ>" +
+						flow_cleaning_z +
+						"</liuliangqingxiZFSQ>" +
+					 	"<xitongjianceSQF>" +
+						system_monitoring +
+						"</xitongjianceSQF>" +
+					 	"<xitongjianceZFSQ>" +
+						system_monitoring_z +
+						"</xitongjianceZFSQ>" +
+					 	"<liuliangjianceSQF>" +
+						flow_monitoring +
+						"</liuliangjianceSQF>" +
+					 	"<liuliangjianceZFSQ>" +
+						flow_monitoring_z +
+						"</liuliangjianceZFSQ>" +
+					 	"<yumingjiexiSQF>" +
+						domain_name_resolution +
+						"</yumingjiexiSQF>" +
+					 	"<yumingjiexiZFSQ>" +
+						domain_name_resolution_z +
+						"</yumingjiexiZFSQ>" +
+					 	"<duoxianjieruSQF>" +
+						multi_line_access +
+						"</duoxianjieruSQF>" +
+					 	"<duoxianjieruZFSQ>" +
+						multi_line_access_z +
+						"</duoxianjieruZFSQ>" +
+					 	"<dingzhihuagaizaoSQF>" +
+						customized_transformation +
+						"</dingzhihuagaizaoSQF>" +
+					 	"<dingzhihuagaizaoZFSQ>" +
+						customized_transformation_z +
+						"</dingzhihuagaizaoZFSQ>" +
+					 	"<anquanjiaguSQF>" +
+						safety_reinforcement +
+						"</anquanjiaguSQF>" +
+					 	"<anquanjiaguZFSQ>" +
+						safety_reinforcement_z +
+						"</anquanjiaguZFSQ>" +
+					 	"<fengxianpingguSQF>" +
+						risk_assessment +
+						"</fengxianpingguSQF>" +
+					 	"<fengxianpingguZFSQ>" +
+						risk_assessment_z +
+						"</fengxianpingguZFSQ>" +
+					 	"<xitongjichengyushishiSQF>" +
+						system_integration_implement +
+						"</xitongjichengyushishiSQF>" +
+					 	"<xitongjichengyushishiZFSQ>" +
+						system_integration_implement_z +
+						"</xitongjichengyushishiZFSQ>" +
+					 	"<shendudaiweiSQF>" +
+						depth_substitution +
+						"</shendudaiweiSQF>" +
+					 	"<shendudaiweiZFSQ>" +
+						depth_substitution_z +
+						"</shendudaiweiZFSQ>" +
+					 	"<fuwuzixunSQF>" +
+						service_consulting +
+						"</fuwuzixunSQF>" +
+					 	"<fuwuzixunZFSQ>" +
+						service_consulting_z +
+						"</fuwuzixunZFSQ>" +
+					 	"<vpnjieruSQF>" +
+						vpn_access +
+						"</vpnjieruSQF>" +
+					 	"<vpnjieruZFSQ>" +
+						vpn_access_z +
+						"</vpnjieruZFSQ>" +
+					 	"<bangongshiSQF>" +
+						office +
+						"</bangongshiSQF>" +
+					 	"<bangongshiZFSQ>" +
+						office_z +
+						"</bangongshiZFSQ>" +
+					 	"<gongweiSQF>" +
+						station +
+						"</gongweiSQF>" +
+					 	"<gongweiZFSQ>" +
+						station_z +
+						"</gongweiZFSQ>" +
+					 	"<huiyishiSQF>" +
+						conference_room +
+						"</huiyishiSQF>" +
+					 	"<huiyishiZFSQ>" +
+						conference_room_z +
+						"</huiyishiZFSQ>" +
+					 	"<kanchajieguoyuzhankaishishijian>" +
+						prt_result_start_time +
+						"</kanchajieguoyuzhankaishishijian>" +
+					 	"<kanchajieguoyuzhanjieshushijian>" +
+						prt_result_end_time +
+						"</kanchajieguoyuzhanjieshushijian>" +
+					 	"<zongjine>" +
+						total_amount +
+						"</zongjine>" +
+					 	"<fufeileixing>" +
+						payment_type +
+						"</fufeileixing>" +
+					 	"<fufeifangshi>" +
+						payment_method +
+						"</fufeifangshi>" +
+					 	"<yujijifeikaishishijian>" +
+						charging_start_time +
+						"</yujijifeikaishishijian>" +
+					 	"<zongheziping>" +
+						comprehensive +
+						"</zongheziping>" +
+					 	"<shigongjiaofushijian>" +
+						construction_time +
+						"</shigongjiaofushijian>" +
+					 	"<kehujinchangshijian>" +
+						customer_time +
+						"</kehujinchangshijian>" +
+					 	"<xieyijine>" +
+						agreement_amount +
+						"</xieyijine>" +
+					 	"<fufeileixingXZ>" +
+						payment_type_new +
+						"</fufeileixingXZ>" +
+					 	"<fufeifangshiXZ>" +
+						payment_method_new +
+						"</fufeifangshiXZ>" +
+					 	"<yujijifeikaishishijianXZ>" +
+						charging_start_time_new +
+						"</yujijifeikaishishijianXZ>" +
+					 	"<jiageshenpiyiju>" +
+						price_basis +
+						"</jiageshenpiyiju>" +
+					 	"<hetongjineHS>" +
+						contract_money_recovery +
+						"</hetongjineHS>" +
+					 	"<fukuanleixingHS>" +
+						payment_type_recovery +
+						"</fukuanleixingHS>" +
+					 	"<fufeifangshiHS>" +
+						payment_method_recovery +
+						"</fufeifangshiHS>" +
+					 	"<yujijifeitingzhishijianHS>" +
+						charging_end_time +
+						"</yujijifeitingzhishijianHS>" +
+						"</body>" +
+						"</Message>";
+				logger.info("xmldata参数是:" + xmldata);
+				logger.info("=========================" + i);
+
+				BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator serviceClient = new BwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpServiceLocator();
+				BwosWebSrvPortType service = serviceClient.getBwosWebSrvPortTypeExport1_BwosWebSrvPortTypeHttpPort();
+				retXml = service.BWOSMethod(xmldata, "ESOP", "BWOS00015");
+				logger.info("retXml是:"+retXml);
+				Map MessageMap = new HashMap();
+				Document doc = DocumentHelper.parseText(retXml);
+				Element Message1 = doc.getRootElement();
+				Iterator paraItems = Message1.elementIterator();
+				Map MessageMap1 = new HashMap();
+				while (paraItems.hasNext()) {
+					Element aParam = (Element) paraItems.next();
+					Iterator paraItems1 = aParam.elementIterator();
+					Map MessageMap2 = new HashMap();
+					while (paraItems1.hasNext()) {
+						Element aParam1 = (Element) paraItems1.next();
+						MessageMap2.put(aParam1.getName(),
+								aParam1.getTextTrim());
+					}
+					MessageMap1.put(aParam.getName(), MessageMap2);
+					MessageMap.put(Message1.getName(), MessageMap1);
+				}
+				Map Message2 = (Map) MessageMap.get("Message");
+				Map Body = (Map) Message2.get("Body");
+				String RESULT_FLAG = (String) Body.get("RESULT_FLAG");
+				if ("0".equals(RESULT_FLAG)){
+					str = "成功！";
+					map.put("info",str);
+				}else if ("1".equals(RESULT_FLAG)){
+					str = "失败！";
+					map.put("info",str);
+				}
+
+			} catch (Exception e) {
+				logger.info("");
+				try {
+					if("".equals(retXml)&& null==retXml){
+						retXml=e.getMessage();
+					}
+
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}
+		String json =  JSONObject.toJSONString(map);
+		return json;
+	}
+
+}
+

@@ -1,0 +1,426 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import org.json.JSONArray;
+
+/**
+ * Created by 缪毅 on 2017/12/8.
+ */
+public class OrderDto {
+    String serviceNo;//客户经理工号
+    String term;//输入集团名称
+    String label;//选项名称
+    String value;//选项值
+    String jtCode;//集团编码
+    String jtName;//集团名称
+    String htNo;//合同编号
+    String proId;//产品编号
+    String proName;//产品名称
+    String cyName;//成员姓名
+    String cyNo;//成员号码
+    String orderTitle;//订单标题
+    String orderDesc;//订单说明
+    String ASSIGNEE_1;//下一步处理人
+    Integer id;//返回成员自增ID
+    String reqNum;//订单序号
+    Integer memStatus;//成员状态
+    String memStatusDesc;//成员状态说明
+    String memprivilege;//优惠串
+    String delMemprivilege;//删除优惠串
+    String attr;//属性串
+    String payPlanFlag;//是否使用默认集团付费计划 0-不使用默认集团付费计划； 1-使用默认集团付费计划
+    String grpSubsId;//集团产品编号
+    JSONArray attrList;//属性串
+
+    String contractId;//合同
+    String contractTitle;//合同标题
+    String contractType;//合同类型
+    String contractName;//起草人
+    String contractMoney;//合同金额
+    String endDate;//失效时间
+    String groupName;//归属部门
+    String addSxfs;//新增生效方式 0：立即，1：下月
+    String delsxfs;//删除失效方式 0：立即，1：下月
+    String operDate;//起草时间
+    String firstName;//甲方公司名称
+
+    Integer attach_file_id;//附件id
+    String feetype;//赠送话费返费周期
+    String paytime;//赠送话费到账时间类型	立即到账、下月到账
+    String effecttime;//赠送话费有效期限	无限制、1个月、2个月、3个月、6个月、12个月
+    String reason;//赠送话费原因	集团产品优惠送话费、统付优惠送话费
+    String fileName;//附件名
+    String newFileName;//新附加名
+
+    String attrid;//附件属性id
+    String attrname;//属性名字
+    String attrtype;//类型 EDIT/SELECT
+    String sqltext;//值
+
+    public String getOperDate() {
+        return operDate;
+    }
+
+    public void setOperDate(String operDate) {
+        this.operDate = operDate;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getAttrid() {
+        return attrid;
+    }
+
+    public void setAttrid(String attrid) {
+        this.attrid = attrid;
+    }
+
+    public String getAttrname() {
+        return attrname;
+    }
+
+    public void setAttrname(String attrname) {
+        this.attrname = attrname;
+    }
+
+    public String getAttrtype() {
+        return attrtype;
+    }
+
+    public void setAttrtype(String attrtype) {
+        this.attrtype = attrtype;
+    }
+
+    public String getSqltext() {
+        return sqltext;
+    }
+
+    public void setSqltext(String sqltext) {
+        this.sqltext = sqltext;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getNewFileName() {
+        return newFileName;
+    }
+
+    public void setNewFileName(String newFileName) {
+        this.newFileName = newFileName;
+    }
+
+    public Integer getAttach_file_id() {
+        return attach_file_id;
+    }
+
+    public void setAttach_file_id(Integer attach_file_id) {
+        this.attach_file_id = attach_file_id;
+    }
+
+    public String getFeetype() {
+        return feetype;
+    }
+
+    public void setFeetype(String feetype) {
+        this.feetype = feetype;
+    }
+
+    public String getPaytime() {
+        return paytime;
+    }
+
+    public void setPaytime(String paytime) {
+        this.paytime = paytime;
+    }
+
+    public String getEffecttime() {
+        return effecttime;
+    }
+
+    public void setEffecttime(String effecttime) {
+        this.effecttime = effecttime;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public String getDelMemprivilege() {
+        return delMemprivilege;
+    }
+
+    public void setDelMemprivilege(String delMemprivilege) {
+        this.delMemprivilege = delMemprivilege;
+    }
+
+    public String getAddSxfs() {
+        return addSxfs;
+    }
+
+    public void setAddSxfs(String addSxfs) {
+        this.addSxfs = addSxfs;
+    }
+
+    public String getDelsxfs() {
+        return delsxfs;
+    }
+
+    public void setDelsxfs(String delsxfs) {
+        this.delsxfs = delsxfs;
+    }
+
+    public String getContractId() {
+        return contractId;
+    }
+
+    public void setContractId(String contractId) {
+        this.contractId = contractId;
+    }
+
+    public String getContractTitle() {
+        return contractTitle;
+    }
+
+    public void setContractTitle(String contractTitle) {
+        this.contractTitle = contractTitle;
+    }
+
+    public String getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(String contractType) {
+        this.contractType = contractType;
+    }
+
+    public String getContractName() {
+        return contractName;
+    }
+
+    public void setContractName(String contractName) {
+        this.contractName = contractName;
+    }
+
+    public String getContractMoney() {
+        return contractMoney;
+    }
+
+    public void setContractMoney(String contractMoney) {
+        this.contractMoney = contractMoney;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public JSONArray getAttrList() {
+        return attrList;
+    }
+
+    public void setAttrList(JSONArray attrList) {
+        this.attrList = attrList;
+    }
+
+    public String getPayPlanFlag() {
+        return payPlanFlag;
+    }
+
+    public void setPayPlanFlag(String payPlanFlag) {
+        this.payPlanFlag = payPlanFlag;
+    }
+
+    public String getAttr() {
+        return attr;
+    }
+
+    public void setAttr(String attr) {
+        this.attr = attr;
+    }
+
+    public String getMemprivilege() {
+        return memprivilege;
+    }
+
+    public void setMemprivilege(String memprivilege) {
+        this.memprivilege = memprivilege;
+    }
+
+    public String getMemStatusDesc() {
+        return memStatusDesc;
+    }
+
+    public void setMemStatusDesc(String memStatusDesc) {
+        this.memStatusDesc = memStatusDesc;
+    }
+
+    public Integer getMemStatus() {
+        return memStatus;
+    }
+
+    public void setMemStatus(Integer memStatus) {
+        this.memStatus = memStatus;
+    }
+
+    public String getReqNum() {
+        return reqNum;
+    }
+
+    public void setReqNum(String reqNum) {
+        this.reqNum = reqNum;
+    }
+
+    public String getProName() {
+        return proName;
+    }
+
+    public void setProName(String proName) {
+        this.proName = proName;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getJtCode() {
+        return jtCode;
+    }
+
+    public void setJtCode(String jtCode) {
+        this.jtCode = jtCode;
+    }
+
+    public String getServiceNo() {
+        return serviceNo;
+    }
+
+    public void setServiceNo(String serviceNo) {
+        this.serviceNo = serviceNo;
+    }
+
+    public String getJtName() {
+        return jtName;
+    }
+
+    public void setJtName(String jtName) {
+        this.jtName = jtName;
+    }
+
+    public String getHtNo() {
+        return htNo;
+    }
+
+    public void setHtNo(String htNo) {
+        this.htNo = htNo;
+    }
+
+    public String getProId() {
+        return proId;
+    }
+
+    public void setProId(String proId) {
+        this.proId = proId;
+    }
+
+    public String getCyName() {
+        return cyName;
+    }
+
+    public void setCyName(String cyName) {
+        this.cyName = cyName;
+    }
+
+    public String getCyNo() {
+        return cyNo;
+    }
+
+    public void setCyNo(String cyNo) {
+        this.cyNo = cyNo;
+    }
+
+    public String getOrderTitle() {
+        return orderTitle;
+    }
+
+    public void setOrderTitle(String orderTitle) {
+        this.orderTitle = orderTitle;
+    }
+
+    public String getOrderDesc() {
+        return orderDesc;
+    }
+
+    public void setOrderDesc(String orderDesc) {
+        this.orderDesc = orderDesc;
+    }
+
+    public String getASSIGNEE_1() {
+        return ASSIGNEE_1;
+    }
+
+    public void setASSIGNEE_1(String ASSIGNEE_1) {
+        this.ASSIGNEE_1 = ASSIGNEE_1;
+    }
+
+    public String getGrpSubsId() {
+        return grpSubsId;
+    }
+
+    public void setGrpSubsId(String grpSubsId) {
+        this.grpSubsId = grpSubsId;
+    }
+}

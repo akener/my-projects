@@ -1,0 +1,111 @@
+package com.esop.hello;
+
+import java.io.BufferedInputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
+
+import com.esop.hello.FileInfoDto;
+
+
+import org.json.JSONObject;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+@RestController
+public class GreetingController {
+
+    private static final String template = "Hello, %s!";
+    private final AtomicLong counter = new AtomicLong();
+
+
+
+    @RequestMapping("/greeting")
+    public Greeting greeting(@RequestParam(value="name", defaultValue="World") String name,HttpSession session) {
+        name="获取session中存储的值="+session.getAttribute("login_no");
+        System.out.println("------------------"+name);
+        return new Greeting(counter.incrementAndGet(),
+                String.format(template, name));
+    }
+    @RequestMapping(value="/greeting_body",method= { RequestMethod.GET, RequestMethod.POST })
+    public Greeting greet(Greeting greeting) {
+        System.out.println("------------------------------*************--------------------------------");
+        System.out.println("greeting.fileInfoDtos="+greeting.getFileInfoDtos());
+        System.out.println("greeting="+greeting.getContent());
+        System.out.println("greeting.id="+greeting.getId());
+        //System.out.println("服务端测试！"+greet.getId());
+        return new Greeting(counter.incrementAndGet(),
+                String.format(template, "test"));
+    }
+    @RequestMapping(value="/test_url",method= { RequestMethod.GET, RequestMethod.POST })
+    public String test_url(Greeting greeting) {
+        //return "productInfo/design/demandInfo";
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Message xmlns=\"http://nm.cmcc.com/PCMP/SCMSrv/SCMMethod/SCM00001/\"><Header><test>12345</test><AppID>PCMP</AppID><Provide_AppID>ESOP</Provide_AppID></Header><Body><MsgHeader><SOURCE_SYSTEM_ID></SOURCE_SYSTEM_ID><SOURCE_SYSTEM_NAME></SOURCE_SYSTEM_NAME><SUBMIT_DATE></SUBMIT_DATE><PAGE_SIZE></PAGE_SIZE><CURRENT_PAGE>中文</CURRENT_PAGE><TOTAL_RECORD></TOTAL_RECORD></MsgHeader></Body></Message>";
+        xml="<?xml version=\"1.0\" encoding=";
+        return xml;
+    }
+    @RequestMapping(value = "/greeting_esb")
+    public String greeting(HttpServletRequest request) {
+        StringBuffer buffer = new StringBuffer();
+
+        try {
+            ServletInputStream s=request.getInputStream();
+
+            BufferedInputStream bis = new BufferedInputStream(request.getInputStream());
+            byte[] b = new byte[1024];
+            int len = -1;
+            while ((len = bis.read(b)) != -1) {
+                buffer.append(new String(b, 0, len));
+            }
+            bis.close();
+            System.out.println("输入参数=" + buffer);
+            System.out.println("服务端测试");
+            System.out.println(request.getInputStream());
+            //System.out.println("name="+greeting.getContent());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Message xmlns=\"http://nm.cmcc.com/PCMP/SCMSrv/SCMMethod/SCM00001/\"><Header><test>12345</test><AppID>PCMP</AppID><Provide_AppID>ESOP</Provide_AppID></Header><Body><MsgHeader><SOURCE_SYSTEM_ID></SOURCE_SYSTEM_ID><SOURCE_SYSTEM_NAME></SOURCE_SYSTEM_NAME><SUBMIT_DATE></SUBMIT_DATE><PAGE_SIZE></PAGE_SIZE><CURRENT_PAGE>中文</CURRENT_PAGE><TOTAL_RECORD></TOTAL_RECORD></MsgHeader></Body></Message>";
+        return xml;
+    }
+    @RequestMapping("/getString")
+    public Map<String, Object> getString(String name, HttpServletResponse response) {
+        System.out.println("服务端已接受到参数name="+name);
+        response.addHeader("Access-Control-Allow-Origin","*");
+        //response.setHeader("Access-Control-Allow-Origin","*");
+        //response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+        //response.setHeader("Access-Control-Max-Age", "3600");
+        //response.setHeader("Access-Control-Allow-Headers"," Origin, X-Requested-With, Content-Type, Accept");
+
+        Iterator it = response.getHeaderNames().iterator();
+        while (it.hasNext()) {
+            // it.next()返回的是一个对象类型，需要强制转换
+            String book = (String) it.next();
+            System.out.println("headers="+book);
+            System.out.println("response.headers="+response.getHeader(book));
+        }
+        JSONObject json1 = new JSONObject("{id:321,name:spring world!}");
+        return json1.toMap();
+    }
+    @RequestMapping(value="/test_list",method= { RequestMethod.GET, RequestMethod.POST })
+    public List test_list() {
+        List list=new ArrayList<>();
+        Greeting g=new Greeting();
+        g.setId(123);
+        g.setContent("test");
+        list.add(g);
+        Greeting gr=new Greeting();
+        gr.setId(456);
+        gr.setContent("fly");
+        list.add(gr);
+        return list;
+    }
+}

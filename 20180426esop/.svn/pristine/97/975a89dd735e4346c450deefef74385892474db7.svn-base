@@ -1,0 +1,1454 @@
+/**
+ * Created by wangxy on 2017/12/18
+ */
+$(document).ready(function () {
+    //加载合同信息、产品信息模块
+    getContractModel();
+    //加载下一步处理人
+    loadFirstSteps();
+});
+
+
+$("#actionId").change(function () {
+    loadFirstSteps();
+});
+//上传文件
+function group_connect_choose() {
+    var url = "uploadFileWindow";
+    var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth=500px;DialogHeight=300px;help=0;center=1;status:yes;scroll=1');
+    if (ret != undefined) {//ret为上传附件返回值列表 以"|"分开
+        $("#attachment_id_list").val(ret);
+    }
+}
+
+function changePayment() {//如果选择后付，则还需要选择付费主体
+    var elecpack_id = $("#elecpack_id").val();
+    var payment = $("#payment option:selected").val();
+    if(elecpack_id == 5 || elecpack_id == 6 || elecpack_id==7){//付费方式为预付，只能为电子发票
+        if(payment == 1){
+            $("#type_two").click();
+            $(".zz_tax").css('display','none');
+        }else{
+            $(".zz_tax").show();
+        }
+        return;
+    }
+
+    if(payment == 2){
+        $(".pay_main_body").show();
+    }
+    if(payment == 1){
+        $(".pay_main_body").css("display","none");
+    }
+}
+
+
+$("#searchUnionButton").click(function(){
+    getUnionList();
+})
+
+
+//加载合同信息、产品信息模块
+function getContractModel() {
+    //合同信息
+    $.ajax({
+        type: 'POST',
+        url: 'toContractDetailInfo',
+        data: {
+            "contract_id": $("#contract_id").val(),
+            "elecpack_id":$("#elecpack_id").val()
+        },
+        dataType: 'text',
+        success: function (data) {
+            $("#tbody_contract").html(data);
+        },
+        error: function (data) {
+            alert("加载合同信息失败！");
+        }
+    });
+    //资费信息
+    $.ajax({
+        type: 'POST',
+        url: 'toContractChargeInfo',
+        data: {
+            "contract_id": $("#contract_id").val(),
+            "elecpack_id":$("#elecpack_id").val()
+        },
+        dataType: 'text',
+        success: function (data) {
+            $("#chargesInfo").html(data);
+        },
+        error: function (data) {
+            alert("加载资费信息失败！");
+        }
+    });
+}
+
+//获取下一步处理人
+function loadFirstSteps() {
+    var actionId = $("#actionId option:selected").val();
+    $.ajax({
+        type: 'POST',
+        url: 'workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+            "actionId":actionId,
+        },
+        success: function(data){
+            var stepList = data.stepList[0];
+            $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+            $("#ASSIGNEE_1").html("");
+            for (var i = 0; i < stepList.assignees.length; i++) {     //循环添加多个值
+                $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+            }
+        },
+        error:function(data){
+        }
+    });
+}
+
+function saveChargeList() {
+    var trList = $("#chargeList").children("tr");
+    var size = trList.length;
+    var charge_id_list = "";
+    for(var i = 0 ;i<size; i++){
+        var tdArr = trList.eq(i).find("td");
+        var number = parseInt(tdArr.eq(2).find("input").val());//数量
+        var chargeId = trList.eq(i).attr("chargeId");
+
+        if(charge_id_list==""){
+            charge_id_list = chargeId+"|"+number;
+        }else{
+            charge_id_list = charge_id_list+","+chargeId+"|"+number;
+        }
+    }
+    return charge_id_list;
+}
+
+$("#submit").click(function () {
+    //验证空值！
+    if(!validateEmpty()){
+        return;
+    };
+    var charge_id_list = saveChargeList();
+
+    var t = {};
+    var name_1 = "ASSIGNEE_1";
+    var name_2 = "ASSIGNEE_2";
+    var ASSIGNEE_1 = $("#actionId").val();
+    var num = $("#ASSIGNEE_1").val();
+    if(ASSIGNEE_1 == 2){
+        t[name_1] = num;
+    }
+    if(ASSIGNEE_1 == 3){
+        t[name_2] = num;
+    }
+    var actionId = $("#actionId").val();
+    var isteam;
+    if (actionId == 2){
+        isteam =1;
+    }else isteam = 2;
+
+    var invoice_type;
+    var radio = document.getElementsByName("radio");
+    for (var i=0; i<radio.length; i++) {
+        if (radio[i].checked) {
+            invoice_type = radio[i].value;
+        }
+    }
+    var elec_pack_id = $("#elecpack_id").val();
+    t["isTeam"] = isteam;
+    t["chargeIds"] = charge_id_list;
+    t["product_id"] = $("#prod_id").val();
+    t["product_name"] = $("#prod_name").val();
+    t["first_party_code"] = $("#first_party_code").val();
+    t["first_party"] = $("#first_party").val();
+    t["first_party_charge"] = $("#first_party_charge").val();
+    t["first_party_address"] = $("#first_party_address").val();
+    t["first_party_post_code"] = $("#first_party_post_code").val();
+    t["first_party_phone"] = $("#first_party_phone").val();
+    t["first_invoice_name"] = $("#first_invoice_name").val();
+    t["first_taxpayer_code"] = $("#first_taxpayer_code").val();
+    t["first_invoice_band"] = $("#first_invoice_band").val();
+    t["first_invoice_username"] = $("#first_invoice_username").val();
+    t["first_invoice_number"] = $("#first_invoice_number").val();
+    t["first_invoice_address"] = $("#first_invoice_address").val();
+    t["first_invoice_phone"] = $("#first_invoice_phone").val();
+    t["second_invoice_name"] = $("#second_invoice_name").val();
+    t["second_taxpayer_code"] = $("#second_taxpayer_code").val();
+    t["second_invoice_band"] = $("#second_invoice_band").val();
+    t["second_invoice_username"] = $("#second_invoice_username").val();
+    t["second_invoice_number"] = $("#second_invoice_number").val();
+    t["first_party_username"] = $("#first_party_username").val();
+    t["first_party_band"] = $("#first_party_band").val();
+    t["first_party_account_number"] = $("#first_party_account_number").val();
+    t["second_party_username"] = $("#second_party_username").val();
+    t["second_party_band"] = $("#second_party_band").val();
+    t["second_party_account_number"] = $("#second_party_account_number").val();
+    t["second_invoice_address"] = $("#second_invoice_address").val();
+    t["second_invoice_phone"] = $("#second_invoice_phone").val();
+    t["first_contacts_name"] = $("#first_contacts_name").val();
+    t["first_contacts_id_card"] = $("#first_contacts_id_card").val();
+    t["first_contacts_phone"] = $("#first_contacts_phone").val();
+    t["first_contacts_email"] = $("#first_contacts_email").val();
+    t["first_contacts_address"] = $("#first_contacts_address").val();
+
+    t["elecpack_id"] = $("#elecpack_id").val();
+    t["elecPackName"] = $("#elecpack_name").val();
+    t["used_in"] = $("#buy_for_what").val();
+    t["safe_client"] = $("#jf_fddbr").val();
+    t["safe_address"] = $("#jf_address").val();
+    t["safe_contacts"] = $("#jf_linkMan").val();
+    t["safe_phone"] = $("#jf_phone").val();
+    t["second_party"] = $("#yf_first_party").val();
+    t["second_party_charge"] =$("#yf_first_party_charge").val();
+    t["second_party_address"] = $("#yf_first_party_address").val();
+    t["second_party_post_code"] = $("#yf_first_party_post_code").val();
+    t["second_party_phone"] = $("#yf_first_party_phone").val();
+    t["invoice_type"] = invoice_type;
+    t["account_status"] = $("#account_status").val();
+    t["payment"] = $("#payment").val();
+    if (elec_pack_id==1 || elec_pack_id==2){
+        t["payment"] = "2";//后付
+    }
+    if(elec_pack_id == 3){
+        t["payment"] = "1";//手机流量集团购只能预付
+    }
+
+    t["pay_main_body"] = $("#pay_main_body").val();//付费主体
+
+    t["use_area"] = $("#use_area").val();//流量使用区域
+    t["business_type"] = $("#business_type").val();//甲方业务类型及资费模式
+
+    t["contract_name"] =  $("#contract_name").val();//合同标题
+    t["oppor_id"] = $("#opportunity_no").val();//商机号
+    t["total_amount"] = $("#total_amount").val();//总金额
+    t["discount"] = $("#contract_discount").val();//折扣
+    t["bond"] = $("#bond").val();//保证金
+    t["penalty"] = $("#penalty").val();//违约金
+    t["pay_cycle"] = $("#pay_cycle").val();//缴费周期
+    t["open_time"] = $("#open_time").val();//流量业务开通时间
+    t["contract_desc"] = $("#contract_desc").val();//合同描述
+
+    //专线合同
+    t["dedicated_amount"] = $("#dedicated_amount").val();
+    t["bandwidth"] = $("#bandwidth").val();
+    t["lease_term"] = $("#lease_term").val();
+    t["interface_type"] = $("#interface_type").val();
+    t["first_access_address"] = $("#first_access_address").val();
+    t["interface_in"] = $("#interface_in").val();
+    t["a_access_address"] = $("#a_access_address").val();
+    t["a_interface_type"] = $("#a_interface_type").val();
+    t["z_access_address"] = $("#z_access_address").val();
+    t["z_interface_type"] = $("#z_interface_type").val();
+    t["first_connection_interface"] = $("#first_connection_interface").val();
+    t["second_connection_interface"] = $("#second_connection_interface").val();
+
+    t["oper_no"] = $("#login_no").val();//修改人工号
+    t["oper_name"] = $("#login_name").val();//修改人姓名
+    t["region_code"] = $("#root_org_id").val();//region_code
+    t["group_id"] = $("#org_id").val();
+    t["group_name"] = $("#org_name").val();
+    t["attachment_id_list"] = $("#attachment_id_list").val();
+
+    $("#submit").val('提交中..')
+    $("#submit").attr("disabled",true);
+    $.ajax({
+        url:"addContract",
+        type:"post",
+        dataType:"json",
+        data:t,
+        success:function(data){
+            alert(data.message);
+            if(data.code == '1'){
+                location.href = "elecPack";
+            }else{
+                $("#submit").val('提交')
+                $("#submit").removeAttr("disabled");
+            }
+
+        },
+        error:function(data){
+            $("#submit").val('提交')
+            $("#submit").removeAttr("disabled");
+            alert("fail");
+        }
+    });
+
+});
+
+//集团弹窗
+$(".btn-login").click(function() {
+    dialog({
+        title: "集团信息",
+        content: document.getElementById('login-box'),
+        width: 800,
+        height: 500,
+        padding: 0
+    }).showModal()
+});
+$("#btn-login-submit").click(function(event) {
+    dialog.getCurrent().close().remove();
+});
+//资费弹窗
+function showChargesInfo(){
+    dialog({
+        title: "资费",
+        content: document.getElementById('login-boxs'),
+        width: 800,
+        height: 500,
+        padding: 0
+    }).showModal()
+}
+
+$("#btn-login-submits").click(function(event) {
+    dialog.getCurrent().close().remove();
+});
+
+
+//获取集团信息
+function getUnionList() {
+    table =  $('#unionList').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bPaginate": true,
+        "bFilter": false,
+        //"iDisplayLength": 10,
+        //"aLengthMenu": [10, 50, 100 ],
+        destroy:true,
+        "pageLength": 10,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url:"/getCtUnionList",
+            type:"get",
+            dataType:"json",
+            data:{
+                union_code : $("#union_code").val(),
+                union_name: $("#union_name").val(),
+                service_no: $("#service_no").val()
+            },
+
+
+        },
+        columns: [
+            { data: "union_code"},
+            { data: "union_name"},
+            { data: "union_level_code"},
+            { data: "vocaionkind1", "bSortable": false,
+                "render":function (data,type,row) {
+                    if(data == '' || data == null){
+                        return "无";
+                    }else{return data;}}
+            },
+            { data: "union_status", "bSortable": false,
+                "render":function (data,type,row) {
+                    if(data == '' || data == null){
+                        return "无";
+                    }else{return data;}}
+            },
+            { data:"null",
+                "bSortable": false,
+                "render":function (data, type,row){
+                    var union_code = row.union_code;
+                    var union_name = row.union_name;
+                    var code = $("#union_code")
+                    var html = "<input type='button' onclick='addUnion(\""+union_code+"\",\""+union_name+"\")' value='选中'></input>";
+                    return html;
+                }
+            }
+
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+
+
+/*
+//集团名称自动补全，并获取集团编号
+$("#first_party").autocomplete({
+    source: "selJtName",
+    select: function (event, ui) {
+        var jtCode = ui.item.jtCode;
+        $("#first_party_code").val(jtCode);
+        var index = layer.load(2, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            url:"getUnionInfoByCode",
+            type:"post",
+            data:{unionCode:jtCode},
+            cache: false,
+            success:function(data){
+                if(data.reStatus == 0){
+                    $("#second_invoice_band").val(data.bankName);
+                    $("#second_party_band").val(data.bankName);
+                    $("#second_invoice_number").val(data.bankAccount);
+                    $("#second_party_account_number").val(data.bankAccount);
+                }else if(data.reStatus == 1){
+                    alert("没有对应发票数据！");
+                }else if(data.reStatus == 2){
+                    alert("请求失败！");
+                }
+                layer.close(index);
+            },
+            error:function () {
+                layer.close(index);
+                alert("fail!");
+            }
+        });
+
+    }
+});
+
+//集团编码自动补全，并获取集团名称
+$("#first_party_code").autocomplete({
+    source: "selContracInfo",
+    select: function (event, ui) {
+        var unionName = ui.item.jtName;
+        var jtCode = ui.item.jtCode;
+        $("#first_party").val(unionName);
+        var index = layer.load(2, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            url:"getUnionInfoByCode",
+            type:"post",
+            data:{unionCode:jtCode},
+            cache: false,
+            success:function(data){
+                if(data.reStatus == 0){
+                    $("#second_invoice_band").val(data.bankName);
+                    $("#second_party_band").val(data.bankName);
+                    $("#second_invoice_number").val(data.bankAccount);
+                    $("#second_party_account_number").val(data.bankAccount);
+                    $("#account_status").val(data.accountStatus);
+
+                }else if(data.reStatus == 1){
+                    alert("没有对应发票数据！");
+                }else if(data.reStatus == 2){
+                    alert("请求失败！");
+                }
+                layer.close(index);
+            },
+            error:function () {
+                layer.close(index);
+                alert("请求失败！！");
+            }
+        });
+
+    }
+});
+*/
+function queryOpportunityNo() {
+    $("#opportunity_no").val("");
+    var jtCode = $("#first_party_code").val();
+    var jtName = $("#first_party").val();
+    if((jtCode==null||$.trim(jtCode)=='')&&(jtName==null||$.trim(jtName)=='')){
+        alert("请补全集团信息！");
+        $("#first_party").focus();
+        return;
+    }
+    selOpporListByUnion(jtCode,jtName);
+    dialog({
+        title: "查询商机号",
+        content: document.getElementById('oppor_window'),
+        width: 800,
+        height: 500,
+        padding: 0
+    }).showModal()
+}
+
+function selOpporListByUnion(jtCode,jtName) {
+    var elecpack_id = $("#elecpack_id").val();
+    var spe_type_id;
+    if (elecpack_id == 5) {
+        spe_type_id = '004';
+    } else if (elecpack_id == 6 || elecpack_id == 7) {
+        spe_type_id = '001';
+    }
+    table =  $('#oppor_list').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bPaginate": true,
+        "bFilter": false,
+        //"iDisplayLength": 10,
+        //"aLengthMenu": [10, 50, 100 ],
+        destroy:true,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url:"selOpporNo",
+            type:"get",
+            dataType:"json",
+            data:{
+                unionCode : jtCode,
+                unionName: jtName,
+                spe_type_id: spe_type_id
+            },
+        },
+        columns: [
+            { data: "unionName"},
+            { data: "unionCode"},
+            { data: "opporNo"},
+            { data: "linkMan"},
+            { data:"null",
+                "bSortable": false,
+                "render":function (data, type,row){
+                    var opporNo = row.opporNo;
+                    var html = "<input type='button' onclick='addOppor(\""+opporNo+"\")' value='选中'></input>";
+                    return html;
+                }
+            }
+
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+
+function addOppor(opporNo) {
+    if(opporNo==null||$.trim(opporNo)=='null'||$.trim(opporNo)==''){
+        alert("商机号为空，无法选择！");
+        return;
+    }
+    var index = layer.load(2, {
+        shade: [0.1,'#fff'] //0.1透明度的白色背景
+    });
+    /*
+     var temp = $("#opportunity_no").val();
+    var tempList = temp.split(",");
+    if(tempList.length>0){
+        for(var i=0;i<tempList.length;i++){
+            if(tempList[i] == opporNo){
+                alert("该商机号已选择！");
+                return;
+            }
+        }
+    }
+    if(temp==null||$.trim(temp)==''){
+        $("#opportunity_no").val(opporNo);
+    }else{
+        $("#opportunity_no").val(temp+","+opporNo);
+    }
+    */
+    $("#opportunity_no").val(opporNo);
+
+    var elecpack_id = $("#elecpack_id").val();
+    var spe_type_id;
+    if (elecpack_id == 5) {
+        spe_type_id = '004';
+    } else if (elecpack_id == 6 || elecpack_id == 7) {
+        spe_type_id = '001';
+    }
+    //根据商机号查询合同信息相关字段
+    $.ajax({
+        url:"getContractCloumByOpporNo",
+        type:"post",
+        data: {opporNo: opporNo, spe_type_id: spe_type_id},
+        cache: false,
+        success:function(data){
+            if(data.code == 0){
+                if(elecpack_id == 5){
+                    $("#first_access_address").val(data.reData.first_access_address);
+                    $("#interface_in").val(data.reData.interface_in);
+                    $("#interface_type").val(data.reData.interface_type);
+                }else if(elecpack_id == 6 || elecpack_id == 7){
+                    $("#a_access_address").val(data.reData.a_access_address);
+                    $("#a_interface_type").val(data.reData.a_interface_type);
+                    $("#z_access_address").val(data.reData.z_access_address);
+                    $("#z_interface_type").val(data.reData.z_interface_type);
+                    $("#first_connection_interface").val(data.reData.first_connection_interface);
+                    $("#second_connection_interface").val(data.reData.second_connection_interface);
+                }
+                //关闭弹窗
+                dialog.getCurrent().close().remove();
+            }else if(data.reStatus == 1){
+                alert("没有对应数据！");
+            }else if(data.reStatus == 2){
+                alert("请求失败！");
+            }
+            layer.close(index);
+        },
+        error:function () {
+            layer.close(index);
+            alert("请求失败！！");
+        }
+    });
+}
+
+
+//选择集团
+function addUnion(a,b){
+    $("#first_party_code").val(a);
+    $("#first_party").val(b);
+    var index = layer.load(2, {
+        shade: [0.1,'#fff'] //0.1透明度的白色背景
+    });
+    $.ajax({
+        url:"/getUnionInfoByCode",
+        type:"post",
+        data:{unionCode:a},
+        cache: false,
+        success:function(data){
+            if(data.reStatus == 0){
+                $("#second_invoice_band").val(data.bankName);
+                $("#second_party_band").val(data.bankName);
+                $("#second_invoice_number").val(data.bankAccount);
+                $("#second_party_account_number").val(data.bankAccount);
+                $("#account_status").val(data.accountStatus);
+                //关闭弹窗
+                dialog.getCurrent().close().remove();
+            }else if(data.reStatus == 1){
+                alert("该集团没有资金子账号！");
+            }else if(data.reStatus == 2){
+                alert("请求失败！");
+            }
+            layer.close(index);
+        },
+        error:function () {
+            alert("fail!");
+            layer.close(index);
+        }
+    });
+}
+
+//甲方名称自动填充
+$("#first_invoice_name").keyup(function(){
+    $this=$(this);
+    $("#jf_name").val($this.val());
+});
+//法定代表人自动填充
+$("#first_party_charge").keyup(function(){
+    $this=$(this);
+    $("#jf_fddbr").val($this.val());
+});
+//地址自动填充
+$("#first_party_address").keyup(function(){
+    $this=$(this);
+    $("#jf_address").val($this.val());
+});
+
+//删除资费
+function deleteCharge(btn) {
+    var elecpack_id = $("#elecpack_id").val();
+    var charge_id = $(btn).parent().parent("tr").attr("chargeid");
+    var price = $(btn).parent().parent().children(".price").html();
+    var content = $(btn).parent().parent().children(".content").html();
+    var number = $(btn).parent().parent().children(".numbers").html();
+    var remark = $(btn).parent().parent().children(".remark").html();
+    $("#price_tbody").append('<tr class="charge_id" chargeId="'+charge_id+'" >'+
+        '<td class="price">'+price+'</td>'+
+        '<td class="content">'+content+'</td>' +
+        '<td class="numbers">1</td>' +
+        '<td class="remark">'+remark+'</td>' +
+        '<td><input type="button" class="" onclick="addCharge(this);" value="添加"/></td>'+
+        '</tr>'
+    );
+    $(btn).parent().parent().remove();
+    sumMoney();
+    if(elecpack_id==5||elecpack_id==6 || elecpack_id==7){
+        sumNumber();
+        sumDaiKuan();
+    }
+}
+
+//添加资费
+function  addCharge(btn) {
+    var elecpack_id = $("#elecpack_id").val();
+    var index = layer.load(2, {
+        shade: [0.1,'#fff'] //0.1透明度的白色背景
+    });
+    var charge_id = $(btn).parent().parent("tr").attr("chargeId");
+    var price = $(btn).parent().parent().children(".price").html();
+    var content = $(btn).parent().parent().children(".content").html();
+    var number = $(btn).parent().parent().children(".numbers").html();
+    var remark = $(btn).parent().parent().children(".remark").html();
+    var thisBody = $(btn);
+
+    $("#chargeList").append('<tr chargeId = "'+charge_id+'"> ' +
+        '<td class="price">'+price+'</td> <td class="content">'+content+'</td> <td class="numbers">'+'<input type="number" class="input-sty04 form-ipt" onblur="changeNum(this)" value="1"/>'+'</td><td class="remark">'+remark+'</td> <td><input type="button" class="deleteCharge" onclick="deleteCharge(this);" value="删除"/></td> </tr>');
+    thisBody.parent().parent().remove();
+    sumMoney();
+    if(elecpack_id==5||elecpack_id==6 ||elecpack_id==7){
+        sumNumber();
+        sumDaiKuan();
+    }
+    layer.close(index);
+}
+
+function changeNum(ob) {
+    var elecpack_id = $("#elecpack_id").val();
+    if(ob.value<1){
+        alert("资费数量至少为1！");
+        ob.value = 1;
+        ob.focus();
+        return;
+    }
+    if(elecpack_id==5||elecpack_id==6 ||elecpack_id==7){
+        sumNumber();
+        sumDaiKuan();
+    }
+    sumMoney();
+}
+
+//计算合同条数
+function sumNumber() {
+    var trList = $("#chargeList").children("tr");
+    var size = trList.length;
+    var total = 0;
+    for(var i = 0 ;i<size; i++){
+        var tdArr = trList.eq(i).find("td");
+        var num = parseInt(tdArr.eq(2).find("input").val()); //数量
+        if(num < 1){
+            alert("资费数量至少为1！");
+            tdArr.eq(2).find("input").val(1);
+            return;
+        }
+        total = total+num;
+    }
+    $("#dedicated_amount").val(total);
+}
+//计算带宽
+function sumDaiKuan() {
+    var trList = $("#chargeList").children("tr");
+    var size = trList.length;
+    var total = "";
+    for(var i = 0 ;i<size; i++){
+        var tdArr = trList.eq(i).find("td");
+        var bandwidth = parseInt(tdArr.eq(1).text()) + 'M'; //带宽
+        if(total == null || total == ""){
+            total = bandwidth;
+        }else{
+            total = total + ',' + bandwidth;
+        }
+    }
+    $("#bandwidth").val(total);
+}
+
+//计算合同总金额
+function sumMoney(){
+    var trList = $("#chargeList").children("tr");
+    var size = trList.length;
+    var total = 0;
+    var discountVal = $("#contract_discount").val();//折扣
+    for(var i = 0 ;i<size; i++){
+        var tdArr = trList.eq(i).find("td");
+        var priceVal = parseInt(tdArr.eq(0).text()); //金额
+        var num = parseInt(tdArr.eq(2).find("input").val()); //数量
+        if(discountVal!=null&&discountVal!=""){
+            var discountRate = parseInt(discountVal)/100;
+            total = priceVal * num * discountRate + total;
+        }else{
+            total = priceVal * num + total;
+        }
+    }
+    $("#total_amount").val(total);
+}
+
+//切换发票类型
+function changeInType(type) {
+
+    $("#temp_id").val(type);
+    if(type == 0){//切换为增值税发票
+        $("#second_invoice_name").removeAttr("disabled");
+        $("#second_taxpayer_code").removeAttr("disabled");
+        $("#second_invoice_username").removeAttr("disabled");
+        $("#second_invoice_address").removeAttr("disabled");
+        $("#second_invoice_phone").removeAttr("disabled");
+        $("#second_party_username").removeAttr("disabled");
+
+        $("#second_invoice_name").val("");
+        $("#second_taxpayer_code").val("");
+        $("#second_invoice_username").val("");
+        $("#second_invoice_address").val("");
+        $("#second_invoice_phone").val("");
+        $("#second_party_username").val("");
+
+        // $("#span_info_id").attr("class","ui-btn");
+        // $("#span_info_id").addClass("fs-14");
+        // $("#change_invoice_type").removeClass();
+
+        // $("#type_two").attr("checked",true);
+        // $("#type_one").attr("checked",false);
+    }
+    if(type == 1){//切换为电子发票
+
+        $("#second_invoice_name").attr("disabled",true);
+        $("#second_taxpayer_code").attr("disabled",true);
+        $("#second_invoice_username").attr("disabled",true);
+        $("#second_invoice_address").attr("disabled",true);
+        $("#second_invoice_phone").attr("disabled",true);
+        $("#second_party_username").attr("disabled",true);
+
+
+        $("#second_invoice_name").val($("#temp_name").val());
+        $("#second_taxpayer_code").val($("#temp_code").val());
+        $("#second_invoice_username").val($("#temp_user_name").val());
+        $("#second_invoice_address").val($("#temp_add").val());
+        $("#second_invoice_phone").val($("#temp_phone").val());
+        $("#second_party_username").val($("#temp_user_name").val());
+
+        // $("#change_invoice_type").attr("class","ui-btn")
+        // $("#change_invoice_type").addClass("fs-14")
+        // $("#span_info_id").removeClass();
+
+        // $("#type_one").attr("checked",true);
+        // $("#type_two").attr("checked",false);
+    }
+}
+
+function validateEmpty() {
+    //集团客户信息（甲方）
+    var unionCode = $("#first_party_code").val();
+    var unionName = $("#first_party").val();
+    var fdPerson = $("#first_party_charge").val();
+    var firstAddress = $("#first_party_address").val();
+    // var postCode = $("#first_party_post_code").val();//邮编不是必填项目
+    var firstPhone = $("#first_party_phone").val();
+    if(unionCode==null||$.trim(unionCode)==''){
+        alert('集团编码不能为空！');
+        $("#first_party_code").focus();
+        return false;
+    }
+    if(unionName==null||$.trim(unionName)==''){
+        alert('集团名称不能为空！');
+        $("#first_party").focus();
+        return false;
+    }
+    if(fdPerson==null||$.trim(fdPerson)==''){
+        alert('法定代表人/负责人不能为空！');
+        $("#first_party_charge").focus();
+        return false;
+    }
+    if(firstAddress==null||$.trim(firstAddress)==''){
+        alert('地址不能为空！');
+        $("#first_party_address").focus();
+        return false;
+    }
+    if(firstPhone==null||$.trim(firstPhone)==''){
+        alert('电话不能为空！');
+        $("#first_party_phone").focus();
+        return false;
+    }
+    if(!judgeMobile(firstPhone)){
+        alert('请输入正确的电话！');
+        $("#first_party_phone").focus();
+        return false;
+    }
+    //集团信息（乙方）
+    var yf_unionCode = $("#yf_first_party_code").val();
+    var yf_unionName = $("#yf_first_party").val();
+    var yf_fdPerson = $("#yf_first_party_charge").val();
+    var yf_firstAddress = $("#yf_first_party_address").val();
+    var yf_firstPhone = $("#yf_first_party_phone").val();
+    // if(yf_unionCode==null||$.trim(yf_unionCode)==''){
+    //     alert('集团编码不能为空！');
+    //     $("#yf_first_party_code").focus();
+    //     return false;
+    // }
+    if(yf_unionName==null||$.trim(yf_unionName)==''){
+        alert('集团名称不能为空！');
+        $("#yf_first_party").focus();
+        return false;
+    }
+    if(yf_fdPerson==null||$.trim(yf_fdPerson)==''){
+        alert('法定代表人/负责人不能为空！');
+        $("#yf_first_party_charge").focus();
+        return false;
+    }
+    if(yf_firstAddress==null||$.trim(yf_firstAddress)==''){
+        alert('地址不能为空！');
+        $("#yf_first_party_address").focus();
+        return false;
+    }
+    if(yf_firstPhone==null||$.trim(yf_firstPhone)==''){
+        alert('电话不能为空！');
+        $("#yf_first_party_phone").focus();
+        return false;
+    }
+    if(!judgeMobile(yf_firstPhone)){
+        alert('请输入正确的电话！');
+        $("#yf_first_party_phone").focus();
+        return false;
+    }
+    //合同信息
+    var elecpack_id = $("#elecpack_id").val();
+    var conName = $("#contract_name").val();//合同名称
+    if (conName == null || $.trim(conName) == '') {
+        alert('合同标题不能为空！');
+        $("#contract_name").focus();
+        return false;
+    }
+    var tolAmount = $("#total_amount").val();//总金额
+    if (tolAmount == null || $.trim(tolAmount) == '') {
+        alert('合同总金额不能为空！');
+        $("#total_amount").focus();
+        return false;
+    }
+    var opportunity_no = $("#opportunity_no").val();//商机号
+    if(opportunity_no == null || $.trim(opportunity_no) == ''){
+        alert('请选择商机号！');
+        $("#opportunity_no").focus();
+        return false;
+    }
+    var contract_discount = $("#contract_discount").val();//折扣
+    if (elecpack_id == 1 || elecpack_id == 2 || elecpack_id == 3) {
+        if(contract_discount == null || $.trim(contract_discount) == ''){
+            alert('请选择折扣！');
+            $("#contract_discount").focus();
+            return false;
+        }
+    }
+    var bond = $("#bond").val();//保证金
+    if(elecpack_id == 1 || elecpack_id == 2 || elecpack_id == 3 || elecpack_id == 4){
+        if(bond == null || $.trim(bond) == ''){
+            alert('请填写保证金！');
+            $("#bond").focus();
+            return false;
+        }
+    }
+    var penalty = $("#penalty").val();//违约金
+    if(elecpack_id == 1 || elecpack_id == 2){
+        if(penalty == null || $.trim(penalty) == ''){
+            alert('请填写违约金！');
+            $("#penalty").focus();
+            return false;
+        }
+    }
+    var payCyc = $("#pay_cycle").val();//缴费周期
+    if(payCyc == 0){
+        alert('请选择缴费周期！');
+        $("#pay_cycle").focus();
+        return false;
+    }
+    var open_time = $("#open_time").val();//开通时间
+    if (elecpack_id == 1 || elecpack_id == 2 || elecpack_id == 4) {
+        if(open_time == null || $.trim(open_time) == ''){
+            alert('请选择开通时间！');
+            $("#open_time").focus();
+            return false;
+        }else {
+            var time_1 = toDate(open_time);
+            var now_1 = new Date();
+            if(time_1 < now_1){
+                alert("开通时间应晚于当前时间");
+                $("#open_time").focus();
+                return false;
+            }
+        }
+    }
+
+    var buyFWhat = $("#buy_for_what").val();//用于
+    if(elecpack_id == 3 || elecpack_id == 5){
+        if (buyFWhat == null || $.trim(buyFWhat) == '') {
+            alert('请填写购买产品用于！');
+            $("#buy_for_what").focus();
+            return false;
+        }
+    }
+    var business_type = $("#business_type").val();
+    if(elecpack_id == 2){
+        if (business_type == null || $.trim(business_type) == '') {
+            alert('请填写甲方业务类型及资费模式！');
+            $("#business_type").focus();
+            return false;
+        }
+    }
+    var payment = $("#payment").val();
+    if(elecpack_id == 4 || elecpack_id == 5||elecpack_id == 6 ||elecpack_id==7){
+        if (payment == 0) {
+            alert('请选择付费方式！');
+            $("#payment").focus();
+            return false;
+        }
+    }
+    var pay_main_body = $("#pay_main_body").val();
+    if(elecpack_id == 4){
+        if(payment == 2){
+            if (pay_main_body == null || $.trim(pay_main_body) == '') {
+                alert('请选择付费主体！');
+                $("#pay_main_body").focus();
+                return false;
+            }
+        }
+    }
+    var use_area = $("#use_area").val();
+    if(elecpack_id == 4){
+        if (use_area == null || $.trim(use_area) == '') {
+            alert('请填写区域！');
+            $("#use_area").focus();
+            return false;
+        }
+    }
+    var dedicated_amount = $("#dedicated_amount").val();
+    if(elecpack_id == 5 || elecpack_id ==6 ||elecpack_id==7){
+        if (dedicated_amount == null || $.trim(dedicated_amount) == '') {
+            alert('请填写条数！');
+            $("#dedicated_amount").focus();
+            return false;
+        }
+    }
+    var bandwidth = $("#bandwidth").val();
+    if(elecpack_id == 5 || elecpack_id ==6 ||elecpack_id==7){
+        if (bandwidth == null || $.trim(bandwidth) == '') {
+            alert('请填写带宽！');
+            $("#bandwidth").focus();
+            return false;
+        }
+    }
+    var lease_term = $("#lease_term").val();
+    if(elecpack_id == 5 || elecpack_id ==6 ||elecpack_id==7){
+        if (lease_term == '0') {
+            alert('请选择租用期限！');
+            $("#lease_term").focus();
+            return false;
+        }
+    }
+    var interface_type = $("#interface_type").val();
+    if(elecpack_id == 5 ){
+        if (interface_type == null || $.trim(interface_type) == '') {
+            alert('请选择接口类型！');
+            $("#interface_type").focus();
+            return false;
+        }
+    }
+    var first_access_address = $("#first_access_address").val();
+    if(elecpack_id == 5 ){
+        if (first_access_address == null || $.trim(first_access_address) == '') {
+            alert('请选择甲方接入点地址！');
+            $("#first_access_address").focus();
+            return false;
+        }
+    }
+    var interface_in = $("#interface_in").val();
+    if(elecpack_id == 5 ){
+        if (interface_in == null || $.trim(interface_in) == '') {
+            alert('请选择 接口界面！');
+            $("#interface_in").focus();
+            return false;
+        }
+    }
+
+    var a_access_address = $("#a_access_address").val();
+    if(elecpack_id == 6 ||elecpack_id==7){
+        if (a_access_address == null || $.trim(a_access_address) == '') {
+            alert('请选择A端接入地址！');
+            $("#a_access_address").focus();
+            return false;
+        }
+    }
+    var a_interface_type = $("#a_interface_type").val();
+    if(elecpack_id == 6 || elecpack_id==7){
+        if (a_interface_type == null || $.trim(a_interface_type) == '') {
+            alert('请选择A端接口类型！');
+            $("#a_interface_type").focus();
+            return false;
+        }
+    }
+    var z_access_address = $("#z_access_address").val();
+    if(elecpack_id == 6 || elecpack_id==7){
+        if (z_access_address == null || $.trim(z_access_address) == '') {
+            alert('请选择 Z端接入地址！');
+            $("#z_access_address").focus();
+            return false;
+        }
+    }
+    var z_interface_type = $("#z_interface_type").val();
+    if(elecpack_id == 6 || elecpack_id==7){
+        if (z_interface_type == null || $.trim(z_interface_type) == '') {
+            alert('请选择 Z端接口类型！');
+            $("#z_interface_type").focus();
+            return false;
+        }
+    }
+    var first_connection_interface = $("#first_connection_interface").val();
+    if(elecpack_id == 6 || elecpack_id==7){
+        if (first_connection_interface == null || $.trim(first_connection_interface) == '') {
+            alert('请选择甲方连接接口！');
+            $("#first_connection_interface").focus();
+            return false;
+        }
+    }
+    var second_connection_interface = $("#second_connection_interface").val();
+    if(elecpack_id == 6 || elecpack_id==7){
+        if (second_connection_interface == null || $.trim(second_connection_interface) == '') {
+            alert('请选择乙方连接接口！');
+            $("#second_connection_interface").focus();
+            return false;
+        }
+    }
+    var conDesc = $("#contract_desc").val();
+    if (conDesc == null || $.trim(conDesc) == '') {
+        alert('合同描述不能为空！');
+        $("#contract_desc").focus();
+        return false;
+    }
+    if (conDesc.length > 200) {
+        alert('合同描述字数超过200！！！');
+        $("#contract_desc").focus();
+        return false;
+    }
+
+    //双方发票信息
+    var jfName = $("#first_invoice_name").val();
+    var yfName = $("#second_invoice_name").val();
+    if(jfName==null||$.trim(jfName)==''){
+        alert('甲方名称为空！');
+        return false;
+    }if(yfName==null||$.trim(yfName)==''){
+        alert('乙方名称为空！');
+        return false;
+    }
+    var jnsCode = $("#first_taxpayer_code").val();
+    var ynsCode = $("#second_taxpayer_code").val();
+    if(jnsCode==null||$.trim(jnsCode)==''){
+        alert('国税纳税人识别号不能为空！');
+        $("#first_taxpayer_code").focus();
+        return false;
+    }if(ynsCode==null||$.trim(ynsCode)==''){
+        alert('国税纳税人识别号不能为空！');
+        $("#second_taxpayer_code").focus();
+        return false;
+    }
+    if(!judgeTaxpayerCode(jnsCode)){
+        alert('国税纳税人识别号为数字或字母组合！');
+        $("#first_taxpayer_code").focus();
+        return false;
+    }
+    if(!judgeTaxpayerCode(ynsCode)){
+        alert('国税纳税人识别号为数字或字母组合！');
+        $("#second_taxpayer_code").focus();
+        return false;
+    }
+    var jyBank = $("#first_invoice_band").val();
+    var yfBank = $("#second_invoice_band").val();
+    if(jyBank==null||$.trim(jyBank)==''){
+        alert('开户行不能为空！');
+        $("#first_invoice_band").focus();
+        return false;
+    }if(yfBank==null||$.trim(yfBank)==''){
+        alert('开户行不能为空！');
+        $("#second_invoice_band").focus();
+        return false;
+    }
+    var jfUserName = $("#first_invoice_username").val();
+    var yfUserName = $("#second_invoice_username").val();
+    if(jfUserName==null||$.trim(jfUserName)==''){
+        alert('户名不能为空！');
+        $("#first_invoice_username").focus();
+        return false;
+    }if(yfUserName==null||$.trim(yfUserName)==''){
+        alert('户名不能为空！');
+        $("#second_invoice_username").focus();
+        return false;
+    }
+    var jfBankNo = $("#first_invoice_number").val();
+    var yfBankNo = $("#second_invoice_number").val();
+    if(jfBankNo==null||$.trim(jfBankNo)==''){
+        alert('账号不能为空！');
+        $("#first_invoice_number").focus();
+        return false;
+    }if(!judgeNum(jfBankNo)){
+        alert('账号必须为数字！');
+        $("#first_invoice_number").focus();
+        return false;
+    }
+    if(yfBankNo==null||$.trim(yfBankNo)==''){
+        alert('账号不能为空！');
+        $("#second_invoice_number").focus();
+        return false;
+    }if(!judgeNum(yfBankNo)){
+        alert('账号必须为数字！');
+        $("#second_invoice_number").focus();
+        return false;
+    }
+    var jfAdd = $("#first_invoice_address").val();
+    var yfAdd = $("#second_invoice_address").val();
+    if(jfAdd==null||$.trim(jfAdd)==''){
+        alert('地址不能为空！');
+        $("#first_invoice_address").focus();
+        return false;
+    } if(yfAdd==null||$.trim(yfAdd)==''){
+        alert('地址不能为空！');
+        $("#second_invoice_address").focus();
+        return false;
+    }
+    var jfPhone = $("#first_invoice_phone").val();
+    var yfPhone = $("#second_invoice_phone").val();
+   if(jfPhone==null||$.trim(jfPhone)==''){
+        alert('联系方式不能为空！');
+        $("#first_invoice_phone").focus();
+        return false;
+    }
+    if(!judgeMobile(jfPhone)){
+        alert('联系方式格式不正确！');
+        $("#first_invoice_phone").focus();
+        return false;
+    }
+    if(yfPhone==null||$.trim(yfPhone)==''){
+        alert('联系方式不能为空！');
+        $("#second_invoice_phone").focus();
+        return false;
+    }
+    if(!judgeMobile(yfPhone)){
+        alert('联系方式格式不正确！');
+        $("#second_invoice_phone").focus();
+        return false;
+    }
+    //银行账户信息
+    var jfPartyName = $("#first_party_username").val();
+    var yfPartyName = $("#second_party_username").val();
+    if(jfPartyName==null||$.trim(jfPartyName)==''){
+        alert('户名不能为空！');
+        $("#first_party_username").focus();
+        return false;
+    }if(yfPartyName==null||$.trim(yfPartyName)==''){
+        alert('户名不能为空！');
+        $("#second_party_username").focus();
+        return false;
+    }
+    var fpBank = $("#first_party_band").val();
+    var spBank = $("#second_party_band").val();
+    if(fpBank==null||$.trim(fpBank)==''){
+        alert('开户行不能为空！');
+        $("#first_party_band").focus();
+        return false;
+    }if(spBank==null||$.trim(spBank)==''){
+        alert('开户行不能为空！');
+        $("#second_party_band").focus();
+        return false;
+    }
+    var fpaNumber = $("#first_party_account_number").val();
+    var spaNumber = $("#second_party_account_number").val();
+    if(fpaNumber==null||$.trim(fpaNumber)==''){
+        alert('账号不能为空！');
+        $("#first_party_account_number").focus();
+        return false;
+    }if(!judgeNum(fpaNumber)){
+        alert('账号必须为数字！');
+        $("#first_party_account_number").focus();
+        return false;
+    }
+    if(spaNumber==null||$.trim(spaNumber)==''){
+        alert('账号不能为空！');
+        $("#second_party_account_number").focus();
+        return false;
+    }if(!judgeNum(spaNumber)){
+        alert('账号必须为数字！');
+        $("#second_party_account_number").focus();
+        return false;
+    }
+    //甲方集团缴费联系人信息
+    var fcName = $("#first_contacts_name").val();
+    var fcCard = $("#first_contacts_id_card").val();
+    if(fcCard==null||$.trim(fcCard)==''){
+        alert('联系人身份证不能为空！');
+        $("#first_contacts_id_card").focus();
+        return false;
+    }if(!judgeIdCard(fcCard)){
+        alert('请输入正确的身份证号码！');
+        $("#first_contacts_id_card").focus();
+        return false;
+    }
+    var fcPhone = $("#first_contacts_phone").val();
+    var fcEmail = $("#first_contacts_email").val();
+    var fcAdd = $("#first_contacts_address").val();
+    if(fcName==null||$.trim(fcName)==''){
+        alert('联系人姓名不能为空！');
+        $("#first_contacts_name").focus();
+        return false;
+    }
+    if(fcPhone==null||$.trim(fcPhone)==''){
+        alert('联系人电话不能为空！');
+        $("#first_contacts_phone").focus();
+        return false;
+    }
+    if(!judgeMobile(fcPhone)){
+        alert('请输入正确的电话！');
+        $("#first_contacts_phone").focus();
+        return false;
+    }
+    if(fcEmail==null||$.trim(fcEmail)==''){
+        alert('联系人邮箱不能为空！');
+        $("#first_contacts_email").focus();
+        return false;
+    }if(fcAdd==null||$.trim(fcAdd)==''){
+        alert('联系人地址不能为空！');
+        $("#first_contacts_address").focus();
+        return false;
+    }
+
+    //信息安全承诺书
+    var msg_name = $("#jf_name").val();
+    var msg_fddbr = $("#jf_fddbr").val();
+    var msg_linkMan = $("#jf_linkMan").val();
+    var msg_address = $("#jf_address").val();
+    var msg_phone = $("#jf_phone").val();
+
+    if(msg_name==null||$.trim(msg_name)==''){
+        alert('甲方名称不能为空！');
+        $("#jf_name").focus();
+        return false;
+    }if(msg_fddbr==null||$.trim(msg_fddbr)==''){
+        alert('法定代表人不能为空！');
+        $("#jf_fddbr").focus();
+        return false;
+    }if(msg_linkMan==null||$.trim(msg_linkMan)==''){
+        alert('联系人不能为空！');
+        $("#jf_linkMan").focus();
+        return false;
+    }if(msg_address==null||$.trim(msg_address)==''){
+        alert('地址不能为空！');
+        $("#jf_address").focus();
+        return false;
+    }if(msg_phone==null||$.trim(msg_phone)==''){
+        alert('联系人电话不能为空！');
+        $("#jf_phone").focus();
+        return false;
+    }
+    if(!judgeMobile(msg_phone)){
+        alert('请输入正确的电话！');
+        $("#jf_phone").focus();
+        return false;
+    }
+    var next_deal1 = $("#next_deal1").val();
+    if(next_deal1==null||$.trim(next_deal1)==''){
+        alert('请选择下一环节处理人');
+        $("#next_deal1").focus();
+        return false;
+    }
+
+    var elecPack_id = $("#elecpack_id").val();
+    if (elecPack_id == 1){//集团工作流量包
+        var open_time = $("#open_time").val();
+        var penalty = $("#penalty").val();
+        var time_1 = toDate(open_time);
+        var now_1 = new Date();
+        if(time_1 < now_1){
+            alert("开通时间应晚于当前时间");
+            $("#open_time").focus();
+            return false;
+        }
+    }
+    return true;
+}
+
+// 判断手机号
+function judgeMobile(tel_no){
+    var RegExp = /^((0\d{2,3}-\d{7,8})|(1[345789]\d{9}))$/;
+    if (RegExp.test(tel_no) == false) {
+        alert("号码格式不正确或者位数不正确");
+        return false;
+    }
+    return true;
+}
+
+// 判断手机号
+function judgeMobile_onblur(ob){
+    if(ob.value.length == 0){
+        return;
+    }
+    var RegExp = /^((0\d{2,3}-\d{7,8})|(1[345789]\d{9}))$/;
+    if (RegExp.test(ob.value) == false) {
+        alert("号码格式不正确或者位数不正确");
+        ob.value = '';
+        ob.focus();
+        return false;
+    }
+    return true;
+}
+
+// 判断身份证
+function judgeIdCard(ob){
+    if(!(/^\d{15}$|^\d{17}[0-9Xx]$/.test(ob))){
+        alert("身份证格式不对");
+        return false;
+    }
+    return true;
+}
+//判断账号是否为数字
+function judgeNum(num) {
+    if(isNaN(num)){
+        return false;
+    }
+    return true;
+}
+
+// 判断纳税人识别号：数字和字母
+function judgeTaxpayerCode(code){
+    if(!(/^[0-9a-zA-Z]{0,}$/.test(code))){
+        alert("纳税人识别号为数字和字母组合！");
+        return false;
+    }
+    return true;
+}
+
+
+function isAllChinese(ob){
+    var patrn=/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/gi;
+    if(!patrn.exec(ob)){
+        alert("甲方名称至少有文字!");
+        return false;
+    }
+    return true;
+}
+
+function onlyNumber(ob) {
+    if(isNaN(ob.value)){
+        alert("只能为数字!");
+        ob.focus();
+        ob.value=ob.value.replace(/\D/g,'');
+    }
+
+}
+
+function onlyChinese(ob) {
+    // alert(!(/[^\u4E00-\u9FA5]/.test(ob.value)));
+    // if(!(/[^\u4E00-\u9FA5]/.test(ob.value))){
+    //
+    // }
+    var reg = /[^\u4E00-\u9FA5]/g;
+    if(reg.exec(ob.value)){
+        alert("只能为中文！");
+        ob.focus();
+        ob.value=ob.value.replace(/[^\u4E00-\u9FA5]/g,'')
+    }
+
+}
+//验证邮箱
+function validEmail(ob){
+    if(ob.value.length == 0){
+        return;
+    }
+    var reg = /^(\w)+(\.\w+)*@(\w)+((\.\w{2,3}){1,3})$/;
+    if(!reg.exec(ob.value)){
+        alert("邮箱格式不对！");
+        ob.value = '';
+        ob.focus();
+        return false;
+    }
+    return true;
+}
+
+
+function toDate(date){
+    var year = date.substring(0,4);
+    var month = date.substring(5,7);
+    var day = date.substring(8,10);
+    return new Date(year+"-"+month+"-"+day);
+}

@@ -1,0 +1,114 @@
+package com.esop.busiAnalysis.controller;
+
+import com.esop.busiAnalysis.dto.EpBusiSolutionDto;
+import com.esop.busiAnalysis.dto.SolutionTradeTypeDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.common.uploadFile.UploadFileInfoService;
+import com.esop.common.util.ParameterConversion;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Administrator on 2017/6/29.
+ */
+@RestController
+public class BusiSolutionController {
+    @Autowired
+    com.esop.busiAnalysis.service.BusiSolutionService busiSolutionService;
+    @Autowired
+    UploadFileInfoService uploadFileInfoService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result=new Result();
+    @RequestMapping(value="/getSolutiontInfo")
+    public Result qryExcellentCase(EpBusiSolutionDto parameter, HttpServletRequest request){
+        System.out.println("--------------------打印--------------------------");
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        System.out.println("--------------------打印--------------------------");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = busiSolutionService.getSolutionInfo(parameter);
+        return result;
+    }
+    @RequestMapping(value="/insSolutionInfo")
+    public int insExcellentCase(EpBusiSolutionDto param){
+
+        return busiSolutionService.insert(param);
+    }
+    @RequestMapping(value="/delSolutionInfo")
+    public int delSolutionInfo(EpBusiSolutionDto param){
+        return busiSolutionService.delete(param);
+    }
+    @RequestMapping(value="/updSolutionInfo")
+    public int updSolutionInfo(EpBusiSolutionDto param){
+        return busiSolutionService.update(param);
+    }
+    @RequestMapping(value="/getSolutionInfoById")
+    public List<EpBusiSolutionDto> getSolutionInfoById(EpBusiSolutionDto param){
+        return busiSolutionService.getSolutionInfoById(param);
+    }
+    //行业类型查询
+    @RequestMapping(value="/qrySolutionType")
+    public Map qrySolutionType(HttpServletRequest request){
+        //SolutionTradeTypeDto param =  ParameterConversion.jsonToObject(request, SolutionTradeTypeDto.class);
+        List list = busiSolutionService.qrySolutionType();
+        Map<String,Object> retMap = new HashMap<String, Object>();
+        Map<String,Object> rootMap = new HashMap<String,Object>();
+        Map<String,Object> bodyMap = new HashMap<String,Object>();
+        if(list != null && list.size()>0) {
+            bodyMap.put("solutionTypeList", list);
+            bodyMap.put("return_kmsg","000000");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }else{
+            bodyMap.put("return_kmsg","查询失败");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }
+        return retMap;
+    }
+    //app端行业解决方案信息查询
+    @RequestMapping(value="/qryBusiSolutionInfo")
+    public Map qryBusiSolutionInfo(HttpServletRequest request){
+        EpBusiSolutionDto param =  ParameterConversion.jsonToObject(request, EpBusiSolutionDto.class);
+        /*EpBusiSolutionDto param = new EpBusiSolutionDto();
+        param.setRelated_id("476");
+        param.setSolution_id("20170629");*/
+        List list = busiSolutionService.qrySolutionInfo(param);
+        Map<String,Object> retMap = new HashMap<String, Object>();
+        Map<String,Object> rootMap = new HashMap<String,Object>();
+        Map<String,Object> bodyMap = new HashMap<String,Object>();
+        if(list != null && list.size()>0) {
+            if(param.getRelated_id() != ""){
+                UploadFileInfoDto parameter = new UploadFileInfoDto();
+                parameter.setRelated_id(param.getRelated_id());
+                List relateList = uploadFileInfoService.select(parameter);
+                bodyMap.put("related_list", relateList);
+            }
+            bodyMap.put("busiSolutionList", list);
+            bodyMap.put("return_kmsg","000000");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }else{
+            bodyMap.put("return_kmsg","查询失败");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }
+        return retMap;
+    }
+}

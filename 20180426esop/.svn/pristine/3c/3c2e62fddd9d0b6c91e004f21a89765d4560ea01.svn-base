@@ -1,0 +1,295 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/12/5
+  Time: 11:11
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>集团产品变更</title>
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+</head>
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团产品信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <form id="groupChangeForm">
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>合同名称：</th>
+                                <td>
+                                    <span id="unionCode"></span>
+                                </td>
+                                <th>合同编码：</th>
+                                <td>
+                                    <span id="contractId"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>甲方：</th>
+                                <td>
+                                    <span id="firstParty"></span>
+                                </td>
+                                <th>乙方：</th>
+                                <td>
+                                    <span id="secondParty"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>甲方负责人：</th>
+                                <td>
+                                    <span id="firstPartyCharge"></span>
+                                </td>
+                                <th>乙方负责人：</th>
+                                <td>
+                                    <span id="secondPartyCharge"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>折扣：</th>
+                                <td>
+                                    <span id="discount"></span>
+                                </td>
+                                <th>总金额：</th>
+                                <td>
+                                    <span id="totalAmount"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>支付周期：</th>
+                                <td>
+                                    <span id="payCycle"></span>
+                                </td>
+                                <th>保证金：</th>
+                                <td>
+                                    <span id="bond"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>发票种类：</th>
+                                <td>
+                                    <span id="invoiceType"></span>
+                                </td>
+                                <th>起草时间：</th>
+                                <td>
+                                    <span id="openTime"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>订单编号：</th>
+                                <td>
+                                    <span id="requestNum"></span>
+                                </td>
+                                <th>订单标题：</th>
+                                <td>
+                                    <span id="orderTitle"></span>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>开通时间：</th>
+                                <td>
+                                    <span id="effDate"></span>
+                                </td>
+
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <div class="row col-12" id="prodDiv" >
+                        <div class="pd-20 pos-rel" style="background-color:#fff;">
+                            <div class="active-cost-box" style="padding-bottom:0;">
+                                <table class="cost-table" id="groupProdInfo" width="100%;">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center" >编号</th>
+                                        <th class="text-center">产品编码</th>
+                                        <th class="text-center">生效方式</th>
+                                        <th class="text-center">操作类型</th>
+                                        <th class="text-center">优惠附加属性</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row col-12" style="padding-top: 30px;">
+                        <div class="pd-20 pos-rel" style="background-color:#fff;">
+                            <div class="active-cost-box" style="padding-bottom:0;">
+                                <table class=" width-th" width="100%">
+                                    <thead>
+                                    <tr >
+                                        <th></th>
+                                        <th>是否客户经理审批 </th>
+                                        <td>
+                                            <select id="is_cust_mgr_audt" name="is_cust_mgr_audt" style='width: 150px;' class="input input-sty06 form-ipt">
+                                                <option value="1">是</option>
+                                                <option value="0">否</option>
+                                            </select>
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th>下一环节</th>
+                                        <td>
+                                            <input id="last_step" name="last_step" type="text" value="无" class="input-sty08 form-ipt" style='width: 150px;' disabled="true">
+                                        </td>
+                                        <th>下一环节处理人 </th>
+                                        <td>
+                                            <select id="next_step" name="next_step" style='width: 150px;' class="input input-sty06 form-ipt">
+                                                <option>请选择</option>
+                                                <option value="112900001">思特奇员工</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="invoiceDealInfo()">确定</button>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    var rowindex = 1;
+
+    $(document).ready(function() {
+        $("#alertInfo").modal('show');
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            pickerPosition: "bottom-left"
+        });
+
+        $.ajax({
+            url:"viewGroupProdChangeInfo",
+            type:"POST",
+            data:{contractId:"2017120892",request_num:"1512819668093"},
+            success:function (data) {
+                console.log(data);
+
+                var seNewContractInfo = data.seNewContractInfo;
+                $("#contractId").text(seNewContractInfo.contractId);
+                $("#firstParty").text(seNewContractInfo.first_party);
+                $("#secondParty").text(seNewContractInfo.second_party);
+                $("#firstPartyCharge").text(seNewContractInfo.first_party_charge);
+                $("#secondPartyCharge").text(seNewContractInfo.second_party_charge);
+                $("#discount").text(seNewContractInfo.discount);
+                $("#totalAmount").text(seNewContractInfo.total_amount);
+                $("#payCycle").text(seNewContractInfo.pay_cycle);
+                $("#bond").text(seNewContractInfo.bond);
+                $("#invoiceType").text(seNewContractInfo.invoice_type);
+                $("#openTime").text(seNewContractInfo.open_time);
+
+                var orRequestinstInfo = data.orRequestinstInfo;
+                $("#requestNum").text(seNewContractInfo.request_num);
+                $("#orderTitle").text(seNewContractInfo.order_title);
+                $("#effDate").text(seNewContractInfo.eff_date);
+
+                var orRequestDetailInfos = data.orRequestDetailInfos;
+                var trStr = " <tr>" +
+                    "                            <td>"+rowindex+"</td>" +
+                    "                            <td><span>"+orRequestDetailInfos[7].attr_value+"</span></td>" +
+                    "                            <td><span>"+orRequestDetailInfos[3].attr_value+"</span></td>" +
+                    "                            <td><span>"+orRequestDetailInfos[4].attr_value+"</span></td>" +
+                    "                            <td><span>"+orRequestDetailInfos[5].attr_value+"</span></td>" +
+                    "                        </tr>"
+                $("#groupProdInfo").append(trStr);
+
+            }
+
+        });
+    } );
+
+    function addGroupProd(prod) {
+
+        var trStr = " <tr>" +
+            "                            <td>"+rowindex+"</td>" +
+            "                            <td><input type=\"text\" id=\"prodId_"+rowindex+"\" name=\"prodId_"+rowindex+"\" value=\""+prod+"\" style='width: 150px;' class=\"input input-sty06 form-ipt\"></td>" +
+            "                            <td><select id=\"effectType_"+rowindex+"\" name=\"effectType_\"+rowindex+\"\" class=\"input input-sty04 form-ipt\">\n" +
+            "                                    <option value=\"\">请选择</option>\n" +
+            "                                    <option value=\"2\">立即</option>\n" +
+            "                                    <option value=\"3\">次月</option>\n" +
+            "                                    <option value=\"4\">次日</option>\n" +
+            "                                </select></td>" +
+            "                            <td><select id=\"opType_"+rowindex+"\" name=\"opType_"+rowindex+"\" class=\"input input-sty04 form-ipt\">\n" +
+            "                                    <option value=\"\">请选择</option>\n" +
+            "                                    <option value=\"PCOpRec\">开通</option>\n" +
+            "                                    <option value=\"PCOpDel\">关闭</option>\n" +
+            "                                    <option value=\"优惠变更\">优惠变更</option>\n" +
+            "                                </select></td>" +
+            "                            <td><input type=\"text\" id=\"attrPara_"+rowindex+"\" name=\"attrPara_"+rowindex+"\" value=\"\" style='width: 150px;' class=\"input input-sty06 form-ipt\"></td>" +
+            "                        </tr>"
+        $("#groupProdInfo").append(trStr);
+        rowindex++;
+    }
+
+    function invoiceDealInfo() {
+        //  alert(123);
+        // var data = $("form").serialize();
+        var region = $("#region").val();
+        var prodId = $("#prodId").val();
+        var grpSubsId = $("#grpSubsId").val();
+        var accessType = $("#accessType").val();
+        var recProdList = $("#recProdList").val();
+        var effectType = $("#effectType").val();
+        var opType = $("#opType").val();
+        var attrPara = $("#attrPara").val();
+
+        console.log(region);
+
+        $.ajax({
+            url:"",
+            type:"POST",
+            data:{region:region,prodId:prodId,grpSubsId:grpSubsId,accessType:accessType,recProdList:recProdList,effectType:effectType,opType:opType,attrPara:attrPara},
+            success:function (data) {
+                console.log(data);
+                if(data.res_code == "0"){
+                    alert("保存成功");
+                }else {
+                    alert("保存失败");
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

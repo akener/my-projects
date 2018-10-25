@@ -1,0 +1,68 @@
+package com.esop.workbench.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.PerformanceSituationDto;
+import com.esop.workbench.service.PerformanceSituationService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/12.
+ */
+@RestController
+public class PerformanceSituationController {
+    @Autowired
+    PerformanceSituationService performanceSituationService;
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    private static Logger logger = Logger.getLogger(PerformanceSituationController.class);
+    @RequestMapping(value = "/getEmployeeLevelDistribution")
+    //查询地市成员绩效分布情况
+    public List getEmployeeLevelDistributionList(PerformanceSituationDto performanceSituationDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        performanceSituationDto.setRegion_code(region_code);
+        List list = performanceSituationService.getEmployeeLevelDistributionList(performanceSituationDto);
+        return list;
+    }
+
+    @RequestMapping(value = "/getExamineName")
+    //查询考核名称
+    public List getExaminName(PerformanceSituationDto performanceSituationDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        String town_code = request.getParameter("town_code");
+        performanceSituationDto.setRegion_code(region_code);
+        performanceSituationDto.setTown_code(town_code);
+        List list = performanceSituationService.getExamineName(performanceSituationDto);
+        return list;
+    }
+    //地市领导查询区县绩效详情
+    @RequestMapping(value = "/performanceDetailsBy")
+    public Result getPerformanceDetailsBy(PerformanceSituationDto performanceSituationDto, HttpServletRequest request, boolean flag) {
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        performanceSituationDto.setPage(page);
+        String town_code = request.getParameter("town_code");
+        String examine_name = request.getParameter("examine_name");
+        performanceSituationDto.setTown_code(town_code);
+        performanceSituationDto.setExamine_name(examine_name);
+        result = performanceSituationService.getPerformanceDetailsBy(performanceSituationDto);
+        return result;
+    }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectAccountAlert"  parameterType="String" resultType="com.esop.alertClassified.dto.AccountAlertDto" >
+        select rownum as DT_RowId,cust_id,cust_name,prod_id,prod_name,arrears_num,arrears_date
+        from ep_alert_arrearwarn_info
+    </select>
+</mapper>

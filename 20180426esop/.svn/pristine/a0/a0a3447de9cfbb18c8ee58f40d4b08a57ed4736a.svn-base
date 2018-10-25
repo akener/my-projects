@@ -1,0 +1,142 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+    <title>审批删除集团缴费联系人</title>
+</head>
+<body class="bg-ff">
+
+
+<div class="work-order-box overh">
+    <div class="row col-15 bg-white">
+        <div class="market-name-box pdlr-10 clearfix">
+            <span class="fl font-cols"><b style="border: 5px solid #eca100;"></b>集团缴费联系人信息</span>
+        </div>
+    </div>
+    <div class="row col-15">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <form id="groupDetailInfo">
+                    <table class="table-infor-7 width-th" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团缴费联系人姓名</th>
+                            <td>
+                                <input id="link_man5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                            <th>集团缴费联系人电话</th>
+                            <td>
+                                <input id="mobile_no5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>集团缴费联系人地址</th>
+                            <td>
+                                <input id="address5" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                            </td>
+                            <th>集团缴费联系人身份证号</th>
+                            <td>
+                                <input id="id_number5" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>邮件</th>
+                            <td>
+                                <input id="email5" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团单位名称</th>
+                            <td>
+                                <input id="union_name5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                            <th>集团单位编码</th>
+                            <td>
+                                <input id="union_code5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团账户名称</th>
+                            <td>
+                                <input id="account_name5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+
+                            <th>集团账户编码</th>
+                            <td>
+                                <input id="account_code5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>审核意见</th>
+                            <td>
+                                <select id="idea5" class="selector_region input-sty04 form-ipt" onchange="getRemark5()">
+                                    <option value="">
+                                        -请选择-
+                                    </option>
+                                    <option value="1">
+                                        同意
+                                    </option>
+                                    <option value="0">
+                                        退回
+                                    </option>
+                                </select>
+                            </td>
+                        </tr>
+                              <tr>
+                              <th>备注</th>
+                            <td>
+                                <textarea id="remark5"></textarea>
+                             </td>
+                                 </tr>
+                              <tr id="next_deal">
+                            <th>下一步环节</th>
+                            <td>
+                                <input id="next_deal5" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+
+                            <th>下一步环节处理人</th>
+                            <td>
+
+                                <select   CLASS="ASSIGNEE"></select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="procInstId" type="hidden" value="94561434628"/>
+<input id="taskInstId" type="hidden" value="2070692"/><%--每做一部要变--%>
+<input id="taskId" type="hidden" value="1"/>
+<input id="stepId" type="hidden" value="1"/>
+<input id="procId" type="hidden" value="30815"/>
+<input id="procNameEn" type="hidden" value="elecOrderv1.00"/>
+<input id="bizRecordId" type="hidden" value="19"/>
+<input id="regionId" type="hidden" value="CQ.CQ"/>
+
+<input id="loginCode" type="hidden" value="112900001"/>
+<input id="loginName" name="" type="hidden" value="思特奇员工">
+
+<div class="row mgt-50">
+    <div class="btn-box">
+        <button class="ui-btn mgr-10" onclick="tuihuicheck()">退回</button>
+        <button class="ui-btn mgr-10" onclick="dealTask()">通过</button>
+    </div>
+</div>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/checkDeleteGroupPayContacter.js"></script>
+</body>
+</html>

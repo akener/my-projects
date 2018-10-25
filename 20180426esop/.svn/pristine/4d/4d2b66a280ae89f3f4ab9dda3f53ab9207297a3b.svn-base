@@ -1,0 +1,1626 @@
+package com.esop.pub;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+/**
+ * Created by wangbl on 16/7/19.
+ */
+@Controller
+public class MenuController {
+    @Autowired
+    ServiceUrlBean serviceUrlBean;
+
+    //需求信息 by wangbl
+    @RequestMapping(value = "dem")
+    public String main(Model model, String product_id) {
+        String fileList = "<div><div class='col-sm-2' style='overflow:hidden;white-space:nowrap;'>"
+                + "<a href='/20170302144313580/工作计划表@wangbl.xlsx'>工作计划表@wangbl.xlsx"
+                + "</a></div>"
+                + "<div class='col-sm-1'><button type='button' class='btn btn-info pull-left' onclick='deleteFile(this,79)' title='删除'>"
+                + "<i class='fa fa-times'></i></button></div></div>";
+        System.out.println("product_id=" + product_id);
+        model.addAttribute("message",
+                "You successfully uploaded 产品编码=" + product_id + "!");
+        model.addAttribute("related_id", "48");
+        model.addAttribute("fileList", fileList);
+        return "productInfo/design/demandInfo";
+    }
+
+    //物流公司管理 by wangbl
+    @RequestMapping(value = "lcm")
+    public String lcm() {
+        return "base/logisticsCompanyManage";
+    }
+
+    //工号配置管理 by wangbl
+    @RequestMapping(value = "lcg")
+    public String lcg() {
+        return "base/loginConfigurationManage";
+    }
+
+    //资源调拨单创建 by wangbl
+    @RequestMapping(value = "req")
+    public String req() {
+        return "allocation/requisitionInfo";
+    }
+
+    //台账填写 by wangbl
+    @RequestMapping(value = "led")
+    public String led() {
+        return "ledger/ledgerWrite";
+    }
+
+    //扎账 by wangbl
+    @RequestMapping(value = "lee")
+    public String lee() {
+        return "ledger/ledgerExamine";
+    }
+
+    //产品一体化审批流程 by wangbl
+    @RequestMapping(value = "pap")
+    public String pap() {
+        return "productInfo/productApprovalProcess";
+    }
+
+    //收入报表 by yanhao
+    @RequestMapping(value = "ics")
+    public String ics() {
+        return "busiAnalysis/incomeStatements";
+    }
+
+    //欠费提醒 by yanhao
+    @RequestMapping(value = "actalert")
+    public String actalert() {
+        return "alertClassified/accountAlert";
+    }
+
+    //欠费预警 by yanhao
+    @RequestMapping(value = "actawarn")
+    public String actawarn() {
+        return "alertClassified/accountWarn";
+    }
+
+    //领导者工作台 by yanhao
+    @RequestMapping(value = "ldwb")
+    public String ldwb() {
+        return "workbench/leaderWorkbench";
+    }
+
+    //客户经理工作台 by yanhao
+    @RequestMapping(value = "mnwb")
+    public String mnwb() {
+        return "workbench/managerWorkbench";
+    }
+
+    //数据加载配置 by yanhao
+    @RequestMapping(value = "sld")
+    public String sld() {
+        return "shellLoadFile/shellLoadData";
+    }
+
+    //省欠费工单页面 by qiaojian
+    @RequestMapping(value = "showAllOweRecord")
+    public String showAllOweRecord() {
+        return "workOrderInfo/oweRecord/showAllOweRecord";
+    }
+
+    //产品一体化产品导航 by wangbl
+    @RequestMapping(value = "png")
+    public String png() {
+        return "productInfo/productNavigation";
+    }
+
+    //产品一体化产品管理 by wangbl
+    @RequestMapping(value = "pmg")
+    public String pmg() {
+        return "productInfo/productManagement";
+    }
+
+    //展示各地市未转发客户经理欠费工单 by qiaojian
+    @RequestMapping(value = "/showOweRecordByGroup")
+    public String showOweRecordByGroup() {
+        return "workOrderInfo/oweRecord/showOweRecordByGroup";
+    }
+
+    //展示客户经理名下欠费工单 by qiaojian
+    @RequestMapping(value = "/showAllOweRecordByService")
+    public String showOweRecordByService() {
+        return "workOrderInfo/oweRecord/showAllOweRecordByService";
+    }
+
+    //根据批次号展示一条欠费工单数据 by qiaojian
+    @RequestMapping(value = "/showOneOweRecordByService")
+    public String showOneOweRecordByService(Model model, String id) {
+       /* model.addAttribute("record_id",record_id);
+        model.addAttribute("product_id",product_id);*/
+        model.addAttribute("id", id);
+        //System.out.println("record_id------------------"+record_id);
+        return "workOrderInfo/oweRecord/showOneOweRecordByService";
+    }
+
+    //查看单条欠费工单明细 by qiaojian
+    @RequestMapping(value = "/showOneOweRecordDetail")
+    public String showOneOweRecordDetail(Model model, String id, String flag) {
+        model.addAttribute("flag", flag);
+        model.addAttribute("id", id);
+        //model.addAttribute("record_id",record_id);
+        //model.addAttribute("product_id",product_id);
+        return "workOrderInfo/oweRecord/showOneOweRecordDetail";
+    }
+
+    //省管理员欠费工单查询  by qiaojian
+    @RequestMapping(value = "/getOweRecordByProvince")
+    public String getOweRecordByProvince() {
+        return "workOrderInfo/oweRecord/getOweRecordByProvince";
+    }
+
+    //地市管理员欠费工单查询 by qiaojian
+    @RequestMapping(value = "/getOweRecordByGroup")
+    public String getOweRecordByGroup() {
+        return "workOrderInfo/oweRecord/getOweRecordByGroup";
+    }
+
+    //客户经理欠费工单查询 by qiaojian
+    @RequestMapping(value = "/getOweRecordByService")
+    public String getOweRecordByService() {
+        return "workOrderInfo/oweRecord/getOweRecordByService";
+    }
+
+    //省管理员欠费工单导入 by qiaojian
+    @RequestMapping(value = "/oweRecordImport")
+    public String oweRecordImport() {
+        return "workOrderInfo/oweRecord/oweRecordImport";
+    }
+
+    //省工单下发 by yuansp
+    @RequestMapping(value = "/province")
+    public String province() {
+        return "workOrderInfo/workOrder/provinceWorkOrder";
+    }
+
+    //地市工单下发 by yuansp
+    @RequestMapping(value = "/region")
+    public String region() {
+        return "workOrderInfo/workOrder/regionWorkOrder";
+    }
+
+    //区县工单下发 by yuansp
+    @RequestMapping(value = "/county")
+    public String county() {
+        return "workOrderInfo/workOrder/countyWorkOrder";
+    }
+
+    /**************************************************************************/
+    //省营销数据导入 by lilei
+    @RequestMapping(value = "/spiili")
+    public String proCaseInfoImport() {
+        return "workOrderInfo/caseSendInfo/caseMsgImport";
+    }
+
+    //省营销案下发地市 by lilei
+    @RequestMapping(value = "/scsimli")
+    public String showCaseActivity() {
+        return "workOrderInfo/caseSendInfo/showCaseRecord";
+    }
+
+    //地市下发客户经理并追加 by lilei
+    @RequestMapping(value = "/spsrcali")
+    public String showProSendRegionCaseActivity() {
+        return "workOrderInfo/caseSendInfo/showCaseActivity";
+    }
+
+
+    //客户经理工单办理 by lilei
+    @RequestMapping(value = "/cwopli")
+    public String CustomerManagerWorkOrderProcessing() {
+        return "workOrderInfo/caseSendInfo/custConductCase";
+    }
+
+
+    //地市管理员展示客户经理回退工单并回退上一级 by lilei
+    @RequestMapping(value = "/sarcbrli")
+    public String showCaseRecordByCustBackAndReturn() {
+        return "workOrderInfo/caseSendInfo/regionLookCustBackCase";
+    }
+
+    //省管理员结单 by lilei
+    @RequestMapping(value = "/spmecrli")
+    public String showProManagerEndCustRecord() {
+        return "workOrderInfo/caseSendInfo/proEndCaseOfRegionBack";
+    }
+
+    //客户经理工单数据导入 by lilei
+    @RequestMapping(value = "/cmriili")
+    public String custRecordInfoImport() {
+
+        return "workOrderInfo/caseSendInfo/custRecordMsgImport";
+    }
+
+    //客户经理导入数据展示，提交给地市管理员 by lilei
+    @RequestMapping(value = "/cscrtrmli")
+    public String custSendCaseRecordToRegionManager() {
+
+        return "workOrderInfo/caseSendInfo/custImportRecordShowAndSend";
+
+    }
+
+    //地市管理员处理客户经理提交工单申请 by lilei
+    @RequestMapping(value = "/rmecili")
+    public String RegionManagerExamineCustInfo() {
+
+        return "workOrderInfo/caseSendInfo/regionExamineCustSendRecord";
+
+    }
+
+    //省审核地市管理员提交工单 by lilei
+    @RequestMapping(value = "/perili")
+    public String proviceExamineRegionInfo() {
+
+        return "workOrderInfo/caseSendInfo/proExamineRegionSub";
+
+    }
+
+    //省管理员工单查询 by lilei
+    @RequestMapping(value = "/pqacbli")
+    public String proviceQryAllCaseByTime() {
+
+        return "workOrderInfo/caseSendInfo/proMamangerQryCaseByTime";
+
+    }
+
+    //客户经理处理省和地市回退工单 by lilei
+    @RequestMapping(value = "/cdcbparbli")
+    public String custDealCaseByProAndRegionBack() {
+        return "workOrderInfo/caseSendInfo/custDealBackRecordInfo";
+    }
+
+    //监控预警工单省级督办单
+    @RequestMapping(value = "/plrsoli")
+    public String proLookRegionSupervisorOrder() {
+        return "workOrderInfo/caseSendInfo/provincialSupervisionOrderDetailed";
+    }
+
+
+    //合同查询   by lilei
+    @RequestMapping(value = "/qryms")
+    public String queryManagementShow() {
+        return "workOrderInfo/caseSendInfo/queryManagementPages";
+    }
+
+    //查询管理办法   by lilei
+    @RequestMapping(value = "/siqmmi")
+    public String showInquiryManagementMethodInfo() {
+
+        return "workOrderInfo/caseSendInfo/inquiryManagementMethodMsg";
+    }
+
+    //省管理员签约工单导入 by qiaojian
+    @RequestMapping(value = "/signOnRecordImport")
+    public String signOnRecordImport() {
+        return "workOrderInfo/signOnRecord/signOnRecordImport";
+    }
+
+    //柱状图 by yanhao
+    @RequestMapping(value = "wbzt")
+    public String wbzt() {
+        return "workbench/workbench_zzt";
+    }
+
+    //饼状图 by yanhao
+    @RequestMapping(value = "wbbt")
+    public String wbbt() {
+        return "workbench/workbench_bzt";
+    }
+
+    //柱状图onclick by yanhao
+    @RequestMapping(value = "wbcc")
+    public String wbcc() {
+        return "workbench/workbench_onclick";
+    }
+
+    //信息化收入 by yanhao
+    @RequestMapping(value = "inc")
+    public String inc() {
+        return "workbench/informationIncome";
+    }
+
+    //信息化收入 by yanhao
+    @RequestMapping(value = "incl")
+    public String incl() {
+        return "workbench/informationIncomeList";
+    }
+
+    //集团信息 by yanhao
+    @RequestMapping(value = "gpif")
+    public String gpif() {
+        return "menus/groupInformationList";
+    }
+
+    //集团信息等级分布 by yanhao
+    @RequestMapping(value = "gplv")
+    public String gplv() {
+        return "menus/groupInformationLevel";
+    }
+
+    //重要成员阈值设置 by yanhao
+    @RequestMapping(value = "aals")
+    public String aals() {
+        return "alertClassified/accountAlertSet";
+    }
+
+    //工号管理 by yanhao
+    @RequestMapping(value = "wnm")
+    public String wnm() {
+        return "basicManagement/workNumberManage";
+    }
+
+    //组织树 by yanhao
+    @RequestMapping(value = "zzs")
+    public String zzs() {
+        return "basicManagement/grouTree";
+    }
+
+    //工号角色 by yanhao
+    @RequestMapping(value = "ghjs")
+    public String ghjs() {
+        return "basicManagement/workRoleManage";
+    }
+
+    //角色权限 by yanhao
+    @RequestMapping(value = "jsqx")
+    public String jsqx() {
+        return "basicManagement/workFunctionRole";
+    }
+
+    //日志管理 by yanhao
+    @RequestMapping(value = "rzgl")
+    public String rzgl() {
+        return "base/sysLogQuery";
+    }
+
+    //成员报表 by liuxiao
+    @RequestMapping(value = "bms")
+    public String bms() {
+        return "busiAnalysis/memberStatement";
+    }
+
+    //集团AB类保有报表 by liuxiao
+    @RequestMapping(value = "brr")
+    public String brr() {
+        return "busiAnalysis/retentionRate";
+    }
+
+    //集团宽带发展报表 by liuxiao
+    @RequestMapping(value = "bbd")
+    public String bbd() {
+        return "busiAnalysis/broadbandDepStatement";
+    }
+
+    //统付收入 by liuxiao
+    @RequestMapping(value = "api")
+    public String api() {
+        return "workbench/allPayIncome";
+    }
+
+    //人员统计 by liuxiao
+    @RequestMapping(value = "wps")
+    public String wps() {
+        return "workbench/personnelStatistics";
+    }
+
+    //全省某一角色人员统计 by liuxiao
+    @RequestMapping(value = "psp")
+    public String psp() {
+        return "workbench/psProvince";
+    }
+
+    //区县某一角色人员统计 by liuxiaol
+    @RequestMapping(value = "psc")
+    public String psc() {
+        return "workbench/psCity";
+    }
+
+    //人员明细 by liuxiao
+    @RequestMapping(value = "psi")
+    public String psi() {
+        return "workbench/psPersonInfo";
+    }
+
+    //行业收入分析 by liuxiao
+    @RequestMapping(value = "ira")
+    public String ira() {
+        return "workbench/industryRevenueAnalysis";
+    }
+
+    //集团发展报表 by zuoyue
+    @RequestMapping(value = "egd")
+    public String egd() {
+        return "busiAnalysis/EpGroupDep";
+    }
+
+    //集客业务发展报表
+    @RequestMapping(value = "ebd")
+    public String ebd() {
+        return "busiAnalysis/EpBusiDep";
+    }
+
+    @RequestMapping(value = "eex")
+    public String eex() {
+        return "workbench/EpTradeEx";
+    }  //行业拓展专项行动  by zuoyue
+
+    @RequestMapping(value = "emd")
+    public String emd() {
+        return "workbench/EpTradeMd";
+    }//医疗行动
+
+    //重要成员投诉情况明细展示  by zuoyue
+    @RequestMapping(value = "imci")
+    public String imci() {
+        return "workbench/ComplaintsInfo";
+    }
+
+    //重要产品投诉情况  by zuoyue
+    @RequestMapping(value = "ipc")
+    public String ipc() {
+        return "workbench/impProductComplaints";
+    }
+
+    //重要人员投诉情况  by zuoyue
+    @RequestMapping(value = "imc")
+    public String imc() {
+        return "workbench/impMemberComplaints";
+    }
+
+    //客户经理发展量的TOP50  by zuoyue
+    @RequestMapping(value = "mat")
+    public String mat() {
+        return "busiAnalysis/managerAmountTop50";
+    }
+
+    //竞争信息  by zuoyue
+    @RequestMapping(value = "eci")
+    public String eci() {
+        return "busiAnalysis/epCompeteInfo";
+    }
+
+    //集客贡献的总收入  by zuoyue
+    @RequestMapping(value = "etc")
+    public String etc() {
+        return "busiAnalysis/epTotalContribution";
+    }
+
+    //重点集团客户（省，市，县top10） by zuoyue
+    @RequestMapping(value = "igit")
+    public String igit() {
+        return "busiAnalysis/ImpGroupIncomeTop10";
+    }
+
+    //新签约集团（省，市，县top10） by zuoyue
+    @RequestMapping(value = "ngit")
+    public String ngit() {
+        return "busiAnalysis/NewGroupIncomeTop10";
+    }
+
+    //省签约管理员工单处理  by qiaojian
+    @RequestMapping(value = "/sasbp")
+    public String showAllSignRecordByProvince() {
+        return "workOrderInfo/signOnRecord/showAllSignRecordByProvince";
+    }
+
+    //客户经理监控单 by yuansp
+    @RequestMapping(value = "mngMonitor")
+    public String mngMonitor() {
+        return "workOrderInfo/monitorOrder/mngMonitorOrder";
+    }
+
+    //区县监控单 by yuansp
+    @RequestMapping(value = "countyMonitor")
+    public String countyMonitor() {
+        return "workOrderInfo/monitorOrder/countyMonitorOrder";
+    }
+
+    //地市签约管理员工单处理  by qiaojian
+    @RequestMapping(value = "/sasbr")
+    public String showAllSignRecordByRegion() {
+        return "workOrderInfo/signOnRecord/showAllSignRecordByRegion";
+    }
+
+    //wangbltest
+    @RequestMapping(value = "/tfi")
+    public String tfi() {
+        return "productInfo/testfile";
+    }
+
+    //重点业务TOP10 by liuxiao
+    @RequestMapping(value = "wmb")
+    public String wmb() {
+        return "workbench/majorBusiness";
+    }
+
+    //集团签约情况  by liuxiao
+    @RequestMapping(value = "wus")
+    public String eup() {
+        return "workbench/unitSign";
+    }
+
+    //预警柱状图 by liuxiao
+    @RequestMapping(value = "waw")
+    public String waw() {
+        return "workbench/arrearWarn";
+    }
+
+    //绩效情况 by liuxiao
+    @RequestMapping(value = "eld")
+    public String eld() {
+        return "workbench/employeeLevelDistribution";
+    }
+
+    //量酬情况排名 by liuxiao
+    @RequestMapping(value = "apr")
+    public String apr() {
+        return "workbench/amountPaymentRank";
+    }
+
+    //区县管理员工单处理  by qiaojian
+    @RequestMapping(value = "/sasbc")
+    public String showAllSignRecordByCounty() {
+        return "workOrderInfo/signOnRecord/showAllSignRecordByCounty";
+    }
+
+    //客户经理工单查询 by qiaojian
+    @RequestMapping(value = "/sasbs")
+    public String showAllSignRecordByService() {
+        return "workOrderInfo/signOnRecord/showAllSignRecordByService";
+    }
+
+    //客户经理管理员工单处理  by qiaojian
+    @RequestMapping(value = "/sosbs")
+    public String showOneSignRecordByService(Model model, String id) {
+        model.addAttribute("id", id);
+        return "workOrderInfo/signOnRecord/showOneSignRecordByService";
+    }
+
+    //地市监控单  by yuansp
+    @RequestMapping(value = "/regionMonitor")
+    public String regionMonitor() {
+        return "workOrderInfo/monitorOrder/regionMonitorOrder";
+    }
+
+    //工单池
+    @RequestMapping(value = "/srp")
+    public String signRecordPool() {
+        return "workOrderInfo/signOnRecord/signRecordPool";
+    }
+
+    //量酬成本上限展示 by liuxiao
+    @RequestMapping(value = "sapc")
+    public String sapc() {
+        return "workbench/showAmountPaymentCost";
+    }
+
+    //添加全年量酬成本上限by liuxiao
+    @RequestMapping(value = "aapc")
+    public String aapc() {
+        return "workbench/addAmountPaymentCost";
+    }
+
+    //营销活动展示by liuxiao
+    @RequestMapping(value = "mac")
+    public String mac() {
+        return "workbench/marketingActivities";
+    }
+
+    //地市督办单  by yuansp
+    @RequestMapping(value = "/CountyOutDateCnt")
+    public String getCountyOutDateCnt() {
+        return "workOrderInfo/monitorOrder/countySuperviseOrder";
+    }
+
+    //签约工单查询
+    @RequestMapping("/sorq")
+    public String signOnRecordQuery() {
+        return "workOrderInfo/signOnRecord/signOnRecordQuery";
+    }
+
+    //IDC流程表单 subt
+    @RequestMapping(value = "showView")
+    public String showView() {
+        return "visitprocedure/visitView";
+    }
+
+    @RequestMapping(value = "showtest")
+    public String showtest() {
+        return "visitprocedure/testProcedure";
+    }
+
+    @RequestMapping(value = "showsurvey")
+    public String showsurvey() {
+        return "visitprocedure/surveyProcedure";
+    }
+
+    @RequestMapping(value = "showprocedure")
+    public String showprocedure() {
+        return "visitprocedure/visitProcedure";
+    }
+
+    //集团概况
+    @RequestMapping(value = "ggp")
+    public String ggp() {
+        return "workbench/groupProfile";
+    }
+
+    //角色管理 qiaojian
+    @RequestMapping(value = "/rmm")
+    public String roleManagement() {
+        return "basicManagement/roleManagement";
+    }
+
+    //角色树 qiaojian
+    @RequestMapping("/crt")
+    public String chooseRoleTree(Model model, String type) {
+        model.addAttribute("type", type);
+        return "basicManagement/roleTree";
+    }
+
+    //密码重置
+    @RequestMapping("/prt")
+    public String pwdReset() {
+        return "basicManagement/pwdReset";
+    }
+
+    @RequestMapping(value = "/pue")
+    public String pwdUpdate() {
+        return "basicManagement/pwdUpdate";
+    }
+
+    @RequestMapping("/ecc")
+    public String ecc() {
+        return "busiAnalysis/excellentCase";
+    }
+
+    @RequestMapping("/bsl")
+    public String bsl() {
+        return "busiAnalysis/BusiSolution";
+    }
+
+    @RequestMapping("/phl")
+    public String phl() {
+        return "busiAnalysis/ProductHall";
+    }
+
+    //集团产品协议台账 qiaojian
+    @RequestMapping(value = "/cpalq")
+    public String cpalq() {
+        return "custLedger/custProAgrLedQuery";
+    }
+
+    //集团专线暂停销户台账
+    @RequestMapping("/cdca")
+    public String cdca() {
+        return "custLedger/custDlineCtaAss";
+    }
+
+    //集团产品资费变更台账
+    @RequestMapping(value = "/cppca")
+    public String cppca() {
+        return "custLedger/custPrdPtgChgAss";
+    }
+
+    //新增管理办法 by qiaojian
+    @RequestMapping(value = "/mmd")
+    public String mmd() {
+        return "custLedger/manageMethod";
+    }
+
+    //成员类业务协议台账查询  by qiaojian
+    @RequestMapping(value = "/cmia")
+    public String cmia() {
+        return "custLedger/custMemInAss";
+    }
+
+    //行业拓展信息 subt
+    @RequestMapping(value = "develop")
+    public String development() {
+        return "visitprocedure/development";
+    }
+
+    //行业拓展信息摸底统计 subt
+    @RequestMapping(value = "diagn")
+    public String diagnStatistics() {
+        return "visitprocedure/diagnStatistics";
+    }
+
+    //日志管理 subt
+    @RequestMapping(value = "logmt")
+    public String logmt() {
+        return "visitprocedure/logManagement";
+    }
+
+    //公告信息查询
+    @RequestMapping(value = "/qrynote")
+    public String qrynote() {
+        return "noteinfo/qrynoteinfo";
+    }
+
+    //公告信息新增
+    @RequestMapping(value = "/qrynoteinfoadd")
+    public String qrynoteinfoadd() {
+        return "noteinfo/pubnote";
+    }
+
+    //合同审批管理 subt
+    @RequestMapping(value = "conbusman")
+    public String updPass() {
+        return "visitprocedure/ControBusManagement";
+    }
+
+    //长业务流程环节一 zuoyue
+    @RequestMapping(value = "business")
+    public String busi() {
+        return "custLedger/business";
+    }
+
+    //长业务流程环节二 zuoyue
+    @RequestMapping(value = "business2")
+    public String busi2(Model model, String WO_NO, String title) {
+        model.addAttribute("WO_NO", WO_NO);
+        model.addAttribute("title", title);
+        return "custLedger/business2";
+    }
+
+    //长业务流程环节三 zuoyue
+    @RequestMapping(value = "business3")
+    public String busi3(Model model, String title, String WO_NO) {
+        model.addAttribute("title", title);
+        model.addAttribute("WO_NO", WO_NO);
+        return "custLedger/business3";
+    }
+
+    //工号申请审批  by  qiaojian
+    @RequestMapping(value = "/wne")
+    public String workNumberExamine() {
+        return "basicManagement/workNumberExamine";
+    }
+
+    //工号审批单条明细 by qiaojian
+    @RequestMapping(value = "/wnd")
+    public String workNumberDetail(Model model, String order_id) {
+        model.addAttribute("order_id", order_id);
+        return "basicManagement/workNumberDetail";
+    }
+
+    //我的工号申请单 qiaojian
+    @RequestMapping(value = "/wna")
+    public String workNumberApply() {
+        return "basicManagement/workNumberApply";
+    }
+
+    @RequestMapping(value = "/wnad")
+    public String workNumberApplyDetail(Model model, String order_id) {
+        model.addAttribute("order_id", order_id);
+        return "basicManagement/workNumberApplyDetail";
+    }
+
+
+    //----------------------------------------------------- 重庆 -----------------------------------------------------
+    @RequestMapping(value = "/incx")
+    public String invoiceList() {
+        return "invoice/invoiceDealInfo";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-实收-预打-申请
+     * @return
+     */
+    @RequestMapping(value = "e_inv_ss_app")
+    public String e_inv_ss_app() {
+        return "invoice/e_inv_ss_app";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-实收-合打-申请
+     * @return
+     */
+    @RequestMapping(value = "e_inv_ss_app_multi")
+    public String e_inv_ss_app_multi() {
+        return "invoice/e_inv_ss_app_multi";
+    }
+
+
+    /**
+     * 预打发票申请页面：电子发票-实收-分打-申请
+     * @return
+     */
+    @RequestMapping(value = "e_inv_ss_app_sepa")
+    public String e_inv_ss_app_sepa() {
+        return "invoice/e_inv_ss_app_sepa";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-实收-冲红
+     * @return
+     */
+    @RequestMapping(value = "e_inv_ss_red")
+    public String e_inv_ss_red() {
+        return "invoice/e_inv_ss_red";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-月结-单账号-申请
+     * @return
+     */
+    @RequestMapping(value = "e_inv_yj_app")
+    public String e_inv_yj_app() {
+        return "invoice/e_inv_yj_app";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-月结-多账号-申请
+     * @return
+     */
+    @RequestMapping(value = "e_inv_yj_app_multi")
+    public String e_inv_yj_app_multi() {
+        return "invoice/e_inv_yj_app_multi";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-月结-冲红
+     * @return
+     */
+    @RequestMapping(value = "e_inv_yj_red")
+    public String e_inv_yj_red() {
+        return "invoice/e_inv_yj_red";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-月结-分打-申请
+     * @return
+     */
+    @RequestMapping(value = "e_inv_yj_app_sepa")
+    public String e_inv_yj_app_sepa() {
+        return "invoice/e_inv_yj_app_sepa";
+    }
+
+    /**
+     * 预打发票申请页面：专用发票-月结-单账号-申请
+     * @return
+     */
+    @RequestMapping(value = "s_inv_yj_app")
+    public String s_inv_yj_app() {
+        return "invoice/s_inv_yj_app";
+    }
+
+    /**
+     * 预打发票申请页面：专用发票-月结-多账号-申请
+     * @return
+     */
+    @RequestMapping(value = "s_inv_yj_app_multi")
+    public String s_inv_yj_app_multi() {
+        return "invoice/s_inv_yj_app_multi";
+    }
+
+    /**
+     * 预打发票申请页面：专用发票-月结-作废
+     * @return
+     */
+    @RequestMapping(value = "s_inv_yj_inva")
+    public String s_inv_yj_inva() {
+        return "invoice/s_inv_yj_inva";
+    }
+
+    /**
+     * 预打发票申请页面：专用发票-月结-冲红
+     * @return
+     */
+    @RequestMapping(value = "s_inv_yj_red")
+    public String s_inv_yj_red() {
+        return "invoice/s_inv_yj_red";
+    }
+
+    /**
+     * 预打发票申请页面：专用发票-月结-多账号发票冲红
+     * @return
+     */
+    @RequestMapping(value = "s_inv_yj_red_multi")
+    public String s_inv_yj_red_multi() {
+        return "invoice/s_inv_yj_red_multi";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-实收-多账号发票冲红
+     * @return
+     */
+    @RequestMapping(value = "e_inv_ss_red_multi")
+    public String e_inv_ss_red_multi() {
+        return "invoice/e_inv_ss_red_multi";
+    }
+
+    /**
+     * 预打发票申请页面：电子发票-月结-多账号发票冲红
+     * @return
+     */
+    @RequestMapping(value = "e_inv_yj_red_multi")
+    public String e_inv_yj_red_multi() {
+        return "invoice/e_inv_yj_red_multi";
+    }
+
+    /**
+     * 专票发票号码弹窗
+     * @return
+     */
+    @RequestMapping(value = "invoice_number")
+    public String invoice_number() {
+        return "invoice/invoice_number";
+    }
+
+    /**
+     * 普票发票号码弹窗
+     * @return
+     */
+    @RequestMapping(value = "invoice_number_too")
+    public String invoice_number_too() {
+        return "invoice/invoice_number_too";
+    }
+
+    /**
+     * 发票审批列表
+     * @return
+     */
+    @RequestMapping(value = "inv_appr_list")
+    public String inv_appr_list() {
+        return "invoice/inv_appr_list";
+    }
+
+    /**
+     * 发票审批with审批层级
+     * @return
+     */
+    @RequestMapping(value = "inv_appr_level")
+    public String inv_appr_level() {
+        return "invoice/inv_appr_level";
+    }
+
+    /**
+     * 发票审批
+     * @return
+     */
+    @RequestMapping(value = "inv_appr")
+    public String inv_appr() {
+        return "invoice/inv_appr";
+    }
+
+    /**
+     * 发票批量审批
+     * @return
+     */
+    @RequestMapping(value = "inv_batch_appr")
+    public String inv_batch_appr() {
+        return "invoice/inv_batch_appr";
+    }
+
+    /**
+     * 预打发票申请工单查询列表
+     * @return
+     */
+    @RequestMapping(value = "inv_applist_show")
+    public String inv_applist_show() {
+        return "invoice/inv_applist_show";
+    }
+
+
+
+    /**
+     * 预打发票申请工单查询详情
+     * @return
+     */
+    @RequestMapping(value = "inv_app_show")
+    public String inv_app_show() {
+        return "invoice/inv_app_show";
+    }
+
+    /**
+     * 发票明细统计页面
+     * @return
+     */
+    @RequestMapping(value = "inv_deta_sta")
+    public String inv_deta_sta() {
+        return "invoice/inv_deta_sta";
+    }
+
+    /**
+     * 复核人维护管理
+     * @return
+     */
+    @RequestMapping(value = "reviewer")
+    public String inv_reviewer_sta() {
+        return "invoice/reviewer";
+    }
+
+    /**
+     * 发票汇总统计页面
+     * @return
+     */
+    @RequestMapping(value = "inv_summ_sta")
+    public String inv_summ_sta() {
+        return "invoice/inv_summ_sta";
+    }
+    /**
+     * 历史发票查询
+     * @return
+     */
+    @RequestMapping(value = "inv_torical_invoice")
+    public String inv_torical_invoice() {
+        return "invoice/inv_torical_invoice";
+    }
+    /**
+     * 发票汇总统计页面
+     * @return
+     */
+    @RequestMapping(value = "inv_spec_sta")
+    public String inv_spec_sta() {
+        return "invoice/inv_spec_sta";
+    }
+    /**
+     * 查询预开发票回款情况统计表
+     * @return
+     */
+    @RequestMapping(value = "inv_back_sta")
+    public String inv_back_sta() {
+        return "invoice/inv_back_sta";
+    }
+    /**
+     * 预开发票未回款情况月报表统计查询
+     */
+    @RequestMapping(value = "inv_unback_sta_his")
+    public String inv_unback_sta_his() {
+        return "invoice/inv_unback_sta_his";
+    }
+    /**
+     * 查询集团列表，用于电子发票月结单账户预打发票
+     * @return
+     */
+    @RequestMapping(value = "yj_grpacct_choose")
+    public String yj_grpacct_choose() {
+        return "invoice/yj_grpacct_choose";
+    }
+
+    /**
+     * 查询集团列表，用于电子发票月结单账户预打发票
+     * @return
+     */
+    @RequestMapping(value = "yj_grpacct_choose_sepa")
+    public String yj_grpacct_choose_sepa() {
+        return "invoice/yj_grpacct_choose_sepa";
+    }
+
+    /**
+     * 打开选择集团账户缴费联系人弹框页
+     * @return
+     */
+    @RequestMapping(value = "e_yj_grpacctcons_choose")
+    public String e_yj_grpacctcons_choose() {
+        return "invoice/e_yj_grpacctcons_choose";
+    }
+
+    /**
+     * 查询月结欠费账期
+     * @return
+     */
+    @RequestMapping(value = "yj_debtperiod_choose")
+    public String yj_debtperiod_choose() {
+        return "invoice/yj_debtperiod_choose";
+    }
+
+    /**
+     * 查询月结欠费账期
+     * @return
+     */
+    @RequestMapping(value = "yj_debtperiod_choose_sepa")
+    public String yj_debtperiod_choose_sepa() {
+        return "invoice/yj_debtperiod_choose_sepa";
+    }
+
+
+    @RequestMapping(value = "inv_unback_sta")
+    public String inv_unback_sta() {
+        return "invoice/inv_unback_sta";
+    }
+
+    //电子订单管理
+    @RequestMapping(value = "/manageElecOrder")
+    public String manageElecOrder() {
+        return "cqDevelopment/elecPack/manageElecOrder";
+    }
+
+    //电子订单待办
+    @RequestMapping(value = "/dealElecOrder")
+    public String dealElecOrder() {
+        return "cqDevelopment/elecPack/dealElecOrder";
+    }
+
+    //集团产品开户发起
+    @RequestMapping(value = "/startOpenGroupProd")
+    public String startOpenGroupProd(Model model,String contract_id) {
+        model.addAttribute("contract_id",contract_id);
+        return "cqDevelopment/elecPack/startOpenGroupProd";
+    }
+
+    //集团产品开户审核
+    @RequestMapping(value = "/checkOpenGroupProd")
+    public String checkOpenGroupProd() {
+        return "cqDevelopment/elecPack/checkOpenGroupProd";
+    }
+
+    //保存集团产品开户
+    @RequestMapping(value = "/saveOpenGroupProd")
+    public String saveOpenGroupProd() {
+        return "cqDevelopment/elecPack/saveOpenGroupProd";
+    }
+
+    //集团产品变更
+    @RequestMapping(value = "/groupProdChange")
+    public String groupProdChange(Model model) {
+        return "cqDevelopment/elecPack/groupProdChange";
+    }
+
+    //集团产品变更审核
+    @RequestMapping(value = "/groupProdChangeCheck")
+    public String groupProdChangeDeal(Model model) {
+        return "cqDevelopment/elecPack/checkGroupProdChange";
+    }
+
+    //集团产品变更保存
+    @RequestMapping(value = "/saveGroupProdChange")
+    public String saveGroupProdChange() {
+        return "cqDevelopment/elecPack/saveGroupProdChange";
+    }
+
+    @RequestMapping(value = "/pay")
+    public String groupPayContacter() {
+        return "cqDevelopment/elecPack/groupPayContacter";
+    }
+
+    @RequestMapping(value = "/checkDelPay")
+    public String checkDeleteGroupPayContacter() {
+        return "cqDevelopment/elecPack/checkDeleteGroupPayContacter";
+    }
+
+    @RequestMapping(value = "/checkUpPay")
+    public String checkUpdateGroupPayContacter() {
+        return "cqDevelopment/elecPack/checkUpdateGroupPayContacter";
+    }
+
+    @RequestMapping(value = "/updateCheckDel")
+    public String updateCheckDeleteGroupPayContacter() {
+        return "cqDevelopment/elecPack/updateCheckDeleteGroupPayContacter";
+    }
+
+    //查询集团缴费联系人
+    @RequestMapping(value = "/newGroup")
+    public String newGroup() {
+        return "cqDevelopment/elecPack/newGroup";
+    }
+
+    //发起删除集团联系人
+    @RequestMapping(value = "/newDeleteGroup")
+    public String newDeleteGroup() {
+        return "cqDevelopment/elecPack/newDeleteGroup";
+    }
+
+    //新增集团联系人
+    @RequestMapping(value = "/newAddGroup")
+    public String newAddGroup() {
+        return "cqDevelopment/elecPack/newAddGroup";
+    }
+    //审批集团缴费联系人
+    @RequestMapping(value = "/newCheckGroup")
+    public String newCheckGroup() {
+        return "cqDevelopment/elecPack/newCheckGroup";
+    }
+    //审批中的修改集团缴费联系人
+    @RequestMapping(value = "/newUpdateGroup")
+    public String newUpdateGroup() {
+        return "cqDevelopment/elecPack/newUpdateCheckGroup";
+    }
+
+    //查询集团资金账户--发起资金回退申请add by lw
+    @RequestMapping(value = "/qryGroupCapitalOnRefund")
+    public String qryGroupCapitalOnRefund() {
+        return "cqDevelopment/refund/qryCapitalInfoOnRefund";
+    }
+    //回退申请
+    @RequestMapping(value = "/htsq")
+    public String htsq() {
+        return "cqDevelopment/refund/refundApply";
+    }
+    //资金回退--待审批列表
+    @RequestMapping(value = "refund")
+    public String refund() {
+        return "cqDevelopment/refund/refundOperateList";
+    }
+    //集团查询
+    @RequestMapping(value = "jtzjzhcx")
+    public String jtzjzhcx() {
+        return "cqDevelopment/refund/capitalQuery";
+    }
+    //资金回退--审批进度查询
+    @RequestMapping(value = "qryRefundJD")
+    public String qryRefundJD() {
+        return "cqDevelopment/refund/refundApproveQuery";
+    }
+
+    //银行交易明细查询--后续发起入账反撤
+    @RequestMapping(value = "/qryBankTrade")
+    public String qryBankTradeInfoMenu() {
+        return "cqDevelopment/withdrawal/qryBankTradeDetailForAnnul";
+    }
+    //入账反撤申请页面
+    @RequestMapping(value = "fcsq")
+    public String fcsq() {
+        return "cqDevelopment/withdrawal/annulApply";
+    }
+    //入账反撤--反撤申请业务列表操作工单
+    @RequestMapping(value = "/qryAnnul")
+    public String qryAnnulApplyInfoList() {
+        return "cqDevelopment/withdrawal/annulOperateList";
+    }
+    //入账反撤审批进度查询
+    @RequestMapping(value = "qryAnnulJD")
+    public String qryAnnulJD() {
+        return "cqDevelopment/withdrawal/annulApproveQuery";
+    }
+
+    //集团资金账户查询--后续发起资金调账
+    @RequestMapping(value = "/qryGroupCapital")
+    public String getGrpFundList() {
+        return "cqDevelopment/accountRegulation/groupCapitalInfo";
+    }
+    //调账申请
+    @RequestMapping(value = "/tzsq")
+    public String tzsq() {
+        return "cqDevelopment/accountRegulation/adjustApply";
+    }
+    //资金调账--调账申请业务列表操作工单
+    @RequestMapping(value = "/getCapAdjustInfo")
+    public String getCapAdjustInfo() {
+        return "cqDevelopment/accountRegulation/adjustOperateList";
+    }
+    //资金调账--审批进度查询
+    @RequestMapping(value = "qryAdjustJD")
+    public String qryAdjustJD() {
+        return "cqDevelopment/accountRegulation/adjustApproveQuery";
+    }
+
+    //核销
+    @RequestMapping(value = "hexiao")
+    public String hexiao() {
+        return "cqDevelopment/verify/bankDealVerify";
+    }
+
+    //集团资金账户查询--后续发起冲销历史短款申请
+    @RequestMapping(value = "qryHistoryOffset")
+    public String qryHistoryOffset() {
+        return "cqDevelopment/historyOffset/groupCapitalHistoryOffset";
+    }
+    //历史短款申请页面
+    @RequestMapping(value = "dksq")
+    public String dksq() {
+        return "cqDevelopment/historyOffset/historyOffsetApply";
+    }
+    //历史短款查询接口信息
+    @RequestMapping(value = "lsdkcx")
+    public String lsdkcx(Model model,String group_no) {
+        model.addAttribute("group_no",group_no);
+        return "cqDevelopment/historyOffset/getGrpHisShortAgeFeeFromBoss";
+    }
+    //冲销历史短款--待审批列表
+    @RequestMapping(value = "cxlsdk")
+    public String cxlsdk() {
+        return "cqDevelopment/historyOffset/historyOffsetOperateList";
+    }
+    //冲销历史短款--审批进度查询
+    @RequestMapping(value = "qryOffsetJD")
+    public String qryOffsetJD() {
+        return "cqDevelopment/historyOffset/offsetApproveQuery";
+    }
+
+    //集团历史短款余额变化明细日报表
+    @RequestMapping(value = "qryHisShortFeeReport")
+    public String qryHisShortFeeReport() {
+        return "cqDevelopment/groupFundReport/groupHistoryShortFeeReport";
+    }
+    //集团业务申请单统计日报表
+    @RequestMapping(value = "qryGroupBusCountReport")
+    public String qryGroupBusCountReport() {
+        return "cqDevelopment/groupFundReport/groupBusApplyCountReport";
+    }
+
+    //集团资金余额月报表
+    @RequestMapping(value = "jtzjyeybb")
+    public String jtzjyeybb() {
+        return "cqDevelopment/groupFundReport/groupFundChangeMonthReport";
+    }
+
+
+    //----------------------------------------------------- 重庆 -----------------------------------------------------
+    //账务员认领银行交易明细到分公司 by yanhao
+    @RequestMapping(value = "yhjymxrl")
+    public String yhjymxrl() {
+        return "cqDevelopment/capitalManage/bankDealModify";
+    }
+    //银行交易明细查询 by yanhao
+    @RequestMapping(value = "yhjymxcx")
+    public String yhjymxcx() {
+        return "cqDevelopment/capitalManage/bankDealQuery";
+    }
+    //资金认领申请 by yanhao
+    @RequestMapping(value = "zjrlsq")
+    public String zjrlsq() {
+        return "cqDevelopment/capitalManage/capitalClaim";
+    }
+    //资金认领查询
+    @RequestMapping(value = "zjrlcx")
+    public String zjrlcx() {
+        return "cqDevelopment/capitalManage/capitalClaimQuery2";
+    }
+    //资金批量认领 by yanhao
+    @RequestMapping(value = "zjplrlsq")
+    public String zjplrlsq() {
+        return "cqDevelopment/capitalManage/bankDealBatchClaim";
+    }
+    //资金批量审批 by yanhao
+    @RequestMapping(value = "zjplrlsp")
+    public String zjplrlsp() {
+        return "cqDevelopment/capitalManage/capitalClaimApprovePl";
+    }
+    //资金认领申请审批进度查询 by yanhao
+    @RequestMapping(value = "zjrlsqspcx")
+    public String zjrlsqspcx() {
+        return "cqDevelopment/capitalManage/capitalClaimApproveQuery";
+    }
+    //资金认领申请审批 by yanhao
+    @RequestMapping(value = "zjrlsqsp")
+    public String zjrlsqsp() {
+        return "cqDevelopment/capitalManage/capitalClaimApprove";
+    }
+
+
+
+    //资金使用申请查询 by yanhao
+    @RequestMapping(value = "zjsysqcx")
+    public String zjsysqcx() {
+        return "cqDevelopment/capitalManage/capitalUseQuery";
+    }
+    //发起资金使用申请 by yanhao
+    @RequestMapping(value = "zjsq")
+    public String zjsq() {
+        return "cqDevelopment/capitalManage/capitalUseApply";
+    }
+    //资金申请审批进度查询 by yanhao
+    @RequestMapping(value = "zjsqspcx")
+    public String zjsqspcx() {
+        return "cqDevelopment/capitalManage/capitalUseApproveQuery";
+    }
+    //资金认领申请审批 -- 集团缴费 by yanhao
+    @RequestMapping(value = "zjsysqsp_jtjf")
+    public String zjsysqsp_jtjf() {
+        return "cqDevelopment/capitalManage/capitalUseApprove_jtjf";
+    }
+    //资金认领申请审批 -- 集团成员缴费 by yanhao
+    @RequestMapping(value = "zjsysqsp_cyjf")
+    public String zjsysqsp_cyjf() {
+        return "cqDevelopment/capitalManage/capitalUseApprove_cyjf";
+    }
+    //资金认领申请审批 -- 超大集团成员缴费 by yanhao
+    @RequestMapping(value = "zjsysqsp_cdcyjf")
+    public String zjsysqsp_cdcyjf() {
+        return "cqDevelopment/capitalManage/capitalUseApprove_cdcyjf";
+    }
+    //资金认领申请审批 -- 一次性费用 by yanhao
+    @RequestMapping(value = "zjsysqsp_ycxfy")
+    public String zjsysqsp_ycxfy() {
+        return "cqDevelopment/capitalManage/capitalUseApprove_ycxfy";
+    }
+
+
+    //审批轨迹查询 by yanhao
+    @RequestMapping(value = "lclzcx")
+    public String lclzcx() {
+        return "cqDevelopment/approveProcessQuery";
+    }
+
+
+
+    //集团业务申请单统计表 by yanhao
+    @RequestMapping(value = "cbrr")
+    public String cbrr() {
+        return "cqDevelopment/capitalManage/custBusiReq_rpt";
+    }
+    //集团类保证金缴纳统计报表 by yanhao
+    @RequestMapping(value = "cbpr")
+    public String cbpr() {
+        return "cqDevelopment/capitalManage/custBondPay_rpt";
+    }
+
+    //资金认领查询 by yanhao
+    //@RequestMapping(value = "zjrlcx")
+    //public String zjrlcx() {
+    //    return "cqDevelopment/capitalManage/capitalClaimQuery";
+    //}
+
+    //集团查询 by yanhao
+    @RequestMapping(value = "jtcx")
+    public String jtcx() {
+        return "cqDevelopment/capitalManage/groupQuery";
+    }
+    //集团查询 by yanhao
+    @RequestMapping(value = "jtcxfgs")
+    public String jtcxfgs() {
+        return "cqDevelopment/capitalManage/groupQueryBranchOffice";
+    }
+    //集团联系人查询 by yanhao
+    @RequestMapping(value = "jtlxrcx")
+    public String jtlxrcx() {
+        return "cqDevelopment/capitalManage/groupConnectQuery";
+    }
+    //集团账户查询 by yanhao
+    @RequestMapping(value = "jtzhcx")
+    public String jtzhcx() {
+        return "cqDevelopment/capitalManage/groupAcountQuery";
+    }
+    //发票查询 by yanhao
+    @RequestMapping(value = "fpcx")
+    public String fpcx(Model model,String jituan_bianhao, String jituan_zhanghao) {
+        model.addAttribute("jituan_bianhao",jituan_bianhao);
+        model.addAttribute("jituan_zhanghao",jituan_zhanghao);
+        return "cqDevelopment/capitalManage/groupInvoiceQuery";
+    }
+
+    //发票订单查询
+    @RequestMapping(value = "fpddcx")
+    public String fpddcx(Model model,String jituan_bianhao) {
+        model.addAttribute("jituan_bianhao",jituan_bianhao);
+        return "cqDevelopment/capitalManage/groupInvoiceOrderQuery";
+    }
+
+    //发票详情查询
+    @RequestMapping(value = "fpxqcx")
+    public String fpxqcx(Model model,String groupId,String applicationNo) {
+        model.addAttribute("groupId",groupId);
+        model.addAttribute("applicationNo",applicationNo);
+        return "cqDevelopment/capitalManage/groupInvoiceDetailQuery";
+    }
+
+    //发票集团账号查询
+    @RequestMapping(value = "fpjtzhcx")
+    public String fpjtzhcx(Model model,String applicationNo) {
+        model.addAttribute("applicationNo",applicationNo);
+        return "cqDevelopment/capitalManage/groupInvoiceAccountQuery";
+    }
+
+    //合同查询 by yanhao
+    @RequestMapping(value = "htcx")
+    public String htcx(Model model,String group_no) {
+        model.addAttribute("group_no",group_no);
+        return "cqDevelopment/capitalManage/groupContractQuery";
+    }
+
+    //UI样式测试
+    @RequestMapping(value = "uics")
+    public String uics() {
+        return "cqDevelopment/capitalManage/capitalQuery";
+    }
+
+    //集团资金入账日报表
+    @RequestMapping(value = "jtzjrzrbb")
+    public String jtzjrzrbb() {
+        return "cqDevelopment/capitalManage/groupMoneyRecorded";
+    }
+    //集团资金入账汇总日报表
+    @RequestMapping(value = "jtzjrzhzrbb")
+    public String jtzjrzhzrbb() {
+        return "cqDevelopment/capitalManage/groupMoneyAllRecorded";
+    }
+    //集团资金回退日报表
+    @RequestMapping(value = "jtzjhtrbb")
+    public String jtzjhtrbb() {
+        return "cqDevelopment/capitalManage/groupMoneyRefund";
+    }
+    //集团资金回退汇总报表
+    @RequestMapping(value = "jtzjhtzhrbb")
+    public String jtzjhtzhrbb() {
+        return "cqDevelopment/capitalManage/groupMoneyAllRefund";
+    }
+    //集团资金回退月报表
+    @RequestMapping(value = "jtzjhtybb")
+    public String jtzjhtybb() {
+        return "cqDevelopment/capitalManage/groupMoneyMonthRefund";
+    }
+    //集团资金入账月报表
+    @RequestMapping(value = "jtzjrzybb")
+    public String jtzjrzybb() {
+        return "cqDevelopment/capitalManage/groupMoneyMonthRecorded";
+    }
+    //集团资金变化日报表
+    @RequestMapping(value = "jtzjbhrbb")
+    public String jtzjbhrbb() {
+        return "cqDevelopment/capitalManage/groupMoneyChange";
+    }
+    //集团类资金管理业务处理对账差异统计报表
+    @RequestMapping(value = "jtzjdzcybb")
+    public String jtzjdzcybb() {
+        return "cqDevelopment/capitalManage/groupMoneyCheck";
+    }
+    /***************资金管理*****************************************************************/
+    @RequestMapping(value = "businessCenterRel")
+    public String businessCenterRel() {
+        return "cqDevelopment/businessCenter/businessCenterRel";
+    }
+
+    @RequestMapping(value = "xttz")
+    public String xttz() {
+        return "base/esopCloudCheck";
+    }
+
+    @RequestMapping(value = "ftptest")
+    public String ftptest() { return "cqDevelopment/elecPack/activitiesDiscount"; }
+
+    //集团资金调账日报表
+    @RequestMapping(value = "jtzjtzbb")
+    public String jtzjtzbb(){return  "cqDevelopment/groupFundReport/groupFundReconciliationDailyReport"; }
+
+    //集团资金调账汇总日报表
+    @RequestMapping(value = "jtzjtzhzbb")
+    public String jtzjtzhzbb(){return  "cqDevelopment/groupFundReport/groupFundReconciliationDailyReportSummary"; }
+
+    //集团资金使用日报表
+    @RequestMapping(value = "jtzjsybb")
+    public String jtzjsybb(){return  "cqDevelopment/groupFundReport/groupFundUseDetailedReport"; }
+    //集团资金使用汇总报表
+    @RequestMapping(value = "jtzjsyhzbb")
+    public String jtzjsyhzbb(){return  "cqDevelopment/groupFundReport/groupFundAllUseDetailedReport"; }
+
+    //集团资金余额日明细报表
+    @RequestMapping(value = "jtzjyebb")
+    public String jtzjyebb(Model model,String org_id_report, String center_code,String insert_date,String org_name_report,String business_center_report)
+    {
+        model.addAttribute("org_id_report",org_id_report);
+        model.addAttribute("org_name_report",org_name_report);
+        model.addAttribute("business_center_report",business_center_report);
+        model.addAttribute("center_code",center_code);
+        model.addAttribute("insert_date",insert_date);
+        return  "cqDevelopment/groupFundReport/groupFundChangeDailyReport";
+    }
+    //集团资金余额日汇总报表
+    @RequestMapping(value = "jtzjyehzbb")
+    public String jtzjyehzbb(){return  "cqDevelopment/groupFundReport/groupFundChangeDailySummaryReport"; }
+
+    //集团类业务受理对账报表
+    @RequestMapping(value = "jtywsldzbb")
+    public String jtywsldzbb(){return  "cqDevelopment/groupFundReport/groupBusAcceptAccountCheckReport"; }
+
+    //集团资金解冻
+    @RequestMapping("jtzjjd")
+    public String jtzjjd(){
+        return "cqDevelopment/capitalManage/capitalUseFundQuery";
+    }
+    //历史短款冲销，CRM处理失败，手动释放资金
+    @RequestMapping("jtzjsf")
+    public String jtzjsf(){
+        return "cqDevelopment/historyOffset/capitalReleaseFundQuery";
+    }
+
+    //集团资金使用月报表
+    @RequestMapping(value = "jtzjsybby")
+    public String jtzjsybby(){return  "cqDevelopment/groupFundReport/groupFundUseDetailedReportMonth"; }
+
+    //集团资金调账月报表
+    @RequestMapping(value = "jtzjtzbby")
+    public String jtzjtzbby(){return  "cqDevelopment/groupFundReport/groupFundReconciliationDailyReportMonth"; }
+}

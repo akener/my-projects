@@ -1,0 +1,18 @@
+package com.esop.invoice.mapper;
+
+import com.esop.invoice.model.EpFundInvoiceAttachRel;
+import java.util.List;
+
+public interface EpFundInvoiceAttachRelMapper {
+    int deleteByPrimaryKey(Integer recSerialNo);
+
+    int insert(EpFundInvoiceAttachRel record);
+
+    EpFundInvoiceAttachRel selectByPrimaryKey(Integer recSerialNo);
+
+    List<EpFundInvoiceAttachRel> selectAll();
+
+    int updateByPrimaryKey(EpFundInvoiceAttachRel record);
+
+    List<EpFundInvoiceAttachRel> selectByAppNo(String applicationNo);
+}

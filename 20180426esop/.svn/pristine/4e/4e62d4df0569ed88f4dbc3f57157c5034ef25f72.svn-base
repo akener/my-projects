@@ -1,0 +1,70 @@
+package com.esop.productInfo.dto;
+
+/**
+ * Created by wangbl on 2017/6/30.
+ */
+public class ProductComplaintsDto {
+    String order_no="";    //投诉单号
+    String comp_phone="";  //投诉电话
+    String grp_meb_type="";//集团成员类型
+    String group_name="";  //组织名称
+    String accept_time=""; //投诉时间
+    String buss_content="";//投诉内容
+    String prod_id ="";    //集团编码
+
+    public String getOrder_no() {
+        return order_no;
+    }
+
+    public void setOrder_no(String order_no) {
+        this.order_no = order_no;
+    }
+
+    public String getComp_phone() {
+        return comp_phone;
+    }
+
+    public void setComp_phone(String comp_phone) {
+        this.comp_phone = comp_phone;
+    }
+
+    public String getGrp_meb_type() {
+        return grp_meb_type;
+    }
+
+    public void setGrp_meb_type(String grp_meb_type) {
+        this.grp_meb_type = grp_meb_type;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getAccept_time() {
+        return accept_time;
+    }
+
+    public void setAccept_time(String accept_time) {
+        this.accept_time = accept_time;
+    }
+
+    public String getBuss_content() {
+        return buss_content;
+    }
+
+    public void setBuss_content(String buss_content) {
+        this.buss_content = buss_content;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+}

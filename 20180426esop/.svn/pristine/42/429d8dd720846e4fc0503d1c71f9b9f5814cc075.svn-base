@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HallRepository">
+    <select id="getProductListCatalog" parameterType="com.esop.cqDevelopment.elecPack.dto.BsProductInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.BsProductInfoDto">
+        select * from `bs_product_info` dict
+        WHERE 1=1
+        <if test="catalog_name != null and catalog_name != ''">
+            AND  dict.catalog_name LIKE CONCAT('%',#{catalog_name},'%')
+        </if>
+        <if test="catalog_id != null and catalog_id != ''">
+            AND dict.catalog_id = #{catalog_id}
+        </if>
+            GROUP BY catalog_id
+    </select>
+
+    <!--查詢分公司-->
+    <select id="getQddwList" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractQddwDto">
+        select * from se_contract_qddw
+    </select>
+
+    <select id="getProductManagerList" parameterType="com.esop.cqDevelopment.elecPack.dto.BsRoleDictDto" resultType="com.esop.cqDevelopment.elecPack.dto.BsSystemuserInfoDto" >
+        SELECT user.*  FROM `bs_systemuser_info` USER
+        left JOIN bs_staff_role_rel role ON `USER`.system_user_id = role.system_user_id
+        where 1=1
+        <if test="role_id != null">
+            AND role.role_id = #{role_id}
+        </if>
+        GROUP BY `USER`.system_user_id
+    </select>
+
+    <select id="getSeProductMgrRelDtoList" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductMgrRelDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeProductMgrRelDto">
+        SELECT * FROM `se_product_mgr_rel`;
+    </select>
+
+
+    <update id="updateSeProductMgrRelDto" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductMgrRelDto" >
+        UPDATE se_product_mgr_rel
+        <set>
+            <if test="prodmgr_no != null">prodmgr_no =#{prodmgr_no},</if>
+            <if test="prodmgr_name != null">prodmgr_name = #{prodmgr_name}</if>
+            <if test="state != null"> state = #{state} </if>
+        </set>
+        where prod_code = #{prod_code}
+    </update>
+
+    <insert id="insertSeProductMgrRelDto" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductMgrRelDto">
+        insert INTO  se_product_mgr_rel(prodmgr_no,prodmgr_name,prod_code) VALUES (#{prodmgr_no},#{prodmgr_name},#{prod_code})
+    </insert>
+
+
+    <select id="getProductListPage" parameterType="com.esop.cqDevelopment.elecPack.dto.BsProductInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.BsProductInfoDto">
+        select * from `bs_product_info` dict
+        WHERE 1=1
+        <if test="catalog_name != null and catalog_name != ''">
+            AND  dict.catalog_name LIKE CONCAT('%',#{catalog_name},'%')
+        </if>
+        <if test="catalog_id != null and catalog_id != ''">
+            AND dict.catalog_id = #{catalog_id}
+        </if>
+        <if test="prod_id != null and prod_id != ''">
+            AND dict.prod_id = #{prod_id}
+        </if>
+        <if test="prod_name != null and prod_name != '' ">
+            AND prod_name LIKE concat('%',#{prod_name},'%')
+        </if>
+    </select>
+
+    <select id="getProductChargeList" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto">
+        select charge.*,mgr.prodmgr_name ,product.catalog_name as "productInfo.catalog_name" ,product.pro_type as "productInfo.pro_type",
+              product.prod_id as "productInfo.prod_id",product.prod_name as "productInfo.prod_name",
+              pro.addprodname as "bsProductSelectProdInfoDto.addprodname",pro.addprodid as "bsProductSelectProdInfoDto.addprodid"
+        from bs_product_select_prod_info pro
+        left join se_product_charge_info charge ON pro.addprodid = charge.add_prod_code
+        left join bs_product_info product on product.prod_id = pro.prodid
+        left join se_product_mgr_rel mgr on product.catalog_id = mgr.prod_code
+        where 1=1
+        <if test="prod_id != ''">
+            and pro.prodid = #{prod_id}
+        </if>
+        <if test="prod_name != ''">
+            and product.prod_name like concat("%",#{prod_name},"%")
+        </if>
+        <if test="catalog_name != ''">
+            AND product.catalog_name like concat("%",#{catalog_name},"%")
+        </if>
+        <if test="productInfo !=null and productInfo !=''">
+            AND product.catalog_id = productInfo.catalog_id
+        </if>
+    </select>
+
+    <select id="getProductChargeInfoList" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto">
+        SELECT * from se_product_charge_info charge
+        INNER join bs_product_select_prod_info pro on pro.addprodid = charge.add_prod_code
+        where charge.state = '1'
+        <if test="prod_id !=''">
+            and pro.prodid = #{prod_id}
+        </if>
+        <if test="not_in_chargeId !=''">
+            and charge.id not in  (${not_in_chargeId})
+        </if>
+    </select>
+
+    <update id="updateProductCharge" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto">
+        UPDATE se_product_charge_info
+        <set>
+            <if test="charge_desc != ''">
+                charge_desc = #{charge_desc},
+            </if>
+            <if test="content != ''">
+                content = #{content},
+            </if>
+            <if test="price !=''">
+                price = #{price},
+            </if>
+            <if test="number !=''">
+                number = #{number},
+            </if>
+            <if test="add_prod_name != ''">
+                add_prod_name = #{add_prod_name},
+            </if>
+            <if test="state !=''">
+                state = #{state},
+            </if>
+        </set>
+        WHERE add_prod_code = #{add_prod_code}
+    </update>
+
+    <insert id="insertProductCharge" parameterType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto">
+        INSERT INTO se_product_charge_info (add_prod_code,add_prod_name,charge_desc,content,price,number,state) VALUES
+        (#{add_prod_code},#{add_prod_name},#{charge_desc},#{content},#{price},#{number},#{state})
+    </insert>
+
+    <select id="getSeContractQddwById" parameterType="string" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractQddwDto">
+        SELECT
+            id,
+            NAME,
+            levelid AS levelId,
+            suoxie,
+            full_name AS fullName,
+            valid,
+            area_code AS areaCode
+        FROM
+            se_contract_qddw
+        WHERE
+            id = #{id};
+    </select>
+</mapper>

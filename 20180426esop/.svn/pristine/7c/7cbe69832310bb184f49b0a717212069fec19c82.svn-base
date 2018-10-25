@@ -1,0 +1,306 @@
+
+$(document).ready(function() {
+    groupMemberOperate();
+    getApplyOrderType();
+    getCapitalListInfo();
+
+   // getContactType();
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+} );
+//重置
+function pageReset(){
+    $("input").val("");
+    $("textarea").val("");
+};
+//获取联系人类型
+function getContactType() {
+    $.ajax({
+        type: 'POST',
+        url: '/qryContactType',
+        cache: false,
+        data: {
+        },
+        success: function (data) {
+            var type_data="";
+            var list = data.ROOT.BODY.contactTypeList;
+            $.each(list, function (i, field) {
+                //拼接json数据集字符串
+                type_data += "<option value='" + field.type_name + "' ";
+                type_data += ">" + field.type_name + "</option>";
+            });
+            $("#contact_type").append(type_data);
+            //$("#qry_solution_type").append(type_data)
+        },
+        error: function (resp) {
+            // alert("查询数据失败");
+            $("#modal_text").text("插入数据失败");
+            $("#modalInfo").modal('show');
+            return false;
+
+        },
+    });
+}
+
+
+//集团成员资金申请业务操作工单
+function groupMemberOperate() {
+    table = $('#groupMemberOperate').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getGroupMemberOperateListInfo",
+            type:"POST",
+            data: {
+                orderID:$("#orderID1").val(),
+                groupID:$("#groupID").val()
+            }
+        },
+        columns: [
+            { data: "orderID"},
+            { data: "recType"},
+            { data: "areaID"},
+            { data: "applyOpID"},
+            { data: "tradeCenterID"},
+            { data: "groupID"},
+            { data: "groupName"},
+            { data: "groupAcctID"},
+            { data: "groupAcctName"},
+            { data: "prePrintInvBeginCycle"},
+            { data: "prePrintInvEndCycle"},
+            { data: "freezeFee"},
+            { data: "applyFee"},
+            { data: "applyDate"},
+       /*     { data: "groupMemListFile"},
+            { data: "groupMemListFileLines"},
+            { data: "productBook"},*/
+            { data: "orderStatus"},
+            { data: "orderID",
+                "width": "6%",
+                render: function ( data, type, row, meta ) {
+                    return data="<button type='button' style='width: 80px' onclick=showApproveGMInfo('"+ row.orderID +"')>审批</button>";
+
+                }
+            }
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+//根据集团编号查询集团资金帐户信息
+function getCaptialInfo(param) {
+   // var groupNo = $("#groupNo").val();//集团编码
+    //alert(groupNo);
+    $.ajax({
+        type: "POST",
+        url: "getCapitalInfo",
+        data:{
+            grpCustId:param
+        },
+        cache: false,
+        success: function (result) {
+            //拼接json数据集字符串
+            $.each(result.info,function(i,filed){
+               // debugger;
+                capitalInfo(filed);
+            });
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    })
+}
+//页面回显资金账户信息
+function capitalInfo(result) {
+    console.log(result);
+    $("#grpFundAcctid").val(result.grpFundAcctid);
+    $("#grpCustId").val(result.grpCustId);
+    $("#grpCustName").val(result.grpCustName);
+    $("#bankAcctId").val(result.bankAcctId);
+    $("#bankName").val(result.bankName);
+    $("#ownerOrgId").val(result.ownerOrgId);
+    $("#status").val(result.status);
+    $("#balance").val(result.balance);
+    $("#nowBalance").val(result.nowBalance);
+    $("#holdBalance").val(result.holdBalance);
+    $("#freezeFee").val(result.freezeFee);
+}
+//集团成员--集团资金账户查询列表
+function getCapitalListInfo() {
+    table1 = $('#capitalListInfo').DataTable({
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url:"/getCapitalListInfo",
+            type:"POST",
+            data:{
+                grpCustId:$("#grpCustId1").val(),
+                grpFundAcctid:$("#grpFundAcctid1").val()
+            }
+        },
+        columns: [
+            { data: "grpFundAcctid"},
+            { data: "grpCustId"},
+            { data: "grpCustName"},
+            { data: "bankAcctId"},
+            { data: "bankName"},
+            { data: "ownerOrgId"},
+            { data: "status"},
+            { data: "balance"},
+            { data: "nowBalance"},
+            { data: "holdBalance"},
+            { data: "freezeFee"},
+            { data: "grpCustId",
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    return data= "<button type='button' style='width: 60px' onclick=showRefundMsg('"+row.grpCustId+"')>查看</button>"+
+                        "<button type='button' style='width: 60px' onclick=addGroupApply('"+row.grpCustId+"')>新增</button>";
+                }
+            }
+        ],
+        select: true,
+        buttons: [
+        ]
+    })
+}
+function  addGroupApply(param) {
+    //window.open("groupMemberApply");
+    getCaptialInfo(param);
+    $("#operationAlertInfo").modal('show');
+   //window.href="groupMemberApply";
+
+}
+//提交申请信息
+function save(){
+    $.ajax({
+        type: "POST",
+        url: "saveGroupMemberApplyInfo",
+        async:false,
+        data:{
+            orderID:$("#orderID").val(),
+            recType:$("#apply_order_type").val(),
+            areaID:$("#areaID").val(),
+            applyOpID:$("#applyOpID").val(),
+            tradeCenterID:$("#tradeCenterID").val(),
+            groupID:$("#groupID").val(),
+            groupName:$("#groupName").val(),
+            groupAcctID:$("#groupAcctID").val(),
+            groupAcctName:$("#groupAcctName").val(),
+            prePrintInvBeginCycle:$("#prePrintInvBeginCycle").val(),
+            prePrintInvEndCycle:$("#prePrintInvEndCycle").val(),
+            invoicingInfo:$("#invoicingInfo").val(),
+            freezeFee:$("#freezeFee1").val(),
+            applyFee:$("#applyFee").val(),
+            applyDate:$("#applyDate").val(),
+            groupMemListFile:$("#groupMemListFile").val(),
+            groupMemListFileLines:$("#groupMemListFileLines").val(),
+            note:$("#note").val()
+        },
+        cache: false,
+        success: function (result) {
+            if(result.info == "操作成功"){
+                bootStrapAlert('操作成功!');
+            }else{
+                bootStrapAlert('操作失败!');
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+    goback();
+}
+
+function goback(){
+    location.href="groupMemberOperate";
+}
+
+var bootStrapAlert = function (msg){
+    $('#alertLabelInfo').html(msg);
+    $('#operationAlertInfo').modal('show');
+}
+//获取申请工单业务类型
+function getApplyOrderType() {
+    $.ajax({
+        type: 'POST',
+        url: '/qryApplyOrderType',
+        cache: false,
+        data: {
+        },
+        success: function (data) {
+            var type_data="";
+            var list = data.ROOT.BODY.applyOrderTypeList;
+            $.each(list, function (i, field) {
+                //拼接json数据集字符串
+                type_data += "<option value='" + field.payment_type_name + "' ";
+                type_data += ">" + field.payment_type_name + "</option>";
+            });
+            $("#apply_order_type").append(type_data);
+        },
+        error: function (resp) {
+            // alert("查询数据失败");
+            $("#modal_text").text("插入数据失败");
+            $("#modalInfo").modal('show');
+            return false;
+
+        },
+    });
+}
+
+
+//回显集团成员审批页面详情信息
+function showApproveGMInfo(orderID){
+   // alert(orderID);
+   $("#doGroupMemApprove").modal('show');
+   $.ajax({
+        type:"POST",
+        url:"/getGroupMemApproveInfo",
+        data:{"orderID":orderID}
+    }).then(function(data){
+        $("#orderId").val(data.orderID);
+        $("#apply_order_type").val(data.recType);
+        $("#areaID").val(data.areaID);
+        $("#applyOpID").val(data.applyOpID);
+        $("#tradeCenterID").val(data.tradeCenterID);
+        $("#groupID").val(data.groupID);
+        $("#groupName").val(data.groupName);
+        $("#groupAcctID").val(data.groupAcctID);
+        $("#groupAcctName").val(data.groupAcctName);
+        $("#prePrintInvBeginCycle").val(data.prePrintInvBeginCycle);
+        $("#prePrintInvEndCycle").val(data.prePrintInvEndCycle);
+        $("#freezeFee1").val(data.freezeFee);
+        $("#applyFee").val(data.applyFee);
+        $("#applyDate").val(data.applyDate);
+        $("#groupMemListFile").val(data.groupMemListFile);
+        $("#groupMemListFileLines").val(data.groupMemListFileLines);
+        $("#invoicingInfo").val(data.invoicingInfo);
+        $("#note").val(data.note);
+    })
+}

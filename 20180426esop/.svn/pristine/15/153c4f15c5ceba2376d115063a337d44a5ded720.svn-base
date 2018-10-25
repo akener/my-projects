@@ -1,0 +1,170 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="../pub/public_include.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+
+<script>
+    $(function ( ) {
+       //
+            queryElecOrder();
+        $("#findacount").on("click",function () {
+            queryElecOrder();
+        });
+    });
+
+
+    function queryElecOrder() {
+        $('#orderlist').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 5,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            ajax:{
+                url:"/esop/getAcountManageListPage",
+                type:"POST",
+                "data":{
+                    "account_code":$("#account_code").val(),
+                    "account_name":$("#account_name").val()
+                }
+            },
+
+
+            columns: [
+                { data: "id",render: function ( data, type, row, meta ) {
+                    return   '<a title = "提交"  target="_blank"  href="/esop/findAcountManagedetaile?id='+data+'"   class="ui-btn btn-success fs-12"  style="text-decoration:none">提交</a>';
+                }},
+                { data: "contract_id"},
+                { data: "pack_no" },
+                { data: "account_code" },
+                { data: "account_name" },
+                { data: "grp_subsid" },
+                { data: "pay_cycle" }
+                /* { data: "state" },*/
+            ],
+            buttons: []})
+    }
+
+
+
+</script>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <title>缴费周期设置</title>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>缴费周期设置</span>
+            </div>
+        </div>
+        <!--详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row pdb-10 border-ed">
+                    <h1 class="head-title">产品选择</h1>
+                    <div class="row">
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>集团账户编码：</th>
+                                <td>
+                                    <input id="account_code" type="text" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团账户名称：</th>
+                                <td>
+                                    <input id="account_name" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <button class="ui-btn mgr-10"  id="findacount" style="min-width:100px;">查询</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="row mgt-10 pdb-10 border-ed">
+                    <h1 class="head-title">产品管理</h1>
+                    <div class="row">
+                        <div class="row col-12">
+                            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                                <div class="active-cost-box" style="padding-bottom:0;">
+                                    <table id="orderlist" class="cost-table" width="100%;">
+                                        <thead>
+                                        <tr>
+                                            <th class="text-center">操作</th>
+                                            <th class="text-center">合同序号</th>
+                                            <th class="text-center">合同编号</th>
+                                            <th class="text-center">集团账户编码</th>
+                                            <th class="text-center">集团账户名称</th>
+                                            <th class="text-center">产品编码</th>
+                                            <th class="text-center">缴费周期</th>
+                                            <%-- <th class="text-center">同步到CRM</th>--%>
+
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+                                        </tfoot>
+                                        <%--  <c:forEach items="${AcountManageDto}" var="su">
+                                            <tr class="tr-data">
+                                              <td>${su.contract_id}</td>
+                                              <td>${su.pack_no}</td>
+                                              <td>${su.account_code}</td>
+                                              <td>${su.account_name}</td>
+                                              <td>${su.grp_subsid}</td>
+                                              <td>${su.pay_cycle}</td>
+                                              <td>${su.state}</td>
+                                              <td>
+                                                  <ul class="ui-rule cf ui-list-1 js_ch_clist2">
+                                                      <li data-dialog="资费编辑-弹窗.html">
+                                                          <a title = '提交'  target="_blank"  href='/esop/findAcountManagedetaile?id=${su.id}'   class='ui-btn btn-success fs-12'  style='text-decoration:none'>提交</a>
+                                                      </li>
+                                                  </ul>
+                                              </td>
+                                          </tr>
+                                          </c:forEach>--%>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <%-- <div class="row col-12">
+                             <div class="tr pdr-10">
+                                 <ul class="in-page pagination mgt-0 mgb-5">
+                                     <li class="disabled"><a href="#" class="mgl-5">首页</a></li>
+                                     <li class="disabled"><a href="#" class="mgl-5">上一页</a></li>
+                                     <li class="active"><a href="#" class="mgl-5">1</a></li>
+                                     <li><a href="#" class="mgl-5">2</a></li>
+                                     <li><a href="#" class="mgl-5">3</a></li>
+                                     <li><a href="#" class="mgl-5">下一页</a></li>
+                                     <li><a href="#" class="mgl-5">末页</a></li>
+                                 </ul>
+                             </div>
+                         </div>--%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+

@@ -1,0 +1,572 @@
+package com.esop.Interface.controller;
+
+import com.alibaba.fastjson.JSON;
+import com.esop.common.util.ParameterConversion;
+import com.esop.cust.dto.*;
+import com.esop.cust.service.GrpStatisticsInfoService;
+import com.esop.productInfo.dto.PromptInformationDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedInputStream;
+import java.util.*;
+
+/**
+ * Created by wangbl on 2017/5/30.
+ */
+@RestController
+public class EsopProvideController {
+    private static Logger logger = Logger.getLogger(EsopProvideController.class);
+    @Autowired
+    GrpStatisticsInfoService grpStatisticsInfoService;
+    //esop与旗舰店接口问题
+    //客户经理信息查询
+    @RequestMapping(value = "/qryCustManagerMsg")
+    public Map qryCustManagerMsg(HttpServletRequest request){
+        FlagshipStoreDto fsd = ParameterConversion.jsonToObject(request,FlagshipStoreDto.class);
+        EpMesagePushDto param = new EpMesagePushDto();
+        param.setPhone_no(fsd.getBusi_info().getPhone_no());
+
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(param.getPhone_no().equals("")|| param.getPhone_no()==null){
+            map.put("RETURN_MSG","用户手机号码不能为空");
+            map.put("RETURN_CODE","-2");
+        }else{
+            List<CustManagerInfoDto> list = grpStatisticsInfoService.qryCustManagerMsg(param);
+            if(list.size()==0){
+                map.put("RETURN_MSG","没有查询到相关信息");
+                map.put("RETURN_CODE","-1");
+            }else{
+                map.put("LOGIN_NAME",list.get(0).getName());
+                map.put("PHONE_NO",list.get(0).getContact_phone());
+                map.put("LOGIN_NO",list.get(0).getService_no());
+                map.put("RETURN_CODE","0");
+                map.put("RETURN_MSG","查询成功");
+            }
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return  mapThird;
+    }
+    //客户留言信息推送接口
+    @RequestMapping(value = "/sMessage" )
+    public Map sMessage(HttpServletRequest request){
+        FlagshipStoreDto fsd = ParameterConversion.jsonToObject(request,FlagshipStoreDto.class);
+        EpMesagePushDto param = new EpMesagePushDto();
+        param.setMessage(fsd.getBusi_info().getMessage());
+        param.setPhone_no(fsd.getBusi_info().getPhone_no());
+        param.setLogin_no(fsd.getBusi_info().getLogin_no());
+
+        param.setIs_read(fsd.getBusi_info().getIs_read());
+        param.setIsServ_no(fsd.getBusi_info().getIsServ_no());
+
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(param.getPhone_no().equals("")|| param.getPhone_no()==null){
+            map.put("RETURN_MSG","用户手机号码不能为空");
+            map.put("RETURN_CODE","-2");
+        }else if (param.getMessage().equals("")||param.getMessage()==null){
+            map.put("RETURN_MSG","留言不能为空");
+            map.put("RETURN_CODE","-3");
+        }else if(param.getLogin_no().equals("")||param.getLogin_no()==null){
+            map.put("RETURN_MSG","客户经理工号不能为空");
+            map.put("RETURN_CODE","-4");
+        }else{
+            int flag = grpStatisticsInfoService.sMessage(param);
+            if(flag==0){
+                map.put("RETURN_MSG","推送失败");
+                map.put("RETURN_CODE","-1");
+            }else{
+                map.put("RETURN_MSG","推送成功");
+                map.put("RETURN_CODE","0");
+            }
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+    //查询推送的客户留言信息
+    @RequestMapping(value = "/qryEpMesagePushMsg")
+    public Map qryEpMesagePushMsg(HttpServletRequest request){
+        EpMesagePushDto param = ParameterConversion.jsonToObject(request,EpMesagePushDto.class);
+
+        List<EpMesagePushDto> list = grpStatisticsInfoService.qryEpMesagePushMsg(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(list.size()==0){
+            map.put("RETURN_MSG","没有查询到相关信息");
+            map.put("RETURN_CODE","-1");
+        }else{
+            map.put("RETURN_LIST",list);
+            map.put("RETURN_CODE","0");
+            map.put("RETURN_MSG","查询成功");
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return  mapThird;
+    }
+    //查询旗舰店列表
+    @RequestMapping(value = "/qryCustList")
+    public Map qryCustList(HttpServletRequest request){
+        EpMesagePushDto param = ParameterConversion.jsonToObject(request,EpMesagePushDto.class);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(param.getLogin_no().equals("")||param.getLogin_no()==null){
+            map.put("RETURN_MSG","客户经理工号不能为空");
+            map.put("RETURN_CODE","-2");
+        }
+        List<EpMesagePushDto> list = grpStatisticsInfoService.qryCustList(param);
+        if(list.size()==0){
+            map.put("RETURN_MSG","没有查询到相关信息");
+            map.put("RETURN_CODE","-1");
+        }else{
+            map.put("RETURN_CODE","0");
+            map.put("RETURN_MSG","查询成功");
+            map.put("RETURN_LIST",list);
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return  mapThird;
+    }
+    //修改未读的留言为已读
+    @RequestMapping(value = "/updateReaded")
+    public Map updateReaded(HttpServletRequest request){
+        EpMesagePushDto param = ParameterConversion.jsonToObject(request,EpMesagePushDto.class);
+        int flag = grpStatisticsInfoService.updateReaded(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(flag>0){
+            map.put("RETURN_MSG","修改成功");
+            map.put("RETURN_CODE","0");
+        }else{
+            map.put("RETURN_CODE","-1");
+            map.put("RETURN_MSG","修改失败");
+        }
+        return map;
+    }
+
+    //通过客户经理工号查询所属集团数量、成员数量、重要成员数量
+    @RequestMapping(value="/getGrpStatisticsInfo")
+    public GrpStatisticsInfoDto getGrpStatisticsInfo(HttpServletRequest request){
+      GrpInterfaceParameterDto param=ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        GrpStatisticsInfoDto grpStatisticsInfoDto=grpStatisticsInfoService.getGrpStatisticsInfo(param);
+        return grpStatisticsInfoDto;
+    }
+    //查询集团成员数量以及集团重要成员数量
+    @RequestMapping(value = "/qryGrpMemberNums")
+    public GrpStatisticsDto qryGrpMemberNums(HttpServletRequest request) {
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request, GrpInterfaceParameterDto.class);
+        GrpStatisticsDto grpDto = grpStatisticsInfoService.qryGrpMemberNums(param);
+        return grpDto;
+    }
+    //通过集团客户经理工号查询集团列表
+    @RequestMapping(value = "/qryGrpList")
+    public List qryGrpList(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request, GrpInterfaceParameterDto.class);
+        List list = grpStatisticsInfoService.qryGrpList(param);
+        if(list.size()==0){
+            PromptInformationDto dto=new PromptInformationDto();
+            dto.setInfo("没有查询到对应的集团");
+            list.add(dto);
+        }
+        return  list;
+    }
+    //根据集团编号询集团的基本信息
+    @RequestMapping(value = "/qryGrpBaseInfo")
+    public List  qryGrpBaseInfo (HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request, GrpInterfaceParameterDto.class);
+        List list = grpStatisticsInfoService.qryGrpBaseInfo(param);
+        if(list.size()==0){
+            PromptInformationDto dto=new PromptInformationDto();
+            dto.setInfo("没有对应的集团信息");
+            list.add(dto);
+        }
+        return  list;
+    }
+    //集团信息录入
+    @RequestMapping(value = "/insertGrpCustMsg")
+    public Map insertGrpCustMsgHis(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        System.out.println("+++:"+param.getUnit_id());
+        int flag = grpStatisticsInfoService.insertGrpCustMsgHis(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(flag==0){
+            map.put("msg","信息录入失败");
+        }else{
+            map.put("msg","信息录入成功");
+        }
+        System.out.println("   :"+map.toString()+"  _000");
+        return map;
+    }
+    //根据集团编号查询集团重要成员列表
+    @RequestMapping(value = "/impMemberList")
+    public Map<String, Object> impMemberList(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List list = grpStatisticsInfoService.impMemberList(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(list.size()>0){
+            map.put("return_code","000000");
+            map.put("return_kmsg","查询成功");
+            map.put("impMemberList",list);
+        }else{
+            map.put("return_code","-1");
+            map.put("return_kmsg","没有查询到重要成员");
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+    //根据电话号码验证用户是否是重要成员
+    @RequestMapping(value = "/isImpMember")
+    public Map isImpMember(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<GrpImpMemberDto> list  = grpStatisticsInfoService.isImpMember(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("impMember",list);
+        PromptInformationDto dto=new PromptInformationDto();
+        if(list.size()==0){
+            dto.setInfo("没有查询到对应的集团重要成员信息");
+        }else{
+            dto.setInfo("该号码在重要成员中已经被使用，校验失败!");
+        }
+        map.put("msg",dto);
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+    //在添加重要成员前验证电话号码后查询客户的基本信息，查到则展示
+    @RequestMapping(value = "/qryCust")
+    public Map qryCust(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request, GrpInterfaceParameterDto.class);
+        Map<String,Object> map = new HashMap<String, Object>();
+        List<CustMsgDto> list  = grpStatisticsInfoService.qryCust(param);
+        if(list.size()==0) {
+            PromptInformationDto dto=new PromptInformationDto();
+            dto.setInfo("该号码在客户表中不存在");
+            map.put("msg",dto);
+        }else{
+            map.put("cust_msg",list);
+            List<CustDocDto> listSecond  = grpStatisticsInfoService.qryCustDoc((CustMsgDto)list.get(0));
+            map.put("cust_doc",listSecond);
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+    //重要成员增加
+    @RequestMapping(value = "/insertCustImpManMsg")
+    public Map insertCustImpManMsg(HttpServletRequest request){
+        GrpImpMemberAddDto param = ParameterConversion.jsonToObject(request, GrpImpMemberAddDto.class);
+        Map<String,Object> map = new HashMap<String, Object>();
+        PromptInformationDto dto=new PromptInformationDto();
+        String flag = "-1";
+        if(param.getPhone_no().equals("")){
+            map.put("return_msg","手机号为必填项");
+        }else if(param.getDuty().equals("")){
+            map.put("return_msg","职务为必填项");
+        }else if(param.getUser_name().equals("")){
+            map.put("return_msg","姓名为必填项");
+        }else if(param.getSex_code().equals("")){
+            map.put("return_msg","性别为必填写");
+        }else{
+            int isSuccess =  grpStatisticsInfoService.insertCustImpManMsg(param);
+            if(isSuccess==1){
+                map.put("return_msg","添加成功");
+                flag = "000000";
+            }else{
+                map.put("return_msg","添加失败");
+            }
+        }
+        map.put("return_code",flag);
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+    //集团重要成员详细信息查询
+    @RequestMapping(value = "/qryGrpCustImpManMsg")
+    public Map qryGrpCustImpManMsg(HttpServletRequest request){
+        GrpImpMemberAddDto param = ParameterConversion.jsonToObject(request,GrpImpMemberAddDto.class);
+        List<GrpImpMemberAddDto> list = grpStatisticsInfoService.qryGrpCustImpManMsg(param);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(list.size()>0){
+            map.put("return_code","000000");
+            map.put("return_kmsg","查询成功");
+            map.put("impMemberList",list);
+        }else{
+            map.put("return_code","-1");
+            map.put("return_kmsg","没有查询到重要成员信息");
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+
+    @RequestMapping(value = "/qryEntType")
+    public Map qryEntType(HttpServletRequest request){
+        Map<String,Objects> map = grpStatisticsInfoService.qryEntType();
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+    //集团重要成员信息录入（修改）
+    @RequestMapping(value = "/updateGrpCustImpManMsg")
+    public Map updateGrpCustImpManMsg(HttpServletRequest request){
+        GrpImpMemberAddDto param = ParameterConversion.jsonToObject(request,GrpImpMemberAddDto.class);
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(param.getPhone_no().equals("")){
+            map.put("return_code","-1");
+            map.put("return_kmsg","电话号码不能为空");
+        }else if (param.getDept().equals("")){
+            map.put("return_code","-1");
+            map.put("return_kmsg","部门不能为空");
+        }else if (param.getUser_name().equals("")){
+            map.put("return_code","-1");
+            map.put("return_kmsg","姓名不能为空");
+        }else if (param.getDuty().equals("")){
+            map.put("return_code","-1");
+            map.put("return_kmsg","职位不能为空");
+        }else if(param.getRole().equals("")){
+            map.put("return_code","-1");
+            map.put("return_kmsg","角色不能为空");
+        }else{
+            int flag = grpStatisticsInfoService.updateGrpCustImpManMsg(param);
+            /*List list = new ArrayList();
+            PromptInformationDto dto=new PromptInformationDto();*/
+
+            if(flag==0){
+                map.put("return_code","-1");
+                map.put("return_kmsg","修改失败");
+            }else{
+                map.put("return_code","000000");
+                map.put("return_kmsg","修改成功");
+            }
+        }
+        Map<String,Object> mapSecond = new HashMap<String,Object>();
+        mapSecond.put("BODY",map);
+        Map<String,Object> mapThird = new HashMap<String,Object>();
+        mapThird.put("ROOT",mapSecond);
+        System.out.println(mapThird.toString());
+        return mapThird;
+    }
+
+    //合同提前一月到期提醒
+    @RequestMapping(value = "/qryCnttInfo")
+    public Map qryCnttInfo(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<CnttInfoDto> list = grpStatisticsInfoService.qryCnttInfo(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("MSG","查询成功");
+            map.put("CONTTLIST",list);
+        }else{
+            map.put("MSG","数据为空");
+        }
+        return  map;
+    }
+    //重要成员提前一天进行提示
+    @RequestMapping(value = "/qryImpManBirthDay")
+    public Map qryImpManBirthDay(HttpServletRequest request){
+       GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        System.out.println("--重要成员生日查询---");
+        List<GrpImpMemberDto> list = grpStatisticsInfoService.qryImpManBirthDay(param);
+        Map<String,Object> map = new  HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("MSG","查询成功");
+            map.put("ImpManList",list);
+        }else{
+            map.put("MSG","未查到相关信息");
+        }
+        System.out.println("明日过生的重要成员数："+list.size());
+        return map;
+    }
+    //集团重要成员生日祝福短信下发
+    @RequestMapping(value = "/insertBirthMsg")
+    public Map insertBirthMsg(HttpServletRequest request){
+        SendBirthMsgDto param = ParameterConversion.jsonToObject(request,SendBirthMsgDto.class);
+
+        Map<String,Object> map = new HashMap<String, Object>();
+        int flag = grpStatisticsInfoService.insertBirthMsg(param);
+        System.out.println(flag+" ppppppp");
+        if(flag>0){
+            map.put("msg","发送成功!");
+        }else{
+            map.put("msg","发送失败!");
+        }
+        return map;
+    }
+
+    //集团竞争对手查询
+    @RequestMapping(value = "/qryCompeteInfoMsg")
+    public Map qryCompeteInfoMsg(HttpServletRequest request){
+       GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        System.out.println("查询--竞争对手");
+        List<CompeteInfoDto> list = grpStatisticsInfoService.qryCompeteInfoMsg(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("msg","查询成功!");
+            map.put("CompeteInfo",list);
+        }else{
+            map.put("msg","数据为空!");
+        }
+        System.out.println("查询-----竞争对手");
+        return map;
+    }
+
+
+    //合同审批
+    @RequestMapping(value = "/qryGoupId")
+    public Map  qryGoupId(HttpServletRequest request){
+        CnttExamineDto param = ParameterConversion.jsonToObject(request,CnttExamineDto.class);
+        List<DGrpGroupsDto> list = grpStatisticsInfoService.qryGoupId(param);
+        Map<String,Object> map = new  HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("msg","查询成功");
+            map.put("group_id",list.get(0).getParent_group_id());
+        }else{
+            map.put("msg","数据为空");
+        }
+        return map;
+    }
+    //查询地区编码和地区名
+    @RequestMapping(value = "/qryGroupIdAndName")
+    public Map qryGroupIdAndName(HttpServletRequest request){
+        CnttExamineDto param = ParameterConversion.jsonToObject(request,CnttExamineDto.class);
+        String str = grpStatisticsInfoService.validateRoleType(param);
+        Map<String,Object> map = new  HashMap<String, Object>();
+        if(str.equals("1")){
+            map = grpStatisticsInfoService.qryGroupIdAndName(param);
+        }else{
+            map.put("fail_msg","您无权使用此功能");
+            map.put("msg","验证失败");
+        }
+        return  map;
+    }
+    //查询待审批的合同（查询详细信息时将分页中的页码置为-1）
+    @RequestMapping(value = "/qryCnttExamineList")
+    public Map qryCnttExamineList(HttpServletRequest request){
+        CnttExamineDto param = ParameterConversion.jsonToObject(request,CnttExamineDto.class);
+        List<CnttExamineListDto> list = grpStatisticsInfoService.qryCnttExamineList(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("msg","查询成功");
+            map.put("cntt_examine_list",list);
+        }else{
+            map.put("msg","数据为空");
+        }
+        return map;
+    }
+    //提交合同审批
+    @RequestMapping(value = "/cnttExamine")
+    public  Map cnttExamine(HttpServletRequest request){
+        CnttExamineDto param = ParameterConversion.jsonToObject(request,CnttExamineDto.class);
+        int flag = grpStatisticsInfoService.cnttExamine(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(flag>0){
+            map.put("msg","已完成审批");
+        }else{
+            map.put("msg","提交失败");
+        }
+        return map;
+    }
+    //走访提醒
+    @RequestMapping(value = "/visitReminderList")
+    public Map visitReminderList(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<VisitReminderDto> list = grpStatisticsInfoService.visitReminderList(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("MSG","查询成功");
+            map.put("reminder_list",list);
+        }else{
+            map.put("MSG","数据为空");
+        }
+        return map;
+    }
+    //公告
+    //查询为读取的公告数
+    @RequestMapping(value = "/qryNoteCount")
+    public Map qryNoteCount(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<NoteListSizeDto> list = grpStatisticsInfoService.qryNoteCount(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("msg","查询成功");
+            map.put("note_count",list.get(0).getNote_list_size());
+        }else{
+            map.put("msg","数据为空");
+        }
+        return map;
+    }
+    //查询公告
+    @RequestMapping(value = "/qryNoteList")
+    public Map qryNoteList(HttpServletRequest request){
+      GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<NotListInfoDto> list = grpStatisticsInfoService.qryNoteList(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("msg","查询成功");
+            map.put("note_list",list);
+        }else{
+            map.put("msg","数据为空");
+        }
+        return map;
+    }
+    //查询公告详细信息
+    @RequestMapping(value = "/qryNoteInfo")
+    public Map qryNoteInfo(HttpServletRequest request){
+        GrpInterfaceParameterDto param  = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<NoteInfoDto> list = grpStatisticsInfoService.qryNoteInfo(param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            map.put("msg","查询成功");
+            map.put("note_info",list.get(0));
+        }else{
+            map.put("msg","数据为空");
+        }
+        return map;
+    }
+    //更改公告未读为已读
+    @RequestMapping(value = "/updateReadFlag")
+    public PromptInformationDto updateReadFlag(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        int flag = grpStatisticsInfoService.updateReadFlag(param);
+        PromptInformationDto dto=new PromptInformationDto();
+        if(flag>0){
+            dto.setInfo("已读");
+        }else{
+            dto.setInfo("更改失败");
+        }
+        return  dto;
+    }
+}

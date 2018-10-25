@@ -1,0 +1,97 @@
+
+
+//工号校验
+function check_login_no3(){
+    var key  = CryptoJS.enc.Latin1.parse('1234123412341324');
+    var iv   = CryptoJS.enc.Latin1.parse('1234123412341324');
+    var esopNo = $("#login_no3").val();
+    if ("" == esopNo) {
+        bootStrapAlert('请填写ESOP工号！');
+        return false;
+    }
+    $.ajax({
+        type: "POST",
+        url: "basicManagementQuery",
+        data:{
+            login_no:esopNo
+        },
+        cache: false,
+        success: function (result) {
+            if(result.length > 0) {
+                $("#login_no3").val(result[0].login_no);
+                $("#login_name3").val(result[0].login_name);
+                $("#password3").val(result[0].password);
+                $("#password13").val(result[0].password);
+                $("#phone_no3").val(result[0].contract_phone);
+                if(result[0].id_card_no!=''&&result[0].id_card_no!=null){
+                    var decrypted = CryptoJS.AES.decrypt(result[0].id_card_no,key,{iv:iv,padding:CryptoJS.pad.ZeroPadding});
+                    $("#id_card_no3").val(decrypted.toString(CryptoJS.enc.Utf8));
+                }
+                //$("#id_card_no3").val(result[0].id_card_no);
+                $("#busi_boss_no3").val(result[0].busi_boss_no);
+                $("#oa_login_no3").val(result[0].oa_login_no);
+                $("#mis_no3").val(result[0].mis_no);
+                $("#vilid_flag3").val(result[0].vilid_flag);
+                $("#is_grp_staff3").val(result[0].is_grp_staff);
+                $("#grpusertype3").val(result[0].grpusertype);
+                $("#grp_staff_number3").val(result[0].grp_staff_number);
+                $("#need_remind3").val(result[0].need_remind);
+                var tempGrpRoleCode = new Array();
+                tempGrpRoleCode = result[0].grp_role_code.split(",");
+                for (var i = 0; i < tempGrpRoleCode.length; i++) {
+                    if (tempGrpRoleCode[i] == '1') {
+                        $("#grp_role_code1_3").prop("checked", true);
+                    } else if (tempGrpRoleCode[i] == '2') {
+                        $("#grp_role_code2_3").prop("checked", true);
+                    } else if (tempGrpRoleCode[i] == '3') {
+                        $("#grp_role_code3_3").prop("checked", true);
+                    } else if (tempGrpRoleCode[i] == '4') {
+                        $("#grp_role_code4_3").prop("checked", true);
+                    } else if (tempGrpRoleCode[i] == '5') {
+                        $("#grp_role_code5_3").prop("checked", true);
+                    }
+                }
+                $("#role_code3").val(result[0].role_code);
+                $("#role_name3").val(result[0].role_name);
+                $("#group_id3").val(result[0].group_id);
+                $("#group_name3").val(result[0].group_name);
+                $("#work_area3").val(result[0].work_area);
+                $("#oa_no3").val(result[0].oa_no);
+                $("#oa_title3").val(result[0].oa_title);
+                $("#is_lc3").val(result[0].is_lc);
+            }else{
+                bootStrapAlert('工号不存在！');
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+};
+
+function resetQry() {
+    $("#login_no3").removeAttr("disabled");
+    $("#login_no3").val("");
+    $("#login_name3").val("");
+    $("#phone_no3").val("");
+    $("#id_card_no3").val("");
+    $("#busi_boss_no3").val("");
+    $("#oa_login_no3").val("");
+    $("#mis_no3").val("");
+    $("#vilid_flag3").val("");
+    $("#work_area3").val("");
+    $("#is_grp_staff3").val("N");
+    $("#grpusertype3").val("2");
+    $("#grp_staff_number3").val("");
+    $("#need_remind3").val("1");
+    $("#role_code3").val("");
+    $("#role_name3").val("");
+    $("#group_id3").val("");
+    $("#group_name3").val("");
+    $("#grp_role_code1_3").attr("checked",false);
+    $("#grp_role_code2_3").attr("checked",false);
+    $("#grp_role_code3_3").attr("checked",false);
+    $("#grp_role_code4_3").attr("checked",false);
+    $("#grp_role_code5_3").attr("checked",false);
+
+}

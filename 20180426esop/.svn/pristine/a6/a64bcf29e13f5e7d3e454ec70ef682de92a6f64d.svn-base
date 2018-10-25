@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtElecWoExtInfoMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtElecWoExtInfo">
+    <result column="wo_no" jdbcType="VARCHAR" property="woNo" />
+    <result column="param_key" jdbcType="VARCHAR" property="paramKey" />
+    <result column="param_name" jdbcType="VARCHAR" property="paramName" />
+    <result column="param_val" jdbcType="VARCHAR" property="paramVal" />
+    <result column="param_queue" jdbcType="VARCHAR" property="paramQueue" />
+  </resultMap>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtElecWoExtInfo">
+    insert into ct_elec_wo_ext_info (wo_no, param_key, param_name, 
+      param_val, param_queue)
+    values (#{woNo,jdbcType=VARCHAR}, #{paramKey,jdbcType=VARCHAR}, #{paramName,jdbcType=VARCHAR}, 
+      #{paramVal,jdbcType=VARCHAR}, #{paramQueue,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select wo_no, param_key, param_name, param_val, param_queue
+    from ct_elec_wo_ext_info
+  </select>
+  <select id="selectByWoNoAndParamKey" parameterType="com.esop.workflow.model.CtElecWoExtInfo" resultMap="BaseResultMap">
+    select wo_no, param_key, param_name, param_val, param_queue
+    from ct_elec_wo_ext_info
+    where wo_no = #{woNo,jdbcType=VARCHAR} and param_key = #{paramKey,jdbcType=VARCHAR}
+  </select>
+</mapper>

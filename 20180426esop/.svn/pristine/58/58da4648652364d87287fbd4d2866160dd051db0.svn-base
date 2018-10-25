@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtElecWoBaseInfoMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtElecWoBaseInfo">
+    <id column="wo_no" jdbcType="VARCHAR" property="woNo" />
+    <result column="wo_title" jdbcType="VARCHAR" property="woTitle" />
+    <result column="priority" jdbcType="CHAR" property="priority" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="send_login_no" jdbcType="VARCHAR" property="sendLoginNo" />
+    <result column="send_login_name" jdbcType="VARCHAR" property="sendLoginName" />
+    <result column="receive_login_no" jdbcType="VARCHAR" property="receiveLoginNo" />
+    <result column="receive_login_name" jdbcType="VARCHAR" property="receiveLoginName" />
+    <result column="send_time" jdbcType="TIMESTAMP" property="sendTime" />
+    <result column="complete_time" jdbcType="TIMESTAMP" property="completeTime" />
+    <result column="recant_time" jdbcType="TIMESTAMP" property="recantTime" />
+    <result column="send_phone" jdbcType="TIMESTAMP" property="sendPhone" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="plan_complete_time" jdbcType="TIMESTAMP" property="planCompleteTime" />
+    <result column="first_back_time" jdbcType="TIMESTAMP" property="firstBackTime" />
+    <result column="wo_type_code" jdbcType="VARCHAR" property="woTypeCode" />
+    <result column="dispatch_type_code" jdbcType="VARCHAR" property="dispatchTypeCode" />
+    <result column="union_code" jdbcType="VARCHAR" property="unionCode" />
+    <result column="union_name" jdbcType="VARCHAR" property="unionName" />
+    <result column="union_link_man" jdbcType="VARCHAR" property="unionLinkMan" />
+    <result column="link_phone" jdbcType="VARCHAR" property="linkPhone" />
+    <result column="service_no" jdbcType="VARCHAR" property="serviceNo" />
+    <result column="service_name" jdbcType="VARCHAR" property="serviceName" />
+    <result column="over_time_flag" jdbcType="CHAR" property="overTimeFlag" />
+    <result column="deal_level" jdbcType="VARCHAR" property="dealLevel" />
+    <result column="dept_id" jdbcType="VARCHAR" property="deptId" />
+    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    <result column="region_id" jdbcType="VARCHAR" property="regionId" />
+    <result column="region_name" jdbcType="VARCHAR" property="regionName" />
+    <result column="union_level" jdbcType="VARCHAR" property="unionLevel" />
+    <result column="scale" jdbcType="VARCHAR" property="scale" />
+    <result column="person_num" jdbcType="VARCHAR" property="personNum" />
+    <result column="status_code" jdbcType="VARCHAR" property="statusCode" />
+    <result column="cust_addr" jdbcType="VARCHAR" property="custAddr" />
+    <result column="union_prod" jdbcType="VARCHAR" property="unionProd" />
+    <result column="price" jdbcType="VARCHAR" property="price" />
+    <result column="discountprice" jdbcType="VARCHAR" property="discountprice" />
+    <result column="chargemode" jdbcType="VARCHAR" property="chargemode" />
+    <result column="chargecycle" jdbcType="VARCHAR" property="chargecycle" />
+    <result column="emos_no" jdbcType="VARCHAR" property="emosNo" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ct_elec_wo_base_info
+    where wo_no = #{woNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtElecWoBaseInfo">
+    <selectKey keyProperty="woNo" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ct_elec_wo_base_info (wo_title, priority, status, 
+      send_login_no, send_login_name, receive_login_no, 
+      receive_login_name, send_time, complete_time, 
+      recant_time, send_phone, remarks, 
+      plan_complete_time, first_back_time, wo_type_code, 
+      dispatch_type_code, union_code, union_name, 
+      union_link_man, link_phone, service_no, 
+      service_name, over_time_flag, deal_level, 
+      dept_id, dept_name, region_id, 
+      region_name, union_level, scale, 
+      person_num, status_code, cust_addr, 
+      union_prod, price, discountprice, 
+      chargemode, chargecycle, emos_no
+      )
+    values (#{woTitle,jdbcType=VARCHAR}, #{priority,jdbcType=CHAR}, #{status,jdbcType=CHAR}, 
+      #{sendLoginNo,jdbcType=VARCHAR}, #{sendLoginName,jdbcType=VARCHAR}, #{receiveLoginNo,jdbcType=VARCHAR}, 
+      #{receiveLoginName,jdbcType=VARCHAR}, #{sendTime,jdbcType=TIMESTAMP}, #{completeTime,jdbcType=TIMESTAMP}, 
+      #{recantTime,jdbcType=TIMESTAMP}, #{sendPhone,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{planCompleteTime,jdbcType=TIMESTAMP}, #{firstBackTime,jdbcType=TIMESTAMP}, #{woTypeCode,jdbcType=VARCHAR}, 
+      #{dispatchTypeCode,jdbcType=VARCHAR}, #{unionCode,jdbcType=VARCHAR}, #{unionName,jdbcType=VARCHAR}, 
+      #{unionLinkMan,jdbcType=VARCHAR}, #{linkPhone,jdbcType=VARCHAR}, #{serviceNo,jdbcType=VARCHAR}, 
+      #{serviceName,jdbcType=VARCHAR}, #{overTimeFlag,jdbcType=CHAR}, #{dealLevel,jdbcType=VARCHAR}, 
+      #{deptId,jdbcType=VARCHAR}, #{deptName,jdbcType=VARCHAR}, #{regionId,jdbcType=VARCHAR}, 
+      #{regionName,jdbcType=VARCHAR}, #{unionLevel,jdbcType=VARCHAR}, #{scale,jdbcType=VARCHAR}, 
+      #{personNum,jdbcType=VARCHAR}, #{statusCode,jdbcType=VARCHAR}, #{custAddr,jdbcType=VARCHAR}, 
+      #{unionProd,jdbcType=VARCHAR}, #{price,jdbcType=VARCHAR}, #{discountprice,jdbcType=VARCHAR}, 
+      #{chargemode,jdbcType=VARCHAR}, #{chargecycle,jdbcType=VARCHAR}, #{emosNo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.workflow.model.CtElecWoBaseInfo">
+    update ct_elec_wo_base_info
+    set wo_title = #{woTitle,jdbcType=VARCHAR},
+      priority = #{priority,jdbcType=CHAR},
+      status = #{status,jdbcType=CHAR},
+      send_login_no = #{sendLoginNo,jdbcType=VARCHAR},
+      send_login_name = #{sendLoginName,jdbcType=VARCHAR},
+      receive_login_no = #{receiveLoginNo,jdbcType=VARCHAR},
+      receive_login_name = #{receiveLoginName,jdbcType=VARCHAR},
+      send_time = #{sendTime,jdbcType=TIMESTAMP},
+      complete_time = #{completeTime,jdbcType=TIMESTAMP},
+      recant_time = #{recantTime,jdbcType=TIMESTAMP},
+      send_phone = #{sendPhone,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      plan_complete_time = #{planCompleteTime,jdbcType=TIMESTAMP},
+      first_back_time = #{firstBackTime,jdbcType=TIMESTAMP},
+      wo_type_code = #{woTypeCode,jdbcType=VARCHAR},
+      dispatch_type_code = #{dispatchTypeCode,jdbcType=VARCHAR},
+      union_code = #{unionCode,jdbcType=VARCHAR},
+      union_name = #{unionName,jdbcType=VARCHAR},
+      union_link_man = #{unionLinkMan,jdbcType=VARCHAR},
+      link_phone = #{linkPhone,jdbcType=VARCHAR},
+      service_no = #{serviceNo,jdbcType=VARCHAR},
+      service_name = #{serviceName,jdbcType=VARCHAR},
+      over_time_flag = #{overTimeFlag,jdbcType=CHAR},
+      deal_level = #{dealLevel,jdbcType=VARCHAR},
+      dept_id = #{deptId,jdbcType=VARCHAR},
+      dept_name = #{deptName,jdbcType=VARCHAR},
+      region_id = #{regionId,jdbcType=VARCHAR},
+      region_name = #{regionName,jdbcType=VARCHAR},
+      union_level = #{unionLevel,jdbcType=VARCHAR},
+      scale = #{scale,jdbcType=VARCHAR},
+      person_num = #{personNum,jdbcType=VARCHAR},
+      status_code = #{statusCode,jdbcType=VARCHAR},
+      cust_addr = #{custAddr,jdbcType=VARCHAR},
+      union_prod = #{unionProd,jdbcType=VARCHAR},
+      price = #{price,jdbcType=VARCHAR},
+      discountprice = #{discountprice,jdbcType=VARCHAR},
+      chargemode = #{chargemode,jdbcType=VARCHAR},
+      chargecycle = #{chargecycle,jdbcType=VARCHAR},
+      emos_no = #{emosNo,jdbcType=VARCHAR}
+    where wo_no = #{woNo,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select wo_no, wo_title, priority, status, send_login_no, send_login_name, receive_login_no, 
+    receive_login_name, send_time, complete_time, recant_time, send_phone, remarks, plan_complete_time, 
+    first_back_time, wo_type_code, dispatch_type_code, union_code, union_name, union_link_man, 
+    link_phone, service_no, service_name, over_time_flag, deal_level, dept_id, dept_name, 
+    region_id, region_name, union_level, scale, person_num, status_code, cust_addr, union_prod, 
+    price, discountprice, chargemode, chargecycle, emos_no
+    from ct_elec_wo_base_info
+    where wo_no = #{woNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select wo_no, wo_title, priority, status, send_login_no, send_login_name, receive_login_no, 
+    receive_login_name, send_time, complete_time, recant_time, send_phone, remarks, plan_complete_time, 
+    first_back_time, wo_type_code, dispatch_type_code, union_code, union_name, union_link_man, 
+    link_phone, service_no, service_name, over_time_flag, deal_level, dept_id, dept_name, 
+    region_id, region_name, union_level, scale, person_num, status_code, cust_addr, union_prod, 
+    price, discountprice, chargemode, chargecycle, emos_no
+    from ct_elec_wo_base_info
+  </select>
+</mapper>

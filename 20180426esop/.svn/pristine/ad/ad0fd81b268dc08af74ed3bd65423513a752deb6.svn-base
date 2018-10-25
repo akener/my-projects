@@ -1,0 +1,46 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.esop.cqDevelopment.elecPack.dto.GroupInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.InvoiceInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.OrderDto;
+import com.esop.cqDevelopment.elecPack.service.InvoiceInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+
+/**
+ * 发票信息
+ * Created by wangxy on 2017/12/18.
+ */
+@RestController
+public class InvoiceInfoRC {
+    @Autowired
+    InvoiceInfoService invoiceInfoService;
+
+    /**
+     * 根据集团编号查询发票列表
+     * @return
+     */
+    @RequestMapping(value="/getUnionInfoByCode")
+    public InvoiceInfoDto getUnionInfoByCode(InvoiceInfoDto parameter, HttpServletRequest request){
+        //parameter.setUnionCode("2300000079101");
+        invoiceInfoService.bossReqUpdmem(parameter);
+        return  parameter;
+    }
+
+    /**
+     * 输入模糊查询集团信息
+     * @return 集团列表
+     */
+    @RequestMapping(value="selContracInfo")
+    public List selJtName(OrderDto parameter, HttpServletRequest request){
+        List list = invoiceInfoService.selJtList(parameter);
+        return  list;
+    }
+}

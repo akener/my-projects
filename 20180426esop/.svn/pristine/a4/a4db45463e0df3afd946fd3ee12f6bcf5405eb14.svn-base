@@ -1,0 +1,33 @@
+package com.esop.alertClassified.controller;
+
+import com.esop.alertClassified.dto.AccountAlertServiceCallingDto;
+import com.esop.common.jaxb.CallXmlService;
+import com.esop.common.jaxb.JsonToXml;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * Created by yanhao on 2017/7/15.
+ */
+@RestController
+public class BusiOpptAlertServiceCalling {
+
+    //获取商机预警信息
+    @RequestMapping(value="/busiOpptAlert")
+    public String getBusiOpptAlert(AccountAlertServiceCallingDto parameter, HttpServletRequest request, boolean flag){
+
+        CallXmlService callXmlTest = new CallXmlService();
+        String login_no = parameter.getLanding_no();
+        String xmlParamter= "<?xml version=\"1.0\" encoding=\"GBK\" ?><ROOT><iLoginNo>"+login_no+"</iLoginNo></ROOT>";
+        String resulXml = callXmlTest.WebserviceCall("sMktChEarlyQry_XML",xmlParamter);
+        //logger.info("resulXml=返回xml报文"+resulXml);
+
+
+        JsonToXml jsonToXml = new JsonToXml();
+        String resulJson = jsonToXml.xml2json(resulXml);
+        //logger.info("resulJson=返回json报文"+resulJson);
+        return resulJson;
+    }
+}

@@ -1,0 +1,377 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <title>认领审批轨迹</title>
+    <script type="text/javascript" language="javascript" class="init">
+        var table;
+        var login_no;
+        var role_codes;
+        var root_org_id;
+        var root_org_name;
+        $(document).ready(function () {
+            login_no="<%=login_no%>";
+            role_codes="<%=role_codes%>";
+            root_org_id="<%=root_org_id%>";
+            root_org_name="<%=root_org_name%>";
+            //capitalClaimApproveQuery();
+            if(root_org_id.length>8){
+                root_org_id=root_org_id.substr(0,8);
+            }
+            if(root_org_id=="CQ.CQ"||root_org_id=="CQ.CQ.C4"|| root_org_id=="CQ.CQ.0B") {
+                selectFengongs();
+            }else{
+                selectBusinessCenterForZhangwuyunOrkehujingli();
+                $("#fengongs").append("<option value="+root_org_id+">"+root_org_name+"</option>");
+            }
+
+        });
+        function selectFengongs() {
+            $.ajax({
+                url:"/selectAllQddw",
+                type:"post",
+                success:function (data) {
+                    if(data.length==0){
+                        $("#fengongs").append("<option value=''>没有分公司</option>");
+                    }else {
+                        $("#fengongs").append("<option value=''>请选择</option>");
+                        for(var i=0;i<data.length;i++){
+                            $("#fengongs").append("<option value="+data[i].id+">"+data[i].name+"</option>");
+                        }
+                    }
+                }
+            })
+        }
+        function selectBusinessCenterForZhangwuyunOrkehujingli() {
+            $.ajax({
+                url:"/selectBusinessCenterForZhangwuyunOrkehujingli",
+                type:"POST",
+                data:{
+                    login_no:login_no
+                },success:function (data) {
+                    if(data.length==1){
+                        $("#ENTERORG").append("<option value='"+data[0].center_code+"'>"+data[0].business_center+"</option>");
+                    }else{
+                        for(var i=0;i<data.length;i++){
+                            $("#ENTERORG").append("<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>");
+                        }
+                    }
+                }
+            })
+        }
+        function capitalClaimApproveQuery() {
+            var nodeId= $("#status").val();
+            var gongdan_bianhao=$("#gongdan_bianhao_3").val();
+            var jituan_bianhao=$("#jituan_bianhao_3").val();
+            var jituan_mingcheng=$("#jituan_mingcheng_3").val();
+            var qishi_shijian=$("#shenqing_shijian_3").val();
+            var zhongzhi_shijian=$("#shenqing_shijian_4").val();
+            var daozhang_jine=$("#daozhang_jine").val()==""?"":Math.round(Number($("#daozhang_jine").val())*100);
+            var login_name=$("#login_name").val();
+            var ruzhang_zuzhi=$("#ENTERORG").val();
+            var fengongs=$("#fengongs").val();
+            table = $('#example').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "pageLength": 10,//设置每页显示多少条记录
+                //"bSort":false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                "bSort":false,
+                "ajax": {
+                    url: "/capitalClaimApproveQuery3",
+                    type: "POST",
+                    "data": {
+                        nodeId:nodeId,
+                        gongdan_bianhao:gongdan_bianhao,
+                        jituan_bianhao:jituan_bianhao,
+                        jituan_mingcheng:jituan_mingcheng,
+                        qishi_shijian:qishi_shijian,
+                        zhongzhi_shijian:zhongzhi_shijian,
+                        daozhang_jine:daozhang_jine,
+                        login_name:login_name,
+                        login_no:login_no,
+                        login_no2:login_no,
+                        role_codes:role_codes,
+                        ruzhang_zuzhi:ruzhang_zuzhi,
+                        fengongs:fengongs
+                    }
+                },
+                "columns": [
+                    {
+                        "width": "10%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<button type='button' class='ui-btn mgr-10' style='width: 60px' onclick=aprrove_button('"+row.gongdan_bianhao+"')>查看</button>";
+                        }
+                    },
+                    {data: "gongdan_bianhao"},
+                    {data: "login_name"},
+                    {data: "name"},
+                    {data: "dealTime"},
+                    {
+                        render: function ( data, type, row, meta ) {
+                            if(nodeId != 2){
+                                return data = row.nextDealPerson_zhongwen;
+                            }else{
+                                return data= "";
+                            }
+                        }
+                    },
+                    {data: "link_name"},
+                    {data: "daozhang_riqi"},
+                    {data: "leikuan_kehu"},
+                    {data: "laikuan_zhanghao"},
+                    {data: "daozhang_jine_yuan"},
+                    {data: "daozhang_huming"},
+                    {data: "daozhang_zhanghao"},
+                    {data: "fabu_riqi"},
+                    {data: "zhai_yao"},
+                    {data: "shenqing_riqi"},
+                    {data: "jituan_mingcheng"},
+                    {data: "jituan_bianhao"},
+                    {data: "jituan_lianxiren"},
+                    {data: "lianxiren_dianhua"},
+                    {data: "lianxiren_leixing",render:function(data, type, row, meta){
+                        if(row.lianxiren_leixing=='MemberSort0305'){
+                            return data="缴费联系人";
+                        }else {
+                            return data="";
+                        }
+                    }},
+                    {data: "zhangwuyuan_zhongwen"},
+                    {data: "guanlian_shijian"},
+                    {data: "guanlian_laikuan_huming"},
+                    {data: "guanlian_laikuan_zhanghao"},
+                    {data: "fileName"},
+                    {data: "business_center"},
+                    {data: "bei_zhu"}
+                ],
+                select: true,
+                buttons: [
+
+                ]
+            });
+        }
+        function selectBusiness() {
+            $("#ENTERORG").empty();
+            var b=$("#fengongs").val();
+            $.ajax({
+                url:"/selectBusinessCenterCode",
+                type:"post",
+                data:{
+                    fen_gongs:b
+                },
+                success:function (data) {
+                        $("#ENTERORG").append("<option value=''>请选择</option>");
+                        for(var i=0;i<data.length;i++){
+                            $("#ENTERORG").append("<option value="+data[i].center_code+">"+data[i].business_center+"</option>");
+                        }
+                }
+            })
+        }
+        function aprrove_button(gongdan_bianhao) {
+            $("#jituan_lianxiren_th").css("display","");
+            $("#jituan_lianxiren_td").css("display","");
+            $("#lianxiren_dianhua_th").css("display","");
+            $("#lianxiren_dianhua_td").css("display","");
+            $("#lianxiren_leixing_th").css("display","");
+            $("#lianxiren_leixing_td").css("display","");
+
+            $("#zhengming_cailiao_th").css("display","");
+            $("#doloadFile").css("display","");
+            $("#beizhu_th").css("display","");
+            $("#beizhu_td").css("display","");
+            $("#doloadFile a").remove();
+            $("#approve_detail").modal('show');
+            selectBasicInf(gongdan_bianhao);
+            init(gongdan_bianhao);
+        }
+        function exportExc() {
+
+
+            var daozhang_jine=$("#daozhang_jine").val()==""?"":Number($("#daozhang_jine").val())*100;
+            var f = document.getElementById('exportExcel');
+            var actionUrl ='expertApprove?nodeId='+$("#status").val()
+                +'&gongdan_bianhao='+$("#gongdan_bianhao_3").val()
+                +'&jituan_bianhao='+$("#jituan_bianhao_3").val()
+                +'&jituan_mingcheng='+$("#jituan_mingcheng_3").val()
+                +'&qishi_shijian='+$("#shenqing_shijian_3").val()
+                +'&zhongzhi_shijian='+$("#shenqing_shijian_4").val()
+                +'&daozhang_jine='+daozhang_jine
+                +'&login_name='+$("#login_name").val()
+                +'&login_no='+login_no
+                +'&login_no2='+login_no
+                +'&role_codes='+role_codes
+                +'&ruzhang_zuzhi='+$("#ENTERORG").val()
+                +'&fengongs='+$("#fengongs").val();
+            //alert(actionUrl);
+            f.action = actionUrl;
+            f.submit();
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>申请工单号：</th>
+                            <td>
+                                <input type="text" id="gongdan_bianhao_3" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团编号：</th>
+                            <td>
+                                <input type="text" id="jituan_bianhao_3" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团名称：</th>
+                            <td>
+                                <input type="text" id="jituan_mingcheng_3" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>状态：</th>
+                            <td>
+                                <select id="status" class="select-style-1">
+                                    <option value="">--请选择--</option>
+                                    <option value="13" selected>审批中</option>
+                                    <option value="2">作废</option>
+                                    <option value="3">CRM业务办理成功</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>申请人：</th>
+                            <td>
+                                <input type="text" id="login_name" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>金额：</th>
+                            <td>
+                                <input type="text" id="daozhang_jine" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>起始申请时间：</th>
+                            <td>
+                                <input type=text id="shenqing_shijian_3" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'shenqing_shijian_3',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>终止申请时间：</th>
+                            <td>
+                                <input type=text id="shenqing_shijian_4" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'shenqing_shijian_4',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>分公司：</th>
+                            <td nowrap='nowrap'>
+                                <select id="fengongs" class="select-style-1" onchange="selectBusiness()">
+                                </select>
+                            </td>
+                            <th>入账组织：</th>
+                            <td nowrap='nowrap'>
+                                <select id="ENTERORG" class="select-style-1">
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="capitalClaimApproveQuery()">查询</button>
+                            <button class="ui-btn btn-success mgr-10" onclick="exportExc()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="row">
+                    <div class="active-cost-box" style="padding-bottom:0;">
+                        <table class="table table-bordered" id="example" width="100%;" style="white-space: nowrap;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>审批轨迹查询</th>
+                                <th class="text-center" nowrap='nowrap'>申请工单号</th>
+                                <th class="text-center" nowrap='nowrap'>申请人</th>
+                                <th class="text-center" nowrap='nowrap'>分公司</th>
+                                <th class="text-center" nowrap='nowrap'>操作时间</th>
+                                <th class="text-center" nowrap='nowrap'>下一步处理人</th>
+                                <th class="text-center" nowrap='nowrap'>环节</th>
+                                <th class="text-center" nowrap='nowrap'>到账日期</th>
+                                <th class="text-center" nowrap='nowrap'>来款客户</th>
+                                <th class="text-center" nowrap='nowrap'>来款账号</th>
+                                <th class="text-center" nowrap='nowrap'>到账金额</th>
+                                <th class="text-center" nowrap='nowrap'>到账户名</th>
+                                <th class="text-center" nowrap='nowrap'>到账账号</th>
+                                <th class="text-center" nowrap='nowrap'>发布日期</th>
+                                <th class="text-center" nowrap='nowrap'>摘要</th>
+                                <th class="text-center" nowrap='nowrap'>申请时间</th>
+                                <th class="text-center" nowrap='nowrap'>集团单位名称</th>
+                                <th class="text-center" nowrap='nowrap'>集团编号</th>
+                                <th class="text-center" nowrap='nowrap'>集团联系人</th>
+                                <th class="text-center" nowrap='nowrap'>联系人电话</th>
+                                <th class="text-center" nowrap='nowrap'>联系人类型</th>
+                                <th class="text-center" nowrap='nowrap'>账务员</th>
+                                <th class="text-center" nowrap='nowrap'>关联时间</th>
+                                <th class="text-center" nowrap='nowrap'>关联来款户名</th>
+                                <th class="text-center" nowrap='nowrap'>关联来款账号</th>
+                                <th class="text-center" nowrap='nowrap'>证明材料</th>
+                                <th class="text-center" nowrap='nowrap'>入账组织</th>
+                                <th class="text-center" nowrap='nowrap'>备注</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="approve_detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document" style="width:80%;">
+        <div class="modal-content">
+            <%@ include file="../approveProcessQuery2.jsp"%>
+        </div>
+    </div>
+</div>
+</body>
+</html>

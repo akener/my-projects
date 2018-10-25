@@ -1,0 +1,1658 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no,minimum-scale=1.0, maximum-scale=1.0">
+    <title>
+        客户经理
+    </title>
+    <link href="../../static/css/workbench/all.css" rel="stylesheet">
+    <link href="../../static/css/workbench/bootstrap.css" rel="stylesheet">
+    <link href="../../static/css/workbench/common.css" rel="stylesheet">
+    <link href="../../static/css/workbench/style.css" rel="stylesheet">
+    <link href="http://172.21.2.99:14000/nresource/assets/css/swiper.min.css" rel="stylesheet">
+    <link type="text/css" href="../../static/css/workbench/privateStyle.css?v110241" rel="stylesheet">
+    <link href="http://172.21.2.99:14000/nresource/css/component_786ae13.css" rel="stylesheet">
+    <link href="http://172.21.2.99:14000/nresource/css/ui-dialog_c6995f0.css" rel="stylesheet">
+    <link href="../../static/css/workbench/component.css" rel="stylesheet">
+    <link href="../../static/css/workbench/reset.css" rel="stylesheet">
+    <link href="../../static/css/workbench/table.css" rel="stylesheet">
+    <link href="../../static/css/workbench/basic.css" rel="stylesheet">
+</head>
+
+<body>
+<div id="J_opTopBnrBox" class="p-bgcolor-1 pdt-5 pdb-5">
+    <div class="container">
+        <div class="mgl-10 mgr-10 clearfix">
+                <span class="fl fs-12 p-color-1 lh-15">
+                        欢迎：【M0000】张小强 成都分公司太升路营业厅 上次登录：2015-09-01 04:14:13
+                    </span>
+            <div class="fr">
+                <a href="#" class="mgr-30 lh-1">
+                    <img src="../../static/images/workbench/99a7d889d19bed561f499d96bd8be92d.png">
+                    <span class="fs-12 p-color-1 lh-1">知识库</span>
+                </a>
+                <a href="#" class="lh-1">
+                    <img src="../../static/images/workbench/5c4d4e313446d654a429c7ae6028f442.png">
+                    <span class="fs-12 p-color-1 lh-1">消息
+                                <span class="p-color-2 fs-12 fwb">5</span> 条
+                        </span>
+                    <img src="../../static/images/workbench/b911974fe127cd477cd1d35ea7c03819.png">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="J_opTopSubBnrBox" class="bgcolor-1">
+    <div class="container">
+        <div class="mgl-10 mgr-10 pdb-5 pdt-5">
+            <div class="row pdt-5 pdb-5">
+                <div class="col-sm-3 col-md-3">
+                    <img src="../../static/images/workbench/f79ff501386cc51c2ef824698fe50516.jpg">
+                </div>
+                <div class="col-sm-9 col-md-9">
+                    <div class="row show-grid">
+                        <div class="col-sm-5 col-md-5 mgr-30">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle p-color-1 fwhm-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        集团客户查询
+                                        <span class="caret" aria-hidden="true"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">集团编号</a></li>
+                                        <li><a href="#">集团名称</a></li>
+                                        <li><a href="#">产品账号</a></li>
+                                    </ul>
+                                </div>
+                                <input id="J_opSchServIpt" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="请输入查询内容" style="border-right: 1px solid transparent;box-shadow:none;-webkit-box-shadow:none;">
+                                <div id="J_opSchServBtn" class="input-group-btn">
+                                    <button class="btn ued-button-radius bgcolor-4 color-1" type="button">查询</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-md-5">
+                            <div class="input-group">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle p-color-1 fwhm-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        综合业务查询
+                                        <span class="caret" aria-hidden="true"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">手机号码</a></li>
+                                        <li><a href="#">宽带账号</a></li>
+                                        <li><a href="#">物联网号码</a></li>
+                                    </ul>
+                                </div>
+                                <input id="J_opSchServIpt" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="请输入查询内容" style="border-right: 1px solid transparent;box-shadow:none;-webkit-box-shadow:none;">
+                                <div id="J_opSchServBtn" class="input-group-btn">
+                                    <button class="btn ued-button-radius bgcolor-4 color-1" type="button">查询</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="J_opNavBox" class="p-bgcolor-2">
+    <div class="container">
+        <div class="mgl-10 mgr-10">
+            <div class="navbar navbar-inverse p-bgcolor-2" style="min-height: inherit;border: none;">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul id="J_opNav" class="nav navbar-nav tc op-nav op-list-1" style="width:76%;">
+                        <!--集团业务-->
+                        <li class="nav-sub-tab" value="11000">
+                            <a href="javascript:;">集团业务
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -448px; width: 1366px; height: 503px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 483px;">
+                                        <div class="row">
+                                            <div class="mgl-10 mgr-10 bgcolor-1" style="overflow: hidden; border-radius: 5px;box-shadow: 0 0 5px #d8d8d8;">
+                                                <div style="height: 42px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238);" class="clearfix pdr-5">
+                                                    <div class="mgb-0 mgt-0 fl fs-14 p-color-1 fwb" style="line-height:42px;">
+                                                        <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+                                                            <ul id="myTab" class="nav nav-tabs op-order-tab op-in-tab" role="tablist">
+                                                                <li role="presentation" class="active">
+                                                                    <a href="#one" id="one-tab" role="tab" data-toggle="tab" aria-controls="one" aria-expanded="true">
+                                                                        用户列表
+                                                                    </a>
+                                                                </li>
+                                                                <li role="presentation">
+                                                                    <a href="#two" role="tab" id="two-tab" data-toggle="tab" aria-controls="two" aria-expanded="false">
+                                                                        我的产品
+                                                                    </a>
+                                                                </li>
+                                                                <li role="presentation">
+                                                                    <a href="#three" role="tab" id="three-tab" data-toggle="tab" aria-controls="three" aria-expanded="false">
+                                                                        套餐余量查询
+                                                                    </a>
+                                                                </li>
+                                                                <li role="presentation">
+                                                                    <a href="#four" role="tab" id="four-tab" data-toggle="tab" aria-controls="four" aria-expanded="false">
+                                                                        我的优惠活动
+                                                                    </a>
+                                                                </li>
+                                                                <li role="presentation">
+                                                                    <a href="#five" role="tab" id="five-tab" data-toggle="tab" aria-controls="five" aria-expanded="false">
+                                                                        我的优惠活动
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="myTabContent" class="tab-content">
+                                                    <div role="tabpanel" class="tab-pane fade active in" id="one" aria-labelledby="one-tab">
+                                                        <dl class="op-nav-sub-dl clearfix">
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1222','加入取消积分计划','/npage/score/s1222/f1222_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        加入取消积分计划
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1225','积分转换','/npage/score/s1225/f1225_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分转换
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1230','全网积分订单处理','/npage/score/s1230/f1230_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        全网积分订单处理
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1239','积分冲正','/npage/score/s1239/f1239_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分冲正
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1250','积分兑换','/npage/score/s1250/s1250main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分兑换
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1251','积分查询','/npage/score/s1251/s1251_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分查询
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1252','积分转移','/npage/score/s1252/f1252_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分转移
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1254','积分调整申请','/npage/score/s1254/f1254_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分调整申请
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1258','积分兑换商品','/npage/score/s1258/f1258_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分兑换商品
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1259','省积分兑换礼品','/npage/score/s1259/f1259_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        省积分兑换礼品
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1261','积分受让人管理','/npage/score/s1261/f1261_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分受让人管理
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1265','家庭积分兑换','/npage/score/s1265/f1265_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        家庭积分兑换
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1275','积分业务综合受理','/npage/score/s1275/f1275_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分业务综合受理
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1620','积分业务审批','/npage/score/s1620/f1620_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分业务审批
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1621','积分审批查询','/npage/score/s1621/f1621_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分审批查询
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1956','积分冻结解冻','/npage/score/s1956/s1956_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分冻结解冻
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                        </dl>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane fade" id="two" aria-labelledby="two-tab">
+                                                        <dl class="op-nav-sub-dl clearfix">
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1225','积分转换','/npage/score/s1225/f1225_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分转换
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1230','全网积分订单处理','/npage/score/s1230/f1230_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        全网积分订单处理
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1239','积分冲正','/npage/score/s1239/f1239_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分冲正
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                        </dl>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane fade" id="three" aria-labelledby="three-tab">
+                                                        <dl class="op-nav-sub-dl clearfix">
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1222','加入取消积分计划','/npage/score/s1222/f1222_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        加入取消积分计划
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1225','积分转换','/npage/score/s1225/f1225_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分转换
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                        </dl>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane fade" id="four" aria-labelledby="four-tab">
+                                                        <dl class="op-nav-sub-dl clearfix">
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1230','全网积分订单处理','/npage/score/s1230/f1230_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        全网积分订单处理
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1239','积分冲正','/npage/score/s1239/f1239_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分冲正
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1250','积分兑换','/npage/score/s1250/s1250main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分兑换
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                        </dl>
+                                                    </div>
+                                                    <div role="tabpanel" class="tab-pane fade" id="five" aria-labelledby="five-tab">
+                                                        <dl class="op-nav-sub-dl clearfix">
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1251','积分查询','/npage/score/s1251/s1251_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分查询
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1252','积分转移','/npage/score/s1252/f1252_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分转移
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1254','积分调整申请','/npage/score/s1254/f1254_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分调整申请
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1258','积分兑换商品','/npage/score/s1258/f1258_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分兑换商品
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1259','省积分兑换礼品','/npage/score/s1259/f1259_main.html','2')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        省积分兑换礼品
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                            <dd class="fl" style="width: 300px; height:25px;">
+                                                                <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1261','积分受让人管理','/npage/score/s1261/f1261_main.html','1')">
+                                                                    <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                                    <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                                        积分受让人管理
+                                                                    </p>
+                                                                </a>
+                                                            </dd>
+                                                        </dl>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group-btn">
+                                                    <a href="#" class="btn ued-button-radius bgcolor-4 color-1 bor-rus-1">更多</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--个人业务-->
+                        <li class="nav-sub-tab" value="11600">
+                            <a href="javascript:;">个人业务
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -564px; width: 902px; height: 370px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 350px;">
+                                        <div class="container">
+                                            <div class="clearfix">
+                                                <div class="sub-tt-box fl clearfix">
+                                                    <h4 class="title fl clearfix">
+                                                                <span class="curr fwb fs-14 secondClass" value="11602">
+                                                                积分管理</span>
+                                                        <span class="fwb fs-14 secondClass" value="11603">
+                                                                开关机</span>
+                                                        <span class="fwb fs-14 secondClass" value="11604">
+                                                                客户信息变更</span>
+                                                        <span class="fwb fs-14 secondClass" value="11605">
+                                                                批量业务</span>
+                                                        <span class="fwb fs-14 secondClass" value="11606">
+                                                                业务查询</span>
+                                                        <span class="fwb fs-14 secondClass" value="11607">
+                                                                业务受理</span>
+                                                        <span class="fwb fs-14 secondClass" value="11611">
+                                                                提示信息</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <dl class="op-nav-sub-dl clearfix">
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1222','加入取消积分计划','/npage/score/s1222/f1222_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            加入取消积分计划
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1225','积分转换','/npage/score/s1225/f1225_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分转换
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1230','全网积分订单处理','/npage/score/s1230/f1230_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            全网积分订单处理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1239','积分冲正','/npage/score/s1239/f1239_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分冲正
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1250','积分兑换','/npage/score/s1250/s1250main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分兑换
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1251','积分查询','/npage/score/s1251/s1251_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1252','积分转移','/npage/score/s1252/f1252_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分转移
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1254','积分调整申请','/npage/score/s1254/f1254_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分调整申请
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1258','积分兑换商品','/npage/score/s1258/f1258_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分兑换商品
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1259','省积分兑换礼品','/npage/score/s1259/f1259_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            省积分兑换礼品
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1261','积分受让人管理','/npage/score/s1261/f1261_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分受让人管理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1265','家庭积分兑换','/npage/score/s1265/f1265_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            家庭积分兑换
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1275','积分业务综合受理','/npage/score/s1275/f1275_main.html','2')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分业务综合受理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1620','积分业务审批','/npage/score/s1620/f1620_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分业务审批
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1621','积分审批查询','/npage/score/s1621/f1621_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分审批查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('1956','积分冻结解冻','/npage/score/s1956/s1956_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            积分冻结解冻
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--客户管理-->
+                        <li class="nav-sub-tab" value="12800">
+                            <a href="javascript:;">客户管理
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -662px; width: 902px; height: 370px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 350px;">
+                                        <div class="container">
+                                            <div class="clearfix">
+                                                <div class="sub-tt-box fl clearfix">
+                                                    <h4 class="title fl clearfix">
+                                                                <span class="curr fwb fs-14 secondClass" value="12801">
+                                                                营收资金稽核</span>
+                                                        <span class="fwb fs-14 secondClass" value="12802">
+                                                                集中台账管理</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <dl class="op-nav-sub-dl clearfix">
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7550','营业厅应收金额录入','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            营业厅应收金额录入
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7551','营收资金实缴票据录入','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            营收资金实缴票据录入
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7552','系统资金录入情况查询','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            系统资金录入情况查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7553','应收录入与实缴票据稽核报表','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            应收录入与实缴票据稽核报表
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7554','营业日报与应收录入稽核报表','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            营业日报与应收录入稽核报表
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7555','营业日报与实缴票据稽核报表','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            营业日报与实缴票据稽核报表
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7556','资金修改审批任务列表','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            资金修改审批任务列表
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7557','发起资金修改请求','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            发起资金修改请求
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7558','手机回缴款稽核报表','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            手机回缴款稽核报表
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7559','历史办理任务列表','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            历史办理任务列表
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7560','营收资金稽核审批人配置','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            营收资金稽核审批人配置
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('7561','手机回缴款进帐单录入','/../../out/send_ras_audit.jsp','7')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            手机回缴款进帐单录入
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--合同管理VIP-->
+                        <li class="nav-sub-tab" value="12900">
+                            <a href="javascript:;">合同管理VIP
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -116px; width: 902px; height: 370px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 350px;">
+                                        <div class="container">
+                                            <div class="clearfix">
+                                                <div class="sub-tt-box fl clearfix">
+                                                    <h4 class="title fl clearfix">
+                                                                <span class="curr fwb fs-14 secondClass" value="12901">
+                                                                工号管理</span>
+                                                        <span class="fwb fs-14 secondClass" value="12902">
+                                                                功能内容管理</span>
+                                                        <span class="fwb fs-14 secondClass" value="12904">
+                                                                认证管理</span>
+                                                        <span class="fwb fs-14 secondClass" value="12905">
+                                                                授权审批管理</span>
+                                                        <span class="fwb fs-14 secondClass" value="12906">
+                                                                业务操作权限</span>
+                                                        <span class="fwb fs-14 secondClass" value="12907">
+                                                                组织机构管理</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <dl class="op-nav-sub-dl clearfix">
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2900','工号信息管理','/npage/basemng/s2900/f2900_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号信息管理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2904','工号组织机构关系管理','/npage/basemng/s2904/f2904_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号组织机构关系管理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2910','工号密码修改','/npage/basemng/s2910/f2910_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号密码修改
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2912','工号密码重置','/npage/basemng/s2912/f2912_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号密码重置
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2916','工号解锁','/npage/basemng/s2916/f2916_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号解锁
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2917','工号登录短信提醒配置','/npage/basemng/s2917/f2917_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号登录短信提醒配置
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2951','批量工号置无效','/npage/basemng/s2950/f2950_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            批量工号置无效
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2980','全网工号信息管理','/npage/basemng/s2980/f2980_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            全网工号信息管理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2984','工号与岗位关系管理','/npage/basemng/s2984/f2984_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            工号与岗位关系管理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2988','智能终端IMEI及MAC管理','/npage/basemng/s2988/f2988_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            智能终端IMEI及MAC管理
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2995','授权工号与合作营业厅关系','/npage/basemng/s2995/f2995_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            授权工号与合作营业厅关系
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('2996','营业厅经理配置','/npage/basemng/s2996/f2996_main.html','1')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            营业厅经理配置
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--个人信息-->
+                        <li class="nav-sub-tab" value="13200">
+                            <a href="javascript:;">个人信息
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -214px; width: 902px; height: 370px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 350px;">
+                                        <div class="container">
+                                            <div class="clearfix">
+                                                <div class="sub-tt-box fl clearfix">
+                                                    <h4 class="title fl clearfix">
+                                                                <span class="curr fwb fs-14 secondClass" value="13201">
+                                                                DSMP局数据发布</span>
+                                                        <span class="fwb fs-14 secondClass" value="13202">
+                                                                手机支付</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <dl class="op-nav-sub-dl clearfix">
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3201','校验规则添加','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            校验规则添加
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3202','校验规则查询修改','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            校验规则查询修改
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3203','企业信息审核','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            企业信息审核
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3204','业务信息审核','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            业务信息审核
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3205','企业信息审核结果查询','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            企业信息审核结果查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3206','业务信息审核结果查询','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            业务信息审核结果查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3223','SP企业和服务信息','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            SP企业和服务信息
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--系统管理-->
+                        <li class="nav-sub-tab" value="13200">
+                            <a href="javascript:;">系统管理
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -214px; width: 902px; height: 370px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 350px;">
+                                        <div class="container">
+                                            <div class="clearfix">
+                                                <div class="sub-tt-box fl clearfix">
+                                                    <h4 class="title fl clearfix">
+                                                                <span class="curr fwb fs-14 secondClass" value="13201">
+                                                                DSMP局数据发布</span>
+                                                        <span class="fwb fs-14 secondClass" value="13202">
+                                                                手机支付</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <dl class="op-nav-sub-dl clearfix">
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3201','校验规则添加','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            校验规则添加
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3202','校验规则查询修改','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            校验规则查询修改
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3203','企业信息审核','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            企业信息审核
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3204','业务信息审核','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            业务信息审核
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3205','企业信息审核结果查询','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            企业信息审核结果查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3206','业务信息审核结果查询','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            业务信息审核结果查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3223','SP企业和服务信息','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            SP企业和服务信息
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--服务管理-->
+                        <li class="nav-sub-tab" value="13200">
+                            <a href="javascript:;">服务管理
+                                <span class="caret"></span>
+                            </a>
+                            <div class="op-nav-sub-box" style="left: -214px; width: 902px; height: 370px; display: none;">
+                                <div class="sub-box">
+                                    <div class="sub-box-scroll" style="max-height: 350px;">
+                                        <div class="container">
+                                            <div class="clearfix">
+                                                <div class="sub-tt-box fl clearfix">
+                                                    <h4 class="title fl clearfix">
+                                                                <span class="curr fwb fs-14 secondClass" value="13201">
+                                                                DSMP局数据发布</span>
+                                                        <span class="fwb fs-14 secondClass" value="13202">
+                                                                手机支付</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                            <dl class="op-nav-sub-dl clearfix">
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3201','校验规则添加','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            校验规则添加
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3202','校验规则查询修改','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            校验规则查询修改
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3203','企业信息审核','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            企业信息审核
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3204','业务信息审核','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            业务信息审核
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3205','企业信息审核结果查询','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/1747687026f8d3d3a4c052a74e6d404b.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            企业信息审核结果查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3206','业务信息审核结果查询','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/7ee6f7a81e0097217fb12d207ac644e9.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            业务信息审核结果查询
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                                <dd class="fl" style="width: 300px; height:25px;">
+                                                    <a href="javascript:;" class="clearfix block" onclick="openAppByMenu('3223','SP企业和服务信息','/../../out/send_oneboss.jsp','4')">
+                                                        <img class="fl" width="25" src="../../static/images/workbench/4091617a11ee4fe4c37317d7c79ef08a.png">
+                                                        <p class="p-color-1 mgb-0 mgt-2 mgl-7 fl">
+                                                            SP企业和服务信息
+                                                        </p>
+                                                    </a>
+                                                </dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="op-nav-page pull-right mgt-2" style="width:20%;">
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="button">功能查询</button>
+                            </div>
+                            <input id="J_opSchServIpt" type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="" style="border-right: 1px solid transparent;box-shadow:none;-webkit-box-shadow:none;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mgt-10">
+    <div class="mgl-10 mgr-10 bgcolor-1 clearfix" style="border-radius: 5px;box-shadow: 0 0 5px #e6e6e6;">
+        <div style="width: 144px; height: 49px; background: url(../../static/images/workbench/2f9a3407bdeb5c3652e49b023f10f14a.png) center center no-repeat;" class="tc fl">
+            <span class="color-1 fwb inline-block mgt-15">系统公告</span>
+        </div>
+        <div class="fl p-color-1 pdt-15 pdl-15">
+            关于4G营销统一口径的通知关于4G营销统一口径的通知关于4G营销统一口径的通知关于4G营销统一口径的通知关于4G营销统一口径的通知。
+        </div>
+    </div>
+    <div class="row show-grid">
+        <div class="col-sm-2 col-md-2">
+            <div class="bgcolor-1 mgl-10 mgr-10 mgt-20" style="overflow: hidden; border-radius: 5px;box-shadow: 0 0 5px #d8d8d8;">
+                <h3 class="title-h3">
+                    快捷入口
+                </h3>
+                <div class="pdb-10 pdt-10 pdl-10 pdr-10">
+                    <div class="clearfix">
+                        <ul class="btn-list-1 clearfix short">
+                            <li>
+                                <a href="#">我的集团</a>
+                            </li>
+                            <li>
+                                <a href="#">业务办理</a>
+                            </li>
+                            <li>
+                                <a href="#">合同录入</a>
+                            </li>
+                            <li>
+                                <a href="#">集团开户</a>
+                            </li>
+                            <li>
+                                <a href="#">我的量酬</a>
+                            </li>
+                            <li>
+                                <a href="#">成员添加</a>
+                            </li>
+                            <li>
+                                <a href="#">集团调配</a>
+                            </li>
+                            <li>
+                                <a href="#">集团成员添加</a>
+                            </li>
+                            <li>
+                                <a href="#">集团成员变更</a>
+                            </li>
+                            <li>
+                                <a href="#">集团成员删除</a>
+                            </li>
+                            <li>
+                                <a href="#">组合营销案添加</a>
+                            </li>
+                            <li>
+                                <a href="#">组合营销案删除</a>
+                            </li>
+                        </ul>
+                        <p class="tr pdb-10 mgt-15">
+                            <button class="ued-button-radius mgl-10 mgr-10 bgcolor-4 color-1" type="button">编  辑</button>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-10 col-md-10">
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="header-title mgt-20">
+                        <h3> K P I 指标 </h3>
+                    </div>
+                    <div class="col-sm-6 col-md-6">
+                        <div class="box-bg-w" style="width:100%;">
+                            <div id="bar1" style="width:100%;height:230px;border-radius:10px;">
+                                <img src="../../static/images/workbench/eselp.png">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-6">
+                        <div class="box-bg-w" style="width:100%; height:230px;">
+                            <table width="100%" class="table-info01">
+                                <tbody>
+                                <tr>
+                                    <td class="tab-td-1">信息化收入</td>
+                                    <td>12万元</td>
+                                    <td class="tab-td-1">统付语音收入</td>
+                                    <td>12万元</td>
+                                </tr>
+                                <tr>
+                                    <td class="tab-td-1">宽带发展量</td>
+                                    <td>10万个</td>
+                                    <td class="tab-td-1">新发展4G用户数</td>
+                                    <td>10万个</td>
+                                </tr>
+                                <tr>
+                                    <td class="tab-td-1">新签约数量</td>
+                                    <td>10万个</td>
+                                    <td class="tab-td-1">AB类保有率</td>
+                                    <td>80%</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="row">
+                        <div class="bgcolor-1 mgt-20" style="overflow: hidden; border-radius: 5px;box-shadow: 0 0 5px #d8d8d8;">
+                            <div style="height: 42px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238);" class="clearfix pdr-5">
+                                <div class="mgb-0 mgt-0 fl fs-14 p-color-1 fwb" style="line-height:42px;">
+                                    <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+                                        <ul id="myTab1" class="nav nav-tabs op-order-tab op-in-tab" role="tablist">
+                                            <li role="presentation">
+                                                <a href="#one" id="one-tab1" role="tab" data-toggle="tab" aria-controls="one" aria-expanded="true">
+                                                    预警合同
+                                                </a>
+                                            </li>
+                                            <li role="presentation" class="active">
+                                                <a href="#two" role="tab" id="two-tab1" data-toggle="tab" aria-controls="two" aria-expanded="false">
+                                                    集团高网
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a href="#three" role="tab" id="three-tab1" data-toggle="tab" aria-controls="three" aria-expanded="false">
+                                                    商业预警
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a href="#four" role="tab" id="four-tab1" data-toggle="tab" aria-controls="four" aria-expanded="false">
+                                                    服务
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="myTabContent1" class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade active in" id="one1" aria-labelledby="one-tab" role="tabpanel" class="tab-pane fade" id="two1" aria-labelledby="two-tab">
+                                    <div class="row show-grid pd-10">
+                                        <div class="col-sm-6 col-md-6 mgt-15">
+                                            归属营业厅：<span class="p-color-3">长春地区-长春市-自建自营长春市一汽营业厅</span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 mgt-15">
+                                            入网时间：<span class="p-color-3">2016-03-08</span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 mgt-15">
+                                            用户积分：<span class="p-color-3">19832</span> <span class="p-color-2">1250-积分兑换  </span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 mgt-15">
+                                            当前余额：<span class="p-color-3">1300.00</span> <span class="p-color-2">8000-普通缴费   8107-费用综合信息查询  </span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 mgt-15">
+                                            状态：<span class="p-color-3">正常</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="two1" aria-labelledby="two-tab">
+                                    <table id="J_inTable" class="op-in-table table table-bordered table-nobroder fs-12">
+                                        <tbody>
+                                        <tr class="on">
+                                            <td class="tc" width="10%">
+                                                <img class="img" src="../../static/images/workbench/in_on.png" alt="" />
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                语音卡
+                                            </td>
+                                            <td>
+                                                正常
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc" width="10%">
+                                                <img class="img none" src="../../static/images/workbench/in_on.png" alt="" />
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                语音卡
+                                            </td>
+                                            <td>
+                                                正常
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc" width="10%">
+                                                <img class="img none" src="../../static/images/workbench/in_on.png" alt="" />
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                语音卡
+                                            </td>
+                                            <td>
+                                                正常
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="three1" aria-labelledby="three-tab">
+                                    <table class="op-other-table table table-bordered table-nobroder table-striped fs-12 tc mgb-0">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                查询年月
+                                            </th>
+                                            <th>
+                                                资费套餐名称
+                                            </th>
+                                            <th>
+                                                总优惠量
+                                            </th>
+                                            <th>
+                                                已使用优惠量
+                                            </th>
+                                            <th>
+                                                剩余优惠量
+                                            </th>
+                                            <th>
+                                                免业务类型
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                2016-04
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                2016-04
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="four1" aria-labelledby="four-tab">
+                                    我的优惠活动
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <div class="row">
+                        <div class="bgcolor-1 mgt-20" style="overflow: hidden; border-radius: 5px;box-shadow: 0 0 5px #d8d8d8;">
+                            <div style="height: 42px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238);" class="clearfix pdr-5">
+                                <div class="mgb-0 mgt-0 fl fs-14 p-color-1 fwb" style="line-height:42px;">
+                                    <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+                                        <ul id="myTab1" class="nav nav-tabs op-order-tab op-in-tab" role="tablist">
+                                            <li role="presentation" class="active">
+                                                <a href="#one" id="one-tab1" role="tab" data-toggle="tab" aria-controls="one" aria-expanded="true">
+                                                    话费提醒
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a href="#two" role="tab" id="two-tab1" data-toggle="tab" aria-controls="two" aria-expanded="false">
+                                                    生日提醒
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a href="#three" role="tab" id="three-tab1" data-toggle="tab" aria-controls="three" aria-expanded="false">
+                                                    流量余额
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="myTabContent1" class="tab-content">
+                                <div role="tabpanel" class="tab-pane fade active in" id="one1" aria-labelledby="one-tab">
+                                    <div class="col-sm-12 col-md-12">
+                                        <div class="row pd-10">
+                                            <div class="col-sm-6 col-md-6 mgt-15">姓&nbsp&nbsp名：<span class="p-color-3">李某某</span></div>
+                                            <div class="col-sm-6 col-md-6 mgt-15">级&nbsp&nbsp别：<span class="p-color-3">客户经理</span></div>
+                                            <div class="col-sm-6 col-md-6 mgt-15">证件类型：<span class="p-color-3">身份证</span></div>
+                                            <div class="col-sm-6 col-md-6 mgt-15">证件号码：<span class="p-color-3">62299987672367</span></div>
+                                            <div class="col-sm-12 col-md-12 mgt-15">归属渠道：<span class="p-color-3">营业厅</span> <span class="p-color-2">3770-个人客户视图 </span></div>
+                                        </div>
+                                        <div class="row pdl-10">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="two1" aria-labelledby="two-tab">
+                                    <table id="J_inTable" class="op-in-table table table-bordered table-nobroder fs-12">
+                                        <tbody>
+                                        <tr class="on">
+                                            <td class="tc" width="10%">
+                                                <img class="img" src="../../static/images/workbench/in_on.png" alt="" />
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                语音卡
+                                            </td>
+                                            <td>
+                                                正常
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc" width="10%">
+                                                <img class="img none" src="../../static/images/workbench/in_on.png" alt="" />
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                语音卡
+                                            </td>
+                                            <td>
+                                                正常
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="tc" width="10%">
+                                                <img class="img none" src="../../static/images/workbench/in_on.png" alt="" />
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                150912000118
+                                            </td>
+                                            <td width="15%">
+                                                语音卡
+                                            </td>
+                                            <td>
+                                                正常
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div role="tabpanel" class="tab-pane fade" id="three1" aria-labelledby="three-tab">
+                                    <table class="op-other-table table table-bordered table-nobroder table-striped fs-12 tc mgb-0">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                查询年月
+                                            </th>
+                                            <th>
+                                                资费套餐名称
+                                            </th>
+                                            <th>
+                                                总优惠量
+                                            </th>
+                                            <th>
+                                                已使用优惠量
+                                            </th>
+                                            <th>
+                                                剩余优惠量
+                                            </th>
+                                            <th>
+                                                免业务类型
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                2016-04
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                2016-04
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                0KB
+                                            </td>
+                                            <td>
+                                                test
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="bgcolor-1 mgt-20" style="overflow: hidden; border-radius: 5px;box-shadow: 0 0 5px #d8d8d8;">
+                    <div style="height: 42px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238);" class="clearfix pdr-5">
+                        <div class="mgb-0 mgt-0 fl fs-14 p-color-1 fwb" style="line-height:42px;">
+                            <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+                                <ul id="myTab" class="nav nav-tabs op-order-tab op-in-tab" role="tablist">
+                                    <li role="presentation" class="active">
+                                        <a href="#one" id="one-tab" role="tab" data-toggle="tab" aria-controls="one" aria-expanded="true">
+                                            工单展示
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="myTabContent" class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade active in" id="one" aria-labelledby="one-tab">
+                            <table id="J_inTable" class="op-in-table table table-bordered table-nobroder fs-12">
+                                <tbody>
+                                <tr class="on">
+                                    <td class="tc" width="10%">
+                                        <img class="img" src="../../static/images/workbench/in_on.png" alt="" />
+                                    </td>
+                                    <td width="15%">
+                                        150912000118
+                                    </td>
+                                    <td width="15%">
+                                        150912000118
+                                    </td>
+                                    <td width="15%">
+                                        语音卡
+                                    </td>
+                                    <td>
+                                        正常
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tc" width="10%">
+                                        <img class="img none" src="../../static/images/workbench/in_on.png" alt="" />
+                                    </td>
+                                    <td width="15%">
+                                        150912000118
+                                    </td>
+                                    <td width="15%">
+                                        150912000118
+                                    </td>
+                                    <td width="15%">
+                                        语音卡
+                                    </td>
+                                    <td>
+                                        正常
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tc" width="10%">
+                                        <img class="img none" src="../../static/images/workbench/in_on.png" alt="" />
+                                    </td>
+                                    <td width="15%">
+                                        150912000118
+                                    </td>
+                                    <td width="15%">
+                                        150912000118
+                                    </td>
+                                    <td width="15%">
+                                        语音卡
+                                    </td>
+                                    <td>
+                                        正常
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="tr pdr-10">
+                                <ul class="in-page pagination mgt-0 mgb-5">
+                                    <li class="disabled"><a href="#">首页</a></li>
+                                    <li class="disabled"><a href="#">上一页</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">下一页</a></li>
+                                    <li><a href="#">末页</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../../static/js/workbench/jquery.js"></script>
+<script src="../../static/js/workbench/compatibility.js"></script>
+<script src="../../static/js/workbench/bootstrap.min.js"></script>
+<script src="../../static/js/workbench/jquery.tinyscrollbar.min.js"></script>
+<script src="../../static/js/workbench/operation.js"></script>
+<script src="../../static/js/workbench/jquery-1.7.2.min.js" type="text/javascript"></script>
+<script src="../../static/js/workbench/ui.js" type="text/javascript"></script>
+<script src="../../static/js/workbench/highcharts.js" type="text/javascript"></script>
+<script src="../../static/js/workbench/plug-in.js" type="text/javascript"></script>
+</body>
+
+</html>

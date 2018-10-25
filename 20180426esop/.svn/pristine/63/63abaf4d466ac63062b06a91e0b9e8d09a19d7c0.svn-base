@@ -1,0 +1,72 @@
+package com.esop.pub;
+
+import com.esop.base.dto.SessionDto;
+import com.esop.base.service.BasePubService;
+import com.esop.common.security.DESPlus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 16/8/24.
+ */
+//页面集成跳转类
+@Controller
+public class EntranceController {
+    @Autowired
+    BasePubService basePubService;
+    @RequestMapping(value = "/simplesso_hub/{loginmsg}/{href_url}")
+    public String simplesso_hub(@PathVariable String loginmsg, @PathVariable String href_url,
+                                HttpServletRequest request, HttpServletResponse response, HttpSession session,
+                                Model model) {
+        try {
+        DESPlus des = new DESPlus("chn.si-tech.com.cn");
+        loginmsg = des.decrypt(loginmsg);
+        String[] result = loginmsg.split("@");
+        String loginNo = result[0];
+        String passWord = result[1];
+        String time = result[2];
+        href_url = href_url.replace("|", "/");
+        SessionDto  sessionDto = new SessionDto();
+        sessionDto.setLogin_no(loginNo);
+        List list=basePubService.getSessionLoginInfo(sessionDto);
+            if(list.size()==0){
+                return "login";
+            }else {
+                sessionDto=(SessionDto)list.get(0);
+                Map userMap = new HashMap();
+                userMap.put("login_no",sessionDto.getLogin_no());
+                userMap.put("login_name",sessionDto.getLogin_name());
+                userMap.put("group_id",sessionDto.getGroup_id());
+                userMap.put("group_name",sessionDto.getGroup_name());
+                userMap.put("contact_phone",sessionDto.getContact_phone());
+                userMap.put("region_group_id",sessionDto.getRegion_group_id());
+                userMap.put("identity_code",sessionDto.getIdentity_code());
+                session.setAttribute("userMap", userMap);
+                model.addAttribute("username", loginNo);
+                model.addAttribute("password", passWord);
+                model.addAttribute("href_url", href_url);
+                //return "base/logint";
+                return "base/securityCheck";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "login";
+        }
+
+    }
+    @RequestMapping(value = "/testsecurity")
+    public String testsecurity(@PathVariable String href_url) {
+        return "lcm";
+
+    }
+}

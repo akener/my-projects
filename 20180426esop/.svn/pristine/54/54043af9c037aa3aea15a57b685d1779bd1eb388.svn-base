@@ -1,0 +1,127 @@
+@charset "utf-8";
+body{position: relative;}
+.fl{float: left;}
+textarea,select{outline: none;border-style: none;}
+/*流程管理-待办流程管理*/
+.y-flow-manage{background: #fff;border:1px solid #F4F5F5;border-top:2px solid #01aef2;padding-bottom: 20px;}
+.y-condition-query,.bt-box-bold{padding-left:18px;}
+.y-con-box{margin-right: 64px;margin-bottom: 10px;}
+.y-ipt-style{width: 166px;border:1px solid #ECECEC;*padding:4px 6px 6px;padding:5px 6px;padding:3px 6px 7px\9;float: left;}
+.y-slt-style{border-style:none;width: 180px;height: 32px;border:1px solid #ECECEC;}
+.y-slt-style:focus,button{outline: none;}
+.y-con-box label{font-size: 14px;color: #5e5b5b;float: left;display: block;line-height: 30px;width: 90px;
+text-align: right;}
+.bt-box-bold h3{padding-left: 42px;}
+.bt-box-bold h3.xx{background-position: 3px center;font-weight: bold;}
+.y-condition-btn{text-align: center;margin-right: 32px;margin-top: 10px;}
+.y-btn-style{width: 70px;height: 26px;border-radius: 8px;color: #fff;border-style: none;background: #d1d1d2;margin-right: 18px;font-size: 14px;}
+.y-btn-query{border-bottom:1px solid #008AC4;background: #01aef2;}
+.y-btn-export{border-bottom:1px solid #67A700;background: #81D000;}
+.y-btn-reset{border-bottom:1px solid #A7A7A8;}
+.y-query-result{background: #fff;margin-top: 20px;padding-bottom: 10px;}
+.y-table-style{border:1px solid #F4F5F5;border-top: 2px solid #01aef2;}
+
+/**/
+.y-fl-none{float: none;}
+.y-btn-add a{color: #fff;}
+.y-hierarchy{background: #F2F5F6;}
+.y-info-collect{border:1px solid #F4F4F4;}
+.y-flow-manage .tab-2-class-box{padding-right:0;padding-left: 0;}
+.y-box-info .y-con-box{margin-right: 54px;}
+.y-box-info .y-con-box label{width: 100px;}
+.radio-style{line-height: 30px;width: 160px;padding-left: 20px;}
+.radio-style input{margin-top: 9px;margin-right: 4px;cursor: pointer;}
+.radio-style label{margin-right: 20px;cursor: pointer;}
+.y-apply-info label{width: 140px;}
+.y-apply-info .y-con-box{margin-right: 16px;}
+.y-tab-height td{line-height: 30px;}
+/*弹窗 S*/
+.submit-window{
+	display: none;
+	position: fixed;
+	width:720px;
+	height: 400px;
+	border:3px solid #3eabf0;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px;
+	z-index: 11;
+	background: #fff;
+}
+.submit-bg{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background:#000;
+	background:rgba(0,0,0,0.8);
+	opacity: 0.8;
+	filter:alpha(opacity=80);
+	display: none;
+	z-index: 10;
+}
+.msg-head{
+	padding: 0 6px 0 14px;
+	height: 38px;
+	line-height: 38px;
+	background: #3eabf0;
+	color: #fff;
+}
+.msg-head span{
+	font-size:18px;
+}
+.submit-close-btn{
+	display: block;
+	width: 24px;
+	height: 24px;
+	background: url(../images/y-img/close.png) no-repeat;
+	cursor: pointer;
+	margin-top: 12px;
+}
+.msg-body{
+	padding:40px 0; 
+}
+.submit-btn-box{text-align: right;margin-top:1px;}
+.submit-btn-box button{
+	cursor: pointer;
+	padding:0;
+	text-align: center;
+	color: #333;
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	-ms-border-radius: 6px;
+	margin:0 5px;
+	font-size: 12px;
+	padding: 2px 20px;
+	margin-top: 2px;
+}
+.submit-btn-box button:hover{
+	opacity: 0.8;
+	filter:alpha(opacity=80);
+}
+.submit-confirm-btn{
+	border:1px solid #E2E2E2;
+	background: #fff;
+}
+/*弹窗 E*/
+.approve-human-list{
+	height: 240px;
+	overflow: hidden;
+	overflow-y:scroll;
+	width: 710px;
+	margin-top: 10px;
+	margin-left: 10px;
+	_margin-left: 5px;
+}
+/*巡店任务管理*/
+.y-task{margin-top:20px;}
+.y-task-index{padding: 0 20px;}
+.y-task-btn{border-style:none;border-radius:2px;background: #5acaf7;color: #fff;padding:2px 12px 1px;margin-bottom: 8px;border:1px solid #40BAE5;*margin-right: 4px;}
+.y-slt-width{width: 90px;}
+.y-task-index table{border-top:none;}
+.y-basic-info h3.xx{background: url(../images/y-img/icon-group.png) no-repeat 4px 11px;}
+.y-task-icon h3.xx{background: url(../images/y-img/icon-group.png) no-repeat 4px -69px;}
+.y-index-descrip{padding:6px;border:1px solid #ECECEC;width: 502px;resize: none;height: 88px;}
+.y-btn-fixed{position: absolute;bottom: 0;width: 100%;background: #fbfeff;height: 32px;border-top:1px solid #E9E9E9;padding-top: 2px;}

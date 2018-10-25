@@ -1,0 +1,89 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%
+    String swich = request.getParameter("type");
+%>
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+<link rel="stylesheet" href="/esop/static/zTree_v3/css/demo.css" type="text/css">
+<link rel="stylesheet" href="/esop/static/zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="/esop/static/zTree_v3/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="/esop/static/zTree_v3/js/jquery.ztree.excheck.js"></script>
+<head>
+    <title>角色管理</title>
+</head>
+<body class="">
+<!--操作提示窗口-->
+<form name='formZtree'  method="post">
+    <div>
+        <div>
+            <ul id="treeDemo" class="ztree" style="height: 800px; width:600px; overflow-y: auto"></ul>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    var setting = {
+        check:{
+            enable:true,
+            chkStyle: "radio",
+            radioType: "level"
+        },
+        data:    {
+            simpleData:{
+                enable:true
+            }
+        },
+        callback:{
+            onCheck:zTreeOnCheck
+        }
+    };
+    function zTreeOnCheck(event, treeId, treeNode) {
+        window.returnValue = treeNode.id + "$" + treeNode.name;
+        window.close();
+    };
+
+
+    function  showParent(){
+        $.ajax({
+            type: "POST",
+            <%if(swich.equals("parent")){%>
+            url: "parentRoleTree",
+            data:{
+                pId: '01'
+            },
+            <%}else if(swich.equals("child")){%>
+            url: "childRoleTree",
+            data:{
+                pId: ''
+            },
+            <%}%>
+            cache: false,
+            success: function (data) {
+                $.fn.zTree.init($("#treeDemo"), setting, data)
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+
+    var code;
+    function setCheck() {
+        var type = $("#level").attr("checked")? "level":"all";
+        setting.check.radioType = type;
+        showCode('setting.check.radioType = "' + type + '";');
+        showParent();
+    }
+    function showCode(str) {
+        if (!code) code = $("#code");
+        code.empty();
+        code.append("<li>"+str+"</li>");
+    }
+    $(document).ready(function(){
+        setCheck();
+        $("#level").bind("change", setCheck);
+        $("#all").bind("change", setCheck);
+    });
+</script>
+</body>
+</html>

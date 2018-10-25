@@ -1,0 +1,261 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/6/13
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  工单导入
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>--%>
+<head>
+
+
+    <link rel="icon" href="./favicon.ico">
+    <title>签约工单查询</title>
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+</head>
+<body>
+<!-- 测试使用 -->
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<input type="hidden" id="denorm_level" >
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">工单查询</h3>
+    </div>
+</div>
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th class="text-center">工单状态</th>
+        <th class="text-center">潜在集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">归属地市</th>
+        <th class="text-center">归属区县</th>
+        <th class="text-center">集团地址</th>
+        <th class="text-center">地市派单截止日期</th>
+        <th class="text-center">省派单截止日期</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+        <th class="text-center">工单状态</th>
+        <th class="text-center">潜在集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">归属地市</th>
+        <th class="text-center">归属区县</th>
+        <th class="text-center">集团地址</th>
+        <th class="text-center">地市派单截止日期</th>
+        <th class="text-center">省派单截止日期</th>
+    </tr>
+    </tfoot>
+</table>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    $(document).ready(function() {
+
+        if(role_code == '07'){
+            //判断是否为客户经理
+            editor = new $.fn.DataTable.Editor( {
+            } );
+
+            table = $('#example').DataTable( {
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                "pageLength": 15,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url:"getSignRecordForQuery",
+                    type:"POST",
+                    data:{
+                        service_no:service_no
+                    }
+                },
+                columns: [
+                    { data: "status_name" },
+                    { data: "cust_id" },
+                    { data: "cust_name" },
+                    { data: "org_name" },
+                    { data: "county_name" },
+                    { data: "cust_addr" },
+                    { data: "region_end_date" },
+                    { data: "province_end_date" }
+                ],
+                select: true,
+                buttons: [
+                ]
+            } );
+        }else{
+            //查询工号等级
+            $.ajax({
+                type:"GET",
+                url:"/getGroupLevel",
+                data:{
+                    org_code:$("#org_code").val()
+                }
+            }).then(function(data){
+                if(data == '0'){
+                    editor = new $.fn.DataTable.Editor( {
+                    } );
+
+                    table = $('#example').DataTable( {
+                        dom: "Bfrtip",
+                        bLengthChange:true,
+                        "bFilter": false,
+                        "pageLength": 15,//设置每页显示多少条记录
+                        "language": {
+                            "url": "/esop/static/data/Chinese.json"
+                        }, //多语言配置
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url:"getSignRecordForQuery",
+                            type:"POST"
+                        },
+                        columns: [
+                            { data: "status_name" },
+                            { data: "cust_id" },
+                            { data: "cust_name" },
+                            { data: "org_name" },
+                            { data: "county_name" },
+                            { data: "cust_addr" },
+                            { data: "region_end_date" },
+                            { data: "province_end_date" }
+                        ],
+                        select: true,
+                        buttons: [
+                        ]
+                    } );
+                }else if(data == '1'){
+                    editor = new $.fn.DataTable.Editor( {
+                    } );
+
+                    table = $('#example').DataTable( {
+                        dom: "Bfrtip",
+                        bLengthChange:true,
+                        "bFilter": false,
+                        "pageLength": 15,//设置每页显示多少条记录
+                        "language": {
+                            "url": "/esop/static/data/Chinese.json"
+                        }, //多语言配置
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url:"getSignRecordForQuery",
+                            type:"POST",
+                            data:{
+                                org_code:org_code
+                            }
+                        },
+                        columns: [
+                            { data: "status_name" },
+                            { data: "cust_id" },
+                            { data: "cust_name" },
+                            { data: "org_name" },
+                            { data: "county_name" },
+                            { data: "cust_addr" },
+                            { data: "region_end_date" },
+                            { data: "province_end_date" }
+                        ],
+                        select: true,
+                        buttons: [
+                        ]
+                    } );
+                }else if(data == '2'){
+                    editor = new $.fn.DataTable.Editor( {
+                    } );
+
+                    table = $('#example').DataTable( {
+                        dom: "Bfrtip",
+                        bLengthChange:true,
+                        "bFilter": false,
+                        "pageLength": 15,//设置每页显示多少条记录
+                        "language": {
+                            "url": "/esop/static/data/Chinese.json"
+                        }, //多语言配置
+                        processing: true,
+                        serverSide: true,
+                        ajax: {
+                            url:"getSignRecordForQuery",
+                            type:"POST",
+                            data:{
+                                county_code:org_code
+                            }
+                        },
+                        columns: [
+                            { data: "status_name" },
+                            { data: "cust_id" },
+                            { data: "cust_name" },
+                            { data: "org_name" },
+                            { data: "county_name" },
+                            { data: "cust_addr" },
+                            { data: "region_end_date" },
+                            { data: "province_end_date" }
+                        ],
+                        select: true,
+                        buttons: [
+                        ]
+                    } );
+                }
+            });
+        }
+    } );
+
+
+</script>
+</html>

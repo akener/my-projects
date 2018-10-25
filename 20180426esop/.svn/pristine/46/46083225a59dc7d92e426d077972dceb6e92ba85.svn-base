@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectEpBusiDep" parameterType="String" resultType="com.esop.busiAnalysis.dto.EpBusiDepDto">
+        select region_name,day_inc,year_inc,goal,comp_rate,wid_day_inc,wid_month_inc,wid_year_inc,wid_goal
+        ,wid_comp_rate,unit_day_inc,unit_mon_inc,unit_year_inc,unit_goal,uint_comp_rate,shool_day_inc
+        ,school_month_inc,school_year_inc,shool_goal,school_comp_rate,net_day_inc,net_mon_inc,net_total_inc
+        ,net_goal,net_comp_rate
+        from ep_busi_dep
+        where 1=1
+        <if test="eff_date != ''">
+            and eff_date = to_char(to_date(#{eff_date},'yyyy-MM-dd'),'yyyy-MM-dd')
+        </if>
+        <if test="eff_date == ''">
+            and eff_date= to_char(sysdate, 'yyyy-MM-dd')
+        </if>
+    </select>
+    <select id="qryBusiDepInfo" parameterType="com.esop.busiAnalysis.dto.BusiDepParamDto" resultType="com.esop.busiAnalysis.dto.EpBusiDepDto">
+        select region_name,day_inc,year_inc,goal,comp_rate,wid_day_inc,wid_month_inc,wid_year_inc,wid_goal
+        ,wid_comp_rate,unit_day_inc,unit_mon_inc,unit_year_inc,unit_goal,uint_comp_rate,shool_day_inc
+        ,school_month_inc,school_year_inc,shool_goal,school_comp_rate,net_day_inc,net_mon_inc,net_total_inc
+        ,net_goal,net_comp_rate
+        from ep_busi_dep
+        where 1=1
+        <if test="eff_date != ''">
+            and eff_date = #{eff_date}
+        </if>
+        <if test="eff_date == ''">
+            and eff_date = to_char(sysdate, 'yyyy-MM-dd')
+        </if>
+        order by day_inc desc
+    </select>
+</mapper>

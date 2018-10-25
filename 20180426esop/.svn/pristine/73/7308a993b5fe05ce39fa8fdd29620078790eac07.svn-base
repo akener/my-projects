@@ -1,0 +1,28 @@
+package com.esop.productInfo.dto;
+
+import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
+/**
+ * Created by wangbl on 2017/5/20.
+ */
+@XmlRootElement
+public class Body {
+    String code;
+    String product;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+}

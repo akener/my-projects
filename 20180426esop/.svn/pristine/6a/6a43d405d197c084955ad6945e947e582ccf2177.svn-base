@@ -1,0 +1,53 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>附件上传</title>
+    <%@ include file="../../pub/public_include.jsp" %>
+
+
+</head>
+<body class="bg-ff">
+<table class="table-infor-7 width-th-1" width="100%">
+    <tbody>
+    <tr class="chose_file">
+        <th>附件上传：</th>
+        <td colspan="2">
+            <form id="uploadFile" action="uploadFile" method="post" enctype="multipart/form-data">
+                <input type="file" class="ui-text" id="file" name="file"/>
+
+            </form>
+        </td>
+        <td>
+            <input type="button" class="ui-btn fs-14 btn-login" onclick="upload()" value="上传">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var attachment_id_list = "";
+    function upload() {
+        $('#uploadFile').ajaxSubmit(function (result) {
+            if (result != null && $.trim(result) != '') {
+                var data = result.split("|");
+                alert(data[1]);
+            }
+            if (attachment_id_list == null || attachment_id_list == "") {
+                attachment_id_list = data[2];
+            } else if (attachment_id_list != null && attachment_id_list != "") {
+                attachment_id_list = attachment_id_list + "|" + data[2];
+            }
+        });
+    }
+    window.onbeforeunload = onbeforeunload_handler;
+    function onbeforeunload_handler() {
+        window.returnValue = attachment_id_list;
+    }
+</script>
+</html>

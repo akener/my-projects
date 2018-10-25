@@ -1,0 +1,103 @@
+$(document).ready(function() {
+    loadFirstSteps();
+});
+
+//集团名称自动补全，并获取集团编号
+$("#jtName").autocomplete({
+    source: "selJtName",
+    select: function (event, ui) {
+        var jtCode = ui.item.jtCode;
+        $("#jtCode").val(jtCode);
+    }
+});
+
+//提交订单
+function addOrder(){
+    var jtName = $("#jtName").val();
+    var jtCode = $("#jtCode").val();
+    var paytime = $("#paytime").val();
+    var effecttime = $("#effecttime").val();
+    var feetype = $("#feetype").val();
+    var reason = $("#reason").val();
+    var orderTitle = $("#orderTitle").val();
+    var orderDesc = $("#orderDesc").val();
+    var ASSIGNEE_1 = $("#ASSIGNEE_1").val();
+    var attach_file_id = $("#attach_file_id").val();
+
+    if(jtName==null||$.trim(jtName)==''){
+        alert('请输入选择集团名称');
+        $("#jtName").focus();
+        return;
+    }
+    if(jtCode==null||$.trim(jtCode)==''){
+        alert('集团编码为空，请先选择集团名称');
+        $("#jtCode").focus();
+        return;
+    }
+    if(feetype==null||$.trim(feetype)==''){
+        alert('请输入赠送话费返费周期');
+        $("#feetype").focus();
+        return;
+    }
+    if(reason==null||$.trim(reason)==''){
+        alert('请输入赠送话费原因');
+        $("#reason").focus();
+        return;
+    }
+    if(orderTitle==null||$.trim(orderTitle)==''){
+        alert('请输入订单标题');
+        $("#orderTitle").focus();
+        return;
+    }
+    if(orderDesc==null||$.trim(orderDesc)==''){
+        alert('请输入订单说明');
+        $("#orderDesc").focus();
+        return;
+    }
+
+    if(ASSIGNEE_1==null||$.trim(ASSIGNEE_1)==''){
+        alert('请选择下一环节处理人');
+        $("#ASSIGNEE_1").focus();
+        return;
+    }
+
+    $("#addOrderSubmit").text('提交中..')
+    $("#addOrderSubmit").attr("disabled",true);
+    $.ajax({
+        type: "post",
+        url: "addActivitiesDiscountOrder",
+        data: {jtName: jtName,jtCode:jtCode,orderTitle:orderTitle,paytime:paytime,effecttime:effecttime,feetype:feetype,reason:reason,
+            orderDesc:orderDesc,ASSIGNEE_1:ASSIGNEE_1,attach_file_id:attach_file_id},
+        cache: false,
+        success: function (result) {
+            alert(result.msg);
+            $("#addOrderSubmit").text('提交')
+            $("#addOrderSubmit").removeAttr("disabled");
+        }
+    });
+};
+
+function loadFirstSteps() {
+    $.ajax({
+        type: 'POST',
+        url: 'workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+        },
+        success: loadFirstStepsHandler
+    });
+}
+
+function loadFirstStepsHandler(data) {
+    var stepList = data.stepList[0];
+    $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+        $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+    }
+}
+

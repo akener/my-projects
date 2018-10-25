@@ -1,0 +1,48 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cqDevelopment.capitalManage.dto.RoleDictDto;
+import com.esop.cqDevelopment.capitalManage.dto.SystemUserInfoDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowQueryDto;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class WorkFlowQueryService {
+    private static Logger logger = Logger.getLogger(WorkFlowQueryService.class);
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getWorkFlowInfoSvc(WorkFlowQueryDto parameter){
+        String selectTion = "";
+        selectTion = "selectWorkFlowInfo";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    //获取下一环节处理人--根据角色查询相应的人
+    public List  qryNextDealPerson(SystemUserInfoDto parameter){
+        String selectTion = "";
+        selectTion = "qryNextDealPerson";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //获取下一环节处理人--根据(role_id或集团id)查询相应的人
+    public List  qryNextDealPerson_new(SystemUserInfoDto parameter){
+        String selectTion = "";
+        selectTion = "qryNextDealPerson_new";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

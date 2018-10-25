@@ -1,0 +1,52 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/1.
+ */
+public class InfomationIncomeStaticDto {
+    String manager_no = "";//客户经理工号
+    String manager_name = "";//客户经理名称
+    String unit_id = "";//集团编号
+    String unit_name = "";//集团名称
+    float total_income = 0;// 信息化收入汇总
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public float getTotal_income() {
+        return total_income;
+    }
+
+    public void setTotal_income(float total_income) {
+        this.total_income = total_income;
+    }
+}

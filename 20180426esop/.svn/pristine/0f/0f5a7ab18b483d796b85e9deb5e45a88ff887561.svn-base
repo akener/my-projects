@@ -1,0 +1,69 @@
+package com.esop.cqDevelopment.groupMemberPayCost.service;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.groupMemberPayCost.dto.ApplyOrderTypeDto;
+import com.esop.cqDevelopment.groupMemberPayCost.dto.GroupMemberDto;
+import com.esop.cqDevelopment.refund.dto.CapCapitalInfoDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@Repository
+public class GroupMemberPayCostService {
+    private static Logger logger = Logger.getLogger(GroupMemberPayCostService.class);
+    @Autowired
+    SqlE sqlE;
+    //保存集团成员资金申请信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertGroupMemberApplyInfo(GroupMemberDto param){
+        if (sqlE.insertM("insertGroupMemberApplyInfo",param)>0){
+            logger.info("insert success！");
+            return true;
+        }
+        logger.info("insert group member apply failed！");
+        return false;
+    }
+
+    // 获取资金账户
+    public List<CapCapitalInfoDto> getCapitalInfo(CapCapitalInfoDto param){
+        logger.info("getCapitalInfo入参"+param.toString());
+        List list = sqlE.selectM("getCapitalInfo",param);
+        logger.info("getCapitalInfo"+list);
+        return list;
+    }
+    //获取申请工单业务类型
+    public List<ApplyOrderTypeDto> qryApplyOrderType(){
+        return sqlE.selectM("qryApplyOrderType");
+    }
+    //集团资金账户列表信息查询
+    public Result getCapitalListInfo(CapCapitalInfoDto parameter){
+        logger.info("getCapitalListInfo入参"+parameter.toString());
+        Result result = sqlE.selectPage("getCapitalListInfo",parameter);
+        logger.info("getCapitalListInfo"+result);
+        return result;
+    }
+    //集团成员资金申请业务操作列表工单
+    public Result getGMOListInfo(GroupMemberDto parameter){
+        logger.info("getGMOListInfo enter"+parameter.toString());
+        Result result = sqlE.selectPage("getGMOListInfo",parameter);
+        logger.info("getGMOListInfo"+result);
+        return result;
+    }
+
+    //根据orderId获取集团成员待审批页面信息
+    public GroupMemberDto getGroupMemApproveInfo(GroupMemberDto groupMemberDto){
+        logger.info("查询管理办法入参:"+ groupMemberDto.toString());
+        return (GroupMemberDto)sqlE.selectM("getGroupMemApproveInfo",groupMemberDto).get(0);
+    }
+
+
+
+}

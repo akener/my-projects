@@ -1,0 +1,105 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+public class PrePrintInvRecoidDto {
+
+    private String orderid;
+    private String groupacctid;
+    private String groupaccname;
+    private String begincycle;
+    private String endcycle;
+    private String invoicefee;
+    private String invoicecode;
+    private String invoicenum;
+    private String status;
+    private String printdate;
+
+    private String invoicefee_yuan;
+
+    public String getGroupacctid() {
+        return groupacctid;
+    }
+
+    public void setGroupacctid(String groupacctid) {
+        this.groupacctid = groupacctid;
+    }
+
+    public String getBegincycle() {
+        return begincycle;
+    }
+
+    public void setBegincycle(String begincycle) {
+        this.begincycle = begincycle;
+    }
+
+    public String getEndcycle() {
+        return endcycle;
+    }
+
+    public void setEndcycle(String endcycle) {
+        this.endcycle = endcycle;
+    }
+
+    public String getPrintdate() {
+        return printdate;
+    }
+
+    public void setPrintdate(String printdate) {
+        this.printdate = printdate;
+    }
+
+    public String getGroupaccname() {
+        return groupaccname;
+    }
+
+    public void setGroupaccname(String groupaccname) {
+        this.groupaccname = groupaccname;
+    }
+
+    public String getOrderid() {
+        return orderid;
+    }
+
+    public void setOrderid(String orderid) {
+        this.orderid = orderid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getInvoicefee() {
+        return invoicefee;
+    }
+
+    public void setInvoicefee(String invoicefee) {
+        this.invoicefee = invoicefee;
+    }
+
+    public String getInvoicecode() {
+        return invoicecode;
+    }
+
+    public void setInvoicecode(String invoicecode) {
+        this.invoicecode = invoicecode;
+    }
+
+    public String getInvoicenum() {
+        return invoicenum;
+    }
+
+    public void setInvoicenum(String invoicenum) {
+        this.invoicenum = invoicenum;
+    }
+
+    public String getInvoicefee_yuan() {
+        return invoicefee_yuan;
+    }
+
+    public void setInvoicefee_yuan(String invoicefee_yuan) {
+        this.invoicefee_yuan = invoicefee_yuan;
+    }
+}

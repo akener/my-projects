@@ -1,0 +1,171 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import com.esop.cqDevelopment.elecPack.service.ElecContractService;
+import com.esop.cqDevelopment.elecPack.service.SeContractInfoService;
+import com.esop.cqDevelopment.elecPack.service.UnionMemberService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by wangxy on 2017/12/8.
+ */
+@Controller
+public class GroupMemberController {
+    private static Logger logger = Logger.getLogger(GroupMemberController.class);
+    @Autowired
+    UnionMemberService unionMemberService;
+
+    @Autowired
+    SeContractInfoService seContractInfoService;
+
+    @Autowired
+    DataConversion dataConversion;
+
+    @Autowired
+    ElecContractService elecContractService;
+
+    Result result=new Result();
+    /**
+     * 跳转到集团成员管理页面
+     * @return
+     */
+    @RequestMapping(value = "memberManage")
+    public ModelAndView memberManage(HttpServletRequest request) {
+        ModelAndView view = new ModelAndView();
+        String serviceNo = "q7000xsq";//客户经理号
+        //serviceNo = (String) request.getSession().getAttribute("serviceNo");
+        view.addObject("serviceNo",serviceNo);
+        view.setViewName("cqDevelopment/elecPack/memberManage");
+        return view;
+    }
+    /**
+     * 进入订单修改发起页面
+     * @return
+     */
+    @RequestMapping(value = "updateMemberNew")
+    public ModelAndView updateMemberNew(String id, HttpServletRequest request) {
+        ModelAndView view = new ModelAndView();
+        OrderDto info =  unionMemberService.getMemberInfo(id);
+        view.addObject("info",info);
+        view.setViewName("cqDevelopment/elecPack/updateMemberNew");
+        return view;
+    }
+    /**
+     * 进入订单删除发起页面
+     * @return
+     */
+    @RequestMapping(value = "delMemberNew")
+    public ModelAndView deleteMemberNew(String id, HttpServletRequest request) {
+        ModelAndView view = new ModelAndView();
+        OrderDto info =  unionMemberService.getMemberInfo(id);
+        view.addObject("info",info);
+        view.setViewName("cqDevelopment/elecPack/memberDeleteNew");
+        return view;
+    }
+    /**
+     * 进入新增成员页面
+     * @return
+     */
+    @RequestMapping(value = "memberAdd")
+    public String memberAdd() {
+        logger.info("GroupMemberController'memberManage....");
+        return "cqDevelopment/elecPack/memberAdd";
+    }
+
+    /**
+     * 进入本地营销活动优惠充值（集团用户）订单修改页面
+     * @return
+     */
+    @RequestMapping(value = "updActivitiesDiscount")
+    public String updActivitiesDiscount(){
+        return "cqDevelopment/elecPack/updActivitiesDiscount";
+    }
+    /**
+     * 进入本地营销活动优惠充值（集团用户）订单详情页面
+     * @return
+     */
+    @RequestMapping(value = "activitiesDiscountDetail")
+    public String activitiesDiscountDetail(){
+        return "cqDevelopment/elecPack/ActivitiesDiscountDetail";
+    }
+
+    /**
+     * 进入专线合同页面
+     * @return
+     */
+    @RequestMapping(value = "specialContractInfo")
+    public String specialContractInfo(){
+        return "cqDevelopment/elecPack/SpecialContractInfo";
+    }
+
+    /**
+     * 进入合同协审页面
+     * @return 进入合同协审页面
+     */
+    @RequestMapping(value = "contractAssist")
+    public String contractTurn(HttpServletRequest request, Model model) {
+        String contract_id  = request.getParameter("contract_id");
+
+        SeContractInfoDto seContractInfoDto = new SeContractInfoDto();
+        seContractInfoDto.setContract_id(contract_id);
+
+        String formSec = "CQ.CQ.C4";//审批页面，这个字段不重要
+
+        SeContractInfoDto se = seContractInfoService.selectOne(seContractInfoDto);
+        SeNewContractInfoDto seNewContractInfoDto = new SeNewContractInfoDto();
+        seNewContractInfoDto.setContract_id(se.getContract_id());
+        List<SeNewContractInfoDto> contractInfoList = elecContractService.getContractInfo(seNewContractInfoDto);
+        seNewContractInfoDto = contractInfoList.get(0);
+        seNewContractInfoDto = elecContractService.getContractDetailInfo(seNewContractInfoDto);
+
+
+        String toCQ = "0";//流程关键字 ，当资费折扣有小于9折的时候就为1。
+        SeProductChargeInfoDto productChargeInfo = new SeProductChargeInfoDto();
+        productChargeInfo.setProd_id(seNewContractInfoDto.getProduct_id());
+        List<SeProductChargeInfoDto> contractChargesList = elecContractService.getProductChargesByContractId(seNewContractInfoDto);
+        if (!StringUtils.isEmpty(seNewContractInfoDto.getDiscount())) {
+            Integer discount = Integer.valueOf(seNewContractInfoDto.getDiscount());
+            if (discount < 90) {
+                toCQ = "1";
+            }
+        }
+        String notIn = "";
+        if (contractChargesList != null && contractChargesList.size() > 0) {
+            notIn = contractChargesList.get(0).getId() + "";
+        }
+        if (contractChargesList != null && contractChargesList.size() > 1) {
+            for (int i = 1; i < contractChargesList.size(); i++) {
+                notIn = notIn + "," + contractChargesList.get(i).getId();
+            }
+        }
+        productChargeInfo.setNot_in_chargeId(notIn);
+        List<SeProductChargeInfoDto> productChargeInfoList = elecContractService.getProductChargeInfoList(productChargeInfo);
+        SeContractQddwDto qddwDto = elecContractService.getContractQddw(formSec);//根据session里面的登录信息获取乙方集团信息
+        model.addAttribute("bak3", seNewContractInfoDto.getBak3().substring(0, 10));
+        model.addAttribute("bak3_number", seNewContractInfoDto.getBak3().substring(10, 16));
+        model.addAttribute("contractChargesList", contractChargesList);
+        model.addAttribute("productChargeInfoList", productChargeInfoList);
+        model.addAttribute("contract", seNewContractInfoDto);
+        model.addAttribute("toCQ", toCQ);
+        model.addAttribute("proc_inst_id", se.getProc_inst_id());
+        model.addAttribute("contract_id", se.getContract_id());
+        model.addAttribute("step_id", se.getStep_id());
+        model.addAttribute("task_inst_id", se.getTask_inst_id());
+        model.addAttribute("task_id", se.getTask_id());
+        model.addAttribute("qddwDto", qddwDto);
+        return "cqDevelopment/elecPack/contractAssist";
+    }
+}

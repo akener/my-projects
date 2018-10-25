@@ -1,0 +1,43 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/7/8.
+ */
+public class BusiDealInfoTempDto {
+    String manager_no = "";
+    String manager_name = "";
+    String directory_name = "";
+    String work_count = "";
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getDirectory_name() {
+        return directory_name;
+    }
+
+    public void setDirectory_name(String directory_name) {
+        this.directory_name = directory_name;
+    }
+
+    public String getWork_count() {
+        return work_count;
+    }
+
+    public void setWork_count(String work_count) {
+        this.work_count = work_count;
+    }
+}

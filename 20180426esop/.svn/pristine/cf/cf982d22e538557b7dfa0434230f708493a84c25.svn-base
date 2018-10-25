@@ -1,0 +1,108 @@
+package com.esop.synLoginFor4A.controller;
+
+
+import com.esop.common.security.DESPlus;
+import com.esop.synLoginFor4A.dto.SynLoginFor4ADto;
+import com.esop.synLoginFor4A.service.SynLoginFor4AService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/7/25.
+ */
+@RestController
+public class SynLoginFor4ARC {
+    @Autowired
+    SynLoginFor4AService synLoginFor4AService;
+
+    @Value("${service4ALoginRole}")
+    private String service4ALoginRole;
+
+
+    @RequestMapping(value="/synLoginFor4AManage")
+    public void getSynLoginFor4A(SynLoginFor4ADto parameter, HttpServletRequest request, boolean flag){
+
+        List<SynLoginFor4ADto> list;
+        list = synLoginFor4AService.getSynLoginFor4AList();
+
+        SynLoginFor4ADto synLoginFor4ADto = new SynLoginFor4ADto();
+        int num;
+
+        String userid = "";
+        String username = "";
+        String phone = "";
+        String roleid = "";
+        String orgid = "";
+
+
+        try {
+            HttpURLConnection conn = null;
+
+
+            for(int i = 0;i < list.size(); i ++){
+
+                System.out.println("*************************** "+list.get(i).getLogin_no());
+
+                //userid=list.get(i).getLogin_no()==null?"":list.get(i).getLogin_no();
+
+
+                String passwd = list.get(i).getPassword();
+                DESPlus desplus = new DESPlus();
+                passwd = desplus.encrypt(passwd);
+
+                String url = service4ALoginRole+"call4AService_UserAdd";
+                url+="?userid="+list.get(i).getLogin_no();
+                url+="&username="+list.get(i).getLogin_name();
+                url+="&userpassword="+passwd;
+                url+="&phone="+list.get(i).getContract_phone();
+                url+="&roleid="+list.get(i).getRole_code();
+                url+="&orgid="+list.get(i).getGroup_id();
+
+                //System.out.println("############################ url = "+url);
+
+                //System.out.println("############################ 1");
+                URL target = new URL(url);
+                conn = (HttpURLConnection) target.openConnection();
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+
+                //System.out.println("############################ 2");
+                //OutputStream os = conn.getOutputStream();
+                //os.write(paramDto.getParam().getBytes("utf8"));
+
+                InputStream is = conn.getInputStream();
+                //System.out.println("############################ 3");
+                byte[] b = new byte[1024];
+                int len = 0;
+                String resp = "";
+                while((len = is.read(b)) != -1){
+                    String ss = new String(b,0,len,"UTF-8");
+                    resp += ss;
+                }
+                //System.out.println("出参-----------"+resp);
+                if(resp.indexOf("成功") > 0){
+                    System.out.println("*************************** [成功]");
+                }else {
+                    System.out.println("*************************** [失败]");
+                }
+
+                synLoginFor4ADto.setLogin_no(list.get(i).getLogin_no());
+                synLoginFor4AService.deleteSynLoginFor4AList(synLoginFor4ADto);
+                //System.out.println(num);
+            }
+
+        }catch (Exception e){
+        }
+
+    }
+}

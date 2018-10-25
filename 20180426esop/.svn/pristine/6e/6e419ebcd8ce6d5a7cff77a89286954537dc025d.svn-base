@@ -1,0 +1,610 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lilei
+  Date: 2017/6/5
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  省审核地市提交工单
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>--%>
+<head>
+
+
+
+
+    <link rel="icon" href="./favicon.ico">
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>
+
+
+</head>
+
+<!--<hr />-->
+<body>
+<div class="modal fade" id="fault10" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice10">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo10">回退工单时请勿选择营销活动</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice11">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo11">没有工单数据，不能进行回退操作</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice9">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo9">省营销管理员回退工单成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="backCaseOK"type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice8">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo8">省营销管理员回退工单失败</label>
+            </div>
+            <div class="modal-footer">
+                <button id="backCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice7">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo7">省营销管理员下发工单成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="putCaseOK"type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice6">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo6">省营销管理员下发工单失败</label>
+            </div>
+            <div class="modal-footer">
+                <button id="putCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">请选择营销活动</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">请选择大于当前时间的工单截止日期</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">工单数据为空，不能下发</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault12" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice12">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo12">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">省管理员审核地市提交工单</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">工单截止日期</label>
+                            <div class="col-sm-2">
+                                <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                    <input readonly class="form-control" id="overTime" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th class="text-center">批次号</th>
+                <th class="text-center">地市编码</th>
+                <th class="text-center">地市名称</th>
+                <th class="text-center">集团编码</th>
+                <th class="text-center">集团名称</th>
+                <th class="text-center">智能V网成员数</th>
+                <th class="text-center">4G渗透率</th>
+                <th class="text-center">员工数</th>
+                <th class="text-center">移动用户数</th>
+                <th class="text-center">客户经理工号</th>
+                <th class="text-center">客户经理姓名</th>
+            </tr>
+        </thead>
+
+    </table>
+</div>
+<div style="background-color: #ffffee;width: 100%;height: 40px">
+
+</div>
+    <%--<div >
+        <button id="qryCase"style="width:200px;height:30px;color: #3b7286">省营销活动查询</button>
+    </div>--%>
+
+ <div id="caseId">
+    <table id="caseTable" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center" ><strong >请选择</strong></th>
+            <th class="text-center" ><strong >营销活动编码</strong></th>
+            <th class="text-center" style="font-size: large"><strong>省 营 销 活 动</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+     <div style="padding-left: 40%">
+         <button id="btnBack"style="width:80px;height:30px;color: #3b7286">回退下级</button>
+         <button id="btnSub"style="width:80px;height:30px;color: #3b7286;margin-left: 30px">下 发</button>
+     </div>
+</div>
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var table1;
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+    var arr=new Array();
+    $(document).ready(function() {
+
+
+                editor = new $.fn.DataTable.Editor( {
+                } );
+
+                //工单数据
+                 table = $('#example').DataTable( {
+                    dom: "Bfrtip",
+                    bLengthChange:true,
+                    "bFilter": false,
+                    "pageLength": 5,//设置每页显示多少条记录
+                    "language": {
+                        "url": "/esop/static/data/Chinese.json"
+                    }, //多语言配置
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url:"/qryCustReturnCaseMsg",
+                        type:"POST",
+                        data:{"status":"11"}
+                    },
+                    columns: [
+                        { data:"batch_no"},
+                        { data:"region_id"},
+                        { data: "region_name" },
+                        { data: "unit_id" },
+                        { data: "unit_name" },
+                        { data: "intelligent_number" },
+                        { data: "permeability" },
+                        { data: "employee_number" },
+                        { data: "user_number" },
+                        { data: "login_no" },
+                        { data: "manager_name" }
+                    ],
+                    select: true,
+                    buttons: [
+                    ]
+                } );
+
+                //营销活动
+               table1 = $('#caseTable').DataTable( {
+                    dom: "Bfrtip",
+                    bLengthChange:true,
+                    "bFilter": false,
+                    "pageLength":10,//设置每页显示多少条记录
+                    "language": {
+                        "url": "/esop/static/data/Chinese.json"
+                    }, //多语言配置
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url:"/qryCaseActivity",
+                        type:"POST",
+                        data:{"group_id":group_id}
+                    },
+                    columns: [
+                        {
+
+                            data:"market_no",
+                            //"orderable": false,
+                            "width": "8%",
+                            render: function ( data, type, row, meta ) {
+
+                                return  data ='<input type="checkbox" name="check" value="'+row.market_no+'" onclick="check(this)"/>';
+
+                            } },
+
+                        {data:"market_no"},
+                        {data:"market_name"}
+
+
+                    ],
+
+
+                    select: true,
+                    buttons: [
+
+                    ]
+                } );
+                table1.on( 'draw.dt', function () {
+                    var setObj = $("input[name='check']");
+                    //alert(setObj.length );
+                    for(var i=0; i<arr.length; i++){
+                        if(setObj.length > 0){
+                            setObj.each(function(){
+                                if(arr[i] == $(this).val()){
+                                    //alert(arr[i]);
+                                    this.setAttribute("checked","checked");
+                                }
+                            });
+                        }
+                    }
+                } );
+
+    } );
+
+    function check(obj){
+        if(!obj.checked){
+            obj.removeAttribute("checked");
+            removeByValue(arr,$(obj).val());
+            //alert(arr);
+
+
+        }else{
+            obj.setAttribute("checked","checked");
+            arr.push($(obj).val());
+            //alert(arr);
+
+
+
+        }
+    }
+    function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+            if(arr[i] == val) {
+                arr.splice(i, 1);
+                break;
+            }
+        }
+    }
+
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+
+
+
+    //审核通过，下发给地市管理员
+    $("#btnSub").click(function(){
+        var marketNoList = "";//活动编码
+        var marketNameList="";//活动名称
+        var batchList = "";//批次编码
+        var unitIdList = "";//集团编码
+        var regionList = "";//地市
+
+        var dataTable = $('#example').DataTable();
+        var info = dataTable.page.info();
+        var dataRows = info.recordsTotal;
+        if(dataRows=="0"){
+            $("#fault2").modal('show');
+            return;
+        }
+
+        var endTime=$("#overTime").val();
+        if(endTime==undefined || endTime==""){
+            $("#fault1").modal('show');
+            return;
+        }
+
+
+        var oDate1 = new Date(new Date());//当前日期
+        var oDate2 = new Date(endTime);//结束时间
+        oDate1=oDate1.getTime()+86400000;
+        //alert(oDate1);
+        //alert(oDate1.getTime()+"当前，  结束："+oDate2.getTime())
+        if(oDate1 > oDate2.getTime()){
+            $("#fault1").modal('show');
+            return;
+        };
+        var eTimes=endTime.toString();
+        //alert(eTimes);
+        //取选中行的活动编码
+        var marketNoList="";
+        if(arr.length>0){
+            for(var i=0;i<arr.length;i++){
+                marketNoList+=arr[i]+",";
+            }
+
+        }else{
+            $("#fault").modal('show');
+            return;
+        }
+        //alert(marketNoList);
+
+        //取所有营销数据中的地市
+        $('#example tr:not(:first)').each(function(){
+            var s=$(this).children();
+            var batchBuf=s.eq(0).text();
+            var unitIdBuf=s.eq(3).text();
+            var regionBuf= s.eq(1).text();
+            //alert(batchBuf+"+"+groupBuf+"+"+regionBuf);
+            batchList+=batchBuf+",";
+            unitIdList+=unitIdBuf+",";
+            regionList+=regionBuf+",";
+
+        });
+        //alert("111");
+        $.ajax({
+            type:"GET",
+            url:"sendCaseToRegionInfo",
+            data:{"marketNoList":marketNoList,"regionList":regionList,"unitIdList":unitIdList,"batchList":batchList,"eTimes":eTimes,"status":"11"}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault7").modal('show');
+            }else{
+                $("#fault6").modal('show');
+            }
+
+        });
+    });
+
+    //回退给客户经理
+    $("#btnBack").click(function(){
+        var batchList = "";//批次编码
+        var unitIdList = "";//集团编码
+        var regionList = "";//地市
+
+        var dataTable = $('#example').DataTable();
+        var info = dataTable.page.info();
+        var dataRows = info.recordsTotal;
+        if(dataRows=="0"){
+            $("#fault11").modal('show');
+            return;
+        }
+
+        if(arr.length>0){
+            $("#fault10").modal('show');
+            return;
+        }
+
+
+        //取所有营销数据中的地市
+        $('#example tr:not(:first)').each(function(){
+            var s=$(this).children();
+            var batchBuf=s.eq(0).text();
+            var unitIdBuf=s.eq(3).text();
+            var regionBuf= s.eq(1).text();
+            //alert(batchBuf+"+"+groupBuf+"+"+regionBuf);
+            batchList+=batchBuf+",";
+            unitIdList+=unitIdBuf+",";
+            regionList+=regionBuf+",";
+
+        });
+
+        $.ajax({
+            type:"GET",
+            url:"/custSbuRecordToRegionManager",
+            data:{"regionList":regionList,"unitIdList":unitIdList,"batchList":batchList,"status":"10"}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault9").modal('show');
+            }else{
+                $("#fault8").modal('show');
+            }
+
+        });
+    });
+
+    $("#backCaseOK").click(function () {
+
+        document.location.reload();
+    });
+    $("#backCaseFail").click(function () {
+
+        document.location.reload();
+    });
+
+    $("#putCaseOK").click(function () {
+
+        document.location.reload();
+    });
+    $("#putCaseFail").click(function () {
+
+        document.location.reload();
+    });
+
+</script>
+</html>

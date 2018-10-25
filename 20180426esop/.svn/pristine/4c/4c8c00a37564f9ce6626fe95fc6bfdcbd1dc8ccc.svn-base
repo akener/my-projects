@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ProvinceOrderServiceRepository">
+
+    <!-- 下发工单 -->
+    <insert id="insert" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto">
+        insert into ep_dict_manage(region_name,pack,termi,open_amout,cust,broad,
+        order_no,op_time,op_login,op_note,status_code,region_no,op_code) values (#{region_name},#{pack},#{termi},#{open_amout},#{cust},#{broad},
+        #{order_no},#{op_time},#{op_login},#{op_note},#{status_code},#{region_no},#{op_code})
+    </insert>
+    <!-- 查询地市下面未下发工单的所有区县 -->
+    <select id="getRegionName" parameterType="string" resultType="com.esop.workOrderInfo.dto.ProvinceOrderDto">
+         select a.group_name,a.group_id from ep_sys_group_info a where  trim(a.group_name) not in(
+            select trim(a.group_name) from ep_sys_group_info a,ep_dict_manage b
+            where a.group_id in (
+              select group_id from ep_sys_group_rel t where t.parent_group_id = #{group_id}
+              and t.denorm_level = '1') and trim(a.group_name)=trim(b.region_name) and a.group_id=b.region_no and b.status_code='03'
+              and (substr(b.order_no,length(b.order_no)-7,6 )) = ((select to_CHAR(sysdate,'yyyyMM') FROM DUAL))
+         )
+         and a.group_id in (
+            select group_id from ep_sys_group_rel t where t.parent_group_id =  #{group_id} and t.denorm_level = '1'
+          )
+    </select>
+    <!-- 查询本地市的任务量 -->
+    <select id="getRegionOrder" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.ProvinceOrderDto">
+        select region_name,pack,termi,open_amout,cust,broad
+        from ep_dict_manage
+        where status_code = #{status_code} and region_no = #{region_no}
+    </select>
+    <!-- 查询区县下未分配任务的客户经理 -->
+    <select id="getLocalManager" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.ProvinceOrderDto">
+        select a.name,a.service_no from dgrpmanagermsg a where a.service_no not in(
+            select  a.service_no from dgrpmanagermsg a, ep_dict_manage b where a.service_no in(
+                      select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id =#{group_id}
+                      )
+            ) and b.region_no = a.service_no
+              and (substr(b.order_no,length(b.order_no)-7,6 ) ) = ((select to_CHAR(sysdate,'yyyyMM') FROM DUAL))
+            ) and a.service_no in(
+                      select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id =#{group_id}
+                      )
+          )
+
+    </select>
+    <!-- 查询客户经理参考信息 -->
+    <select id="managerRefInfo" parameterType="com.esop.workOrderInfo.dto.ManagerRefInfoDto" resultType="com.esop.workOrderInfo.dto.ManagerRefInfoDto">
+
+        select manager_no,manager_name,unit_amount,unit_member,substr(net_radio,instr(net_radio,'.',1,1)+1,2) as net_radio,substr(integration_radio,instr(integration_radio,'.',1,1)+1,2) as integration_radio,
+		substr(terminal_radio,instr(terminal_radio,'.',1,1)+1,2) as terminal_radio
+        from ep_town_order where manager_name ='${manager_name}' and manager_boss_no ='${manager_no}'
+        and to_char(to_date(eff_date,'yyyy-MM hh24:mi:ss'),'yyyyMM')=to_char(sysdate,'yyyyMM')
+
+    </select>
+    <!-- 校验地市工单是否已经下发 -->
+    <select id="checkRegion" resultType="com.esop.workOrderInfo.dto.ProvinceOrderDto">
+        select region_name from ep_dict_manage where status_code='02'
+        and (substr(order_no,length(order_no)-7,6 ) ) = ((select to_CHAR(sysdate,'yyyyMM') FROM DUAL))
+    </select>
+    <!-- 发短信通知客户经理 -->
+    <insert id="sendMsgToMng" parameterType="com.esop.workOrderInfo.dto.MsgDto">
+        insert into push_sms_crm_0(SEQ,TEMPLATEID,PARAMETER,SERVICE_NO,PHONE_NO,INSERT_TIME,OP_CODE,LOGIN_NO,SERV_NO,
+               SERV_NAME,SUB_PHONE_SEQ,SEND_TIME,HOLD1,HOLD2,HOLD3,HOLD4,HOLD5,REAL_SEND_TIME)
+        values(pushsms_seq.nextval,'CRM_0558',#{parameter},'',(select phone_no from dgrpmanagermsg where service_no=#{service_no}),
+              sysdate,'604002',#{login_no},'', '','',#{send_time},'','','','','',null)
+    </insert>
+    <!-- 查询客户经理任务完成情况 -->
+    <select id="getMngWorkCnt" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.MngMonitorDto">
+        select u.manager_name,u.manager_no,nvl((u.change_amountT-nvl(u.change_amount,0)),0) as change_amount,
+        nvl((u.termi_amountT-nvl(u.termi_amount,0)),0) as termi_amount,nvl((u.open_amountT-nvl(u.open_amount,0)),0) as open_amount,
+        nvl((u.web_amountT-nvl(u.web_amount,0)),0) as web_amount,nvl((u.broad_dep_amountT-nvl(u.broad_dep_amount,0)),0) as broad_dep_amount,
+        u.pack,u.termi,u.open_amout,u.cust,u.broad from (
+        select a.*,b.* from
+        (select  a.name as manager_name,a.service_no as manager_no,sum(b.change_amount) as change_amountT,sum(b.termi_amount) as termi_amountT,
+                sum(b.open_amount) as open_amountT,sum(b.web_amount) as web_amountT,sum(b.broad_dep_amount) as broad_dep_amountT,c.pack,c.termi,c.open_amout,c.cust,c.broad
+                from ep_control_order b,dgrpmanagermsg a,ep_dict_manage c where  a.service_no in (
+                    select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id =#{group_id}
+                      )
+                  ) and a.service_no=b.manager_boss_no(+)
+                 and c.status_code(+)='04' and c.region_no(+)=a.service_no
+                 and substr(c.order_no,length(c.order_no)-7,6 ) = to_char(sysdate,'yyyyMM')
+                 group by a.name,a.service_no,c.pack,c.termi,c.open_amout,c.cust,c.broad
+        )a,
+        (select  a.name,a.service_no,sum(b.change_amount) as change_amount,sum(b.termi_amount) as termi_amount,
+                sum(b.open_amount) as open_amount,sum(b.web_amount) as web_amount,sum(b.broad_dep_amount) as broad_dep_amount
+                from ep_control_order b,dgrpmanagermsg a where  a.service_no in (
+                    select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id =#{group_id}
+                      )
+                  ) and a.service_no=b.manager_boss_no(+)
+                  and to_char(to_date(b.eff_date,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+                  group by a.name,a.service_no
+        )b where a.manager_no=b.service_no(+)
+        ) u
+    </select>
+    <!-- 查询区县任务完成情况 -->
+    <select id="getCountyWorkCnt" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.MngMonitorDto">
+        select u.manager_name,u.manager_no,nvl((u.change_amountT-nvl(u.change_amount,0)),0) as change_amount,
+        nvl((u.termi_amountT-nvl(u.termi_amount,0)),0) as termi_amount,nvl((u.open_amountT-nvl(u.open_amount,0)),0) as open_amount,
+        nvl((u.web_amountT-nvl(u.web_amount,0)),0) as web_amount,nvl((u.broad_dep_amountT-nvl(u.broad_dep_amount,0)),0) as broad_dep_amount,
+        u.pack,u.termi,u.open_amout,u.cust,u.broad from (
+        select a.*,b.* from
+        (select  a.name as manager_name,a.service_no as manager_no,sum(b.change_amount) as change_amountT,sum(b.termi_amount) as termi_amountT,
+                sum(b.open_amount) as open_amountT,sum(b.web_amount) as web_amountT,sum(b.broad_dep_amount) as broad_dep_amountT,c.pack,c.termi,c.open_amout,c.cust,c.broad
+                from ep_control_order b,dgrpmanagermsg a,ep_dict_manage c where  a.service_no in (
+                    select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id =#{group_id}
+                      )
+                  ) and a.service_no=b.manager_boss_no(+)
+                 and c.status_code(+)='03' and c.region_no(+)=#{group_id}
+                 and substr(c.order_no,length(c.order_no)-7,6 ) = to_char(sysdate,'yyyyMM')
+                 group by a.name,a.service_no,c.pack,c.termi,c.open_amout,c.cust,c.broad
+        )a,
+        (select  a.name,a.service_no,sum(b.change_amount) as change_amount,sum(b.termi_amount) as termi_amount,
+                sum(b.open_amount) as open_amount,sum(b.web_amount) as web_amount,sum(b.broad_dep_amount) as broad_dep_amount
+                from ep_control_order b,dgrpmanagermsg a where  a.service_no in (
+                    select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id =#{group_id}
+                      )
+                  ) and a.service_no=b.manager_boss_no(+)
+                  and to_char(to_date(b.eff_date,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+                  group by a.name,a.service_no
+        )b where a.manager_no=b.service_no(+)
+        ) u
+    </select>
+    <!-- 客户经理监控单，查询区县下客户经理-->
+    <select id="getMng" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.MngMonitorExtraDto">
+        select   a.name,a.service_no
+        from dgrpmanagermsg a where a.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+        )
+    </select>
+    <!-- 区县监控单，查询区县下客户经理完成量及任务量-->
+    <select id="countyGetMngExtraTotal" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.CountyMonitorExtraDto">
+        select a.group_name,a.group_id,(a.recovera-nvl(b.recoverb,0)) as recover
+        ,(a.worka-nvl(c.workb,0)) as work,(a.signa-nvl(d.signb,0)) as sign,
+        (e.recoverTotal-nvl(f.recoverTotalb,0)) as recoverTotal,
+        (e.workTotal-nvl(g.workTotalb,0)) as workTotal,
+        (e.signTotal-nvl(h.signTotalb,0)) as signTotal from
+        (select d.name as group_name,d.service_no as group_id,count(distinct a.id) as recovera,count(distinct b.reid) as worka,count(distinct c.id) as signa
+          from dgrpmanagermsg d,ep_owerecord_info a,ep_market_record b,ep_signonrecord_info c
+          where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+          and   a.service_no(+)=d.service_no  and a.record_status(+)='04'
+          and   b.login_no(+)=d.service_no  and b.status(+)='04'
+          and   c.service_no(+)=d.service_no  and c.record_status(+)='11'
+          group by d.name,d.service_no
+          order by d.service_no) a,
+          (select d.name,d.service_no ,nvl(count(distinct a.id),0) as recoverb
+          from dgrpmanagermsg d,ep_owerecord_info a
+          where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+          and   a.service_no(+)=d.service_no  and a.record_status(+)='04'
+          and   to_char(to_date(a.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+          group by d.name,d.service_no
+          order by d.service_no
+          ) b ,
+         (select d.name,d.service_no ,nvl(count(distinct b.reid),0) as workb
+          from dgrpmanagermsg d,ep_market_record b
+          where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+          and   b.login_no(+)=d.service_no  and b.status(+)='04'
+          and   to_char(to_date(b.create_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+          group by d.name,d.service_no
+          order by d.service_no) c ,
+          (select d.name,d.service_no ,nvl(count(distinct c.id),0) as signb
+          from dgrpmanagermsg d,ep_signonrecord_info c
+          where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+          and   c.service_no(+)=d.service_no  and c.record_status(+)='11'
+          and   to_char(to_date(c.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+          group by d.name,d.service_no
+          order by d.service_no) d ,
+        (select d.service_no,count(distinct a.id) as recoverTotal,count(distinct b.reid) as workTotal,count(distinct c.id) as signTotal
+        from dgrpmanagermsg d,ep_owerecord_info a,ep_market_record b,ep_signonrecord_info c
+        where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+        and   a.service_no(+)=d.service_no
+        and   b.login_no(+)=d.service_no
+        and   c.service_no(+)=d.service_no
+        group by d.service_no
+        order by d.service_no) e,
+        (select d.service_no,count(distinct a.id) as recoverTotalb
+        from dgrpmanagermsg d,ep_owerecord_info a
+        where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+        and   a.service_no(+)=d.service_no
+        and   to_char(to_date(a.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+        group by d.service_no
+        order by d.service_no) f,
+        (select d.service_no,count(distinct b.reid) as workTotalb
+        from dgrpmanagermsg d,ep_market_record b
+        where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+        and   b.login_no(+)=d.service_no
+        and to_char(to_date(b.create_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+        group by d.service_no
+        order by d.service_no) g,
+        (select d.service_no,count(distinct c.id) as signTotalb
+        from dgrpmanagermsg d,ep_signonrecord_info c
+        where d.service_no in (
+            select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+              select group_id from ep_sys_group_rel z where z.parent_group_id = #{group_id}
+              )
+          )
+        and   c.service_no(+)=d.service_no
+        and   to_char(to_date(c.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+        group by d.service_no
+        order by d.service_no) h
+        where a.group_id=b.service_no(+) and a.group_id=c.service_no(+) and a.group_id=d.service_no(+)
+        and a.group_id=e.service_no(+) and a.group_id=f.service_no(+) and a.group_id=g.service_no(+) and a.group_id=h.service_no(+)
+    </select>
+    <!-- 查询客户经理现场办公，签约，欠费回收情况 -->
+    <select id="getMngExtra" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.MngMonitorExtraDto">
+        select (a.recoverTotal-b.recoverTotalb) as recover,
+            (a.workTotal-c.workTotalb) as workCount,
+            (a.signTotal-d.signTotalb) as sign from
+            (select count(distinct a.id) as recoverTotal,count(distinct b.reid) as workTotal,count(distinct c.id) as signTotal
+                      from dgrpmanagermsg d,ep_owerecord_info a,ep_market_record b,ep_signonrecord_info c
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   a.service_no(+)=d.service_no and a.record_status(+)='04'
+                      and   b.login_no(+)=d.service_no and b.status(+)='04'
+                      and   c.service_no(+)=d.service_no and c.record_status(+)='11'
+            )a,
+            (select count(distinct a.id) as recoverTotalb
+                      from dgrpmanagermsg d,ep_owerecord_info a
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   a.service_no(+)=d.service_no and a.record_status(+)='04'
+                      and  to_char(to_date(a.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+
+            )b,
+            (select count(distinct b.reid) as workTotalb
+                      from dgrpmanagermsg d,ep_market_record b
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   b.login_no(+)=d.service_no and b.status(+)='04'
+                      and  to_char(to_date(b.create_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+            )c,
+            (select count(distinct c.id) as signTotalb
+                      from dgrpmanagermsg d,ep_signonrecord_info c
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   c.service_no(+)=d.service_no and c.record_status(+)='11'
+                      and  to_char(to_date(c.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+
+            )d
+    </select>
+
+    <!-- 查询客户经理现场办公，签约，欠费回收任务量-->
+    <select id="getMngExtraTotal" parameterType="com.esop.workOrderInfo.dto.MngMonitorExtraDto" resultType="com.esop.workOrderInfo.dto.MngMonitorExtraDto">
+          select (a.recoverTotal-b.recoverTotalb) as recoverTotal,
+            (a.workTotal-c.workTotalb) as workTotal,
+            (a.signTotal-d.signTotalb) as signTotal from
+            (select count(distinct a.id) as recoverTotal,count(distinct b.reid) as workTotal,count(distinct c.id) as signTotal
+                      from dgrpmanagermsg d,ep_owerecord_info a,ep_market_record b,ep_signonrecord_info c
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   a.service_no(+)=d.service_no
+                      and   b.login_no(+)=d.service_no
+                      and   c.service_no(+)=d.service_no
+            )a,
+            (select count(distinct a.id) as recoverTotalb
+                      from dgrpmanagermsg d,ep_owerecord_info a
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   a.service_no(+)=d.service_no
+                      and  to_char(to_date(a.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+
+            )b,
+            (select count(distinct b.reid) as workTotalb
+                      from dgrpmanagermsg d,ep_market_record b
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   b.login_no(+)=d.service_no
+                      and  to_char(to_date(b.create_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+            )c,
+            (select count(distinct c.id) as signTotalb
+                      from dgrpmanagermsg d,ep_signonrecord_info c
+                      where d.service_no='${service_no}' and d.name='${name}'
+                      and   c.service_no(+)=d.service_no
+                      and  to_char(to_date(c.op_time,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+
+            )d
+    </select>
+
+    <!-- 查询地市下所有的区县 -->
+    <select id="getAllCounty" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.CountyMonitorDto">
+        select group_id,group_name from ep_sys_group_info a where a.group_id in (select group_id
+              from ep_sys_group_rel t where t.parent_group_id = #{group_id} and t.denorm_level = '1')
+    </select>
+
+    <!-- 查询地市下所有的区县 和上一个SQL相比出参DTO不一样，不可以删除-->
+    <select id="getCounties" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.CountyMonitorExtraDto">
+        select group_id,group_name from ep_sys_group_info a where a.group_id in (select group_id
+        from ep_sys_group_rel t where t.parent_group_id = #{group_id} and t.denorm_level = '1')
+    </select>
+
+    <!-- 查询13个地市及其全业务任务量-->
+    <select id="getRegions" resultType="com.esop.workOrderInfo.dto.RegionMonitorDto">
+        select b.group_id,b.group_name,c.pack,c.termi,c.open_amout,c.cust,c.broad from ep_sys_regioncode_dict a,ep_sys_group_info b,ep_dict_manage c
+           where trim(a.region_name)=trim(b.group_name)
+           and trim(c.region_name(+))=trim(b.group_name)
+           /*order by  b.group_id*/
+    </select>
+
+    <!-- 查询13个地市现场办公，签约，欠费回收任务量及完成量-->
+    <select id="getRegionExtra" resultType="com.esop.workOrderInfo.dto.RegionMonitorExtraDto">
+        select a.region_name,
+                   a.region_no,
+                   (a.recovera - nvl(b.recover, 0)) as recover,
+                   (a.worka - nvl(c.work, 0)) as work,
+                   (a.signa - nvl(d.sign, 0)) as sign,
+                   (e.recoverTotal - nvl(f.recoverTotalb, 0)) as recoverTotal,
+                   (e.workTotal - nvl(g.workTotalb, 0)) as workTotal,
+                   (e.signTotal - nvl(h.signTotalb, 0)) as signTotal
+              from (select a.region_name,
+                           a.region_no,
+                           nvl(count(distinct b.id), 0) as recovera,
+                           nvl(count(distinct c.reid), 0) as worka,
+                           nvl(count(distinct d.id), 0) as signa
+                      from ep_dict_manage       a,
+                           ep_owerecord_info    b,
+                           ep_market_record     c,
+                           ep_signonrecord_info d
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) = trim(b.group_name))
+                       and b.org_code(+) = a.region_no
+                       and b.record_status(+) = '04'
+                       and c.region_id(+) = a.region_no
+                       and c.status(+) = '04'
+                       and d.org_code(+) = a.region_no
+                       and d.record_status(+) = '11'
+                     group by a.region_name, a.region_no
+                     order by a.region_no) a,
+                   (select a.region_no as region_nob,
+                           nvl(count(distinct b.id), 0) as recover
+                      from ep_dict_manage a, ep_owerecord_info b
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) = trim(b.group_name))
+                       and b.org_code(+) = a.region_no
+                       and b.record_status(+) = '04'
+                       and to_char(to_date(b.op_time, 'yyyy-MM-dd hh24:mi:ss'), 'yyyyMM') !=
+                           to_char(sysdate, 'yyyyMM')
+                     group by a.region_no) b,
+                   (select a.region_no as region_noc,
+                           nvl(count(distinct c.reid), 0) as work
+                      from ep_dict_manage a, ep_market_record c
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) = trim(b.group_name))
+                       and c.region_id(+) = a.region_no
+                       and c.status(+) = '04'
+                       and to_char(to_date(c.create_time, 'yyyy-MM-dd hh24:mi:ss'),
+                                   'yyyyMM') != to_char(sysdate, 'yyyyMM')
+                     group by a.region_no
+
+                    ) c,
+                   (select a.region_no as region_nod,
+                           nvl(count(distinct d.id), 0) as sign
+                      from ep_dict_manage a, ep_signonrecord_info d
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) = trim(b.group_name))
+                       and d.org_code(+) = a.region_no
+                       and d.record_status(+) = '11'
+                       and to_char(to_date(d.op_time, 'yyyy-MM-dd hh24:mi:ss'), 'yyyyMM') !=
+                           to_char(sysdate, 'yyyyMM')
+                     group by a.region_no) d,
+                   (select a.region_no as region_noe,
+                           nvl(count(distinct b.id), 0) as recoverTotal,
+                           nvl(count(distinct c.reid), 0) as workTotal,
+                           nvl(count(distinct d.id), 0) as signTotal
+                      from ep_dict_manage       a,
+                           ep_owerecord_info    b,
+                           ep_market_record     c,
+                           ep_signonrecord_info d
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) = trim(b.group_name))
+                       and b.org_code(+) = a.region_no
+                       and c.region_id(+) = a.region_no
+                       and d.org_code(+) = a.region_no
+                     group by a.region_no) e,
+                   (select a.region_no as region_nof,
+                           nvl(count(distinct b.id), 0) as recoverTotalb
+                      from ep_dict_manage a, ep_owerecord_info b
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) =trim( b.group_name))
+                       and b.org_code(+) = a.region_no
+                       and to_char(to_date(b.op_time, 'yyyy-MM-dd hh24:mi:ss'), 'yyyyMM') !=
+                           to_char(sysdate, 'yyyyMM')
+                     group by a.region_no) f,
+                   (select a.region_no as region_nog,
+                           nvl(count(distinct c.reid), 0) as workTotalb
+                      from ep_dict_manage a, ep_market_record c
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) =trim(b.group_name))
+                       and c.region_id(+) = a.region_no
+                       and to_char(to_date(c.create_time, 'yyyy-MM-dd hh24:mi:ss'),
+                                   'yyyyMM') != to_char(sysdate, 'yyyyMM')
+                     group by a.region_no
+
+                    ) g,
+                   (select a.region_no as region_noh,
+                           nvl(count(distinct d.id), 0) as signTotalb
+                      from ep_dict_manage a, ep_signonrecord_info d
+                     where a.region_no in
+                           (select b.group_id
+                              from ep_sys_regioncode_dict a, ep_sys_group_info b
+                             where trim(a.region_name) = trim(b.group_name))
+                       and d.org_code(+) = a.region_no
+                       and to_char(to_date(d.op_time, 'yyyy-MM-dd hh24:mi:ss'), 'yyyyMM') !=
+                           to_char(sysdate, 'yyyyMM')
+                     group by a.region_no) h
+             where a.region_no = b.region_nob(+)
+               and a.region_no = c.region_noc(+)
+               and a.region_no = d.region_nod(+)
+               and a.region_no = e.region_noe(+)
+               and a.region_no = f.region_nof(+)
+               and a.region_no = g.region_nog(+)
+               and a.region_no = h.region_noh(+)
+
+    </select>
+
+    <select id="getCountyOutDateCnt" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.CountyOutDateDto">
+          select * from table(get_outdateall(#{group_id}))
+    </select>
+
+    <!--客户经理任务量级完成情况-->
+    <select id="mngGetSelfWork" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.MngMonitorDto">
+       select u.manager_name,u.manager_no,nvl((u.change_amountT-nvl(u.change_amount,0)),0) as change_amount,
+        nvl((u.termi_amountT-nvl(u.termi_amount,0)),0) as termi_amount,nvl((u.open_amountT-nvl(u.open_amount,0)),0) as open_amount,
+        nvl((u.web_amountT-nvl(u.web_amount,0)),0) as web_amount,nvl((u.broad_dep_amountT-nvl(u.broad_dep_amount,0)),0) as broad_dep_amount,
+        u.pack,u.termi,u.open_amout,u.cust,u.broad from (
+        select a.*,b.* from
+        (select  a.name
+
+        as manager_name,a.service_no as manager_no,sum(b.change_amount) as change_amountT,sum(b.termi_amount) as termi_amountT,
+        sum(b.open_amount) as open_amountT,sum(b.web_amount) as web_amountT,sum(b.broad_dep_amount) as broad_dep_amountT,c.pack,c.termi,c.open_amout,c.cust,c.broad
+        from ep_control_order b,dgrpmanagermsg a,ep_dict_manage c where a.service_no=#{service_no}
+        and a.service_no=b.manager_boss_no(+)
+        and c.status_code(+)='04' and c.region_no(+)=a.service_no
+        and substr(c.order_no,length(c.order_no)-7,6 ) = to_char(sysdate,'yyyyMM')
+        group by a.name
+
+        ,a.service_no,c.pack,c.termi,c.open_amout,c.cust,c.broad
+        )a,
+        (select  a.name
+
+        ,a.service_no,sum(b.change_amount) as change_amount,sum(b.termi_amount) as termi_amount,
+        sum(b.open_amount) as open_amount,sum(b.web_amount) as web_amount,sum(b.broad_dep_amount) as broad_dep_amount
+        from ep_control_order b,dgrpmanagermsg a  where a.service_no=#{service_no}
+        and a.service_no=b.manager_boss_no(+)
+        and to_char(to_date(b.eff_date,'yyyy-MM-dd hh24:mi:ss'),'yyyyMM') != to_char(sysdate,'yyyyMM')
+        group by a.name
+
+        ,a.service_no
+        )b where a.manager_no=b.service_no(+)
+        ) u
+    </select>
+
+    <!-- 查询指定客户经理的信息-->
+    <select id="mngGetSelfInfo" parameterType="com.esop.workOrderInfo.dto.ProvinceOrderDto" resultType="com.esop.workOrderInfo.dto.MngMonitorExtraDto">
+      select  a.name ,a.service_no from dgrpmanagermsg a where a.service_no=#{service_no}
+    </select>
+
+    <!-- 客户经理自己任务数据-->
+    <select id="selSelfOrderInfoMsg" parameterType="com.esop.workOrderInfo.dto.CustSerfOrderDto" resultType="com.esop.workOrderInfo.dto.CustSerfOrderDto">
+        select region_name,region_no,pack,termi,open_amout,cust,broad from ep_dict_manage where to_char(to_date(op_time, 'yyyy-MM-dd hh24:mi:ss'), 'yyyyMM') =
+       to_char(sysdate, 'yyyyMM') and region_no=#{region_no}
+    </select>
+
+
+</mapper>

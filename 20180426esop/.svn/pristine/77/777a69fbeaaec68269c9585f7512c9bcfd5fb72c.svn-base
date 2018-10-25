@@ -1,0 +1,104 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE HTML>
+<html>
+
+<head>
+</head>
+
+<body>
+<form id="form1" name="form1" action="/esop/login" method="post">
+    <input type="hidden" name="token" id="token" value="${token}"/>
+    <input type="hidden" name="username" id="username" value="${username}"/>
+    <input type="hidden" name="password" id="password" value="${password}"/>
+
+</form>
+</body>
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+<script type="text/javascript">
+    if (window != top)
+        top.location.href = location.href;
+    $(document).ready(function () {
+        function submitLogin() {
+            $.ajax({
+                type: "post",
+                url: '/esop/login',
+                data: {
+                    "username": $('#username').val(),
+                    "password": $('#password').val()
+                },
+                async: false,
+                error: function (data) {
+                    $.ajax({
+                        type: "post",
+                        url: 'setSessionInfo',
+                        data: {
+                            "login_no": $('#username').val(),
+                            "password": $('#password').val()
+                        },
+                        async: false
+                    }).then(function (data) {
+                        //$("#form1").attr("action", data);
+                        $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + $('#username').val() + "&portalUrl=" + data);
+                        if ($('#token').val().length > 0) {
+                            var tokens = $('#username').val().split("@");
+                            $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + tokens[1] + "&token4A=" + $('#token').val() + "&portalUrl=" + data);
+                        }
+                        $("#form1").submit();
+                    });
+                    //$("#form1").attr("action", $('#href_url').val());
+                    //alert($("#form1").action);
+                    //$("#form1").submit();
+                    //this.form.submit();
+                    //location.href="http://"+window.location.host+"/"+$('#href_url').val();
+                    //location.href=direct;
+                }
+            }).then(function (data) {
+                $.ajax({
+                    type: "post",
+                    url: 'setSessionInfo',
+                    data: {
+                        "login_no": $('#username').val(),
+                        "password": $('#password').val()
+                    },
+                    async: false
+                }).then(function (data) {
+                    if (data.length < 100) {
+                        $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + $('#username').val() + "&portalUrl=" + data);
+                        if ($('#token').val().length > 0) {
+                            var tokens = $('#username').val().split("@");
+                            $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + tokens[1] + "&token4A=" + $('#token').val() + "&portalUrl=" + data);
+                        }
+                        //$("#form1").attr("action", data);
+                        $("#form1").submit();
+                    }else{
+                        window.location.href = "http://10.117.70.123:8084/portal";
+                    }
+                });
+                //alert($('#username').val());
+                //$("#form1").attr("action", $('#href_url').val());
+                //$("#form1").attr("action","/"+$('#href_url').val());
+                //alert($("#form1").action);
+                //$("#form1").submit();
+                //this.form.submit();
+                //direct="http://"+window.location.host+"/"+$('#href_url').val();
+                //alert(direct);
+                //location.href=direct;
+                //window.location.href = "http://10.110.22.168:11400/npage/operationManage.html?edition=standard"
+            });
+        }
+
+        $("#loginsubmit").click(function () {
+            submitLogin();
+        });
+        if ($('#token').val().length > 0) {
+            submitLogin();
+        } else {
+            $('#username').val("");
+            $('#password').val("");
+        }
+    });
+
+</script>
+</body>
+
+</html>

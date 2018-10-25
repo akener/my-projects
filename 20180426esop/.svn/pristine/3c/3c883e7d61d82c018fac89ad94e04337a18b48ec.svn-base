@@ -1,0 +1,12 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<tr>
+    <th>下一环节：</th>
+    <td id="nextLink"></td>
+    <th>下一环节处理人</th>
+    <td>
+        <select id="nextStepDealPerson" class="select-style-1">
+            <option value="">请选择</option>
+        </select>
+    </td>
+</tr>

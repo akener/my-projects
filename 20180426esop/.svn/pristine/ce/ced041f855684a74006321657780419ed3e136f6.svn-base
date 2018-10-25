@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectacountManageInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.AcountManageDto" resultType="com.esop.cqDevelopment.elecPack.dto.AcountManageDto" >
+        SELECT
+        id,
+        contract_id,
+        pack_no,
+        account_code,
+        account_name,
+        grp_subsid,
+        pay_cycle,
+        state,
+        bak1,
+        bak2
+        from
+        se_contract_account_info  a
+        WHERE  1=1
+        <if test="account_code != '' and  account_code != null  ">
+            and a.account_code = #{account_code}
+        </if>
+        <if test="account_name != '' and  account_name != null ">
+            and a.account_name LIKE CONCAT('%',#{account_name},'%')
+        </if>
+        <if test="id != '' and  id != null ">
+            and a.id = #{id}
+        </if>
+        <if test="state != '' and  state != null ">
+            and a.state = #{state}
+        </if>
+        <if test="bak1 != '' and  bak1 != null ">
+            and a.bak1 = #{bak1}
+        </if>
+    </select>
+
+
+
+    <update id="updateaccountinfo"  parameterType="com.esop.cqDevelopment.elecPack.dto.AcountManageDto" >
+     UPDATE  se_contract_account_info
+        SET
+           bak1=#{bak1}
+      WHERE  id=#{id}
+  </update>
+
+
+
+</mapper>

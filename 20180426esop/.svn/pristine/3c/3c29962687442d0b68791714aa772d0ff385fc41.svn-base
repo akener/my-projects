@@ -1,0 +1,40 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.PersonnelStatisticsDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/5.
+ */
+@Repository
+public class PersonnelStatisticsService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(PersonnelStatisticsService.class);
+    //查询全省人员分布
+    public List getAllRoleCount(PersonnelStatisticsDto personnelStatisticsDto){
+        List ls = sqlE.selectM("selectAllCount",personnelStatisticsDto);
+        return ls;
+    }
+    //查询人员在13个地市中的分布
+    public List getCountByRole(PersonnelStatisticsDto personnelStatisticsDto){
+        List ls = sqlE.selectM("selectCountByRole",personnelStatisticsDto);
+        return ls;
+    }
+    //查询地市所属区县中人员分布
+    public List getTownRole(PersonnelStatisticsDto personnelStatisticsDto){
+        List ls = sqlE.selectM("selectTownRole",personnelStatisticsDto);
+        return ls;
+    }
+    //查询区县人员明细
+    public Result getTownPersonList(PersonnelStatisticsDto personnelStatisticsDto){
+        Result result= sqlE.selectPage("selectTownPersonList",personnelStatisticsDto);
+        return result;
+    }
+}

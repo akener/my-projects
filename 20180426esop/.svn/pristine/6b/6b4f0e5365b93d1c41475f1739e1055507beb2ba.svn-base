@@ -1,0 +1,51 @@
+package com.esop.common.uploadFile;
+
+import com.esop.common.dataBase.SqlE;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by wangbl on 2017/3/1.
+ */
+@Repository
+public class UploadFileInfoService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(UploadFileInfoService.class);
+
+    //查询操作
+    public List<UploadFileInfoDto> select(UploadFileInfoDto parameter){
+        List<UploadFileInfoDto> list= sqlE.selectM("selectUploadFileInfo",parameter);
+        return list;
+    }
+    //新增操作
+    public int insert(UploadFileInfoDto parameter){
+        return sqlE.insertM("insertUploadFileInfo",parameter);
+    }
+    //修改操作
+    public int update(UploadFileInfoDto parameter){
+        return sqlE.updateM("updateUploadFileInfo",parameter);
+    }
+    //删除操作
+    public int delete(UploadFileInfoDto parameter){
+        return sqlE.deleteM("deleteUploadFileInfo",parameter);
+    }
+    //获得主键ID
+    public String getID(){
+        return sqlE.selectM("getUploadFileInfoID").get(0).toString();
+    }
+    //获得关联ID
+    public String getRelatedID(){
+        return sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString();
+    }
+    //判断存储的文件是否有重复记录
+    public boolean judgeUploadFileDuplicateRecord(UploadFileInfoDto parameter){
+        if(((Integer)sqlE.selectM("judgeUploadFileDuplicateRecord",parameter).get(0))>0) {
+            return true;
+        }
+        return false;
+    }
+}

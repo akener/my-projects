@@ -1,0 +1,50 @@
+package com.esop.ledger.service;
+
+import com.esop.common.dataBase.SqlE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.esop.ledger.dto.LedgerInfoDto;
+import com.esop.ledger.dto.LedgerDetailsInfoDto;
+
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+@Repository
+public class LedgerWriteService {
+    @Autowired
+    SqlE sqlE;
+    //查询节点默认台账信息
+    public List<LedgerInfoDto> defaultLedgerInfo(LedgerInfoDto obj){
+        return sqlE.selectM("defaultLedgerInfo", obj);
+    }
+    //查询台账详细信息
+    public List<LedgerDetailsInfoDto> ledgerDetailsInfoByLedgerId(LedgerDetailsInfoDto obj){
+        return sqlE.selectM("ledgerDetailsInfoByLedgerId", obj);
+    }
+    //查询台账详细信息总条数
+    public int ledgerDetailsInfoByLedgerIdCount(LedgerDetailsInfoDto obj){
+        int total=0;
+        List list = sqlE.selectM("ledgerDetailsInfoByLedgerIdCount", obj);
+        if(list!= null)
+        total = (Integer) list.get(0);
+        return total;
+    }
+    //插入空台账数据
+    public int insertLedgerDetailsInfo(LedgerDetailsInfoDto obj){
+        return sqlE.insertM("insertLedgerDetailsInfo", obj);
+    }
+    //查询台账明细信息
+    public List<LedgerDetailsInfoDto> selectLedgerDetailsInfo(LedgerDetailsInfoDto obj){
+        return sqlE.selectM("selectLedgerDetailsInfo", obj);
+    }
+    //更新台账明细信息
+    public int updateLedgerDetailsInfo(LedgerDetailsInfoDto obj){
+        return sqlE.updateM("updateLedgerDetailsInfo", obj);
+    }
+    //更新台账信息
+    public int updateLedgerInfo(LedgerInfoDto obj){
+        return sqlE.updateM("updateLedgerInfo", obj);
+    }
+}

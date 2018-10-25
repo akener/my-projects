@@ -1,0 +1,73 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.GroupPayContacterDto;
+import com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class GroupPayContacterService {
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+    public String insertGroupPayContacter(GroupPayContacterDto groupPayContacterDto) {
+        int  i =sqlSessionTemplate.insert("insertGroupPayContacter",groupPayContacterDto);
+        return groupPayContacterDto.getId();
+    }
+    public int updateGroupPayContacter(GroupPayContacterDto groupPayContacterDto) {
+        int  i =sqlSessionTemplate.insert("updateGroupPayContacter",groupPayContacterDto);
+        return i;
+    }
+    public int updateGroupPayContacterInfo(GroupPayContacterDto groupPayContacterDto) {
+        int  i =sqlSessionTemplate.insert("updateGroupPayContacterInfo",groupPayContacterDto);
+        return i;
+    }
+
+    //查询集团联系人
+    public Result selectGroupPayContacter(GroupPayContacterDto groupPayContacterDto) {
+        Result result = sqlE.selectPage("selectGroupPayContacter", groupPayContacterDto);
+        return result;
+    }
+    //查询集团联系人信息
+    public List<GroupPayContacterDto> selectGroupPayContacterInfo(GroupPayContacterDto groupPayContacterDto) {
+        List list = sqlSessionTemplate.selectList("selectGroupPayContacterInfo", groupPayContacterDto);
+        return list;
+    }
+    //查询合同信息
+    public List<SeNewContractInfoDto>selectSeNewContractInfoDto(SeNewContractInfoDto seNewContractInfoDto){
+        List list=sqlSessionTemplate.selectList("selectSeNewContractInfoDto",seNewContractInfoDto);
+        return list;
+    }
+    //查询集团账户信息
+    public List<SeContractAccountInfoDto>selectSeAccountInfoDto2(String  contract_id){
+        List list=sqlSessionTemplate.selectList("selectSeContractAccountInfoDto",contract_id);
+        return list;
+    }
+    //修改bpmstate状态
+    public int updateBpmState(String id) {
+        int  i =sqlSessionTemplate.update("updateBpmState",id);
+        return i;
+    }
+    //修改liucheng状态
+    public int updateDelOrUpState(GroupPayContacterDto groupPayContacterDto) {
+        int  i =sqlSessionTemplate.update("updateDelOrUpState",groupPayContacterDto);
+        return i;
+    }
+    //受理时，修改主表状态
+    public int updateInstState(GroupPayContacterDto groupPayContacterDto){
+        int  i =sqlSessionTemplate.update("updateInstState",groupPayContacterDto);
+        return i;
+    }
+    //BOSS同步后改变的状态
+    public int updateGroupPayContacterState(GroupPayContacterDto groupPayContacterDto) {
+        int  i =sqlSessionTemplate.insert("updateGroupPayContacterState",groupPayContacterDto);
+        return i;
+    }
+}

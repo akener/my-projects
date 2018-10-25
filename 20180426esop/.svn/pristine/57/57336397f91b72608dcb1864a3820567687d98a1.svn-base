@@ -1,0 +1,40 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.SeElecPackInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.SeElecPackStatusDictDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/11/21.
+ */
+@Repository
+public class ElecPackService {
+    @Autowired
+    SqlE sqlE;
+
+    public List<SeElecPackStatusDictDto> getStatusList(){
+        return sqlE.selectM("getElecStatusList");
+    }
+
+    public Result getElecPackPageList(SeElecPackInfoDto elecPackInfoDto){
+        return sqlE.selectPage("getElecPackList",elecPackInfoDto);
+    }
+
+    public List<SeElecPackInfoDto> getElecPackList(SeElecPackInfoDto elecPackInfoDto){
+        return sqlE.selectM("getElecPackList",elecPackInfoDto);
+    }
+    public String addElecPack(SeElecPackInfoDto seElecPackInfoDto){
+        int success = sqlE.insertM("addElecPack",seElecPackInfoDto);
+        if (success == 1){
+            return "success";
+        }else
+            return "false";
+
+
+    }
+}

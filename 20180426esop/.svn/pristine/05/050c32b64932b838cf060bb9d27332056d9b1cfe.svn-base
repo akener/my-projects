@@ -1,0 +1,80 @@
+package com.esop.basicManagement.controller;
+
+
+import com.esop.basicManagement.dto.BasicManageDoBusiDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@RestController
+public class BasicManageDoBusiRC {
+    @Autowired
+    com.esop.basicManagement.service.BasicManageDoBusiService basicManageDoBusiService;
+    private static Logger logger = Logger.getLogger(BasicManageDoBusiRC.class);
+    @RequestMapping(value="/doBusiRegionRM")
+    public List doBusiRegionRC(BasicManageDoBusiDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManageDoBusiService.doBusiRegionSV(parameter);
+        return list;
+    }
+    @RequestMapping(value="/doBusiTwonRM")
+    public List doBusiTownRC(BasicManageDoBusiDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManageDoBusiService.doBusiTownSV(parameter);
+        return list;
+    }
+    @RequestMapping(value="/doBusiOfficeRM")
+    public List doBusiOfficeRC(BasicManageDoBusiDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManageDoBusiService.doBusiOfficeSV(parameter);
+        return list;
+    }
+    @RequestMapping(value="/doBusiRightRM")
+    public List doBusiRightRC(BasicManageDoBusiDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManageDoBusiService.doBusiRightSV(parameter);
+        return list;
+    }
+    @RequestMapping(value="/doBusiOfficeLoginRM")
+    public List doBusiOfficeLoginRC(BasicManageDoBusiDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        String region_code = parameter.getRegion_code();
+        String town_code = parameter.getTown_code();
+        String office_code = parameter.getOffice_code();
+        String[] login_no_4_1 = region_code.split(",");
+        String[] login_no_4_2 = town_code.split(",");
+        String[] login_no_4_3 = office_code.split(",");
+
+        String login_no_1_4 = login_no_4_1[0]+login_no_4_2[0]+login_no_4_3[0];
+        String login_no_2_4 = login_no_4_1[1]+login_no_4_2[1]+login_no_4_3[1];
+        logger.info("######################################"+login_no_2_4);
+
+
+        parameter.setLogin_no_41(login_no_1_4);
+        parameter.setLogin_no_42(login_no_2_4);
+
+
+        list = basicManageDoBusiService.doBusiOfficeLoginSV(parameter);
+
+
+//        String max_login_no = ((BasicManageDoBusiDto)list.get(0)).getLogin_no();
+//
+//        String noList = parameter.getLogin_no_41();
+//
+//        if(max_login_no.trim().equals("")) {
+//            if (noList.length() == 1) {
+//                max_login_no = noList + "00000";
+//            } else {
+//                max_login_no = noList + "00";
+//            }
+//        }
+        return list;
+    }
+}

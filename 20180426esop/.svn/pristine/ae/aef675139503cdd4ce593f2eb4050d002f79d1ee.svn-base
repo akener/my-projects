@@ -1,0 +1,63 @@
+package com.esop.workflow.dto.orderDto;
+
+/**
+        * Created by liwj on 2017/12/14.
+ **/
+public class ExportParam {
+
+    private String className;//类名
+    private String key;//参数名字
+    private String value;//参数值
+    private String selectId;//查询语句
+    private String tableHead;// Excel表头
+    private String methods;// 需要显示字段方法
+
+    public String getMethods() {
+        return methods;
+    }
+
+    public void setMethods(String methods) {
+        this.methods = methods;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getSelectId() {
+        return selectId;
+    }
+
+    public void setSelectId(String selectId) {
+        this.selectId = selectId;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getTableHead() {
+        return tableHead;
+    }
+
+    public void setTableHead(String tableHead) {
+        this.tableHead = tableHead;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+}

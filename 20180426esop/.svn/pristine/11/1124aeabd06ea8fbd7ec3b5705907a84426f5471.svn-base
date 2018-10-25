@@ -1,0 +1,425 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: wangbl
+  Date: 16/8/4
+  Time: 上午9:04
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>台账扎帐</title>
+
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="./assets/js/ie-emulation-modes-warning.js"></script>
+    <style type="text/css">
+        th,td{
+            text-align:center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<!--<hr />-->
+<body>
+<%--添加结果提示窗口--%>
+<div class="modal fade" id="alertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">台账操作</h4>
+            </div>
+            <html:hidden id="refuse_ledger_id" />
+            <div class="modal-body">
+                <label class="control-label" id="alertLabel">对此节点台账信息执行拒绝打回操作?</label>
+            </div>
+            <div class="modal-footer">
+                <button id="refuseButton" class="btn btn-primary">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%--台账明细数据--%>
+<div class="modal fade" id="ledgerDetailsInfoMode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:800px;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">台账明细</h4>
+            </div>
+            <div class="box-body table-responsive" >
+            <table class="table table-bordered" id="ledgerDetails_table">
+                <tr>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3">#</th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>资源父类</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>资源信息</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" colspan="11" rowspan="2" >资源调拨</th>
+                    <th style="text-align:center;" colspan="7">出库</th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>本期结存</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>业务用品领用</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>隔日退回</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="3"><nobr>隔月退回</nobr></th>
+                </tr>
+                <tr>
+                    <th class="text-center" colspan="3"><nobr>销售</nobr></th>
+                    <th class="text-center" colspan="2"><nobr>赠送</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="2"><nobr>坏卡更换</nobr></th>
+                    <th style="text-align:center;vertical-align: middle;" rowspan="2"><nobr>小计</nobr></th>
+                </tr>
+                <tr>
+                    <th style="width: 6%"><nobr>上期结存</nobr></th>
+                    <th style="width: 6%"><nobr>本期入库</nobr></th>
+                    <th style="width: 6%"><nobr>本期退库</nobr></th>
+                    <th style="width: 6%"><nobr>上级下拨</nobr></th>
+                    <th style="width: 6%"><nobr>退回上级</nobr></th>
+                    <th style="width: 6%"><nobr>拨给下级</nobr></th>
+                    <th style="width: 6%"><nobr>下级退回</nobr></th>
+                    <th style="width: 6%"><nobr>待入</nobr></th>
+                    <th style="width: 6%"><nobr>待出</nobr></th>
+                    <th style="width: 6%"><nobr>下拨路过</nobr></th>
+                    <th style="width: 6%"><nobr>回退路过</nobr></th>
+                    <th style="width: 6%"><nobr>普通销售</nobr></th>
+                    <th style="width: 6%"><nobr>折扣销售</nobr></th>
+                    <th style="width: 6%"><nobr>销售差异</nobr></th>
+                    <th style="width: 6%"><nobr>赠送</nobr></th>
+                    <th style="width: 6%"><nobr>赠送差异</nobr></th>
+                </tr>
+            </table>
+        </div>
+        </div>
+    </div>
+</div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Horizontal Form -->
+                <div class="box">
+                    <!-- /.box-header -->
+                    <!-- form start -->
+                    <div class="form-horizontal">
+                        <div class="box-body">
+                            <html:hidden id="ledger_id" />
+                            <html:hidden id="submit_login" />
+                            <html:hidden id="group_id" />
+                            <html:hidden id="ledger_status" />
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">节点信息</label>
+
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="group_name" readonly="true">
+                                </div>
+                                <label class="col-sm-2 control-label">台账日期</label>
+
+                                <div class="col-sm-2">
+                                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                        <input readonly class="form-control" id="ledger_date" name="ledger_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button type="submit" class="btn btn-info pull-right" id="queryThisLedgerInfo">查询</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="thisLedgerInfo" class="box box-solid box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">节点合计台账</h3>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">
+                                <table class="table table-bordered" id="ledger_table">
+                                    <tr>
+                                        <th style="width: 10px">#</th>
+                                        <th style="width: 10%">台账日期</th>
+                                        <th style="width: 30%">节点名称</th>
+                                        <th style="width: 10%">台账状态</th>
+                                        <th style="width: 15%">提交信息</th>
+                                        <th style="width: 15%">审批信息</th>
+                                        <th style="width: 10%">原因信息</th>
+                                        <th style="width: 120px">操作</th>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="editLedgerInfo" class="box box-solid box-default">
+                            <div class="box-header">
+                                <h3 class="box-title">节点台账</h3>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">节点名称</label>
+                                    <div class="col-sm-2">
+                                        <input  class="form-control" id="sgroup_name" placeholder="请输入节点名称">
+                                    </div>
+                                    <label class="col-sm-7 "></label>
+                                    <div class="col-sm-1">
+                                        <button class="btn btn-info pull-right" id="queryLedgerInfo">查询</button>
+                                    </div>
+                                </div>
+                            </div><!-- /.box-body -->
+                            <div class="box-body table-responsive" >
+                                <table style="display:none" id="subsetLedgerTable" class="display" cellspacing="0" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>台账日期</th>
+                                        <th>节点名称</th>
+                                        <th>台账状态</th>
+                                        <th>提交信息</th>
+                                        <th>审批信息</th>
+                                        <th>原因信息</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <tr>
+                                        <th>台账日期</th>
+                                        <th>节点名称</th>
+                                        <th>台账状态</th>
+                                        <th>提交信息</th>
+                                        <th>审批信息</th>
+                                        <th>原因信息</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div><!-- /.box -->
+                        <!-- /.box-footer -->
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+            <!--/.col (right) -->
+        </div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    //加载登陆信息
+    $.ajax({
+        type:"GET",
+        url: "getSessionInfo",
+        data:"&uid="+$("#uid").val()
+    }).then(function(data){
+        $('#group_name').val(data.group_name);
+        $('#ledger_date').val(data.yesterday);
+        $('#group_id').val(data.group_id);
+        $('#submit_login').val(data.login_no);
+        queryThisLedgerInfo(data.group_id,data.yesterday);
+    });
+    //批量提交台账信息
+
+    $("#queryThisLedgerInfo").click(function () {
+        queryThisLedgerInfo($('#group_id').val(),$('#ledger_date').val());
+    });
+    //获取节点合计台账数据
+    function queryThisLedgerInfo(group_id,ledger_date) {
+        //获值成功后往表格增加显示结果
+        var num = $("#ledger_table tr").filter("#ledtr").size();//获得表格行数
+        //移除表格数据重新加载
+        for (var i = 0; i < num; i++) {
+            $("#ledtr").remove();//移除表格数据重新加载
+        }
+        $.ajax({
+            type: "GET",
+            url: "thisLedgerInfo",
+            data: {
+                "group_id":group_id,
+                "ledger_date":ledger_date
+            }
+        }).then(function (data) {
+            //获值成功后往表格增加显示结果
+            $.each(data, function (index, item) {
+                $("#ledger_table").append("<tr id='ledtr'><td>" + (index + 1) + ".</td><td>" + item.ledger_date + "</td><td>" + item.group_name + "</td><td>" + item.status_name + "</td><td>" + item.submit_info + "</td><td>" + item.examine_info + "</td><td>" + item.reason + "</td><td>" + item.opt + "</td></tr>");
+                $("#ledger_status").val(item.status);
+            });
+            //为表格增加点击变色属性
+            $("#ledger_table").each(function () {
+                var self = this;
+                // 选择行变色
+                $("tr", $(self)).click(function () {
+                    var trThis = this;
+                    if ($(trThis).get(0) == $("tr:first", $(self)).get(0)) {
+                        return;
+                    }
+                    $(self).find(".bg-info").removeClass('bg-info');
+                    $(trThis).addClass('bg-info');
+                    //alert( $("td",$(trThis)).get(1).innerHTML);
+                });
+            });
+            //获取表格点击选取行值
+            $("tr", $("#ledger_table")).click(function () {
+                //$("#sort_level").val($("td",this).get(7).innerHTML);
+            });
+            querySubsetLedgerInfo("");
+            $("#subsetLedgerTable").show();
+        });
+    }
+    //获取节点台账信息
+    function querySubsetLedgerInfo(group_name) {
+        $('#subsetLedgerTable').dataTable({
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                "url": "/subsetLedgerInfo",
+                "type": "POST",
+                "data":{
+                    group_id:$("#group_id").val(),
+                    ledger_date:$("#ledger_date").val(),
+                    status:$("#ledger_status").val(),
+                    group_name:group_name
+                }
+            },
+            "columns": [
+                {"data": "ledger_date"},
+                {"data": "group_name"},
+                {"data": "status_name"},
+                {"data": "submit_info"},
+                {"data": "examine_info"},
+                {"data": "reason"},
+                {"data": "opt"}
+            ]
+        });
+    }
+
+    //审批生成台账汇总信息
+    function examineLedgerInfo(ledger_id,leaf){
+        $.ajax({
+            type:"GET",
+            url: "examineLedgerInfo",
+            data:{
+                ledger_id:ledger_id,
+                leaf:leaf,
+                submit_login:$('#submit_login').val()
+            }
+        }).then(function(data){
+            queryThisLedgerInfo($('#group_id').val(),$('#ledger_date').val());
+            querySubsetLedgerInfo("");
+            //defaultLedgerInfo($("#group_id").val());
+        });
+    }
+    //设置台账明细信息表格数据
+    function setLedgerDetailsInfo(data) {
+        //移除表格数据重新加载
+        var num = $("#ledgerDetails_table tr").filter("#lditr").size();//获得表格行数
+        for (var i = 0; i < num; i++) {
+            $("#lditr").remove();//移除表格数据重新加载
+        }
+        $.each(data,function(index,item){
+            $("#ledgerDetails_table").append("<tr id='lditr'><td>"+(index+1)+".</td><td>"+item.presource_name+"</td><td>"+item.resource_name+"</td><td>"+item.last_balance
+                    +"</td><td>"+item.input_godown+"</td><td>"+item.return_godown+"</td><td>"+item.higher_allocation+"</td><td>"+item.return_higher
+                    +"</td><td>"+item.allocation_lower+"</td><td>"+item.lower_return+"</td><td>"+item.wait_in+"</td><td>"+item.wait_out
+                    +"</td><td>"+item.allocation_passing+"</td><td>"+item.return_passing+"</td><td>"+item.sales+"</td><td>"+item.discount_sales
+                    +"</td><td>"+item.sales_difference+"</td><td>"+item.give+"</td><td>"+item.give_difference+"</td><td>"+item.bad_replace
+                    +"</td><td>"+item.subtotal+"</td><td>"+item.now_balance+"</td><td>"+item.service_use+"</td><td>"+item.day_return
+                    +"</td><td>"+item.month_return+"</td></tr>");
+        });
+        //为表格增加点击变色属性
+        $("#ledgerDetails_table").each(function(){
+            var self = this;
+            // 选择行变色
+            $("tr", $(self)).click(function (){
+                var trThis = this;
+                if ($(trThis).get(0) == $("tr:first", $(self)).get(0)){
+                    return;
+                }
+                $(self).find(".bg-info").removeClass('bg-info');
+                $(trThis).addClass('bg-info');
+                //alert( $("td",$(trThis)).get(1).innerHTML);
+            });
+        });
+        $('#ledgerDetailsInfoMode').modal('show');
+        //获取表格点击选取行值
+        $("tr", $("#ledgerDetails_table")).click(function (){
+            //$("#sort_level").val($("td",this).get(7).innerHTML);
+        });
+    }
+    //查询台账明细列表数据
+    function seeLedgerInfo(ledger_id){
+        //获取台账列表明细数据
+        $.ajax({
+            type:"GET",
+            url: "ledgerDetailsInfoByLedgerId",
+            data:{
+                ledger_id:ledger_id
+            }
+        }).then(function(data){
+            setLedgerDetailsInfo(data);
+        });
+    }
+    //excel导出台账明细列表数据
+    function excelLedgerInfo(ledger_date,group_name,ledger_id){
+        location.href = "excelLedgerInfo?ledger_id="+ledger_id+"&ledger_date="+ledger_date+"&group_name="+group_name;//具体为啥改用这个，是个坑。。强烈建议这个
+
+    }
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+    $('.form_time').datetimepicker({
+        format: "hh:ii:ss", //format: "HH:ii P",
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 1,
+        minView: 0,
+        maxView: 1,
+        forceParse: 0
+    });
+    //拒绝打回台账信息
+    function refuse(ledger_id){
+        $('#alertInfo').modal('show');
+        $("#refuse_ledger_id").val(ledger_id);
+    }
+    $("#refuseButton").click(function () {
+        $.ajax({
+            type:"GET",
+            url: "refuseLedgerInfo",
+            data:{
+                ledger_id:$("#refuse_ledger_id").val(),
+                submit_login:$("#submit_login").val()
+            }
+        }).then(function(data){
+            $('#alertInfo').modal('hide');
+            queryThisLedgerInfo($('#group_id').val(),$('#ledger_date').val());
+            querySubsetLedgerInfo("");
+        });
+    });
+    //excel导出台账明细列表数据
+    function excelLedgerInfo(ledger_date,group_name,ledger_id){
+        location.href = "excelLedgerInfo?ledger_id="+ledger_id+"&ledger_date="+ledger_date+"&group_name="+group_name;//具体为啥改用这个，是个坑。。强烈建议这个
+    }
+    $("#queryLedgerInfo").click(function () {
+        querySubsetLedgerInfo($("#sgroup_name").val());
+    });
+</script>
+</html>

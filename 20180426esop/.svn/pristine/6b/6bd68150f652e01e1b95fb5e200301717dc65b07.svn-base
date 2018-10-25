@@ -1,0 +1,107 @@
+package com.esop.newVip.dto;
+
+/**
+ * Created by Shinelon on 2017/8/3.
+ */
+//地市树Dto
+public class regionDto {
+    String login_no="";//登录工号
+    String password="";//登录密码
+    String group_id="";//地市代码
+    String name ="";//地市名
+    String tree_str="";//地市树代码
+    String boss_org_code="";
+    String role_id="";
+    String system_type="";
+    String role_weight="";
+    String org_code="";
+    String login_type="";
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+
+    public String getLogin_type() {
+        return login_type;
+    }
+
+    public void setLogin_type(String login_type) {
+        this.login_type = login_type;
+    }
+
+    public String getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(String role_id) {
+        this.role_id = role_id;
+    }
+
+    public String getSystem_type() {
+        return system_type;
+    }
+
+    public void setSystem_type(String system_type) {
+        this.system_type = system_type;
+    }
+
+    public String getRole_weight() {
+        return role_weight;
+    }
+
+    public void setRole_weight(String role_weight) {
+        this.role_weight = role_weight;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTree_str() {
+        return tree_str;
+    }
+
+    public void setTree_str(String tree_str) {
+        this.tree_str = tree_str;
+    }
+
+    public String getBoss_org_code() {
+        return boss_org_code;
+    }
+
+    public void setBoss_org_code(String boss_org_code) {
+        this.boss_org_code = boss_org_code;
+    }
+}

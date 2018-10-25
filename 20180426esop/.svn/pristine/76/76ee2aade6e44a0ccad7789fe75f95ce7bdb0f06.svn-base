@@ -1,0 +1,253 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/7/8
+  Time: 14:40
+  To change this template use File | Settings | File Templates.
+
+  集团专线暂停销户台帐
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <title>新增管理办法</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE  =8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/common.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/component.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/list.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/reset.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/table.css">
+    <link rel="stylesheet" href="/esop/static/css/workbench/pub-ui/basic.css">
+
+    <link rel="stylesheet" href="/esop/static/css/workbench/assets/bootstrap.css">
+
+    <script src="/esop/static/js/workbench/My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<input type="hidden" id="code">
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">新增管理办法</h3>
+    </div>
+    <div class="row col-12">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <table class="table-infor-7" width="100%">
+                    <tbody>
+                        <tr>
+                            <th>文件名称：</th>
+                            <td>
+                                <input type=text id="title" class="input-sty04 form-ipt" maxlength="11">
+                            </td>
+                            <th>发布方式：</th>
+                            <td>
+                                <select id="pub_type" style="width: 200px">
+                                    <option value="0">管理办法</option>
+                                    <option value="1">资费文件</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>文件内容概要：</th>
+                            <td colspan="3">
+                                <textarea id="content" class="input-sty04 form-ipt" maxlength="200" style="width: 600px;height:100px;"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>文件内容：</th>
+                            <td colspan="3">
+                                <textarea id="content_detail" class="input-sty04 form-ipt" maxlength="2000" style="width: 600px;height:100px;"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>附件上传：</th>
+                            <td colspan="3">
+                                <label class="btn btn-info pull-left" for="xFile">上传附件(xlsx,xls,doc,docx,txt,gif,jpg)</label>
+                                <form id="upload-form" method="post" enctype="multipart/form-data">
+                                    <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="box-body">
+                    <div class="form-group" id="fileList">
+                        <div class="col-sm-3">
+                            ${fileList}
+                        </div>
+                    </div>
+                </div>
+                <div class="row mgt-20">
+                    <div class="btn-box">
+                        <button class="ui-btn mgr-10" id="doInsert" >提交</button>
+                        <%-- <button class="ui-btn">返回</button>--%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+
+    $(document).ready(function() {
+
+        $.ajax({
+            type: "GET",
+            url: "getSeqNextVal",
+        }).then(function (data) {
+            $("#code").val(data);
+        });
+    });
+
+    $("#doInsert").click(function(){
+       var title = $("#title").val();
+       var pub_type = $("#pub_type").val();
+       var content = $("#content").text();
+       var content_detail = $("#content_detail").text();
+
+       if(title == ""){
+           $("#noticeInfo").text("请输入文件名称");
+           $("#fault").modal('show');
+           return ;
+       }
+       if(content == ""){
+           $("#noticeInfo").text("请输入文件内容概要");
+           $("#fault").modal('show');
+           return ;
+       }
+        if(content_detail == ""){
+            $("#noticeInfo").text("请输入文件内容");
+            $("#fault").modal('show');
+            return ;
+        }
+        if(Trim($("#fileList").text())==""){
+            $("#noticeInfo").text("请上传附件");
+            $("#fault").modal('show');
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "insertManageMethod",
+            data: {
+                code: $("#code").val(),
+                title:title,
+                pub_type:pub_type,
+                content:content,
+                content_detail:content_detail,
+                pub_createno:service_no
+            }
+        }).then(function (data) {
+            if(data == 1){
+                location.href="mmd";
+            }else{
+                $("#noticeInfo").text("新增管理办法失败");
+                $("#fault").modal('show');
+                return ;
+            }
+        });
+
+    });
+
+    function Trim(str)
+    {
+        return str.replace(/(^\s*)|(\s*$)/g, "");
+    }
+
+    //附件上传
+    $("#xFile").on("change", function(){
+        //alert($('#xFile')[0].files[0].name);
+        var file_name = $('#xFile').val();
+        var names = file_name.split("\\");
+        var length = names.length;
+        $("#file_path").val(names[length-1]);
+        var strs = names[length-1].split(".");
+        var rex = strs[strs.length-1];
+        if(rex != 'png' && rex != 'jpg'){
+            $("#noticeInfo").text("请上传xlsx,xls,doc,docx,txt,gif,jpg格式的文件");
+            $("#fault").modal('show');
+            return;
+        }
+
+        $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+            url:"${pageContext.request.contextPath}/fileUpload",
+            type:"post", //提交的类型必需是post，
+            data: { related_id: $("#code").val()},
+            dateType:"json",
+            success:function(data){
+                //如果提交成功执行
+                //如果附件编码不为空，开始取附件
+                if($("#id").val()!="") {
+                    $.ajax({
+                        type: "POST",
+                        url: "uploadFileSelect",
+                        data: {
+                            "related_id": $("#code").val()
+                        }
+                    }).then(function (data) {
+                        //循环展现附件信息
+                        $("#fileList div").remove();
+                        $.each(data, function (index, item) {
+                            $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                                + "</a></div>"
+                                + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                                + "<i class=\"fa fa-times\"></i></button></div></div>");
+                        });
+                    });
+                }
+            },
+            error:function(data){
+                alert("error:"+data);
+            }
+        });
+    });
+
+    //删除附件
+    function deleteFile(buttonID,fileID){
+        $.ajax({
+            type: "POST",
+            url: "deleteFile",
+            data: {id:fileID}
+        }).then(function (data) {
+            //alert(data.result);
+            $(buttonID).parent().parent().remove();
+        });
+    }
+</script>
+</html>

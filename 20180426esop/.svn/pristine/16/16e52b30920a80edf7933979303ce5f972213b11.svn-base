@@ -1,0 +1,65 @@
+package com.esop.workOrderInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by lilei on 2017/7/8.
+ */
+@Repository
+public class ContractInfoShowService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(ContractInfoShowService.class);
+    public List<CountyInfoDto> qryContractByGroupId(CountyInfoDto in){
+
+        return sqlE.selectM("qryContractByGroupId",in);
+    }
+    //合同查询
+    public Result showAllContractMsg(CountyContractDto in){
+        logger.info("合同查询入参:"+ in.toString());
+        return sqlE.selectPage("showAllContractMsgInfo",in);
+    }
+    //合同历史查询
+    public Result showHisContractMsgInfo(CountyContractDto in){
+        logger.info("合同历史查询入参:"+ in.toString());
+        return sqlE.selectPage("showHisInfoByContractId",in);
+    }
+
+    //查询管理办法：区县查询
+    public List<GroupMsgDto> getGroupAndName(GroupMsgDto in){
+
+        return sqlE.selectM("qryGroupInfoByParentGroupId",in);
+    }
+    //查询管理办法：查创建工号
+    public List<LoginInfoDto> getCreateLoginNo(LoginInfoDto in){
+
+        return sqlE.selectM("qryLoginNoInfoByGroupId",in);
+    }
+
+    public Result showInquiryMethod(selMethodDto in){
+        logger.info("查询管理办法入参:"+ in.toString());
+        return sqlE.selectPage("qryMethodInfo",in);
+    }
+    //根据code查单条数据明细
+    public selMethodDto getMethodRecordByCode(selMethodDto in){
+        logger.info("查询管理办法入参:"+ in.toString());
+        return (selMethodDto)sqlE.selectM("qryMRByCode",in).get(0);
+    }
+    //修改前根据code查单条数据
+    public selMethodDto getMethodByCodeForUpdate(selMethodDto in){
+        logger.info("查询管理办法入参:"+ in.toString());
+        return (selMethodDto)sqlE.selectM("qryMethodRecordByCode",in).get(0);
+    }
+    //修改管理办法
+    public int updateMethodByCode(selMethodDto in){
+        return sqlE.updateM("updateMethodByCodeId",in);
+    }
+
+}

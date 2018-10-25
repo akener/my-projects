@@ -1,0 +1,117 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%
+    String groupId = request.getParameter("groupId");
+    String applicationNo = request.getParameter("applicationNo");
+%>
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        var table = "";
+        $(document).ready(function () {
+            IncomeListQuery();
+        });
+
+        function IncomeListQuery() {
+            var groupId = "<%=groupId%>";
+            var applicationNo = "<%=applicationNo%>";
+            if(groupId == null || groupId == ""){
+                alert("集团编号不能为空!");
+                return false;
+            }
+            if(applicationNo == null || applicationNo == ""){
+                alert("发票订单号不能为空!");
+                return false;
+            }
+            $("html").showLoading();
+            $.ajax({
+                url: "getPrePrintInvoiceListInfo",
+                type: "POST",
+                data: {
+                    groupId: groupId,
+                    esopOrderId:applicationNo
+                },
+                success: function (data) {
+                    $("html").hideLoading();
+                    if(data.ret_code == "0"){
+                        var appendStr = "";
+                        var invoices = data.data;
+                        for(var i=0;i<invoices.length;i++){
+                            var row = invoices[i];
+                            appendStr += "<tr>";
+//                            appendStr += "<td><button class='ui-btn mgr-10' type='button' style='width: 85px' onclick=capitalApply('"+row.groupId+"','"+row.applicationNo+"')>选择</button></td>";
+                            appendStr += "<td>"+row.groupacctid+"</td>";
+                            appendStr += "<td>"+row.groupaccname+"</td>";
+                            appendStr += "<td>"+row.orderid+"</td>";
+                            appendStr += "<td>"+row.begincycle+"</td>";
+                            appendStr += "<td>"+row.endcycle+"</td>";
+                            appendStr += "<td>"+row.invoicefee_yuan+"</td>";
+                            appendStr += "<td>"+row.printdate+"</td>";
+                            appendStr += "<td>"+row.invoicecode+"</td>";
+                            appendStr += "<td>"+row.invoicenum+"</td>";
+                            appendStr += "<td>"+row.status+"</td>";
+//                            appendStr += "<td><button class='ui-btn mgr-12' type='button' style='width: 125px' onclick=viewInvoice('"+row.groupId+"','"+row.applicationNo+"')>发票订单详情</button></td>";
+                            appendStr += "</tr>";
+                        }
+
+                        $("#list_info").empty();
+                        $("#list_info").append(appendStr);
+                    }else{
+                        var ret_msg = data.ret_msg;
+                        alert(ret_msg);
+                    }
+                },
+                error:function (data) {
+                    $("html").hideLoading();
+                    alert("发票详情查询失败！");
+                }
+            });
+
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>发票列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="cost-table" id="example" width="100%;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>集团账号</th>
+                                <th class="text-center" nowrap='nowrap'>账号名称</th>
+                                <th class="text-center" nowrap='nowrap'>工单流水号</th>
+                                <th class="text-center" nowrap='nowrap'>开始账期</th>
+                                <th class="text-center" nowrap='nowrap'>结束账期</th>
+                                <th class="text-center" nowrap='nowrap'>发票金额</th>
+                                <th class="text-center" nowrap='nowrap'>预打日期</th>
+                                <th class="text-center" nowrap='nowrap'>发票代码</th>
+                                <th class="text-center" nowrap='nowrap'>发票号码</th>
+                                <th class="text-center" nowrap='nowrap'>发票状态</th>
+                            </tr>
+                            </thead>
+                            <tfoot id="list_info">
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

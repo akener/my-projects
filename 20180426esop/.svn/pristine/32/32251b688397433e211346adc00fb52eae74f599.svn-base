@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CompeteMsgServiceRepository">
+    <!--竞争情报录入-->
+    <select id="qrycompeteId" resultType="com.esop.cust.dto.CompeteMsgInDto">
+        select seq_compete_id.Nextval as compete_id from dual
+    </select>
+    <!--录入竞争信息-->
+    <select id="insertCompeteMsg" parameterType="com.esop.cust.dto.CompeteMsgInDto" resultType="int">
+        <if test="related_id != null and related_id != '' ">
+            insert into ep_compete_info
+            (town_name,town_id,compete_person,compete_policy,import_degree,group_name,exp_data,service_no,group_id,compete_id,related_id,prc_name,charges)
+            values
+            (#{town_name},#{town_id},#{compete_person},#{compete_policy},#{import_degree},#{group_name},#{exp_data},#{service_no},#{group_id},#{compete_id},#{related_id},#{prc_name},#{charges})
+        </if>
+        <if test="related_id == null or related_id == ''">
+            insert into ep_compete_info
+            (town_name,town_id,compete_person,compete_policy,import_degree,group_name,exp_data,service_no,group_id,compete_id,prc_name,charges)
+            values
+            (#{town_name},#{town_id},#{compete_person},#{compete_policy},#{import_degree},#{group_name},#{exp_data},#{service_no},#{group_id},#{compete_id},#{prc_name},#{charges})
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,71 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+/**
+ * Created by Administrator on 2017/12/11.
+ */
+public class BsProductSelectProdInfoDto {
+    private int id ;
+    private String prodid ="";//二级产品名称
+    private String addprodid = "";//主资费id（相当于三级产品）
+    private String addprodname = "";//主资费名
+    private String selecttype = "";
+    private String issolution = "";
+
+    private SeProductChargeInfoDto seProductChargeInfoDto = new SeProductChargeInfoDto();//和产品资费的关联
+
+    public SeProductChargeInfoDto getSeProductChargeInfoDto() {
+        return seProductChargeInfoDto;
+    }
+
+    public void setSeProductChargeInfoDto(SeProductChargeInfoDto seProductChargeInfoDto) {
+        this.seProductChargeInfoDto = seProductChargeInfoDto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getProdid() {
+        return prodid;
+    }
+
+    public void setProdid(String prodid) {
+        this.prodid = prodid;
+    }
+
+    public String getAddprodid() {
+        return addprodid;
+    }
+
+    public void setAddprodid(String addprodid) {
+        this.addprodid = addprodid;
+    }
+
+    public String getAddprodname() {
+        return addprodname;
+    }
+
+    public void setAddprodname(String addprodname) {
+        this.addprodname = addprodname;
+    }
+
+    public String getSelecttype() {
+        return selecttype;
+    }
+
+    public void setSelecttype(String selecttype) {
+        this.selecttype = selecttype;
+    }
+
+    public String getIssolution() {
+        return issolution;
+    }
+
+    public void setIssolution(String issolution) {
+        this.issolution = issolution;
+    }
+}

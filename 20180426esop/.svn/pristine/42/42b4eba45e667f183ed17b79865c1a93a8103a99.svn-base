@@ -1,0 +1,54 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/11/15.
+ */
+public class PutCustNameQueryDto extends BaseDto {
+    String GROUPNAME = "";
+    String ISQRYCOUNT = "";
+    String PAGES = "";
+    String PAGERECS = "";
+    String CUSTMGR = "";
+
+    public String getGROUPNAME() {
+        return GROUPNAME;
+    }
+
+    public void setGROUPNAME(String GROUPNAME) {
+        this.GROUPNAME = GROUPNAME;
+    }
+
+    public String getISQRYCOUNT() {
+        return ISQRYCOUNT;
+    }
+
+    public void setISQRYCOUNT(String ISQRYCOUNT) {
+        this.ISQRYCOUNT = ISQRYCOUNT;
+    }
+
+    public String getPAGES() {
+        return PAGES;
+    }
+
+    public void setPAGES(String PAGES) {
+        this.PAGES = PAGES;
+    }
+
+    public String getPAGERECS() {
+        return PAGERECS;
+    }
+
+    public void setPAGERECS(String PAGERECS) {
+        this.PAGERECS = PAGERECS;
+    }
+
+    public String getCUSTMGR() {
+        return CUSTMGR;
+    }
+
+    public void setCUSTMGR(String CUSTMGR) {
+        this.CUSTMGR = CUSTMGR;
+    }
+}

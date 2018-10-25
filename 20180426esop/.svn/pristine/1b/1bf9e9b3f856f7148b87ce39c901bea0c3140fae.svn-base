@@ -1,0 +1,636 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>合同起草</title>
+
+
+    <%--     <%@ include file="../../pub/base.jsp"%>--%>
+    <%--    <%@ include file="../../pub/dataTables.jsp"%>--%>
+<%--    <%@ include file="../../pub/tableList.jsp"%>--%>
+    <%--新样式--%>
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link href="/esop/static/cqDevelopment/pub-ui/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="/esop/static/cqDevelopment/assets/css/ui-dialog.css" language="javascript" rel="stylesheet">
+    <script src="/esop/static/member/layer/layer.js" type="text/javascript"></script>
+    <script src="/esop/static/cqDevelopment/pub-ui/js/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="/esop/static/cqDevelopment/assets/js/ui.js" type="text/javascript"></script>
+
+    <script src="/esop/static/pub-ui/plugins/artDialog/dialog-plus.js" type="text/javascript"></script>
+    <style type="text/css">
+        .mask {
+            position: absolute; top: 0px; filter: alpha(opacity=60); background-color: #777;
+            z-index: 1002; left: 0px;
+            opacity:0.5; -moz-opacity:0.5;
+        }
+        input[disabled]{color: gray;opacity:1}
+        .ui-text{
+            color: #000
+        }
+        .row{
+            overflow: visible;
+        }
+    </style>
+</head>
+
+<body class="bg-ff">
+    <input id="temp_name" type="hidden" value="中国移动通信集团重庆有限公司">
+    <input id="temp_code" type="hidden" value="91500000736550152L">
+    <input id="temp_user_name" type="hidden" value="中国移动通信集团重庆有限公司">
+    <input id="temp_add" type="hidden" value="重庆市渝北区星光三路2号">
+    <input id="temp_phone" type="hidden" value="023-61670176">
+    <input id="account_status" type="hidden" value="0">
+    <input type="hidden" id="elecpack_id" value="${elecPackId}">
+    <input type="hidden" id="elecpack_name" value="${elecPackName}">
+    <input type="hidden" id="login_no" value="<%=login_no%>">
+    <input type="hidden" id="login_name" value="<%=login_name%>">
+    <input type="hidden" id="root_org_id" value="<%=root_org_id%>">
+    <input type="hidden" id="root_org_name" value="<%=root_org_name%>">
+    <input type="hidden" id="org_id" value="<%=org_id%>">
+    <input type="hidden" id="org_name" value="<%=org_name%>">
+    <!-- main S -->
+    <div class="main pd-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box over">
+            <!--标题-->
+            <div class="row mgb-10">
+                <div class="col-sm-12 col-md-12">
+                    <div class="header-title tc">
+                        <h3> 合同起草 </h3>
+                    </div>
+                </div>
+            </div>
+
+            <!--详情-->
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row pd-10 bor-cc pos-rel">
+                        <h1 class="head-postl">1、集团客户信息</h1>
+                        <table class="table-infor-7 width-th-1" width="100%">
+                            <tbody>
+                                <tr>
+                                    <th style="border-top: 1px dashed #999;border-left: 1px dashed #999"></th><td style="border-top: 1px dashed #999;border-right: 1px dashed #999">甲方集团信息</td>
+                                    <th style="border-top: 1px dashed #999"></th><td style="border-top: 1px dashed #999;border-right: 1px dashed #999">乙方集团信息</td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 集团名称：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party" placeholder="" name="first_party" type="text" class="input-sty04 form-ipt">
+                                        <button type="button" class="ui-btn fs-14 btn-login" style="height:34px;">集团信息</button>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 乙方单位：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <select class="select-style-1" id="yf_first_party" style="width:auto">
+                                            <option>中国移动通信集团重庆有限公司</option>
+                                            <option>${qddwDto.fullName}</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 集团编码：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_code" placeholder="" name="first_party_code" type="text" class="input-sty04 form-ipt" disabled>
+                                    </td>
+                                    <%--<th>
+                                        <i style="color:red;">*</i> 集团编码：
+                                    </th>
+                                    <td>
+                                        <input id="yf_first_party_code" name="yf_first_party_code" type="text" class="input-sty04 form-ipt">
+                                    </td>--%>
+                                    <th>
+                                        <i style="color:red;">*</i> 法定代表人/负责人：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_charge" name="yf_first_party_charge" type="text" class="input-sty04 form-ipt" onblur="onlyChinese(this)">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 法定代表人/负责人：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_charge" name="first_party_charge" type="text" class="input-sty04 form-ipt" onblur="onlyChinese(this)">
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_address" name="yf_first_party_address" type="text" class="input-sty04 form-ipt">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_address" name="first_party_address" type="text" class="input-sty04 form-ipt">
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_phone" name="yf_first_party_phone" type="text" class="input-sty04 form-ipt" onblur="judgeMobile_onblur(this)">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_phone" name="first_party_phone" type="text" class="input-sty04 form-ipt" onblur="judgeMobile_onblur(this)">
+                                    </td>
+                                    <th>
+                                        邮编：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_post_code" name="yf_first_party_post_code" type="text" class="input-sty04 form-ipt" onblur="onlyNumber(this)">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999;border-bottom: 1px dashed #999">
+                                        邮编：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999;;border-bottom: 1px dashed #999">
+                                        <input id="first_party_post_code" name="first_party_post_code" type="text" class="input-sty04 form-ipt" onblur="onlyNumber(this)">
+                                    </td>
+                                    <th style="border-bottom: 1px dashed #999"></th>
+                                    <td style="border-right: 1px dashed #999;border-bottom: 1px dashed #999"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel" id="chargesInfo">
+                    </div>
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel">
+                        <h1 class="head-postl">3、合同信息</h1>
+                        <div class="row">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody id="tbody_contract">
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody>
+                                    <tr style="background-color:#ededed;">
+                                        <th colspan="2" class="tl pdl-10">
+                                            <i style="color:red;">*</i> 增值税发票信息（请选择）：
+
+
+                                            <input type="radio" value="1" name="radio" class="ui-btn" onclick="changeInType(1)" id="type_two">
+                                            <span id="change_invoice_type" style="height:34px;">增值税电子普通发票</span>
+                                            &nbsp;&nbsp;&nbsp;
+
+                                            <input type="radio" value="2" name="radio" class="ui-btn zz_tax" onclick="changeInType(0)" id="type_one">
+                                            <span id="span_info_id" style="height:34px;" class="zz_tax">增值税专用发票</span>
+
+                                            <input type="hidden" id="temp_id" value="0">
+                                        </th>
+                                        <th colspan="2" class="tl">
+
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-top: 1px dashed #999;border-left: 1px dashed #999"></th><td style="border-top: 1px dashed #999;border-right: 1px dashed #999">甲方发票信息</td>
+                                        <th style="border-top: 1px dashed #999"></th><td style="border-top: 1px dashed #999;border-right: 1px dashed #999">乙方发票信息</td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 甲方名称：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_invoice_name" name="first_invoice_name" type="text" class="input-sty04 form-ipt" onblur="isAllChinese(this.value)">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 发票开具方（乙方）名称：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_invoice_name" name="second_invoice_name" type="text" class="input-sty04 form-ipt" value="" onblur="isAllChinese(this.value)" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 国税纳税人识别号：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_taxpayer_code" name="first_taxpayer_code" type="text" class="input-sty04 form-ipt" value="" onblur="judgeTaxpayerCode(this.value)">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 国税纳税人识别号：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_taxpayer_code" name="second_taxpayer_code" type="text" class="input-sty04 form-ipt" value="" onblur="judgeTaxpayerCode(this.value)" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 开户行：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_invoice_band" name="first_invoice_band" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 开户行：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_invoice_band" name="second_invoice_band" type="text" class="input-sty04 form-ipt" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 户名：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_invoice_username" name="first_invoice_username" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 户名：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_invoice_username" name="second_invoice_username" type="text" class="input-sty04 form-ipt" value="" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 账号：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_invoice_number" name="first_invoice_number" type="text" class="input-sty04 form-ipt" onblur="onlyNumber(this)">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 账号：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_invoice_number" name="second_invoice_number" type="text" class="input-sty04 form-ipt" disabled onblur="onlyNumber(this)" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 地址：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_invoice_address" name="first_invoice_address" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 地址：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_invoice_address" name="second_invoice_address" type="text" class="input-sty04 form-ipt" value="" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999;border-bottom: 1px dashed #999">
+                                            <i style="color:red;">*</i> 联系方式：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999;;border-bottom: 1px dashed #999">
+                                            <input id="first_invoice_phone" name="first_invoice_phone" type="text" class="input-sty04 form-ipt" onblur="judgeMobile_onblur(this)">
+                                        </td>
+                                        <th style="border-bottom: 1px dashed #999">
+                                            <i style="color:red;">*</i> 联系方式：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999;border-bottom: 1px dashed #999">
+                                            <input id="second_invoice_phone" name="second_invoice_phone" type="text" class="input-sty04 form-ipt" value="" onblur="judgeMobile_onblur(this)" disabled>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody>
+                                    <tr style="background-color:#ededed;">
+                                        <th colspan="2" class="tl pdl-10">
+                                            甲方付款银行账户信息：
+                                        </th>
+                                        <th colspan="2" class="tl">
+                                            乙方收款账户信息：
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-top: 1px dashed #999;border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 户名：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999;border-top: 1px dashed #999">
+                                            <input id="first_party_username" name="first_party_username" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th style="border-top: 1px dashed #999">
+                                            <i style="color:red;">*</i> 户名：
+                                        </th>
+                                        <td style="border-top: 1px dashed #999;border-right: 1px dashed #999">
+                                            <input id="second_party_username" name="second_party_username" type="text" class="input-sty04 form-ipt" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999">
+                                            <i style="color:red;">*</i> 开户行：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="first_party_band" name="first_party_band" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 开户行：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999">
+                                            <input id="second_party_band" name="second_party_band" type="text" class="input-sty04 form-ipt" disabled>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th style="border-left: 1px dashed #999;border-bottom: 1px dashed #999">
+                                            <i style="color:red;">*</i> 账号：
+                                        </th>
+                                        <td style="border-right: 1px dashed #999;border-bottom: 1px dashed #999">
+                                            <input id="first_party_account_number" name="first_party_account_number" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th style="border-bottom: 1px dashed #999">
+                                            <i style="color:red;">*</i> 账号：
+                                        </th>
+                                        <td style="border-bottom: 1px dashed #999;border-right: 1px dashed #999">
+                                            <input id="second_party_account_number" name="second_party_account_number" type="text" class="input-sty04 form-ipt" disabled>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody>
+                                    <tr style="background-color:#ededed;">
+                                        <th colspan="2" class="tl pdl-10">
+                                            甲方集团缴费联系人信息：
+                                        </th>
+                                        <th colspan="2" class="tl"></th>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <i style="color:red;">*</i> 联系人姓名：
+                                        </th>
+                                        <td>
+                                            <input id="first_contacts_name" name="first_contacts_name" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 联系人身份证号码：
+                                        </th>
+                                        <td>
+                                            <input id="first_contacts_id_card" name="first_contacts_id_card" type="text" class="input-sty04 form-ipt" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <i style="color:red;">*</i> 联系人电话：
+                                        </th>
+                                        <td>
+                                            <input id="first_contacts_phone" name="first_contacts_phone" type="text" class="input-sty04 form-ipt" onblur="judgeMobile_onblur(this)">
+                                        </td>
+                                        <th>
+                                            <i style="color:red;">*</i> 联系人邮箱：
+                                        </th>
+                                        <td>
+                                            <input id="first_contacts_email" name="first_contacts_email" type="text" class="input-sty04 form-ipt" onblur="validEmail(this)">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            <i style="color:red;">*</i> 联系人地址：
+                                        </th>
+                                        <td>
+                                            <input id="first_contacts_address" name="first_contacts_address" type="text" class="input-sty04 form-ipt">
+                                        </td>
+                                        <th></th>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel">
+                        <h1 class="head-postl">4、信息安全承诺书</h1>
+                        <table class="table-infor-7 width-th-1" width="100%">
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        <i style="color:red;">*</i> 甲方名称：
+                                    </th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="jf_name" disabled/>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 法定代表人：
+                                    </th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="jf_fddbr" disabled/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <i style="color:red;">*</i> 联系人：
+                                    </th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="jf_linkMan"/>
+                                    </td>
+
+                                    <th>
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="jf_address" disabled/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="jf_phone" onblur="judgeMobile_onblur(this)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel">
+                        <h1 class="head-postl">5、附件上传</h1>
+                        <table class="table-infor-7 width-th-1" width="100%">
+                            <tbody>
+                            <tr class="chose_file">
+                                <th>上传附件：</th>
+                                <td colspan="3">
+                                    <input type="button" class="ui-btn mgr-10" onclick="group_connect_choose();"
+                                           value="上传文件">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel">
+                        <h1 class="head-postl">6、审批信息</h1>
+                        <table class="table-infor-7 width-th-1" width="100%">
+                            <tbody>
+                                <tr>
+                                    <th>
+                                        开始环节：
+                                    </th>
+                                    <td>
+                                        <select class="select-style-1" id="actionId">
+                                            <option selected="selected" value="2">片区经理</option>
+                                            <option value="3">产品经理</option>
+                                        </select>
+                                    </td>
+
+                                    <th>
+                                        下一环节：
+                                    </th>
+                                    <td>
+                                        <input type="text" class="input-sty04 form-ipt" id="next_deal1" disabled/>
+                                    </td>
+
+                                    <th>
+                                        <i style="color:red;">*</i> 处理人
+                                    </th>
+                                    <td>
+                                        <select id="ASSIGNEE_1" class="select-style-1">
+
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <input type="button" class="ui-btn mgr-10" id="submit" value="提交">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="saveChargeList">
+
+    </div>
+    <!--POP-集团弹窗-->
+    <div id="login-box" class="row col-12" style="display:none;">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row pdb-10 border-ed">
+                <div id="mask" class="mask"></div>
+                <h1 class="head-title">查询条件</h1>
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                            <tr>
+                                <th>集团编码：</th>
+                                <td>
+                                    <input id="union_code" value="" type="text" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团客户名称：</th>
+                                <td>
+                                    <input id="union_name" value="" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <%--<tr>
+                                <th>集团客户编码：</th>
+                                <td>
+                                    <input id="service_no"  type="text" class="input-sty04 form-ipt">
+                                </td>
+
+                            </tr>--%>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                           <%-- <button id="searchUnionButton" class="ui-btn mgr-10" style="min-width:100px;">确定</button>--%>
+                            <input type="button" id="searchUnionButton" class="ui-btn mgr-10" value="确定" style="min-width:100px;"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mgt-10 pdb-10 border-ed">
+                <h1 class="head-title">集团客户列表</h1>
+                <div class="row">
+                    <div class="row col-12">
+                        <div class="pd-20 pos-rel" style="background-color:#fff;">
+                            <div class="active-cost-box" style="padding-bottom:0;">
+                                <table id="unionList" class="cost-table" width="100%;">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">集团编码</th>
+                                        <th class="text-center">客户名称</th>
+                                        <th class="text-center">客户级别</th>
+                                        <th class="text-center">行业类别</th>
+                                        <th class="text-center">客户状态</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--POP-商机号弹窗-->
+    <div id="oppor_window" class="row col-12" style="display:none;">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+
+            <div class="row mgt-10 pdb-10 border-ed">
+                <h1 class="head-title">集团商机号列表</h1>
+                <div class="row">
+                    <div class="row col-12">
+                        <div class="pd-20 pos-rel" style="background-color:#fff;">
+                            <div class="active-cost-box" style="padding-bottom:0;">
+                                <table id="oppor_list" class="cost-table" width="100%;">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">集团名称</th>
+                                        <th class="text-center">集团编码</th>
+                                        <th class="text-center">商机号</th>
+                                        <th class="text-center">联系人</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="oppor_tbody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="procTypeCode" name="procTypeCode" type="hidden" value="3008">
+    <input id="branchCode" name="branchCode" type="hidden" value="CQ.CQ">
+    <input id="keyValue" name="keyValue" type="hidden" value="2">
+    <input id="loginCode" name="" type="hidden" value="<%=login_no%>">
+    <input id="loginName" name="" type="hidden" value="<%=login_name%>">
+
+    <input id="attachment_id_list" type="hidden" value="">
+</body>
+<!-- 流程发起参数-->
+
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script src="/esop/static/pub-ui/plugins/artDialog/dialog-plus.js" type="text/javascript"></script>
+<script type="text/javascript" src="/esop/view/cqDevelopment/elecPack/ContractInfo.js"></script>
+</html>

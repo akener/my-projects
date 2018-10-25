@@ -1,0 +1,389 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <input type="text" id="region_code" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团单位名称：</th>
+                            <td>
+                                <input type="text" id="union_name" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团单位编码：</th>
+                            <td>
+                                <input type="text" id="union_code" value="" class="input-sty04 form-ipt">
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <th>集团账户名称：</th>
+                            <td>
+                                <input type="text" id="account_name" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团账户编码：</th>
+                            <td>
+                                <input type="text" id="account_code" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>缴费联系人姓名：</th>
+                            <td>
+                                <input type="text" id="link_man" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>缴费联系人电话：</th>
+                            <td>
+                                <input type="text" id="mobile_no" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="selectGroupContact()">查询</button>
+                            <button class="ui-btn mgr-10"  onclick="addGroupContact()">增加</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>订单明细查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="contactInfo" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">id</th>
+                            <th class="text-center">分公司</th>
+                            <th class="text-center">集团单位名称</th>
+                            <th class="text-center">集团单位编码</th>
+                            <th class="text-center">客户经理</th>
+                            <th class="text-center">缴费联系人姓名</th>
+                            <th class="text-center">缴费联系人电话</th>
+                            <th class="text-center">缴费联系人地址</th>
+                            <th class="text-center">集团账户名称</th>
+                            <th class="text-center">集团单位编码</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="alertContactInfo" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> 集团缴费联系人删除</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input type="hidden" id="id" value="">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>集团缴费联系人姓名</th>
+                                <td>
+                                    <input id="link_man1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团缴费联系人电话</th>
+                                <td>
+                                    <input id="mobile_no1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>集团缴费联系人地址</th>
+                                <td>
+                                    <input id="address1" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                                </td>
+                                <th>集团缴费联系人身份证号</th>
+                                <td>
+                                    <input id="id_number1" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>邮箱</th>
+                                <td>
+                                    <input id="email1" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团单位名称</th>
+                                <td>
+                                    <input id="union_name1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团单位编码</th>
+                                <td>
+                                    <input id="union_code1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团账户名称</th>
+                                <td>
+                                    <input id="account_name1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团账户编码</th>
+                                <td>
+                                    <input id="account_code1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>下一步环节</th>
+                                <td>
+                                    <input id="next_deal1" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+
+                                <th>下一步环节处理人</th>
+                                <td>
+                                    <select id="ASSIGNEE_1">
+
+                                    </select>
+                                </td>
+                            </tr>
+                            <td style="display: none">
+                                <input id="id1" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            </tbody>
+                        </table>
+                        <div class="modal-footer">
+                            <button type="button" class="ui-btn  mgr-5" data-dismiss="modal" onclick="deleteGroupContact()">删除</button>
+                            <button type="button" class="ui-btn  mgr-5" data-dismiss="modal">返回</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="alertContactInfo1" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel1"> 集团缴费联系人修改</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input type="hidden" id="id5" value="">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>集团缴费联系人姓名</th>
+                                <td>
+                                    <input id="link_man3" type="text" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团缴费联系人电话</th>
+                                <td>
+                                    <input id="mobile_no3" type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>集团缴费联系人地址</th>
+                                <td>
+                                    <input id="address3" type="text" class="input-sty04 form-ipt">
+
+                                </td>
+                                <th>集团缴费联系人身份证号</th>
+                                <td>
+                                    <input id="id_number3" type="text" class="input-sty04 form-ipt">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>邮箱</th>
+                                <td>
+                                    <input id="email3" type="text" class="input-sty04 form-ipt">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团单位名称</th>
+                                <td>
+                                    <input id="union_name3" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团单位编码</th>
+                                <td>
+                                    <input id="union_code3" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团账户名称</th>
+                                <td>
+                                    <input id="account_name3" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团账户编码</th>
+                                <td>
+                                    <input id="account_code3" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>下一步环节</th>
+                                <td>
+                                    <input id="next_deal3" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+
+                                <th>下一步环节处理人</th>
+                                <td>
+                                    <input id="next_dealName3" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            <td style="display: none">
+                                <input id="id3" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            </tbody>
+                        </table>
+                        <div>
+                            <input id="procTypeCode" name="procTypeCode" type="hidden" value="3008">
+                            <input id="branchCode" name="branchCode" type="hidden" value="CQ.CQ">
+                            <input id="keyValue" name="keyValue" type="hidden" value="1">
+
+                            <input id="loginCode" name="" type="hidden" value="112900001">
+                            <input id="loginName" name="" type="hidden" value="思特奇员工">
+
+                        </div>
+                        <div id="save" class="modal-footer">
+                            <button type="button" class="ui-btn  mgr-5" data-dismiss="modal" onclick="updateGroupContact()">保存</button>
+                            <button type="button" class="ui-btn  mgr-5" data-dismiss="modal">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="alertGroupContact" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="youModalLabel"> 集团缴费联系人</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input type="hidden" id="id4" value="">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>集团缴费联系人姓名</th>
+                                <td>
+                                    <input id="link_man2" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团缴费联系人电话</th>
+                                <td>
+                                    <input id="mobile_no2" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>集团缴费联系人地址</th>
+                                <td>
+                                    <input id="address2" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                                </td>
+                                <th>集团缴费联系人身份证号</th>
+                                <td>
+                                    <input id="id_number2" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>邮件</th>
+                                <td>
+                                    <input id="email2" type="text" class="input-sty04 form-ipt" readonly="true">
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团单位名称</th>
+                                <td>
+                                    <input id="union_name2" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                                <th>集团单位编码</th>
+                                <td>
+                                    <input id="union_code2" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团账户名称</th>
+                                <td>
+                                    <select id="account_name2"  onchange="accountCodeValue(this.value)" >
+
+                                    </select>
+                                </td>
+
+                                <th>集团账户编码</th>
+                                <td>
+                                    <input id="account_code2" type="text" class="input-sty04 form-ipt" readonly="true">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div id="fh_bt1" class="modal-footer">
+                            <button type="button" class="ui-btn  mgr-5" data-dismiss="modal" onclick="saveGroupContact()">发起</button>
+                            <button type="button" class="ui-btn  mgr-5" data-dismiss="modal">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/groupPayContacter.js"></script>
+<%--
+<%@ include file="../../pub/public_include.jsp"%>
+--%>
+
+
+
+
+</html>

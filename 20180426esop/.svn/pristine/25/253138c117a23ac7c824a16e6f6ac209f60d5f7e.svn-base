@@ -1,0 +1,29 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.ArrearWarnDto;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+/**
+ * Created by liuxiao on 2017/5/31.
+ */
+@Repository
+public class ArrearWarnService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(ArrearWarnService.class);
+    //查询操作
+    public List getArrearWarnList(ArrearWarnDto arrearWarnDto){
+        List ls = sqlE.selectM("selectArrearWarnList",arrearWarnDto);
+        return ls;
+    }
+}

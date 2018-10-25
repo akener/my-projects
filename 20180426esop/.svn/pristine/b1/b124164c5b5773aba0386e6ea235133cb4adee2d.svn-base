@@ -1,0 +1,122 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%
+    String applicationNo = request.getParameter("applicationNo");
+%>
+<head>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+    <script type="text/javascript" language="javascript" class="init">
+        var table = "";
+        $(document).ready(function () {
+            IncomeListQuery();
+        });
+
+        function IncomeListQuery() {
+            var applicationNo = '<%=applicationNo%>';
+            if(applicationNo == null || applicationNo == ""){
+                alert("发票订单号不能为空!");
+                return false;
+            }
+            $("html").showLoading();
+            $.ajax({
+                url: "/invoice/orderpParticulars",
+                type: "POST",
+                data: {
+                    applicationNo: applicationNo
+                },
+                success: function (data) {
+                    $("html").hideLoading();
+                    if(data.returnCode == "0"){
+                        var appendStr = "";
+                        var actInfos = data.actInfos;
+                        for(var i=0;i<actInfos.length;i++){
+                            var row = actInfos[i];
+                            appendStr += "<tr>";
+                            appendStr += "<td>"+row.groupAccountId+"</td>";
+                            appendStr += "<td>"+row.groupAccountName+"</td>";
+                            if(row.arrearsAccountPeriod == null || row.arrearsAccountPeriod == "null"){
+                                appendStr += "<td>&nbsp;</td>";
+                            }else{
+                                appendStr += "<td>"+row.arrearsAccountPeriod+"</td>";
+                            }
+                            if(row.arrearsAccountPeriod == null || row.arrearsAccountPeriod == "null"){
+                                appendStr += "<td>"+row.invoiceValue+"</td>";
+                            }else{
+                                appendStr += "<td>"+row.arrearsAmount+"</td>";
+                            }
+                            appendStr += "</tr>";
+                        }
+
+                        $("#list_info").empty();
+                        $("#list_info").append(appendStr);
+                    }
+                },
+                error:function (data) {
+                    $("html").hideLoading();
+                    alert("集团账户信息查询失败！");
+                }
+            });
+
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>发票订单号</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>发票订单号：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="applicationNo" value="<%=applicationNo%>" class="input-sty04 form-ipt" disabled>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团账号信息列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <div style="overflow:auto;">
+                        <table class="cost-table" id="example" width="100%;">
+                            <thead>
+                            <tr>
+                                <th class="text-center" nowrap='nowrap'>集团账号</th>
+                                <th class="text-center" nowrap='nowrap'>账号名称</th>
+                                <th class="text-center" nowrap='nowrap'>账期</th>
+                                <th class="text-center" nowrap='nowrap'>金额</th>
+                            </tr>
+                            </thead>
+                            <tfoot id="list_info">
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

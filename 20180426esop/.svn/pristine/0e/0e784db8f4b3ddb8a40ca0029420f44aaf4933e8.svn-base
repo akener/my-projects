@@ -1,0 +1,103 @@
+package com.esop.invoice.dto;
+
+import com.esop.common.page.BaseDto;
+import com.esop.workflow.dto.InDTO;
+
+/**
+ * 预打发票审批列表查询InDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class QryInvApprListInDTO  extends BaseDto {
+    private String dealLoginNo;
+    private String applicationNo;
+    private String grpIdOrName;
+    private String invoiceType;
+    private String invoiceMode;
+    private String printMode;
+    private String isRed;
+    private String applicantName;
+    private String starttime;
+    private String  endtime;
+
+
+    public String getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
+    }
+
+    public String getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
+    }
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getDealLoginNo() {
+        return dealLoginNo;
+    }
+
+    public void setDealLoginNo(String dealLoginNo) {
+        this.dealLoginNo = dealLoginNo;
+    }
+
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getGrpIdOrName() {
+        return grpIdOrName;
+    }
+
+    public void setGrpIdOrName(String grpIdOrName) {
+        this.grpIdOrName = grpIdOrName;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceMode() {
+        return invoiceMode;
+    }
+
+    public void setInvoiceMode(String invoiceMode) {
+        this.invoiceMode = invoiceMode;
+    }
+
+    public String getPrintMode() {
+        return printMode;
+    }
+
+    public void setPrintMode(String printMode) {
+        this.printMode = printMode;
+    }
+
+    public String getIsRed() {
+        return isRed;
+    }
+
+    public void setIsRed(String isRed) {
+        this.isRed = isRed;
+    }
+}

@@ -1,0 +1,72 @@
+package com.esop.basicManagement.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class BasicFunctionDealDto {
+    String role_code = "";
+    String function_code = "";
+    String login_no = "";
+    String op_time = "";
+    String op_note = "";
+    String tree_value = "";
+
+    String landing_no = "";
+
+    public String getRole_code() {
+        return role_code;
+    }
+
+    public void setRole_code(String role_code) {
+        this.role_code = role_code;
+    }
+
+    public String getFunction_code() {
+        return function_code;
+    }
+
+    public void setFunction_code(String function_code) {
+        this.function_code = function_code;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getOp_note() {
+        return op_note;
+    }
+
+    public void setOp_note(String op_note) {
+        this.op_note = op_note;
+    }
+
+    public String getTree_value() {
+        return tree_value;
+    }
+
+    public void setTree_value(String tree_value) {
+        this.tree_value = tree_value;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

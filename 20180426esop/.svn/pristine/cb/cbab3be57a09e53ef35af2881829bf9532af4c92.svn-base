@@ -1,0 +1,96 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>预打发票>>增值税电子发票>>实收>>发票开具申请</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="active-cost-box tc" style="text-align: center;margin-left: auto; margin-right: auto; margin-top: 10px;">
+    <div class="row-tab">
+        <table id="table-choose" class="cost-table rev-tabs" width="100%; ">
+            <tbody>
+            <tr>
+                <th>选择</th>
+                <th>集团缴费联系人</th>
+                <th>联系电话</th>
+                <th>电子邮箱</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    var groupId = getQueryString("groupId");
+    var groupAccountId = getQueryString("groupAccountId");
+    $(document).ready(function () {
+        loadGrpAcctCont();
+    });
+
+    /**
+     * 查询集团账号缴费联系人
+     */
+    function loadGrpAcctCont() {
+        var url = 'UserService';
+        var method = "grpQryGrpLinkManInfoNetShopNew";
+        var param = {};
+        param['GROUPID'] = groupId;
+        param['GRPACCTID'] = groupAccountId;
+        param['REGION'] = "230";
+        // console.log(JSON.stringify(param));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {
+                url: url,
+                method: method,
+                param: JSON.stringify(param),
+                connectTimeout: 10000,
+                readTimeOut: 30000
+            },
+            dataType: 'json',
+            success: loadGrpAcctContHandler
+        });
+    }
+
+    function loadGrpAcctContHandler(data) {
+        // console.log(JSON.stringify(data));
+        // $("#table-choose tr:not(:first)").remove();
+        var res_code = data.res_code;
+        if (res_code == "0") {
+            var grpAcctConts = data.result.LINKMANINFO;
+            if (isNotNull(grpAcctConts)) {
+                for (var i = 0; i < grpAcctConts.length; i++) {
+                    var linkManInfo = grpAcctConts[i];
+                    var linkManInfoHtml = "<tr>\n" +
+                        "    <td><input name='acctContRadio' type='radio' class='chbox-ipt'/></td>\n" +
+                        "    <td>" + linkManInfo.contactman + "</td>\n" +
+                        "    <td>" + linkManInfo.mobileno + "</td>\n" +
+                        "    <td>" + linkManInfo.email + "</td>\n" +
+                        "</tr>";
+                    $("#table-choose tr:last").after(linkManInfoHtml);
+                }
+
+                $(":radio").click(function () {
+                    var nm = $(this).attr("name");
+                    var checkedState = $(this).attr('checked');
+                   // $("input:radio[name='" + nm + "']").attr('checked', false);
+                    if (checkedState == 'checked') {
+                        $(this).attr('checked', false);
+                    } else {
+                        $(this).attr('checked', true);
+                    }
+                });
+            }
+        } else {
+            var res_desc = data.res_desc;
+            // console.log(res_desc);
+        }
+    }
+</script>
+</html>

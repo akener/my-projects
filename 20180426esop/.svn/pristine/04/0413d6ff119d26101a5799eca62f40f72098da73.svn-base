@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.OrTemplateAttrDto">
+  <resultMap id="OrTemplateAttrDtoBaseResultMap" type="com.esop.cqDevelopment.elecPack.dto.OrTemplateAttrDto">
+    <result column="template_id" jdbcType="INTEGER" property="template_id" />
+    <result column="attr_id" jdbcType="INTEGER" property="attr_id" />
+    <result column="attr_name" jdbcType="VARCHAR" property="attr_name" />
+    <result column="default_value" jdbcType="VARCHAR" property="default_value" />
+    <result column="is_must" jdbcType="CHAR" property="is_must" />
+    <result column="is_visible" jdbcType="CHAR" property="is_visible" />
+    <result column="show_type" jdbcType="VARCHAR" property="show_type" />
+    <result column="template_type_id" jdbcType="VARCHAR" property="template_type_id" />
+    <result column="attr_code" jdbcType="VARCHAR" property="attr_code" />
+    <result column="bak" jdbcType="VARCHAR" property="bak" />
+    <result column="attr_desc" jdbcType="LONGVARCHAR" property="attr_desc" />
+  </resultMap>
+
+
+  <select id="selectTemplateAttrById" parameterType="Integer" resultMap="OrTemplateAttrDtoBaseResultMap">
+    select * from or_template_attr WHERE 1=1
+    <if test="_parameter !=null and  _parameter !=''">
+     and template_id= #{template_id}
+    </if>
+  </select>
+
+</mapper>

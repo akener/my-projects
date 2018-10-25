@@ -1,0 +1,23 @@
+package com.esop.common.jaxb;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Created by wangbl on 2017/3/14.
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
+public class Header {
+    String AppID="PCMP";//消费方
+    String Provide_AppID="ESOP";//提供方
+
+    public String getAppID() {
+        return AppID;
+    }
+
+    public String getProvide_AppID() {
+        return Provide_AppID;
+    }
+}

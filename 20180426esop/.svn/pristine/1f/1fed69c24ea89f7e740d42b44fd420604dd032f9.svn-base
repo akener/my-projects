@@ -1,0 +1,525 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<head>
+    <title>发布公告</title>
+</head>
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="org_code" value="${group_id}">
+<div class="form-wrapper">
+    <div class="pd-8">
+        <div id="operation_table" class="block02">
+            <div class="title-style04">
+                <span>◆</span><b>公告发布</b>
+            </div>
+            <div class="box-in">
+                <table border="0" cellspacing="0" cellpadding="0"
+                       class="table-01">
+                    <tr>
+                        <th><span class="red">*</span>公告标题</th>
+                        <td>
+                            <input id="note_title" style="height: 30px" name="note_title" type="text" class="required"></input>
+                        </td>
+                        <th><span class="red">*</span>关键字</th>
+                        <td>
+                            <input id="key_word" style="height: 30px" name="key_word" type="text" class="required"></input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><font class="red">*</font>公告内容</th>
+                        <td colspan="3">
+                            <textarea id="note_content" name="note_content" rows="5" cols="160" class="required"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>上传附件</th>
+                        <th class="text-center"  colspan="4">
+                            <html:hidden id="survey_request_related_id"/>
+                            <div class="box-footer">
+                                <label class="btn btn-info pull-left" for="xFile">上传附件</label>
+                                <form id="upload-form" method="post" enctype="multipart/form-data">
+                                    <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                </form>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-group" id="survey_request_fileList">
+                                </div>
+                            </div>
+                            <%--<input type="text"  id="survey_request" value="" style="width:100%; height:100%;"/>--%>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>发布策略</th>
+                        <td id="pub_way_td" colspan="3">
+                            <select id="pub_way" name="pub_way" onchange="pubWayChange()">
+                                <option value="0">立即发布</option>
+                                <option value="1">定时发布</option>
+                            </select>
+                        </td>
+                        <th id="pub_date_th" style="display:none"><font class="red">*</font>生效时间</th>
+                        <td id="pub_date_td" style="display:none">
+                            <input id="pub_date" style="height: 30px"  type="text"  name="exp_date"
+                                   class="required" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
+                            <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                 style="width:25px;!important" width="25" height="21"
+                                 onclick="WdatePicker({el:'exp_date',dateFmt:'yyyy-MM-dd'})" title="选择日期" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><font class="red">*</font>	接收人</th>
+                        <td>
+                            <input id="receive_loginno"  style="width:200px;height:30px" type="text" name="receive_loginno" class="required" readonly="readonly" />
+
+                            <input type="hidden" id="personStr" name="personStr" />
+
+
+                            <button id="b_text" type="button" onclick="xuanze()" class="btn-style02">选择</button>
+
+                        </td>
+
+                        <th><font class="red">*</font>失效时间</th>
+                        <td>
+                            <input id="exp_date" style="height: 30px" type="text"  name="exp_date"
+                                   class="required" readonly="readonly" onclick="WdatePicker({dateFmt:'yyyy-MM-dd'})"/>
+                            <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                 style="width:25px;!important" width="25" height="21"
+                                 onclick="WdatePicker({el:'exp_date',dateFmt:'yyyy-MM-dd'})" title="选择日期" />
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>发布类型</th>
+                        <td colspan="3">
+                            <select id="notetypeflag" name="notetypeflag"	>
+                                <option value='1' >公告</option>
+                                <option value='0' >告警</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <div id="operation_button" class="block03 mgt-8">
+
+                    <button class="btn-style02"  onclick="pubnote()" type="button" id="pubnoteId" >发布</button>&nbsp;
+                    <%--<button class="btn-style02" name="savenote" onclick="pubnote1()"  type="button" id="savenoteId" >存草稿</button>&nbsp;--%>
+
+                    <button class="btn-style02" name="reset1" onclick="pageReset()" >清除</button>&nbsp;
+                </div>
+            </div>	</div></div></div>
+
+<!-- 组织树 -->
+<div id="alertInfo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">选择接收人</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <table border="0" cellspacing="0" cellpadding="0" class="table-01">
+                                    <tr>
+                                        <th>选择接收部门</th>
+                                        <td>
+                                            <input type="hidden" id="groupid" name="groupid"/>
+                                           <select id="sel" name="sel" style=" width:100px " >
+
+                                           </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th width="200px">选择接收人员<font class="red">(直接所属部门)</font></th>
+                                        <td>
+                                            <input type="hidden" id="sergroupname" name="sergroupname" />
+                                            <input type="hidden" id="sergroupid" name="sergroupid" />
+                                            <div id='showPersonDiv' style="width: 500px"></div>
+                                        </td>
+                                    </tr>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+                <div id="operation_button1" class="modal-footer">
+                    <button class="btn-style02" onmouseup="dochoose()">确定</button>&nbsp;
+                    <button name="close"  class="btn-style02" onclick="closeDivWin()">取消</button>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no= $("#service_no").val();
+    var parent_group_id = $("#org_code").val();
+    var seq="";
+   //发布策略改变触发生效时间改变
+    var pubWayChange = function (){
+        if ($("#pub_way").val() == 0){
+            document.getElementById("pub_date_th").style.display = "none";
+            document.getElementById("pub_date_td").style.display = "none";
+            document.getElementById("pub_way_td").colSpan = "3";
+        }
+        else {
+            document.getElementById("pub_way_td").colSpan = "1";
+            document.getElementById("pub_date_th").style.display = "";
+            document.getElementById("pub_date_td").style.display = "";
+        }
+    };
+
+    //发布数据
+    function pubnote(){
+         //数据检测
+       var ch= check();
+       if(ch=="1"){
+           return ;
+       }
+        var date=new Date();
+        var month=date.getMonth()+1;
+        dateStr=date.getYear()+"-"+month+"-"+date.getDate();
+        var datetime =$("#pub_date").val();
+            if(datetime==""){
+            datetime=dateStr;
+            }
+            //获取序列值
+        $.ajax({
+            url: 'qrynoteseq',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            async: false,
+            success: function (data) { // 接口调用成功回调函数
+                seq=data;
+            },
+            error:function(data){
+                alert("请求超时，请重试");
+            }
+        });
+        //存入接收人
+        if($("#receive_loginno").val()!="") {
+            var str1 = $("#receive_loginno").val();
+            var arr = str1.split(",");
+          // alert(arr);
+       //     alert(arr[0]);
+            var group= $("#sel").val();
+       //     alert(group);
+                if(arr[0] == "全选"){
+                    var ss="*";
+                 //   alert(2222);
+                   group =parent_group_id;
+                    saveperson1(ss,group);
+                }else if(arr[0] != "全选" &&arr[1]=="" && arr[0] != "请选择" ) {
+                    var ss="*";
+                       group=$('#groupid').val();
+                    //alert(group);
+                    saveperson1(ss,group);
+                }else{
+                    for (var i = 1; i < arr.length-1; i++) {
+                        saveperson(arr[i], group);
+                    }
+                }
+
+        }
+
+
+            //提交数据
+        $.ajax({
+            url: 'qrynoteadd',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data : {
+                note_id:seq,
+                note_title:$("#note_title").val(),
+                key_word:$("#key_word").val(),
+                note_content:$("#note_content").val(),
+                exp_date: $("#exp_date").val(),
+                note_status:'1',
+                power_right:$('#survey_request_related_id').val(),
+                pub_date: datetime,
+                note_type_flag :$("#notetypeflag").val(),
+                login_no: login_no //
+            },
+            success: function (data) { // 接口调用成功回调函数
+                if(data==1){
+                    alert("发布成功");
+                    location.href="qrynoteinfoadd";
+                }else{
+                    alert("发布失败");
+                }
+            },
+            error:function(data){
+                alert("请求超时，请重试");
+            }
+        });
+        //清空页面
+
+
+    }
+//发布草稿数据
+    function pubnote1(){
+        //数据检测
+        check();
+        var date=new Date();
+        var month=date.getMonth()+1;
+        dateStr=date.getYear()+"-"+month+"-"+date.getDate();
+        var datetime =$("#pub_date").val();
+        if(datetime==""){
+            datetime=dateStr;
+        }
+
+        //获取序列值
+        $.ajax({
+            url: 'qrynoteseq',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            async: false,
+            success: function (data) { // 接口调用成功回调函数
+                seq=data;
+            },
+            error:function(data){
+                alert("请求超时，请重试");
+            }
+        });
+
+        //提交数据
+        $.ajax({
+            url: 'qrynoteadd',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data : {
+                note_id:seq,
+                note_title:$("#note_title").val(),
+                key_word:$("#key_word").val(),
+                note_content:$("#note_content").val(),
+                exp_date: $("#exp_date").val(),
+                note_status:'0',
+                power_right: $('#survey_request_related_id').val(),
+                pub_date: datetime,
+                note_type_flag :$("#note_type_flag").val(),
+                login_no: login_no //
+            },
+            success: function (data) { // 接口调用成功回调函数
+                if(data==1){
+                    alert("发布成功");
+                }else{
+                    alert("发布失败");
+                }
+            },
+            error:function(data){
+                alert("请求超时，请重试");
+            }
+        });
+    }
+
+
+    //存接收人信息
+
+    //存接收人信息
+    function  saveperson1(login_no,group){
+        $.ajax({
+            url: 'insnoterel',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data : {
+                note_id:seq,
+                login_no:login_no,
+                group_id: group
+            },
+            success: function (data) { // 接口调用成功回调函数
+            },
+            error:function(data){
+                alert("请求超时，请重试");
+            }
+        });
+    }
+   //存接收人信息
+    function  saveperson(login_no,group){
+        $.ajax({
+            url: 'qrynotereladd',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data : {
+                note_id:seq,
+                login_no:login_no,
+                group_id: group
+            },
+            success: function (data) { // 接口调用成功回调函数
+            },
+            error:function(data){
+                alert("请求超时，请重试");
+            }
+        });
+    }
+
+    //上传附件
+   //如果附件编码不为空，开始取附件
+   $("#xFile").on("change", function(e){
+       //当没附件关联id时取值
+       if ($('#survey_request_related_id').val() == "") {
+           $.ajax({
+               type: "POST",
+               url: "getUploadFileInfoRelatedID",
+               async: false
+           }).then(function (data) {
+              // alert(data);
+               $('#survey_request_related_id').val(data);
+           });
+
+       }
+
+       $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+           url:"${pageContext.request.contextPath}/fileUpload",
+           type:"post", //提交的类型必需是post，
+           data: { related_id: $('#survey_request_related_id').val()},
+           dateType:"json",
+           success:function(data){
+               //如果提交成功执行
+               //如果附件编码不为空，开始取附件
+               if($("#survey_request_related_id").val()!="") {
+                   $.ajax({
+                       type: "POST",
+                       url: "uploadFileSelect",
+                       data: {
+                           "related_id": $("#survey_request_related_id").val()
+                       }
+                   }).then(function (data) {
+                       //循环展现附件信息
+                       $("#survey_request_fileList div").remove();
+                       $.each(data, function (index, item) {
+                           $("#survey_request_fileList").append("<div id='uploadfile'><div  class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                               + "</a></div>"
+                               + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                               + "<i class=\"fa fa-times\"></i></button></div></div>");
+                       });
+                   });
+               }
+           },
+           error:function(data){
+               alert("error:"+data);
+           }
+       });
+
+   });
+
+   //删除附件
+   function deleteFile(buttonID,fileID){
+       $.ajax({
+           type: "POST",
+           url: "deleteFile",
+           data: {id:fileID}
+       }).then(function (data) {
+           //alert(data.result);
+           $(buttonID).parent().parent().remove();
+       });
+   }
+
+   //插入接收人信息
+  function  xuanze(){
+      $("#sel").find('option').remove();
+      $("#alertInfo").modal("show");
+      show();
+  }
+  //选择接收部门
+   function  show(){
+
+       $.ajax({
+           type: "POST",
+           url: "qrygroupinfo",
+           data:{
+               "parent_group_id": parent_group_id
+           },
+           cache: false,
+           success: function (data) {
+               $("#sel").append("<option value='0'>请选择</option>");
+               $("#sel").append(" <option value='1'>全选</option>");
+               $.each(data,function (index,filed) {
+                   $("#sel").append("<option value='"+filed.group_id+"'>"+filed.group_name+"</option>").val();
+               })
+
+           },
+           error: function () {
+               alert("请求超时，请重试！");
+           }
+       });
+   }
+   //查询接收人
+    $("#sel").bind("change",function()
+     {
+
+       if($('#sel').val()=="0" || $('#sel').val()=="1"){
+           $("#showPersonDiv").html("");
+           return ;
+       }
+       //存group_id
+        $('#groupid').val($('#sel').val());
+       $.ajax({
+           type:"post",
+           url:"qrynoterel",
+           data:{
+               "group_id": $('#sel').val()
+           }
+       }).then(function (data) {
+           $("#showPersonDiv").html("");
+           $.each(data, function (index, item) {
+               $("#showPersonDiv").append("<label><input type='checkbox' name='category' value='"+item.login_no+"' />"+" "+item.login_no+"|"+item.login_name+"</label>");
+           });
+       });
+   });
+//确定按钮
+    function  dochoose(){
+       var str=  $('#sel option:selected').text()+",";
+       var obj=document.getElementsByName('category');
+        for(var i=0; i<obj.length; i++){
+            if(obj[i].checked) str+=obj[i].value+','; //如果选中，将value添加到变量s中
+        }
+        $("#receive_loginno").val(str);
+        $('#sel option:selected').val("请选择");
+        $("#showPersonDiv").html("");
+        $("#alertInfo").modal("hide");
+    }
+    //取消按钮
+       function closeDivWin(){
+       $('#sel option:selected').val("请选择");
+       $("#showPersonDiv").html("");
+       $("#alertInfo").modal("hide");
+   }
+    //数据验证
+    function check(){
+           if($("#note_title").val()==""){
+               alert("公告标题不能为空");
+               return 1;
+           }
+        if($("#key_word").val()==""){
+            alert("关键字不能为空");
+            return 1;
+        }
+        if($("#note_content").val()==""){
+            alert("公告内容不能为空");
+            return 1;
+        }
+        if($("#receive_loginno").val()=="" ||  $("#receive_loginno").val()=="请选择,"){
+            alert("接收人不能为空");
+            return 1;
+        }
+        if($("#exp_date").val()==""){
+            alert("失效时间不能为空");
+            return 1;
+        }
+
+    }
+    function pageReset(){
+        $("#note_title").val("");
+        $("#key_word").val("");
+        $("#note_content").val("");
+        $("#exp_date").val("");
+        $("#receive_loginno").val("");
+        $("#uploadfile").html("");
+        $("#showPersonDiv").html("");
+    }
+</script>
+
+
+
+</body>
+</html>

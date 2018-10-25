@@ -1,0 +1,58 @@
+package com.esop.common.jaxb;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.File;
+import java.io.StringReader;
+import java.io.StringWriter;
+
+/**
+ * Created by wangbl on 2017/3/15.
+ * XML与对象转换器
+ */
+
+public class JAXBConvertor {
+    //将xml字符串转化为Body对象
+    public IBody XMLToObject(String xml) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Message.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            StringReader reader = new StringReader(xml);
+            Message message = (Message) jaxbUnmarshaller.unmarshal(reader);
+            return message.getIBody();
+        }catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return new IBody();
+    }
+    //将对象转化为xml字符串
+    public  String objectToXML(IBody body) {
+        Message message =new Message();
+        Header header = new Header();
+        message.setHeader(header);
+        /*MsgHeader msgHeader =new MsgHeader();
+        body.setMsgHeader(msgHeader);*/
+        message.setIBody(body);
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(Message.class);
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            JAXBExample jaxbExample =new JAXBExample();
+            return jaxbExample.asString(jaxbContext,message);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    public String asString(JAXBContext pContext,
+                           Object pObject) throws JAXBException {
+        java.io.StringWriter sw = new StringWriter();
+        Marshaller marshaller = pContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshaller.marshal(pObject, sw);
+        return sw.toString();
+    }
+}

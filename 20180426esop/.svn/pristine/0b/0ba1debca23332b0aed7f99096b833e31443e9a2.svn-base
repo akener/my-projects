@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.LoginBeanMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.LoginBean">
+    <result column="staff_code" jdbcType="VARCHAR" property="loginNo" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="org_id" jdbcType="VARCHAR" property="orgId" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="phoneNo" />
+  </resultMap>
+  <select id="selectByLoginNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select t1.staff_code, t1.login_name, t1.password, t2.org_id, t2.mobile_phone
+    from bs_systemuser_info t1, bs_staff_info t2
+    where t1.staff_id = t2.staff_id and t1.staff_code = #{loginNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

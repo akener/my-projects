@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectCapitalUseApproveInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" >
+        select
+        a.gongdan_bianhao,
+        a.yewu_leixing,
+        a.fengongsi,
+        a2.name fengongsiname,
+        a.shenqingren,
+        a3.login_name shenqingrenname,
+        a.hangye_zhongxin,
+        a1.business_center as hangye_zhongxin_name,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        a.jituan_zhanghao,
+        a.zhanghao_mingcheng,
+        a.dongjie_jine,
+        a.shiyong_jine,
+        a.shenqing_shijian,
+        a.beizhu_xinxi,
+        f.kaishi_zhangqi,
+        f.jieshu_zhangqi,
+        f.shifou_yuda,
+        case b.applicantNo when 'CRM' then 'CRM' else c.login_name end login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        case b.nextDealPerson when 'CRM' then 'CRM' else b1.login_name end nextDealPerson_name,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        f.fapiao_daima,
+        f.fapiao_haoma,
+        f.fapiao_jine,
+        f.esop_orderId
+        from
+        ep_cap_capitalapply_info a left join se_business_center a1 on a.hangye_zhongxin = a1.center_code
+        left join se_contract_qddw a2 on a2.id = a.fengongsi left join bs_systemuser_info a3 on a3.staff_code = a.shenqingren left join se_orgid_rel a4 on a4.fen_gongs = a.fengongsi,
+        ep_work_flow_info b left join bs_systemuser_info c on b.applicantNo = c.staff_code left join bs_systemuser_info b1 on b1.staff_code = b.nextDealPerson,
+        ep_work_flow_dict d,
+        ep_cap_capuseCustpay_info f
+        where
+        a.gongdan_bianhao = f.gongdan_bianhao
+        and a.gongdan_bianhao = b.taskOrderId
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        <if test="shenqingren != ''">
+          and a.shenqingren = #{shenqingren}
+        </if>
+        <if test="nextDealPerson != ''">
+            and a.gongdan_bianhao in (select z.taskOrderId from ep_work_flow_info z where z.nextDealPerson = #{nextDealPerson})
+        </if>
+        <if test="nextDealPerson_sp != ''">
+            and b.nextDealPerson = #{nextDealPerson_sp}
+        </if>
+        <if test="gongdan_bianhao != ''">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="jituan_bianhao != ''">
+            and a.jituan_bianhao = #{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !=null and jituan_mingcheng !=''">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="shiyong_jine != ''">
+            and a.shiyong_jine = #{shiyong_jine}
+        </if>
+        <if test="applyNo != ''">
+            and a.shenqingren = #{applyNo}
+        </if>
+        <if test="shenqing_shijian_start != ''">
+            and a.shenqing_shijian >= #{shenqing_shijian_start}
+        </if>
+        <if test="shenqing_shijian_end != ''">
+            and a.shenqing_shijian &lt;= #{shenqing_shijian_end}
+        </if>
+        <if test="fengongsi != ''">
+            and a4.group_pay_code = #{fengongsi}
+        </if>
+        <if test="hangye_zhongxin != ''">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="nodeId != ''">
+            and b.nodeId = #{nodeId}
+        </if>
+        order by a.gongdan_bianhao desc
+    </select>
+    <select id="selectCapitalUseApproveInfo2" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" >
+        select
+        a.gongdan_bianhao,
+        a.yewu_leixing,
+        a.fengongsi,
+        a2.name fengongsiname,
+        a.shenqingren,
+        a3.login_name shenqingrenname,
+        a.hangye_zhongxin,
+        a1.business_center as hangye_zhongxin_name,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        a.jituan_zhanghao,
+        a.zhanghao_mingcheng,
+        a.dongjie_jine,
+        a.shiyong_jine,
+        a.shenqing_shijian,
+        a.beizhu_xinxi,
+        f.kaishi_zhangqi,
+        f.jieshu_zhangqi,
+        f.fujian,
+        case b.applicantNo when 'CRM' then 'CRM' else c.login_name end login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        case b.nextDealPerson when 'CRM' then 'CRM' else b1.login_name end nextDealPerson_name,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        z.source_file_name as fileName
+        from
+        ep_cap_capitalapply_info a left join se_business_center a1 on a.hangye_zhongxin = a1.center_code
+        left join se_contract_qddw a2 on a2.id = a.fengongsi left join bs_systemuser_info a3 on a3.staff_code = a.shenqingren left join se_orgid_rel a4 on a4.fen_gongs = a.fengongsi,
+        ep_work_flow_info b left join bs_systemuser_info c on b.applicantNo = c.staff_code left join bs_systemuser_info b1 on b1.staff_code = b.nextDealPerson,
+        ep_work_flow_dict d,
+        ep_cap_capuseCustmempay_info f left join tf_attach_file_info z on f.fujian=z.attach_file_id
+        where
+        a.gongdan_bianhao = f.gongdan_bianhao
+        and a.gongdan_bianhao = b.taskOrderId
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        <if test="shenqingren != ''">
+            and a.shenqingren = #{shenqingren}
+        </if>
+        <if test="nextDealPerson != ''">
+            and a.gongdan_bianhao in (select z.taskOrderId from ep_work_flow_info z where z.nextDealPerson = #{nextDealPerson})
+        </if>
+        <if test="nextDealPerson_sp != ''">
+            and b.nextDealPerson = #{nextDealPerson_sp}
+        </if>
+        <if test="gongdan_bianhao != ''">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="jituan_bianhao != ''">
+            and a.jituan_bianhao = #{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !=null and jituan_mingcheng !=''">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="shiyong_jine != ''">
+            and a.shiyong_jine = #{shiyong_jine}
+        </if>
+        <if test="applyNo != ''">
+            and a.shenqingren = #{applyNo}
+        </if>
+        <if test="shenqing_shijian_start != ''">
+            and a.shenqing_shijian >= #{shenqing_shijian_start}
+        </if>
+        <if test="shenqing_shijian_end != ''">
+            and a.shenqing_shijian &lt;= #{shenqing_shijian_end}
+        </if>
+        <if test="fengongsi != ''">
+            and a4.group_pay_code = #{fengongsi}
+        </if>
+        <if test="hangye_zhongxin != ''">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="nodeId != ''">
+            and b.nodeId = #{nodeId}
+        </if>
+        order by a.gongdan_bianhao desc
+    </select>
+    <select id="selectCapitalUseApproveInfo3" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" >
+        select
+        a.gongdan_bianhao,
+        a.yewu_leixing,
+        a.fengongsi,
+        a2.name fengongsiname,
+        a.shenqingren,
+        a3.login_name shenqingrenname,
+        a.hangye_zhongxin,
+        a1.business_center as hangye_zhongxin_name,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        a.jituan_zhanghao,
+        a.zhanghao_mingcheng,
+        a.dongjie_jine,
+        a.shiyong_jine,
+        a.shenqing_shijian,
+        a.beizhu_xinxi,
+        f.kaishi_zhangqi,
+        f.jieshu_zhangqi,
+        f.fujian,
+        case b.applicantNo when 'CRM' then 'CRM' else c.login_name end login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        case b.nextDealPerson when 'CRM' then 'CRM' else b1.login_name end nextDealPerson_name,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        z.source_file_name as fileName
+        from
+        ep_cap_capitalapply_info a left join se_business_center a1 on a.hangye_zhongxin = a1.center_code
+        left join se_contract_qddw a2 on a2.id = a.fengongsi left join bs_systemuser_info a3 on a3.staff_code = a.shenqingren left join se_orgid_rel a4 on a4.fen_gongs = a.fengongsi,
+        ep_work_flow_info b left join bs_systemuser_info c on b.applicantNo = c.staff_code left join bs_systemuser_info b1 on b1.staff_code = b.nextDealPerson,
+        ep_work_flow_dict d,
+        ep_cap_capuseBigCustmempay_info f left join tf_attach_file_info z on f.fujian=z.attach_file_id
+        where
+        a.gongdan_bianhao = f.gongdan_bianhao
+        and a.gongdan_bianhao = b.taskOrderId
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        <if test="shenqingren != ''">
+            and a.shenqingren = #{shenqingren}
+        </if>
+        <if test="nextDealPerson != ''">
+            and a.gongdan_bianhao in (select z.taskOrderId from ep_work_flow_info z where z.nextDealPerson = #{nextDealPerson})
+        </if>
+        <if test="nextDealPerson_sp != ''">
+            and b.nextDealPerson = #{nextDealPerson_sp}
+        </if>
+        <if test="gongdan_bianhao != ''">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="jituan_bianhao != ''">
+            and a.jituan_bianhao = #{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !=null and jituan_mingcheng !=''">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="shiyong_jine != ''">
+            and a.shiyong_jine = #{shiyong_jine}
+        </if>
+        <if test="applyNo != ''">
+            and a.shenqingren = #{applyNo}
+        </if>
+        <if test="shenqing_shijian_start != ''">
+            and a.shenqing_shijian >= #{shenqing_shijian_start}
+        </if>
+        <if test="shenqing_shijian_end != ''">
+            and a.shenqing_shijian &lt;= #{shenqing_shijian_end}
+        </if>
+        <if test="fengongsi != ''">
+            and a4.group_pay_code = #{fengongsi}
+        </if>
+        <if test="hangye_zhongxin != ''">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="nodeId != ''">
+            and b.nodeId = #{nodeId}
+        </if>
+        order by a.gongdan_bianhao desc
+    </select>
+    <select id="selectCapitalUseApproveInfo4" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" >
+        select
+        a.gongdan_bianhao,
+        a.yewu_leixing,
+        a.fengongsi,
+        a2.name fengongsiname,
+        a.shenqingren,
+        a3.login_name shenqingrenname,
+        a.hangye_zhongxin,
+        a1.business_center as hangye_zhongxin_name,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        a.jituan_zhanghao,
+        a.zhanghao_mingcheng,
+        a.dongjie_jine,
+        a.shiyong_jine,
+        a.shenqing_shijian,
+        a.beizhu_xinxi,
+        f.hetong_bianhao,
+        f.baozhengjin_leixing,
+        f.shouju_bianhao,
+        c.login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        b1.login_name nextDealPerson_name,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId
+        from
+        ep_cap_capitalapply_info a left join se_business_center a1 on a.hangye_zhongxin = a1.center_code
+        left join se_contract_qddw a2 on a2.id = a.fengongsi left join bs_systemuser_info a3 on a3.staff_code = a.shenqingren left join se_orgid_rel a4 on a4.fen_gongs = a.fengongsi,
+        ep_work_flow_info b left join bs_systemuser_info c on b.applicantNo = c.staff_code left join bs_systemuser_info b1 on b1.staff_code = b.nextDealPerson,
+        ep_work_flow_dict d,
+        ep_cap_capuseBondpay_info f
+        where
+        a.gongdan_bianhao = f.gongdan_bianhao
+        and a.gongdan_bianhao = b.taskOrderId
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        <if test="shenqingren != ''">
+            and a.shenqingren = #{shenqingren}
+        </if>
+        <if test="nextDealPerson != ''">
+            and a.gongdan_bianhao in (select z.taskOrderId from ep_work_flow_info z where z.nextDealPerson = #{nextDealPerson})
+        </if>
+        <if test="nextDealPerson_sp != ''">
+            and b.nextDealPerson = #{nextDealPerson_sp}
+        </if>
+        <if test="gongdan_bianhao != ''">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="jituan_bianhao != ''">
+            and a.jituan_bianhao = #{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !=null and jituan_mingcheng !=''">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="shiyong_jine != ''">
+            and a.shiyong_jine = #{shiyong_jine}
+        </if>
+        <if test="applyNo != ''">
+            and a.shenqingren = #{applyNo}
+        </if>
+        <if test="shenqing_shijian_start != ''">
+            and a.shenqing_shijian >= #{shenqing_shijian_start}
+        </if>
+        <if test="shenqing_shijian_end != ''">
+            and a.shenqing_shijian &lt;= #{shenqing_shijian_end}
+        </if>
+        <if test="fengongsi != ''">
+            and a4.group_pay_code = #{fengongsi}
+        </if>
+        <if test="hangye_zhongxin != ''">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="nodeId != ''">
+            and b.nodeId = #{nodeId}
+        </if>
+        order by a.gongdan_bianhao desc
+    </select>
+    <select id="selectCapitalUseApproveInfo5" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto" >
+        select
+        a.gongdan_bianhao,
+        a.yewu_leixing,
+        a.fengongsi,
+        a2.name fengongsiname,
+        a.shenqingren,
+        a3.login_name shenqingrenname,
+        a.hangye_zhongxin,
+        a1.business_center as hangye_zhongxin_name,
+        a.jituan_bianhao,
+        a.jituan_mingcheng,
+        a.jituan_zhanghao,
+        a.zhanghao_mingcheng,
+        a.dongjie_jine,
+        a.shiyong_jine,
+        a.shenqing_shijian,
+        a.beizhu_xinxi,
+        f.shifou_chuhuo,
+        f.hetong_bianhao,
+        case b.applicantNo when 'CRM' then 'CRM' else c.login_name end login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        case b.nextDealPerson when 'CRM' then 'CRM' else b1.login_name end nextDealPerson_name,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        a.product_id
+        from
+        ep_cap_capitalapply_info a left join se_business_center a1 on a.hangye_zhongxin = a1.center_code
+        left join se_contract_qddw a2 on a2.id = a.fengongsi left join bs_systemuser_info a3 on a3.staff_code = a.shenqingren left join se_orgid_rel a4 on a4.fen_gongs = a.fengongsi,
+        ep_work_flow_info b left join bs_systemuser_info c on b.applicantNo = c.staff_code left join bs_systemuser_info b1 on b1.staff_code = b.nextDealPerson,
+        ep_work_flow_dict d,
+        ep_cap_capuseTerminal_info f
+        where
+        a.gongdan_bianhao = f.gongdan_bianhao
+        and a.gongdan_bianhao = b.taskOrderId
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        <if test="shenqingren != ''">
+            and a.shenqingren = #{shenqingren}
+        </if>
+        <if test="nextDealPerson != ''">
+            and a.gongdan_bianhao in (select z.taskOrderId from ep_work_flow_info z where z.nextDealPerson = #{nextDealPerson})
+        </if>
+        <if test="nextDealPerson_sp != ''">
+            and b.nextDealPerson = #{nextDealPerson_sp}
+        </if>
+        <if test="gongdan_bianhao != ''">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="jituan_bianhao != ''">
+            and a.jituan_bianhao = #{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !=null and jituan_mingcheng !=''">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="shiyong_jine != ''">
+            and a.shiyong_jine = #{shiyong_jine}
+        </if>
+        <if test="applyNo != ''">
+            and a.shenqingren = #{applyNo}
+        </if>
+        <if test="shenqing_shijian_start != ''">
+            and a.shenqing_shijian >= #{shenqing_shijian_start}
+        </if>
+        <if test="shenqing_shijian_end != ''">
+            and a.shenqing_shijian &lt;= #{shenqing_shijian_end}
+        </if>
+        <if test="fengongsi != ''">
+            and a4.group_pay_code = #{fengongsi}
+        </if>
+        <if test="hangye_zhongxin != ''">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="nodeId != ''">
+            and b.nodeId = #{nodeId}
+        </if>
+        order by a.gongdan_bianhao desc
+    </select>
+</mapper>

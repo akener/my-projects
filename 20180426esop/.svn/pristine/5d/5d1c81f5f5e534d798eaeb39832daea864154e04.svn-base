@@ -1,0 +1,53 @@
+package com.esop.cqDevelopment.elecPack.controller.PostUtil;
+
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+@Service("getBossToken")
+public class GetBossToken {
+	@Value("${serviceHuaWei}")
+	private String svcHuaWei;
+	@Value("${token_path}")
+	private String tk_pth;
+	@Value("${token_client_id}")
+	private String tk_cltId;
+	@Value("${token_client_secret}")
+	private String tk_cltSct;
+
+	private static Logger logger =
+			LoggerFactory.getLogger(GetBossToken.class);
+	public String getBossToken(){
+
+		String accessToken="";
+		String tokenIP = svcHuaWei + tk_pth;
+		String client_id = tk_cltId;
+		String client_secret = tk_cltSct;
+
+		String msg = "grant_type=client_credentials&client_id="+client_id+"&client_secret="+client_secret;
+
+		logger.info(tokenIP);
+		logger.info(msg);
+
+		String result = HttpMsgSend.sendHttpReqBossMsg(tokenIP,msg,"POST");
+		logger.info(result);
+		//GetBossTokenRsp rsp = (GetBossTokenRsp)JsonUtil.getObject(result, GetBossTokenRsp.class);
+		if(result!=null){
+//			accessToken = result.getAccess_token();
+			JSONObject jobject=new JSONObject(result);
+			accessToken=jobject.getString("access_token");
+
+//			accessToken = result;
+		}
+		return accessToken;
+	}
+
+	/*public static void main(String[] args) {
+		String token =getBossToken();
+		System.out.println(token);
+	}*/
+}

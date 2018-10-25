@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="visitRepository">
+    <!--查询参观流程表单承接方填写信息-->
+    <select id="getVisitProcess" parameterType="com.esop.visitInfo.dto.VisitProcessDto" resultType="com.esop.visitInfo.dto.VisitProcessDto">
+        select grop_id,undertake_unit,undertake_address,undertake_man,
+        undertake_phone,undertake_audit,hv_distribution_room,lv_distribution_room,engine_room,
+        power_battery_room,precision_air,commercial_tworoom,commercial_fiveroom,commercial_sixroom,
+        storage_room,focus_monitor_hall,station,canteen,special_needs,large_screen_greeting,boardroom_number,
+        capacity,projector_curtain,famous_brand,rostrum,microphone,mineral_water,tea_water,paper_pen,
+        car_number,models_colour,plate_num,table_number,canteen_number
+        from ep_prd_visitprocess_info where grop_id=#{grop_id}
+    </select>
+    <!--新增参观流程表单承接方填写信息-->
+    <select id="insertVisitProcess" parameterType="com.esop.visitInfo.dto.VisitProcessDto" resultType="int">
+        insert into ep_prd_visitprocess_info(grop_id,undertake_unit,undertake_address,undertake_man,
+        undertake_phone,undertake_audit,hv_distribution_room,lv_distribution_room,engine_room,
+        power_battery_room,precision_air,commercial_tworoom,commercial_fiveroom,commercial_sixroom,
+        storage_room,focus_monitor_hall,station,canteen,special_needs,large_screen_greeting,boardroom_number,
+        capacity,projector_curtain,famous_brand,rostrum,microphone,mineral_water,tea_water,paper_pen,
+        car_number,models_colour,plate_num,table_number,canteen_number,create_date)
+         values(#{grop_id},#{undertake_unit},#{undertake_address},#{undertake_man},
+        #{undertake_phone},#{undertake_audit},#{hv_distribution_room},#{lv_distribution_room},#{engine_room},
+        #{power_battery_room},#{precision_air},#{commercial_tworoom},#{commercial_fiveroom},#{commercial_sixroom},
+        #{storage_room},#{focus_monitor_hall},#{station},#{canteen},#{special_needs},#{large_screen_greeting},#{boardroom_number},
+        #{capacity},#{projector_curtain},#{famous_brand},#{rostrum},#{microphone},#{mineral_water},#{tea_water},#{paper_pen},
+        #{car_number},#{models_colour},#{plate_num},#{table_number},#{canteen_number},sysdate)
+    </select>
+    <!--更新参观流程表单承接方填写信息-->
+    <select id="updateVisitProcess" parameterType="com.esop.visitInfo.dto.VisitProcessDto" resultType="int">
+        update ep_prd_visitprocess_info set grop_id=#{grop_id},undertake_unit=#{undertake_unit},
+        undertake_address=#{undertake_address},undertake_man=#{undertake_man},undertake_phone=#{undertake_phone},
+        undertake_audit=#{undertake_audit},hv_distribution_room=#{hv_distribution_room},
+        lv_distribution_room=#{lv_distribution_room},engine_room=#{engine_room},power_battery_room=#{power_battery_room},
+        precision_air=#{precision_air},commercial_tworoom=#{commercial_tworoom},commercial_fiveroom=#{commercial_fiveroom},
+        commercial_sixroom=#{commercial_sixroom},storage_room=#{storage_room},focus_monitor_hall=#{focus_monitor_hall},
+        station=#{station},canteen=#{canteen},special_needs=#{special_needs},large_screen_greeting=#{large_screen_greeting},
+        boardroom_number=#{boardroom_number},capacity=#{capacity},projector_curtain=#{projector_curtain},famous_brand=#{famous_brand},
+        rostrum=#{rostrum},microphone=#{microphone},mineral_water=#{mineral_water},tea_water=#{tea_water},paper_pen=#{paper_pen},
+        car_number=#{car_number},models_colour=#{models_colour},plate_num=#{plate_num},table_number=#{table_number},
+        canteen_number=#{canteen_number},update_date=sysdate where grop_id=#{grop_id}
+    </select>
+
+    <!--查询参观流程表单(数据中心)承接方填写信息-->
+    <select id="getVisitDatacenter" parameterType="com.esop.visitInfo.dto.VisitDatacenterDto" resultType="com.esop.visitInfo.dto.VisitDatacenterDto">
+        select grop_id,undertake_unit,undertake_address,undertake_man,
+        undertake_phone,undertake_audit,hv_distribution_room,lv_distribution_room,engine_room,htdc_pb_room,
+        oddc_pb_room,ogac_pb_room,ipdt_refrigerat_room,columns_air_room,water_door_room,heat_backplane_room,
+        storage_room,focus_monitor_hall,station,get_accommodation,canteen,conference_room,special_needs,
+        large_screen_greeting,boardroom_number,capacity,projector_curtain,famous_brand,rostrum,microphone,
+        mineral_water,tea_water,paper_pen,car_number,models_colour,plate_num,table_number,canteen_number
+         from ep_prd_visitdatacenter_info where grop_id=#{grop_id}
+    </select>
+    <!--新增参观流程表单（数据中心）承接方填写信息-->
+    <select id="insertVisitDatacenter" parameterType="com.esop.visitInfo.dto.VisitDatacenterDto" resultType="int">
+        insert into ep_prd_visitdatacenter_info(grop_id,undertake_unit,undertake_address,undertake_man,
+        undertake_phone,undertake_audit,hv_distribution_room,lv_distribution_room,engine_room,htdc_pb_room,
+        oddc_pb_room,ogac_pb_room,ipdt_refrigerat_room,columns_air_room,water_door_room,heat_backplane_room,
+        storage_room,focus_monitor_hall,station,get_accommodation,canteen,conference_room,special_needs,
+        large_screen_greeting,boardroom_number,capacity,projector_curtain,famous_brand,rostrum,microphone,
+        mineral_water,tea_water,paper_pen,car_number,models_colour,plate_num,table_number,canteen_number,
+        create_date)
+        values(#{grop_id},#{undertake_unit},#{undertake_address},#{undertake_man},
+        #{undertake_phone},#{undertake_audit},#{hv_distribution_room},#{lv_distribution_room},#{engine_room},#{htdc_pb_room},
+        #{oddc_pb_room},#{ogac_pb_room},#{ipdt_refrigerat_room},#{columns_air_room},#{water_door_room},#{heat_backplane_room},
+        #{storage_room},#{focus_monitor_hall},#{station},#{get_accommodation},#{canteen},#{conference_room},#{special_needs},
+        #{large_screen_greeting},#{boardroom_number},#{capacity},#{projector_curtain},#{famous_brand},#{rostrum},#{microphone},
+        #{mineral_water},#{tea_water},#{paper_pen},#{car_number},#{models_colour},#{plate_num},#{table_number},#{canteen_number},
+        sysdate)
+    </select>
+    <!--更新参观流程表单(数据中心)承接方填写信息-->
+    <select id="updateVisitDatacenter" parameterType="com.esop.visitInfo.dto.VisitDatacenterDto" resultType="int">
+        update ep_prd_visitdatacenter_info set grop_id=#{grop_id},undertake_unit=#{undertake_unit},
+        undertake_address=#{undertake_address},undertake_man=#{undertake_man},undertake_phone=#{undertake_phone},
+        undertake_audit=#{undertake_audit},hv_distribution_room=#{hv_distribution_room},
+        lv_distribution_room=#{lv_distribution_room},engine_room=#{engine_room},htdc_pb_room=#{htdc_pb_room},
+        oddc_pb_room=#{oddc_pb_room},ogac_pb_room=#{ogac_pb_room},ipdt_refrigerat_room=#{ipdt_refrigerat_room},
+        columns_air_room=#{columns_air_room},water_door_room=#{water_door_room},heat_backplane_room=#{heat_backplane_room},
+        storage_room=#{storage_room},focus_monitor_hall=#{focus_monitor_hall},station=#{station},get_accommodation=#{get_accommodation},
+        canteen=#{canteen},conference_room=#{conference_room},special_needs=#{special_needs},large_screen_greeting=#{large_screen_greeting},
+        boardroom_number=#{boardroom_number},capacity=#{capacity},projector_curtain=#{projector_curtain},famous_brand=#{famous_brand},
+        rostrum=#{rostrum},microphone=#{microphone},mineral_water=#{mineral_water},tea_water=#{tea_water},paper_pen=#{paper_pen},
+        car_number=#{car_number},models_colour=#{models_colour},plate_num=#{plate_num},table_number=#{table_number},
+        canteen_number=#{canteen_number},update_date=sysdate where grop_id=#{grop_id}
+
+    </select>
+    <!--查询参观内容审批概况
+    <select id="getVisitContent" parameterType="com.esop.visitInfo.dto.VisitContentDto" resultType="com.esop.visitInfo.dto.VisitContentDto">
+        select a.visit_id,a.visit_name,a.region_id,a.region_name,a.content_id,a.content_name,
+        b.apply_write,b.undertake_write,b.detail,b.vip_cage_independent,
+        b.charging_mode,b.postage_apply from ep_prd_visitcontent a,ep_prd_visitlink_info b
+         where a.visit_id=b.visit_id and a.region_id=b.region_id and a.content_id=b.content_id and
+          b.visit_id=#{visit_id} and b.region_id=#{region_id} and b.content_id=#{content_id}
+    </select>-->
+    <!--更新参观内容审批概况
+    <select id="updateVisitContent" parameterType="com.esop.visitInfo.dto.VisitContentDto" resultType="int">
+        update ep_prd_visitcontent set apply_write=#{apply_write},undertake_write=#{undertake_write},detail=#{detail},
+        vip_cage_independent=#{vip_cage_independent},charging_mode=#{charging_mode},postage_apply=#{postage_apply}
+         where visit_id=#{visit_id} and region_id=#{region_id} and content_id=#{content_id}
+    </select>
+            -->
+    <!--查询审批环节数据
+    <select id="getVisitLink" parameterType="com.esop.visitInfo.dto.VisitLinkDto" resultType="com.esop.visitInfo.dto.VisitLinkDto">
+        select apply_write,undertake_write,detail,vip_cage_independent,charging_mode,postage_apply
+         from ep_prd_visitlink_info
+         where visit_id=#{visit_id} and region_id=#{region_id} and content_id=#{content_id}
+    </select>-->
+    <!--新增环节数据
+    <select id="insertVisitLink" parameterType="com.esop.visitInfo.dto.VisitLinkDto" resultType="int">
+        insert into ep_prd_visitlink_info(apply_write,undertake_write,detail,vip_cage_independent,
+        charging_mode,postage_apply,visit_id,region_id,content_id,create_date) values(#{apply_write},#{undertake_write},#{detail},
+        #{vip_cage_independent},#{charging_mode},#{postage_apply},#{visit_id},#{region_id},#{content_id},sysdate)
+    </select>-->
+    <!--更新环节数据
+    <select id="updateVisitLink" parameterType="com.esop.visitInfo.dto.VisitLinkDto" resultType="int">
+        update ep_prd_visitlink_info set apply_write=#{apply_write},undertake_write=#{undertake_write},detail=#{detail},
+        vip_cage_independent=#{vip_cage_independent},charging_mode=#{charging_mode},postage_apply=#{postage_apply},
+        update_date=sysdate where visit_id=#{visit_id} and region_id=#{region_id} and content_id=#{content_id}
+    </select>-->
+
+    <!--查询测试流程表单承接方填写信息-->
+    <select id="getTestForm" parameterType="com.esop.visitInfo.dto.TestFormDto" resultType="com.esop.visitInfo.dto.TestFormDto">
+        select relevant_licenses,undertake_unit,undertake_address,undertake_man,undertake_phone,
+        distribution_time,recovery_time,delay_recovery_time,cpu_hanan,memory_hanan,storage_hanan,dry_bandwidth_hanan,
+        province_bandwidth_hanan,operating_system_hanan,network_ip_hanan,port_hanan,cpu_village,memory_village,
+        storage_village,bandwidth_village,operating_system_village,network_ip_village,port_village,cpu_vm_ha,
+        memory_vm_ha,storage_vm_ha,dry_bandwidth_vm_ha,province_bandwidth_vm_ha,operating_system_vm_ha,ip_vm_ha,
+        port_vm_ha,cpu_vm_jin,memory_vm_jin,storage_vm_jin,bandwidth_vm_jin,operating_system_vm_jin,ip_vm_jin,
+        port_vm_jin,other from ep_prd_testform_info where relevant_licenses=#{relevant_licenses}
+    </select>
+    <!--新增测试流程表单数据承接方填写信息-->
+    <select id="insertTestForm" parameterType="com.esop.visitInfo.dto.TestFormDto" resultType="int">
+        insert into ep_prd_testform_info(relevant_licenses,
+        undertake_unit,undertake_address,undertake_man,undertake_phone,distribution_time,recovery_time,delay_recovery_time,
+        cpu_hanan,memory_hanan,storage_hanan,dry_bandwidth_hanan,
+        province_bandwidth_hanan,operating_system_hanan,network_ip_hanan,port_hanan,cpu_village,memory_village,
+        storage_village,bandwidth_village,operating_system_village,network_ip_village,port_village,cpu_vm_ha,
+        memory_vm_ha,storage_vm_ha,dry_bandwidth_vm_ha,province_bandwidth_vm_ha,operating_system_vm_ha,ip_vm_ha,
+        port_vm_ha,cpu_vm_jin,memory_vm_jin,storage_vm_jin,bandwidth_vm_jin,operating_system_vm_jin,ip_vm_jin,
+        port_vm_jin,other,create_date)
+         values(#{relevant_licenses},
+         #{undertake_unit},#{undertake_address},#{undertake_man},#{undertake_phone},
+         #{distribution_time},#{recovery_time},#{delay_recovery_time},
+         #{cpu_hanan},#{memory_hanan},#{storage_hanan},#{dry_bandwidth_hanan},
+         #{province_bandwidth_hanan},#{operating_system_hanan},#{network_ip_hanan},#{port_hanan},#{cpu_village},#{memory_village},
+         #{storage_village},#{bandwidth_village},#{operating_system_village},#{network_ip_village},#{port_village},#{cpu_vm_ha},
+         #{memory_vm_ha},#{storage_vm_ha},#{dry_bandwidth_vm_ha},#{province_bandwidth_vm_ha},#{operating_system_vm_ha},#{ip_vm_ha},
+         #{port_vm_ha},#{cpu_vm_jin},#{memory_vm_jin},#{storage_vm_jin},#{bandwidth_vm_jin},#{operating_system_vm_jin},#{ip_vm_jin},
+         #{port_vm_jin},#{other},sysdate)
+    </select>
+    <!--更新测试流程表单数据承接方填写信息-->
+    <select id="updatTestForm" parameterType="com.esop.visitInfo.dto.TestFormDto" resultType="int">
+        update ep_prd_testform_info set relevant_licenses=#{relevant_licenses},
+        undertake_unit=#{undertake_unit},undertake_address=#{undertake_address},undertake_man=#{undertake_man},
+        undertake_phone=#{undertake_phone},
+        distribution_time=#{distribution_time},recovery_time=#{recovery_time},delay_recovery_time=#{delay_recovery_time},
+        cpu_hanan=#{cpu_hanan},memory_hanan=#{memory_hanan},storage_hanan=#{storage_hanan},dry_bandwidth_hanan=#{dry_bandwidth_hanan},
+        province_bandwidth_hanan=#{province_bandwidth_hanan},operating_system_hanan=#{operating_system_hanan},network_ip_hanan=#{network_ip_hanan},
+        port_hanan=#{port_hanan},cpu_village=#{cpu_village},memory_village=#{memory_village},
+        storage_village=#{storage_village},bandwidth_village=#{bandwidth_village},operating_system_village=#{operating_system_village},
+        network_ip_village=#{network_ip_village},port_village=#{port_village},cpu_vm_ha=#{cpu_vm_ha},
+        memory_vm_ha=#{memory_vm_ha},storage_vm_ha=#{storage_vm_ha},dry_bandwidth_vm_ha=#{dry_bandwidth_vm_ha},
+        province_bandwidth_vm_ha=#{province_bandwidth_vm_ha},operating_system_vm_ha=#{operating_system_vm_ha},ip_vm_ha=#{ip_vm_ha},
+        port_vm_ha=#{port_vm_ha},cpu_vm_jin=#{cpu_vm_jin},memory_vm_jin=#{memory_vm_jin},storage_vm_jin=#{storage_vm_jin},
+        bandwidth_vm_jin=#{bandwidth_vm_jin},operating_system_vm_jin=#{operating_system_vm_jin},ip_vm_jin=#{ip_vm_jin},
+        port_vm_jin=#{port_vm_jin},other=#{other},
+        update_date=sysdate where relevant_licenses=#{relevant_licenses}
+    </select>
+    <!--查询勘查、资费、资源流程表单承接方填写信息-->
+    <select id="getProspectingPostage" parameterType="com.esop.visitInfo.dto.ProspectingPostageDto" resultType="com.esop.visitInfo.dto.ProspectingPostageDto">
+        select grop_id,undertake_unit,undertake_address,undertake_man,undertake_phone,
+        ut_result_start_time,ut_result_end_time,approval_result,undertake_audit,
+        water_door_frame_ha,heat_backplane_frame_fiveha,heat_backplane_frame_sevenha,heat_backplane_frame_tenha,
+        precision_air_frame_jin,dry_bandwidth_ha,province_bandwidth_ha,bandwidth_jin,cpu_ha,memory_ha,read_write_storage_ha,
+        data_storage_ha,backups_storage_ha,operating_system_ha,ip_ha,port_ha,cpu_jin,memory_jin,read_write_storage_jin,
+        data_storage_jin,backups_storage_jin,operating_system_jin,ip_jin,port_jin,load_balancing,firewall,network_service,
+        flow_cleaning,system_monitoring,flow_monitoring,domain_name_resolution,multi_line_access,customized_transformation,
+        safety_reinforcement,risk_assessment,system_integration_implement,depth_substitution,service_consulting,
+        vpn_access,office,station,conference_room,other_prospecting_needs
+         from ep_prd_prospectingpostage_info where grop_id=#{grop_id}
+    </select>
+    <!--查询勘查、资费、资源流程表单
+    <select id="getProspectingPostage" parameterType="com.esop.visitInfo.dto.ProspectingPostageDto" resultType="com.esop.visitInfo.dto.ProspectingPostageDto">
+        select need_feedback_form,other_prospecting_needs from ep_prd_prospectingpostage_info
+    </select>-->
+    <!--新增勘查、资费、资源流程表单承接方填写信息-->
+    <select id="insertProspectingPostage" parameterType="com.esop.visitInfo.dto.ProspectingPostageDto" resultType="int">
+        insert into ep_prd_prospectingpostage_info(
+        grop_id,undertake_unit,undertake_address,undertake_man,undertake_phone,
+        ut_result_start_time,ut_result_end_time,approval_result,undertake_audit,
+        water_door_frame_ha,heat_backplane_frame_fiveha,heat_backplane_frame_sevenha,heat_backplane_frame_tenha,
+        precision_air_frame_jin,dry_bandwidth_ha,province_bandwidth_ha,bandwidth_jin,cpu_ha,memory_ha,read_write_storage_ha,
+        data_storage_ha,backups_storage_ha,operating_system_ha,ip_ha,port_ha,cpu_jin,memory_jin,read_write_storage_jin,
+        data_storage_jin,backups_storage_jin,operating_system_jin,ip_jin,port_jin,load_balancing,firewall,network_service,
+        flow_cleaning,system_monitoring,flow_monitoring,domain_name_resolution,multi_line_access,customized_transformation,
+        safety_reinforcement,risk_assessment,system_integration_implement,depth_substitution,service_consulting,
+        vpn_access,office,station,conference_room,other_prospecting_needs,
+        create_date
+        ) values(
+        #{grop_id},#{undertake_unit},#{undertake_address},#{undertake_man},#{undertake_phone},
+        #{ut_result_start_time},#{ut_result_end_time},#{approval_result},#{undertake_audit},
+        #{water_door_frame_ha},#{heat_backplane_frame_fiveha},#{heat_backplane_frame_sevenha},#{heat_backplane_frame_tenha},
+        #{precision_air_frame_jin},#{dry_bandwidth_ha},#{province_bandwidth_ha},#{bandwidth_jin},#{cpu_ha},#{memory_ha},#{read_write_storage_ha},
+        #{data_storage_ha},#{backups_storage_ha},#{operating_system_ha},#{ip_ha},#{port_ha},#{cpu_jin},#{memory_jin},#{read_write_storage_jin},
+        #{data_storage_jin},#{backups_storage_jin},#{operating_system_jin},#{ip_jin},#{port_jin},#{load_balancing},#{firewall},#{network_service},
+        #{flow_cleaning},#{system_monitoring},#{flow_monitoring},#{domain_name_resolution},#{multi_line_access},#{customized_transformation},
+        #{safety_reinforcement},#{risk_assessment},#{system_integration_implement},#{depth_substitution},#{service_consulting},
+        #{vpn_access},#{office},#{station},#{conference_room},#{other_prospecting_needs},
+        sysdate)
+    </select>
+    <!--更新勘查、资费、资源流程表单承接方填写信息-->
+    <select id="updateProspectingPostage" parameterType="com.esop.visitInfo.dto.ProspectingPostageDto" resultType="int">
+        update ep_prd_prospectingpostage_info set grop_id=#{grop_id},undertake_unit=#{undertake_unit},
+        undertake_address=#{undertake_address},undertake_man=#{undertake_man},undertake_phone=#{undertake_phone},
+        ut_result_start_time=#{ut_result_start_time},ut_result_end_time=#{ut_result_end_time},
+        approval_result=#{approval_result},undertake_audit=#{undertake_audit},
+        water_door_frame_ha=#{water_door_frame_ha},heat_backplane_frame_fiveha=#{heat_backplane_frame_fiveha},
+        heat_backplane_frame_sevenha=#{heat_backplane_frame_sevenha},heat_backplane_frame_tenha=#{heat_backplane_frame_tenha},
+        precision_air_frame_jin=#{precision_air_frame_jin},dry_bandwidth_ha=#{dry_bandwidth_ha},province_bandwidth_ha=#{province_bandwidth_ha},
+        bandwidth_jin=#{bandwidth_jin},cpu_ha=#{cpu_ha},memory_ha=#{memory_ha},read_write_storage_ha=#{read_write_storage_ha},
+        data_storage_ha=#{data_storage_ha},backups_storage_ha=#{backups_storage_ha},operating_system_ha=#{operating_system_ha},
+        ip_ha=#{ip_ha},port_ha=#{port_ha},cpu_jin=#{cpu_jin},memory_jin=#{memory_jin},read_write_storage_jin=#{read_write_storage_jin},
+        data_storage_jin=#{data_storage_jin},backups_storage_jin=#{backups_storage_jin},operating_system_jin=#{operating_system_jin},
+        ip_jin=#{ip_jin},port_jin=#{port_jin},load_balancing=#{load_balancing},firewall=#{firewall},network_service=#{network_service},
+        flow_cleaning=#{flow_cleaning},system_monitoring=#{system_monitoring},flow_monitoring=#{flow_monitoring},
+        domain_name_resolution=#{domain_name_resolution},multi_line_access=#{multi_line_access},customized_transformation=#{customized_transformation},
+        safety_reinforcement=#{safety_reinforcement},risk_assessment=#{risk_assessment},system_integration_implement=#{system_integration_implement},
+        depth_substitution=#{depth_substitution},service_consulting=#{service_consulting},
+        vpn_access=#{vpn_access},office=#{office},station=#{station},conference_room=#{conference_room},other_prospecting_needs=#{other_prospecting_needs},
+        update_date=sysdate where grop_id=#{grop_id}
+    </select>
+
+</mapper>

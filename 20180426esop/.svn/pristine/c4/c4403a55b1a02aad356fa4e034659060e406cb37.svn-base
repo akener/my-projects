@@ -1,0 +1,84 @@
+package com.esop.visitInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.visitInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by subt on 2017/6/20 0020.
+ */
+@Repository
+public class VisitSercice {
+    private static Logger logger = Logger.getLogger(VisitSercice.class);
+    @Autowired
+    SqlE sqlE;
+    //查询参观流程信息
+    public List<VisitProcessDto> getProcessApply(VisitProcessDto param){
+        logger.info("VisitSercice.getProcessApply入参"+param.toString());
+        List list = sqlE.selectM("getProcessApply",param);
+        logger.info("VisitSercice.getProcessApply出参"+list);
+        return list;
+    }
+    public List<VisitProcessDto> getProcessUndertake(VisitProcessDto param){
+        logger.info("VisitSercice.getProcessUndertake入参"+param.toString());
+        List list = sqlE.selectM("getProcessUndertake",param);
+        logger.info("VisitSercice.getProcessUndertake出参"+list);
+        return list;
+    }
+    public List<VisitProcessDto> getProDetail(VisitProcessDto param){
+        logger.info("VisitSercice.getProDetail入参"+param.toString());
+        List list = sqlE.selectM("getProDetail",param);
+        logger.info("VisitSercice.getProDetail出参"+list);
+        return list;
+    }
+    //查询数据中心参观流程表单
+    public List<VisitDatacenterDto> getDatacenterApply(VisitDatacenterDto param){
+        logger.info("VisitSercice.getDatacenterApply入参:"+param.toString());
+        List list = sqlE.selectM("getDatacenterApply",param);
+        logger.info("VisitSercice.getDatacenterApply出参:"+list);
+        return list;
+    }
+    public List<VisitDatacenterDto> getDatacenterUndertake(VisitDatacenterDto param){
+        logger.info("VisitSercice.getDatacenterUndertake入参:"+param.toString());
+        List list = sqlE.selectM("getDatacenterUndertake",param);
+        logger.info("VisitSercice.getDatacenterUndertake出参:"+list);
+        return list;
+    }
+    public List<VisitDatacenterDto> getDataDetail(VisitDatacenterDto param){
+        logger.info("VisitSercice.getDataDetail入参:"+param.toString());
+        List list = sqlE.selectM("getDataDetail",param);
+        logger.info("VisitSercice.getDataDetail出参:"+list);
+        return list;
+    }
+    //查询测试流程表单
+    public List<TestFormDto> getTestApply(TestFormDto param){
+        List list = sqlE.selectM("getTestApply",param);
+        return list;
+    }
+    public List<TestFormDto> getTestUndertake(TestFormDto param){
+        List list = sqlE.selectM("getTestUndertake",param);
+        return list;
+    }
+    public List<TestFormDto> getTestForDetail(TestFormDto param){
+        List list = sqlE.selectM("getTestForDetail",param);
+        return list;
+    }
+
+    //查询勘查、资费、资源流程表单
+    public List<VisitContentDto> getPostageApply(VisitContentDto param){
+        List list = sqlE.selectM("getPostageApply",param);
+        return list;
+    }
+    public List<ProspectingPostageDto> getProspectingUndertake(ProspectingPostageDto param){
+        List list = sqlE.selectM("getProspectingUndertake",param);
+        return list;
+    }
+    public List<ProspectingPostageDto> getPostageForDetail(ProspectingPostageDto param){
+        List list = sqlE.selectM("getPostageForDetail",param);
+        return list;
+    }
+}

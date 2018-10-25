@@ -1,0 +1,182 @@
+package com.esop.Interface.controller;
+
+import com.esop.common.util.ParameterConversion;
+import com.esop.cust.dto.*;
+import com.esop.cust.service.SignInService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Shinelon on 2017/7/4.
+ */
+//签到
+@RestController
+public class SignInController {
+    private static Logger logger = Logger.getLogger(SignInController.class);
+    @Autowired
+    SignInService signInService;
+    //集团名
+    @RequestMapping(value ="/qryUnitName")
+    public Map qryUnitName(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<VisitReminderDto> list = signInService.qryUnitName(param);
+        Map<String,Object> map = new HashMap<>();
+        if(list.size()>0){
+            map.put("return_msg","查询成功");
+            map.put("return_code","000000");
+            map.put("unit_info",list);
+        }else{
+            map.put("return_msg","未查询到相关集团");
+            map.put("return_code","-1");
+        }
+        return map;
+    }
+
+    //签到
+    @RequestMapping(value = "/updateVisitReminder")
+    public Map updateVisitReminder(HttpServletRequest request){
+     SignInDto param = ParameterConversion.jsonToObject(request,SignInDto.class);
+
+        /*SignInDto param = new SignInDto();
+        param.setUnit_id("4514663035");
+        param.setService_no("aavg38");
+        param.setSignIn_longitude("121");
+        param.setSignIn_latitude("dddd");
+        param.setSignIn_addr("ddddd");
+        param.setReturn_date("2017-05-06");
+        param.setVisit_matters("sss");
+        param.setVisit_person("dddd");
+        param.setVisit_unit("ddd");*/
+        Map<String,Object> map = new HashMap<>();
+        if(param.getReturn_date().equals("")){
+            map.put("return_msg","签到日期不能为空");
+            map.put("return_code","-1");
+        }else if(param.getSignIn_addr().equals("")){
+            map.put("return_msg","签到地址不能为空");
+            map.put("return_code","-1");
+        }else{
+            int flag = signInService.updateVisitReminder(param);
+
+            if(flag>0){
+                map.put("return_msg","签到成功");
+                map.put("return_code","000000");
+            }else{
+                map.put("return_msg","签到失败");
+                map.put("return_code","-1");
+            }
+        }
+       return map;
+   }
+   //根据客户经理工号查询其签到信息
+    @RequestMapping(value = "/qrySignIn")
+    public Map qrySignIn(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+        List<SignInDto> list = signInService.qrySignIn(param);
+        Map<String,Object> map = new HashMap<>();
+        if(list.size()>0){
+            map.put("return_msg","查询成功");
+            map.put("return_code","000000");
+            map.put("unit_info",list);
+        }else{
+            map.put("return_msg","未查询到相关信息");
+            map.put("return_code","-1");
+        }
+        return map;
+    }
+    // 查询走访集团的信息
+    @RequestMapping(value = "/qryUnitInfo")
+    public Map qryUnitInfo(HttpServletRequest request){
+        GrpInterfaceParameterDto param  = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+       /* GrpInterfaceParameterDto param = new GrpInterfaceParameterDto();
+        param.setUnit_name("黑龙江省龙冠");
+        param.setVisit_type("0");
+        param.setOwner_code("A");
+        param.setService_no("aavg38");*/
+        Map<String,Object> map = new HashMap<>();
+        List<VisitReminderInfoDto> list = signInService.qryUnitInfo(param);
+        if(list.size()>0){
+            map.put("return_code","000000");
+            map.put("return_msg","查询成功");
+            map.put("unit_info",list);
+        }else{
+            map.put("return_msg","未查询到相关信息");
+            map.put("return_code","-1");
+        }
+        return map;
+    }
+    //查询走访集团的集团类别和类别编码
+    @RequestMapping(value = "/qryWonerCode")
+    public  Map qryWonerCode(HttpServletRequest request){
+        List<GrpTypeDto> list = signInService.qryWonerCode();
+        Map<String,Object> map = new HashMap<>();
+        if(list.size()>0){
+            map.put("return_msg","查询成功");
+            map.put("unit_info",list);
+            map.put("return_code","000000");
+        }else{
+            map.put("return_msg","未查询到相关信息");
+            map.put("return_code","-1");
+        }
+        return map;
+    }
+    //根据电话号码查询联系人姓名和职务
+    @RequestMapping(value = "/qryContacts")
+    public Map qryContacts(HttpServletRequest request){
+        GrpInterfaceParameterDto param = ParameterConversion.jsonToObject(request,GrpInterfaceParameterDto.class);
+
+        Map<String,Object> map = new HashMap<>();
+        List<ContactsDto> list = signInService.qryContacts(param);
+        if(list.size()>0){
+            map.put("return_code","000000");
+            map.put("return_msg","查询成功");
+            map.put("unit_info",list);
+        }else{
+            map.put("return_code","-1");
+            map.put("return_msg","未查询到相关信息");
+        }
+        return map;
+    }
+    @RequestMapping(value = "/insertDgrpreturninfo")
+    public Map insertDgrpreturninfo(HttpServletRequest request){
+        ReturnVisitDto param = ParameterConversion.jsonToObject(request,ReturnVisitDto.class);
+        /*ReturnVisitDto param = new ReturnVisitDto();
+        param.setContact_person("曹某某");
+        param.setContact_phone("13946803489");
+        param.setUnit_name("客客户名称户名称");
+        param.setUnit_id("4514663035");
+        param.setService_no("aavg38");
+        param.setService_name("王小六");
+        param.setReturn_type("1");
+        param.setReturn_rmk("备注");
+        param.setReturn_date("20170709");
+        param.setReturn_address("哈尔滨");
+        param.setInterview_type("A");
+        param.setGuest_sat("1");
+        param.setDuty("无");*/
+        Map<String,Object> map = new HashMap<>();
+        if(param.getUnit_id().equals("")|| param.getUnit_id().equals(null)){
+            map.put("return_code","-2");
+            map.put("return_msg","集团不能为空");
+        }
+        if(param.getService_no().equals("")||param.getService_no().equals(null)){
+            map.put("return_code","-2");
+            map.put("return_msg","客户经理工号不能为空");
+        }
+        int flag = signInService.insertDgrpreturninfo(param);
+        if(flag>0){
+            map.put("return_code","000000");
+            map.put("return_msg","提交成功");
+        }else{
+            map.put("return_code","-1");
+            map.put("return_msg","提交失败");
+        }
+        return map;
+    }
+}

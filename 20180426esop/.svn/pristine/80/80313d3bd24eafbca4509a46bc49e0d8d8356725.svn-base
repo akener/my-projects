@@ -1,0 +1,210 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no,minimum-scale=1.0, maximum-scale=1.0">
+    <title>
+        登录
+    </title>
+    <link href="http://10.110.22.167:11400/epresource/css/component.css" rel="stylesheet"></link>
+    <link href="http://10.110.22.167:11400/epresource/css/ui-dialog.css" rel="stylesheet"></link>
+    <link href="http://10.110.22.167:11400/epresource/css/quanzi.css" rel="stylesheet"></link>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link href="http://10.110.22.167:11400/epresource/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="http://10.110.22.167:11400/epresource/assets/css/swiper.min.css" rel="stylesheet">
+    <link href="http://10.110.22.167:11400/epresource/assets/css/common.css" rel="stylesheet">
+    <link type="text/css" id="privateCss" href="http://10.110.22.167:11400/epresource/assets/css/privateStyle.css"
+          rel="stylesheet">
+    <link href="http://10.110.22.167:11400/epresource/assets/css/ui-dialog.css" rel="stylesheet">
+    <script src="http://10.110.22.167:11400/epresource/assets/js/bootstrap.min.js">
+    </script>
+    <noscript>
+        <iframe src="*.html"></iframe>
+    </noscript>
+
+</head>
+
+<body oncontextmenu="return false" onselectstart="return false">
+
+<div>
+    <div class="container clearfix pdt-15 pdb-15">
+        <div class="fl">
+            <a href="./operation.html">
+                <img src="http://10.110.22.167:11400/epresource/pub-ui/images/china-mobile-logo.png">
+            </a>
+        </div>
+    </div>
+</div>
+<div class="pdb-30">
+    <div style="height:501px;background:#f7f1f1 url(http://10.110.22.167:11400/epresource/pub-ui/images/bg.jpg) center top no-repeat;">
+        <div class="container pdt-50">
+            <div class="row show-grid">
+                <div class="col-sm-4 col-md-4 fr">
+                    <div class="bgcolor-1 mgt-10 pdl-30 pdr-30 pdb-20"
+                         style="width: 316px; box-shadow: rgb(182, 182, 182) 0px 0px 6px; border-radius: 5px;">
+                        <h4 class="p-color-17 pdt-30">
+                            <span id="usersso"></span>
+                        </h4>
+                        <div class="form-inline">
+                            <form id="form1" name="form1" action="/esop/login" method="post">
+                                <input type="hidden" name="token" id="token" value="${token}"/>
+                                <div class="form-group mgt-15" style="width:100%;">
+                                    <div class="input-group" style="width:100%;">
+                                        <div class="input-group-addon pdt-0 pdl-0 pdr-0 pdb-0"
+                                             style="width:40px;height:40px;border-top-left-radius:0;border-bottom-left-radius:0;">
+                                            <img src="http://10.110.22.167:11400/epresource/pub-ui/images/d39ac82bb4bb5f5a5a05e38b00af9c3e.png">
+                                        </div>
+                                        <input type="text" class="form-control" name="username" id="username"
+                                               value="" placeholder="请输入用户名"
+                                               style="height:40px;border-top-right-radius:0;border-bottom-right-radius:0;">
+                                    </div>
+                                </div>
+                                <div class="form-group mgt-20" style="width:100%;">
+                                    <div class="input-group" style="width:100%;">
+                                        <div class="input-group-addon pdl-0 pdt-0 pdr-0 pdb-0"
+                                             style="width:40px;height:40px;border-top-left-radius:0;border-bottom-left-radius:0;">
+                                            <img src="http://10.110.22.167:11400/epresource/pub-ui/images/49d0be1048b948d6862ddc6ef0b55a45.png">
+                                        </div>
+                                        <input type="password" class="form-control" name="password" id="password"
+                                               value="" placeholder="请输入密码"
+                                               style="height:40px;border-top-right-radius:0;border-bottom-right-radius:0;">
+                                    </div>
+                                </div>
+                                <div class="form-group mgt-20" style="width:100%;">
+
+                                    <!--div class="input-group" style="width:100%;">
+                                        <div class="input-group-addon pdt-0 pdl-0 pdr-0 pdb-0" style="width:40px;height:40px;border-top-left-radius:0;border-bottom-left-radius:0;">
+                                            <img src="..//epresource/pub-ui/images/fd0bb3e37188878cf8e7ec80f24fd20c.png">
+                                        </div>
+                                        <input type="text" id="verifyCode" name="verifyCode" class="form-control" style="height:40px;border-top-right-radius:0;border-bottom-right-radius:0;" placeholder="">
+                                        <div style="display:table-cell;vertical-align: middle;" class="pdl-10">
+                                            <!--           <img src="..//epresource/pub-ui/images/987f8dae0a231df56f0c3b25042c1e23.png"> -->
+                                    <!--img id="checkCode_show" alt="点击刷新" src="/uop/login/code">
+                                </div>
+                            </div-->
+
+                                </div>
+                                <div class="form-group mgt-20" style="width:100%;">
+                                    <button id="loginsubmit" name="loginsubmit"
+                                            class="btn p-bgcolor-4 color-1 fs-18 ued-width-block"
+                                            style="border-radius: 0px;border:none;">
+                                        <span id="login">登 录</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="clearfix mgt-15">
+                            <!--a class="fl p-color-16" href="register.html">
+                                        免费注册
+                            </a>
+                            <a class="fr p-color-2" href="resetPassword.html">
+                                        忘记密码
+                            </a-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--#include virtual="/apps/pageapps/footer/index.html" -->
+</div>
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+<script type="text/javascript">
+    if (window != top)
+        top.location.href = location.href;
+    $(document).ready(function () {
+        function submitLogin() {
+            $.ajax({
+                type: "post",
+                url: '/esop/login',
+                data: {
+                    "username": $('#username').val(),
+                    "password": $('#password').val()
+                },
+                async: false,
+                error: function (data) {
+                    $.ajax({
+                        type: "post",
+                        url: 'setSessionInfo',
+                        data: {
+                            "login_no": $('#username').val(),
+                            "password": $('#password').val()
+                        },
+                        async: false
+                    }).then(function (data) {
+                        //$("#form1").attr("action", data);
+                        $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + $('#username').val() + "&portalUrl=" + data);
+                        if ($('#token').val().length > 0) {
+                            var tokens = $('#username').val().split("@");
+                            $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + tokens[1] + "&token4A=" + $('#token').val() + "&portalUrl=" + data);
+                        }
+                        $("#form1").submit();
+                    });
+                    //$("#form1").attr("action", $('#href_url').val());
+                    //alert($("#form1").action);
+                    //$("#form1").submit();
+                    //this.form.submit();
+                    //location.href="http://"+window.location.host+"/"+$('#href_url').val();
+                    //location.href=direct;
+                }
+            }).then(function (data) {
+                $.ajax({
+                    type: "post",
+                    url: 'setSessionInfo',
+                    data: {
+                        "login_no": $('#username').val(),
+                        "password": $('#password').val()
+                    },
+                    async: false
+                }).then(function (data) {
+                    if (data.length < 100) {
+                        $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + $('#username').val() + "&portalUrl=" + data);
+                        if ($('#token').val().length > 0) {
+                            var tokens = $('#username').val().split("@");
+                            $("#form1").attr("action", "/npage/login/esopSession.jsp?staffNo=" + tokens[1] + "&token4A=" + $('#token').val() + "&portalUrl=" + data);
+                        }
+                        //$("#form1").attr("action", data);
+                        $("#form1").submit();
+                    }
+                });
+                //alert($('#username').val());
+                //$("#form1").attr("action", $('#href_url').val());
+                //$("#form1").attr("action","/"+$('#href_url').val());
+                //alert($("#form1").action);
+                //$("#form1").submit();
+                //this.form.submit();
+                //direct="http://"+window.location.host+"/"+$('#href_url').val();
+                //alert(direct);
+                //location.href=direct;
+                //window.location.href = "http://10.110.22.168:11400/npage/operationManage.html?edition=standard"
+            });
+        }
+
+        $("#loginsubmit").click(function () {
+            submitLogin();
+        });
+        if ($('#token').val().length > 0) {
+            submitLogin();
+        } else {
+            $('#username').val("");
+            $('#password').val("");
+        }
+    });
+    function get8Num() {
+        var n8 = Math.random() * 100000000;
+        if (n8 <= 9999999) n8 = n8 + 10000000;
+        return (n8 + "").substring(0, 8);
+    }
+</script>
+<noscript>
+    <iframe src="*.html"></iframe>
+</noscript>
+
+</body>
+
+</html>

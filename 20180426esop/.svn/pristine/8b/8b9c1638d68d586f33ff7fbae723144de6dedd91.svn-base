@@ -1,0 +1,137 @@
+package com.esop.cqDevelopment.groupMemberPayCost.controller;
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.groupMemberPayCost.dto.GroupMemberDto;
+import com.esop.cqDevelopment.groupMemberPayCost.service.GroupMemberPayCostService;
+import com.esop.cqDevelopment.refund.dto.CapCapitalInfoDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+/**
+ * Created by admin on 2017/10/19.
+ */
+@RestController
+public class GroupMemberPayCostontroller {
+    @Autowired
+    GroupMemberPayCostService groupMemberPayCostService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result=new Result();
+    //集团成员申请单信息录入、并发起流程(发起流程未做)
+    @RequestMapping(value = "/saveGroupMemberApplyInfo",produces = {"application/xml", "application/json"})
+    public String saveGroupMemberApplyInfo(GroupMemberDto param){
+        List list = new ArrayList();
+        //校验（后面更改为js校验）
+        StringBuffer info = new StringBuffer();
+        if (param.getOrderID().equals("")){
+            info.append("请输入ESOP工单号码！");
+        }
+        //如果提示信息长度大于0，则返回提示信息
+        Map<String,Object> map = new HashMap<String,Object>();
+        if(info.length()>0){
+            String str = info.toString();
+            map.put("info",str);
+            String json = JSONObject.toJSONString(map);
+            return json;
+        }
+        List refund = null;
+        String string="操作成功";
+        param.setOrderStatus("1");
+        groupMemberPayCostService.insertGroupMemberApplyInfo(param);
+        map.put("info",string);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+    //根据集团编号查询集团资金帐户信息
+    @RequestMapping(value = "/getCapitalInfo")
+    public String getCapitalInfo(CapCapitalInfoDto param, HttpServletRequest request){
+        String groupNo = request.getParameter("grpCustId");
+        if(groupNo!=null&&groupNo!=""){
+            param.setGrpCustId(groupNo);
+        }
+        List<CapCapitalInfoDto> list = groupMemberPayCostService.getCapitalInfo(param);
+        Map<String,Object> map = new HashMap<>();
+        map.put("info",list);
+        String json =  JSONObject.toJSONString(map);
+        return json;
+    }
+
+
+    //获取联系人类型
+    @RequestMapping(value="/qryApplyOrderType")
+    public Map qryApplyOrderType(HttpServletRequest request){
+        List list = groupMemberPayCostService.qryApplyOrderType();
+        Map<String,Object> retMap = new HashMap<String, Object>();
+        Map<String,Object> rootMap = new HashMap<String,Object>();
+        Map<String,Object> bodyMap = new HashMap<String,Object>();
+        if(list != null && list.size()>0) {
+            bodyMap.put("applyOrderTypeList", list);
+            bodyMap.put("return_kmsg","000000");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }else{
+            bodyMap.put("return_kmsg","查询失败");
+            rootMap.put("BODY", bodyMap);
+            retMap.put("ROOT", rootMap);
+        }
+        return retMap;
+    }
+    //集团资金账户列表信息查询
+    @RequestMapping(value="/getCapitalListInfo")
+    public Result getCapitalListInfo(CapCapitalInfoDto parameter, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        String grpCustId = request.getParameter("grpCustId");
+        String grpFundAcctid = request.getParameter("grpFundAcctid");
+        parameter.setGrpCustId(grpCustId);
+        parameter.setGrpFundAcctid(grpFundAcctid);
+        result = groupMemberPayCostService.getCapitalListInfo(parameter);
+        return result;
+    }
+
+    //集团成员资金申请业务操作列表工单
+    @RequestMapping(value="/getGroupMemberOperateListInfo")
+    public Result getGMOListInfo(GroupMemberDto parameter, HttpServletRequest request){
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+            System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = groupMemberPayCostService.getGMOListInfo(parameter);
+        String status = null;
+        for(int i=0;i<result.getData().size();i++){
+            GroupMemberDto groupMemberDto = (GroupMemberDto)result.getData().get(i);
+            status = groupMemberDto.getOrderStatus();
+            if( status.equals("1")){//已受理/待办/关闭
+                groupMemberDto.setOrderStatus("待办");
+            }
+        }
+        return result;
+    }
+    //集团成员待审批页面详情信息
+    @RequestMapping(value = "/getGroupMemApproveInfo")
+    public GroupMemberDto getGroupMemInfoByOrderId(GroupMemberDto groupMemberDto , HttpServletRequest request){
+        String orderID = request.getParameter("orderID");
+        if(orderID!=null&&orderID!=""){
+            groupMemberDto.setOrderID(orderID);
+        }
+        GroupMemberDto gm=groupMemberPayCostService.getGroupMemApproveInfo(groupMemberDto);
+        return  gm;
+    }
+
+}

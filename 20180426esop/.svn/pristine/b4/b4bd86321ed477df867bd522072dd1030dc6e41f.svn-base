@@ -1,0 +1,655 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectCapitalClaimInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto" >
+        SELECT
+            danwei_zhanghao,
+            danwei_huming,
+            daozhang_riqi,
+            daozhang_zhanghao,
+            daozhang_huming,
+            jin_e,
+            yinhang_zizhanghu,
+            zhai_yao,
+            zhuang_tai
+        FROM
+            ep_cap_capitalClaim_info
+    </select>
+    <select id="selectCapitalClaimInfo2" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto" >
+        SELECT
+        danwei_zhanghao,
+        danwei_huming,
+        daozhang_riqi,
+        daozhang_zhanghao,
+        daozhang_huming,
+        jin_e,
+        yinhang_zizhanghu,
+        zhai_yao,
+        zhuang_tai
+        FROM
+        ep_cap_capitalClaim_info_pl
+    </select>
+    <insert id="insertCapitalClaimApply"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto" >
+        INSERT INTO ep_cap_capitalClaimApply_info (
+            shenqingren,
+            daozhang_riqi,
+            leikuan_kehu,
+            laikuan_zhanghao,
+            daozhang_jine,
+            daozhang_huming,
+            daozhang_zhanghao,
+            fabu_riqi,
+            zhai_yao,
+            shenqing_riqi,
+            jituan_mingcheng,
+            jituan_bianhao,
+            jituan_lianxiren,
+            lianxiren_dianhua,
+            lianxiren_leixing,
+            zhangwuyuan,
+            guanlian_shijian,
+            guanlian_laikuan_huming,
+            guanlian_laikuan_zhanghao,
+            zhengming_cailiao,
+            shang_chuan,
+            ruzhang_zuzhi,
+            bei_zhu,
+            gongdan_bianhao,
+            jiaoyi_liushui,
+            weiyibiaoshima,
+            check_code,
+            is_pl,
+            fengongs
+        )
+        VALUES
+        (
+            #{shenqingren},
+            #{daozhang_riqi},
+            #{leikuan_kehu},
+            #{laikuan_zhanghao},
+            #{daozhang_jine},
+            #{daozhang_huming},
+            #{daozhang_zhanghao},
+            #{fabu_riqi},
+            #{zhai_yao},
+            #{shenqing_riqi},
+            #{jituan_mingcheng},
+            #{jituan_bianhao},
+            #{jituan_lianxiren},
+            #{lianxiren_dianhua},
+            #{lianxiren_leixing},
+            #{zhangwuyuan},
+            #{guanlian_shijian},
+            #{guanlian_laikuan_huming},
+            #{guanlian_laikuan_zhanghao},
+            #{zhengming_cailiao},
+            #{shang_chuan},
+            #{ruzhang_zuzhi},
+            #{bei_zhu},
+            #{gongdan_bianhao},
+            #{jiaoyi_liushui},
+            #{weiyibiaoshima},
+            #{check_code},
+            #{is_pl},
+            #{fengongs}
+        )
+    </insert>
+    <insert id="insertCapitalClaimApply2"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimQueryDto" >
+        INSERT INTO ep_cap_capitalClaimApply_info_pl (
+        shenqingren,
+        daozhang_riqi,
+        leikuan_kehu,
+        laikuan_zhanghao,
+        daozhang_jine,
+        daozhang_huming,
+        daozhang_zhanghao,
+        fabu_riqi,
+        zhai_yao,
+        shenqing_riqi,
+        jituan_mingcheng,
+        jituan_bianhao,
+        zhangwuyuan,
+        guanlian_shijian,
+        guanlian_laikuan_huming,
+        guanlian_laikuan_zhanghao,
+        ruzhang_zuzhi,
+        gongdan_bianhao,
+        jiaoyi_liushui,
+        weiyibiaoshima,
+        is_pl,
+        fengongs
+        )
+        VALUES
+        (
+        #{shenqingren},
+        #{daozhang_riqi},
+        #{leikuan_kehu},
+        #{laikuan_zhanghao},
+        #{daozhang_jine},
+        #{daozhang_huming},
+        #{daozhang_zhanghao},
+        #{fabu_riqi},
+        #{zhai_yao},
+        #{shenqing_riqi},
+        #{jituan_mingcheng},
+        #{jituan_bianhao},
+        #{zhangwuyuan},
+        #{guanlian_shijian},
+        #{guanlian_laikuan_huming},
+        #{guanlian_laikuan_zhanghao},
+        #{ruzhang_zuzhi},
+        #{gongdan_bianhao},
+        #{jiaoyi_liushui},
+        #{weiyibiaoshima},
+        #{is_pl},
+        #{fengongs}
+        )
+    </insert>
+
+
+    <select id="selectCapitalClaimApproveInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" >
+        select
+            a.daozhang_riqi,
+            a.leikuan_kehu,
+            a.laikuan_zhanghao,
+            a.daozhang_jine,
+            a.daozhang_huming,
+            a.daozhang_zhanghao,
+            a.fabu_riqi,
+            a.zhai_yao,
+            a.shenqing_riqi,
+            a.jituan_mingcheng,
+            a.jituan_bianhao,
+            a.jituan_lianxiren,
+            a.lianxiren_dianhua,
+            a.lianxiren_leixing,
+            a.zhangwuyuan,
+            a.guanlian_shijian,
+            a.guanlian_laikuan_huming,
+            a.guanlian_laikuan_zhanghao,
+            a.zhengming_cailiao,
+            a.shang_chuan,
+            a.ruzhang_zuzhi,
+            a.bei_zhu,
+            c.login_name,
+            b.dealTime,
+            b.nextDealPerson,
+            d.link_name,
+            a.gongdan_bianhao,
+            b.nodeId,
+            a.jiaoyi_liushui,
+            e.business_center,
+            b.applicantNo,
+            a.weiyibiaoshima,
+            a.check_code,
+            f.source_file_name as fileName,
+            g.name
+        from
+            ep_cap_capitalClaimApply_info a left join se_business_center e on a.ruzhang_zuzhi=e.center_code left join tf_attach_file_info f on a.zhengming_cailiao=f.attach_file_id,
+            ep_work_flow_info b,
+            bs_systemuser_info c,
+            ep_work_flow_dict d,
+            se_contract_qddw g
+        where
+            a.gongdan_bianhao = b.taskOrderId
+        and b.applicantNo = c.staff_code
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        and g.id=a.fengongs
+        <if test="gongdan_bianhao != '' and gongdan_bianhao !=null">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson !=null">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="qishi_shijian !='' and qishi_shijian !=null">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &gt;= #{qishi_shijian}
+        </if>
+        <if test="zhongzhi_shijian !='' and zhongzhi_shijian !=null">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &lt;= #{zhongzhi_shijian}
+        </if>
+        <if test="jituan_bianhao !='' and jituan_bianhao !=null">
+          and a.jituan_bianhao=#{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !='' and jituan_mingcheng !=null">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="nodeId !='' and nodeId !=null">
+            and b.nodeId=#{nodeId}
+        </if>
+        <if test="daozhang_jine !='' and daozhang_jine !=null">
+            and a.daozhang_jine=#{daozhang_jine}
+        </if>
+        <if test="login_name !='' and login_name !=null">
+            and c.login_name=#{login_name}
+        </if>
+        <if test="fengongs !='' and fengongs !=null">
+            and a.fengongs=#{fengongs}
+        </if>
+        <if test="ruzhang_zuzhi !='' and ruzhang_zuzhi !=null">
+            and a.ruzhang_zuzhi=#{ruzhang_zuzhi}
+        </if>
+    </select>
+
+    <select id="selectCapitalClaimApproveInfo2" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" >
+        select
+        a.daozhang_riqi,
+        a.leikuan_kehu,
+        a.laikuan_zhanghao,
+        a.daozhang_jine,
+        a.daozhang_huming,
+        a.daozhang_zhanghao,
+        a.fabu_riqi,
+        a.zhai_yao,
+        a.shenqing_riqi,
+        a.jituan_mingcheng,
+        a.jituan_bianhao,
+        a.zhangwuyuan,
+        a.guanlian_shijian,
+        a.guanlian_laikuan_huming,
+        a.guanlian_laikuan_zhanghao,
+        a.ruzhang_zuzhi,
+        c.login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        a.jiaoyi_liushui,
+        e.business_center,
+        b.applicantNo,
+        a.weiyibiaoshima,
+        g.name
+        from
+        ep_cap_capitalClaimApply_info_pl a left join se_business_center e on a.ruzhang_zuzhi=e.center_code,
+        ep_work_flow_info b,
+        bs_systemuser_info c,
+        ep_work_flow_dict d,
+        se_contract_qddw g
+        where
+        a.gongdan_bianhao = b.taskOrderId
+        and b.applicantNo = c.staff_code
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        and g.id=a.fengongs
+        <if test="gongdan_bianhao != '' and gongdan_bianhao !=null">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson !=null">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="qishi_shijian !='' and qishi_shijian !=null">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &gt;= #{qishi_shijian}
+        </if>
+        <if test="zhongzhi_shijian !='' and zhongzhi_shijian !=null">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &lt;= #{zhongzhi_shijian}
+        </if>
+        <if test="jituan_bianhao !='' and jituan_bianhao !=null">
+            and a.jituan_bianhao=#{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !='' and jituan_mingcheng !=null">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="nodeId !='' and nodeId !=null">
+            and b.nodeId=#{nodeId}
+        </if>
+        <if test="daozhang_jine !='' and daozhang_jine !=null">
+            and a.daozhang_jine=#{daozhang_jine}
+        </if>
+        <if test="login_name !='' and login_name !=null">
+            and c.login_name=#{login_name}
+        </if>
+        <if test="fengongs !='' and fengongs !=null">
+            and a.fengongs=#{fengongs}
+        </if>
+        <if test="ruzhang_zuzhi !='' and ruzhang_zuzhi !=null">
+            and a.ruzhang_zuzhi=#{ruzhang_zuzhi}
+        </if>
+    </select>
+    <!-- 插入资金认领审批信息 -->
+    <insert id="insertWorkFlowFirst"  parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto" >
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{taskOrderId},
+        #{applicantNo},
+        #{nextDealPerson},
+        #{nodeId},
+        CURRENT_TIMESTAMP(),
+        #{approveOpinion},
+        #{memo}
+        )
+    </insert>
+    <insert id="insertWorkFlowFirst2"  parameterType="com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto" >
+        INSERT INTO ep_work_flow_info (
+        taskOrderId,
+        applicantNo,
+        nextDealPerson,
+        nodeId,
+        dealTime,
+        approveOpinion,
+        memo
+        )
+        VALUES
+        (
+        #{taskOrderId},
+        #{applicantNo},
+        #{nextDealPerson},
+        #{nodeId},
+        #{dealTime},
+        #{approveOpinion},
+        #{memo}
+        )
+    </insert>
+    <select id="selectApproveProcessInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" >
+        select
+        a.applicantNo,
+        b.login_name,
+        a.nextDealPerson,
+        c.login_name nextDealPerson_name,
+        a.nodeId,
+        d.link_name,
+        a.dealTime,
+        a.approveOpinion,
+        a.memo
+        from
+        ep_work_flow_info a left join bs_systemuser_info b on a.applicantNo = b.staff_code
+        left join bs_systemuser_info c on a.nextDealPerson = c.staff_code,
+        ep_work_flow_dict d
+        where 1=1
+        and a.taskOrderId = #{taskOrderId}
+        and a.nodeId = d.link_id
+        order by STR_TO_DATE(a.dealTime,'%Y-%m-%d %H:%i:%s')
+    </select>
+    <select id="selectLoginNameByStaffCode" parameterType="String"  resultType="String" >
+        select login_name
+        from bs_systemuser_info
+        where staff_code=#{staff_code}
+    </select>
+    <select id="selectOrgNameByOrgId" parameterType="String"  resultType="String" >
+        select name
+        from se_contract_qddw
+        where id=#{areaId}
+    </select>
+    <select id="selectBusinessByCenterCode" parameterType="String"  resultType="String" >
+        select business_center
+        from se_business_center
+        where center_code=#{areaId}
+    </select>
+    <select id="selectCapitalClaimApproveInfo3" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" >
+        select * from(select
+        a.daozhang_riqi,
+        a.leikuan_kehu,
+        a.laikuan_zhanghao,
+        a.daozhang_jine,
+        a.daozhang_huming,
+        a.daozhang_zhanghao,
+        a.fabu_riqi,
+        a.zhai_yao,
+        a.shenqing_riqi,
+        a.jituan_mingcheng,
+        a.jituan_bianhao,
+        a.jituan_lianxiren,
+        a.lianxiren_dianhua,
+        a.lianxiren_leixing,
+        a.zhangwuyuan,
+        a.guanlian_shijian,
+        a.guanlian_laikuan_huming,
+        a.guanlian_laikuan_zhanghao,
+        a.zhengming_cailiao,
+        a.shang_chuan,
+        a.ruzhang_zuzhi,
+        a.bei_zhu,
+        c.login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        a.jiaoyi_liushui,
+        e.business_center,
+        b.applicantNo,
+        a.weiyibiaoshima,
+        a.check_code,
+        f.source_file_name as fileName,
+        g.name
+        from
+        ep_cap_capitalClaimApply_info a left join se_business_center e on a.ruzhang_zuzhi=e.center_code left join
+        tf_attach_file_info f on a.zhengming_cailiao=f.attach_file_id,
+        ep_work_flow_info b,
+        bs_systemuser_info c,
+        ep_work_flow_dict d,
+        se_contract_qddw g
+        where
+        a.gongdan_bianhao = b.taskOrderId
+        and a.shenqingren = c.staff_code
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        and g.id=a.fengongs
+        <if test="gongdan_bianhao != '' and gongdan_bianhao !=null and gongdan_bianhao !='null'">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson !=null and nextDealPerson !='null'">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="qishi_shijian !='' and qishi_shijian !=null and qishi_shijian !='null'">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &gt;= #{qishi_shijian}
+        </if>
+        <if test="zhongzhi_shijian !='' and zhongzhi_shijian !=null and zhongzhi_shijian !='null'">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &lt;= #{zhongzhi_shijian}
+        </if>
+        <if test="jituan_bianhao !='' and jituan_bianhao !=null and jituan_bianhao !='null'">
+            and a.jituan_bianhao=#{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !='' and jituan_mingcheng !=null and jituan_mingcheng !='null'">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="nodeId !='' and nodeId !=null and nodeId !='null'">
+            and b.nodeId=#{nodeId}
+        </if>
+        <if test="daozhang_jine !='' and daozhang_jine !=null and daozhang_jine !='null'">
+            and a.daozhang_jine=#{daozhang_jine}
+        </if>
+        <if test="login_name !='' and login_name !=null and login_name !='null'">
+            and c.login_name=#{login_name}
+        </if>
+        <if test="login_no !='' and login_no !=null and login_no !='null'">
+            and a.shenqingren=#{login_no}
+        </if>
+        <if test="login_no2 !='' and login_no2 !=null and login_no2 !='null'">
+            and a.zhangwuyuan=#{login_no2}
+        </if>
+        <if test="ruzhang_zuzhi !='' and ruzhang_zuzhi !=null and ruzhang_zuzhi !='null'">
+            and a.ruzhang_zuzhi=#{ruzhang_zuzhi}
+        </if>
+        <if test="fengongs !='' and fengongs !=null and fengongs !='null'">
+            and a.fengongs=#{fengongs}
+        </if>
+        UNION ALL
+        select
+        a.daozhang_riqi,
+        a.leikuan_kehu,
+        a.laikuan_zhanghao,
+        a.daozhang_jine,
+        a.daozhang_huming,
+        a.daozhang_zhanghao,
+        a.fabu_riqi,
+        a.zhai_yao,
+        a.shenqing_riqi,
+        a.jituan_mingcheng,
+        a.jituan_bianhao,
+        '' as jituan_lianxiren,
+        '' as lianxiren_dianhua,
+        '' as lianxiren_leixing,
+        a.zhangwuyuan,
+        a.guanlian_shijian,
+        a.guanlian_laikuan_huming,
+        a.guanlian_laikuan_zhanghao,
+        '' as zhengming_cailiao,
+        '' as shang_chuan,
+        a.ruzhang_zuzhi,
+        '' as bei_zhu,
+        c.login_name,
+        b.dealTime,
+        b.nextDealPerson,
+        d.link_name,
+        a.gongdan_bianhao,
+        b.nodeId,
+        a.jiaoyi_liushui,
+        e.business_center,
+        b.applicantNo,
+        a.weiyibiaoshima,
+        '' as check_code,
+        '' as fileName,
+        g.name
+        from
+        ep_cap_capitalClaimApply_info_pl a left join se_business_center e on a.ruzhang_zuzhi=e.center_code,
+        ep_work_flow_info b,
+        bs_systemuser_info c,
+        ep_work_flow_dict d,
+        se_contract_qddw g
+        where
+        a.gongdan_bianhao = b.taskOrderId
+        and a.shenqingren = c.staff_code
+        and b.nodeId = d.link_id
+        and b.dealTime = (select DATE_FORMAT(max(str_to_date(e.dealTime,'%Y-%m-%d %H:%i:%s')),'%Y-%m-%d %H:%i:%s')  from ep_work_flow_info e where e.taskOrderId = a.gongdan_bianhao)
+        and g.id=a.fengongs
+        <if test="gongdan_bianhao != '' and gongdan_bianhao !=null and gongdan_bianhao !='null'">
+            and a.gongdan_bianhao = #{gongdan_bianhao}
+        </if>
+        <if test="nextDealPerson != '' and nextDealPerson !=null and nextDealPerson !='null'">
+            and b.nextDealPerson = #{nextDealPerson}
+        </if>
+        <if test="qishi_shijian !='' and qishi_shijian !=null and qishi_shijian !='null'">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &gt;= #{qishi_shijian}
+        </if>
+        <if test="zhongzhi_shijian !='' and zhongzhi_shijian !=null and zhongzhi_shijian !='null'">
+            and date_format(a.shenqing_riqi,'%Y-%m-%d') &lt;= #{zhongzhi_shijian}
+        </if>
+        <if test="jituan_bianhao !='' and jituan_bianhao !=null and jituan_bianhao !='null'">
+            and a.jituan_bianhao=#{jituan_bianhao}
+        </if>
+        <if test="jituan_mingcheng !='' and jituan_mingcheng !=null and jituan_mingcheng !='null'">
+            and a.jituan_mingcheng like concat(concat('%',#{jituan_mingcheng}),'%')
+        </if>
+        <if test="nodeId !='' and nodeId !=null and nodeId !='null'">
+            and b.nodeId=#{nodeId}
+        </if>
+        <if test="daozhang_jine !='' and daozhang_jine !=null and daozhang_jine !='null'">
+            and a.daozhang_jine=#{daozhang_jine}
+        </if>
+        <if test="login_name !='' and login_name !=null and login_name !='null'">
+            and c.login_name=#{login_name}
+        </if>
+        <if test="login_no !='' and login_no !=null and login_no !='null'">
+            and a.shenqingren=#{login_no}
+        </if>
+        <if test="login_no2 !='' and login_no2 !=null and login_no2 !='null'">
+            and a.zhangwuyuan=#{login_no2}
+        </if>
+        <if test="ruzhang_zuzhi !='' and ruzhang_zuzhi !=null and ruzhang_zuzhi !='null'">
+            and a.ruzhang_zuzhi=#{ruzhang_zuzhi}
+        </if>
+        <if test="fengongs !='' and fengongs !=null and fengongs !='null'">
+            and a.fengongs=#{fengongs}
+        </if>
+        ) b
+
+    </select>
+<select id="selectBasicInfoByGongdanbianhao" parameterType="String" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto">
+               SELECT
+    	        a.daozhang_riqi,
+				a.leikuan_kehu,
+				a.laikuan_zhanghao,
+				a.daozhang_jine,
+				a.daozhang_huming,
+				a.daozhang_zhanghao,
+				a.fabu_riqi,
+				a.zhai_yao,
+				a.shenqing_riqi,
+				a.jituan_mingcheng,
+				a.jituan_bianhao,
+				a.jituan_lianxiren,
+				a.lianxiren_dianhua,
+				a.lianxiren_leixing,
+				a.guanlian_laikuan_huming,
+				a.guanlian_laikuan_zhanghao,
+				a.zhengming_cailiao,
+				b.source_file_name,
+				c.business_center,
+				a.bei_zhu,
+				a.is_pl
+				from ep_cap_capitalclaimapply_info a LEFT join tf_attach_file_info b on a.zhengming_cailiao=b.attach_file_id,
+				se_business_center c
+				where a.gongdan_bianhao=#{taskOrderId}
+				and a.ruzhang_zuzhi=c.center_code
+union ALL
+                SELECT
+				a.daozhang_riqi,
+				a.leikuan_kehu,
+				a.laikuan_zhanghao,
+				a.daozhang_jine,
+				a.daozhang_huming,
+				a.daozhang_zhanghao,
+				a.fabu_riqi,
+				a.zhai_yao,
+				a.shenqing_riqi,
+				a.jituan_mingcheng,
+				a.jituan_bianhao,
+				'' jituan_lianxiren,
+				'' lianxiren_dianhua,
+				'' lianxiren_leixing,
+				a.guanlian_laikuan_huming,
+				a.guanlian_laikuan_zhanghao,
+				'' zhengming_cailiao,
+				'' source_file_name,
+				b.business_center,
+				'' bei_zhu,
+				a.is_pl
+                from ep_cap_capitalclaimapply_info_pl a,
+		        se_business_center b
+                where a.gongdan_bianhao=#{taskOrderId}
+                and  a.ruzhang_zuzhi=b.center_code
+</select>
+<select id="selectAllQddw" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto">
+    select id,NAME
+    from se_contract_qddw
+</select>
+
+    <select id="queryFileNameInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        SELECT
+            target_file_name
+        FROM
+            tf_attach_file_info
+        WHERE
+            attach_file_id = #{attach_file_id}
+    </select>
+
+    <select id="selectBusinessCenterForZhangwuyunOrkehujingli" parameterType="string" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto" >
+        SELECT b.center_code,b.business_center
+        FROM se_business_center_staff_rel a,se_business_center b
+        where  a.staff_code=#{login_no}
+        AND a.center_code=b.center_code
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by yanhao on 17/6/2.
+ */
+public class GetCustNameQueryDto extends BaseDto{
+
+    String groupid = "";
+    String groupname = "";
+
+    public String getGroupid() {
+        return groupid;
+    }
+
+    public void setGroupid(String groupid) {
+        this.groupid = groupid;
+    }
+
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
+    }
+}

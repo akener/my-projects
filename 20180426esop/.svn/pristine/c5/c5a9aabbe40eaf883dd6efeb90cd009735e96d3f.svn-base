@@ -1,0 +1,55 @@
+package test.jaxb;
+
+import javax.xml.bind.annotation.XmlNsForm;
+import javax.xml.bind.annotation.XmlSchema;
+
+
+import javax.xml.bind.annotation.*;
+
+/**
+ * Created by wangbl on 2017/3/9.
+ */
+
+@XmlRootElement
+public class Customer {
+    String name;
+    int age;
+    int id;
+
+    Address address;
+
+    public String getName() {
+        return name;
+    }
+
+    @XmlElement
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @XmlElement
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    @XmlAttribute
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+    @XmlElement
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+}

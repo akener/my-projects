@@ -1,0 +1,554 @@
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+    <title>行业解决方案</title>
+</head>
+
+<body>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金退款申请信息查询</span>
+            </div>
+        </div>
+        <div class="row col-12" style="min-height:200px;">
+            <div class="pd-20 pos-rel pos-bg1">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编号</th>
+                            <td>
+                                <input id="qry_group_num" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>资金联系人</th>
+                            <td>
+                                <input id="qry_capital_contact" type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>申请日期</th>
+                            <td>
+                                <input type=text id="qry_apply_date" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img  src="/esop/static/images/workbench/icon-01.png"
+                                      style="width:25px;!important" width="21" height="21"
+                                      onclick="WdatePicker({el:'qry_apply_date',dateFmt:'yyyy-MM-dd'})" title="选择日期" />
+                            </td>
+                            <th>联系人类型</th>
+                            <td>
+                                <select id="qry_contact_type">
+                                    <option value="">默认</option>
+                                    <option value="0">类型一</option>
+                                    <option value="1">类型二</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-30">
+                        <div class="btn-box pdb-20">
+                            <button class="ui-btn mgr-10" onclick="qryRefundListInfo()">查询</button>
+                            <button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>
+                          <%--  <button class="ui-btn" onclick="addSolutionInfo()">新增</button>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12" style="min-height:200px;">
+            <div class="pd-20 pos-rel pos-bg1">
+                <table id="epRefundListInfo" class="display" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th class="text-center">退款申请人</th>
+                        <th class="text-center">申请日期</th>
+                        <th class="text-center">出账集团</th>
+                        <th class="text-center">集团编号</th>
+                        <th class="text-center">资金联系人</th>
+                        <th class="text-center">联系人类型</th>
+                        <th class="text-center">账本余额</th>
+                        <th class="text-center">可用余额</th>
+                        <th class="text-center">操作</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%--资金退款申请单页面详情--%>
+<div class="modal fade" id="lookInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:950px" role="document">
+        <div class="modal-content" style="height:700px">
+            <div class="modal-header" align="left" style="padding-left: 3px;margin-left: 3px">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <div class="title-style04"  style="height: 60px;width: 900px;background-color:#ecf7ff;border:1px solid #9ce4ef ">
+                    <h3 align="left" >&nbsp;&nbsp;◆&nbsp;资金退款申请单详情</h3>
+                </div>
+            </div>
+
+            <div align="center" style="padding-top:5px;  height:450px;width: 95%;background-color:#ffffff ">
+                <div class="box-in" style="background-color:#ecf7ff;border:1px solid #9ce4ef;width: 99%;height: 500px">
+                    <table id="example" class="cost-table" style="border-collapse:separate;empty-cells:show"
+                           cellspacing="0px" width="900" align="center" bgcolor="white">
+                        <thead>
+                        <tr>
+                            <th class="text-center" colspan="6">
+                                退款申请单
+                            </th></tr>
+                        <tr>
+                            <th class="text-center" >退款申请人</th>
+                            <th class="text-center" colspan="2">
+                                <input type="text"  id="refund_applicant" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center"  >申请日期</th>
+                            <th class="text-center"  colspan="2">
+                                <%--<div class="col-sm-2">
+                                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                        <input readonly class="form-control" style="width:120px"  id="apply_date" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                    </div>
+                                </div>--%>
+                                <input type="text"  id="apply_date" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">出账集团</th>
+                            <th class="text-center" colspan="2">
+                                <input type="text"  id="expenditure_presentation_group" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">集团编号</th>
+                            <th class="text-center" colspan="2">
+                                <input type="text"  id="group_num" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">资金联系人</th>
+                            <th class="text-center">
+                                <input type="text"  id="capital_contact" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">联系电话</th>
+                            <th class="text-center">
+                                <input type="text"  id="telphone" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">联系人类型</th>
+                            <th class="text-center">
+                                <input type="text"  id="contact_type" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">账本余额</th>
+                            <th class="text-center"colspan="2" >
+                                <input type="text"  id="book_balance" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">可用余额</th>
+                            <th class="text-center"  colspan="2">
+                                <input type="text"  id="available_balance" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr >
+                            <th class="text-center" >附件上传：</th>
+                            <th class="text-center" colspan="5">
+                                <label class="btn btn-info pull-left" for="xFile" >上传附件(word,ppt,pdf格式)</label>
+                                <form id="upload-form" method="post" enctype="multipart/form-data">
+                                    <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                </form>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center" colspan="6">
+                                关联银行到账信息
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center"> 入账单</th>
+                            <th class="text-center" colspan="5">
+                                <input type="text" disabled="disabled" id="bill" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">来款账号</th>
+                            <th class="text-center"colspan="2">
+                                <input type="text" disabled="disabled" id="account" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">来款户名</th>
+                            <th class="text-center" colspan="2">
+                                <input type="text" disabled="disabled" id="userid" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">到账账号</th>
+                            <th class="text-center"colspan="2">
+                                <input type="text" disabled="disabled" id="arrive_account" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">到账户名</th>
+                            <th class="text-center" colspan="2">
+                                <input type="text"  disabled="disabled" id="arrive_account_name" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">到账日期</th>
+                            <th class="text-center"  >
+                                <%--<div class="col-sm-2">
+                                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                        <input readonly class="form-control" style="width:120px"  id="arrive_date" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                    </div>
+                                </div>--%>
+                                <input type="text"  disabled="disabled" id="arrive_date" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">到账金额</th>
+                            <th class="text-center" >
+                                <input type="text" disabled="disabled" id="arrival_amount" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">入账日期</th>
+                            <th class="text-center"   >
+                               <%-- <div class="col-sm-2">
+                                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                        <input readonly class="form-control" style="width:120px"  id="billing_date" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                    </div>
+                                </div>--%>
+                                <input type="text"  disabled="disabled" id="billing_date" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">账务员</th>
+                            <th class="text-center"colspan="2">
+                                <input type="text" disabled="disabled" id="account_clerk" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">摘要</th>
+                            <th class="text-center" colspan="2">
+                                <input type="text" disabled="disabled" id="abstracts" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center" colspan="6">
+                                退款信息
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">退款账号</th>
+                            <th class="text-center">
+                                <input type="text"  id="refund_account" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">退款户名</th>
+                            <th class="text-center">
+                                <input type="text"  id="refund_account_name" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">退款开户行</th>
+                            <th class="text-center">
+                                <input type="text"  id="refund_opening_bank" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">退款金额</th>
+                            <th class="text-center">
+                                <input type="text"  id="refund_amount" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">审核人</th>
+                            <th class="text-center">
+                                <input type="text"  id="auditor" value="" style="width:100%; height:100%;"/>
+                            </th>
+                            <th class="text-center">工单状态</th>
+                            <th class="text-center">
+                                <input type="text"  id="order_status" value="" style="width:100%; height:100%;"/>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+
+<script type="text/javascript" language="javascript" class="init">
+    var editor;
+    $(document).ready(function () {
+        qryRefundListInfo();
+        //getSolutionType();
+
+    });
+    //重置
+    function pageReset(){
+        $("input").val("");
+        $("textarea").val("");
+    };
+
+
+    /*$("#xFile").on("change", function(){
+        if ($('#id').val() == "") {
+            $.ajax({
+                type: "POST",
+                url: "getUploadFileInfoRelatedID",
+                async: false
+            }).then(function (data) {
+                $('#id').val(data);
+            });
+
+        }
+        $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+            url:"${pageContext.request.contextPath}/fileUpload",
+            type:"post", //提交的类型必需是post，
+            data: { related_id: $("#id").val()},
+            dateType:"json",
+            success:function(data){
+                //如果提交成功执行
+                //如果附件编码不为空，开始取附件
+                if($("#id").val()!="") {
+                    $.ajax({
+                        type: "POST",
+                        url: "uploadFileSelect",
+                        data: {
+                            "related_id": $("#id").val()
+                        }
+                    }).then(function (data) {
+                        //循环展现附件信息
+                        $("#fileList div").remove();
+                        $.each(data, function (index, item) {
+                            $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.path + "/" + item.name + "'>" + item.name
+                                + "</a></div>"
+                                + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                                + "<i class=\"fa fa-times\"></i></button></div></div>");
+                        });
+                    });
+                }
+            },
+            error:function(data){
+                alert("error:"+data);
+            }
+        });
+    });*/
+    //删除附件
+    function deleteFile(buttonID,fileID){
+        $.ajax({
+            type: "POST",
+            url: "deleteFile",
+            data: {id:fileID}
+        }).then(function (data) {
+            //alert(data.result);
+            $(buttonID).parent().parent().remove();
+        });
+    }
+    function delFile(id){
+        $.ajax({
+            type: "POST",
+            url: "/delSolutionInfo",
+            data: {
+                solution_id:id
+            }
+        }).then(function (data) {
+          //  qryBusiSolutionInfo();
+        });
+    }
+    function updFile(solution_id){
+        $("#manager_no").val("");
+        $("#region_code").val("");
+        $("#id").val("");
+        $("#solution_name").val("");
+        $("#solution_desc").val("");
+        $("#fileList div").remove();
+        $("#alertInfo").modal('show');
+        $("#solution_id").val(solution_id);
+        $.ajax({
+            type: 'POST',
+            url: '/getSolutionInfoById',
+            cache : false,
+            data:{
+                solution_id:$("#solution_id").val()
+            },
+            success : function(data) {
+                //alert($("#solution_id").val());
+                $("#manager_no").val(data[0].manager_no);
+                $("#region_code").val(data[0].region_code);
+                $("#solution_name").val(data[0].solution_name);
+                $("#solution_desc").val(data[0].solution_desc);
+                $("#solution_type").val(data[0].solution_type);
+                $("#solution_level").val(data[0].solution_level);
+                $("#id").val(data[0].related_id);
+                if(data[0].relate_name !="") {
+                    $.each(data, function (index, item) {
+                        $("#fileList").append("<div><div class=\"col-sm-2\" style='overflow:hidden;white-space:nowrap;'><a href='fileLoad/" + item.relate_path + "/" + item.relate_name + "'>" + item.relate_name
+                            + "</a></div>"
+                            + "<div class=\"col-sm-1\"><button type=\"button\" class=\"btn btn-info pull-left\" onclick='deleteFile(this," + item.id + ")' title=\"删除\">"
+                            + "<i class=\"fa fa-times\"></i></button></div></div>");
+                    });
+                }
+                // $("#initElement").val(resp);
+            },
+            error:function(resp){
+                // alert("查询数据失败");
+                $("#modal_text").text("插入数据失败");
+                $("#modalInfo").modal('show');
+                return false;
+
+            },
+        });
+    }
+    function submit(){
+        if($("#solution_id").val()!= ""){
+
+            $.ajax({
+                type: 'POST',
+                url: '/updSolutionInfo',
+                cache : false,
+                data:{
+                    region_name : $("#region_code").find("option:selected").text(),
+                    region_code : $("#region_code").find("option:selected").val(),
+                    manager_no:$("#manager_no").val(),
+                    solution_name:$("#solution_name").val(),
+                    solution_desc:$("#solution_desc").val(),
+                    solution_id:$("#solution_id").val(),
+                    solution_level:$("#solution_level").find("option:selected").text(),
+                    solution_type:$("#solution_type").find("option:selected").text(),
+                    related_id:$("#id").val(),
+                },
+                success : function(data) {
+                    if(data == 1) {
+                        $("#solution_id").val("");
+                        $("#modal_text").text("修改成功");
+                        $("#modalInfo").modal('show');
+                    }else{
+                        $("#solution_id").val("");
+                        $("#modal_text").text("插入数据失败");
+                        $("#modalInfo").modal('show');
+                        return false;
+                    }
+                },
+                error:function(resp){
+                    // alert("查询数据失败");
+                    $("#modal_text").text("修改数据失败");
+                    $("#modalInfo").modal('show');
+                    return false;
+
+                },
+            });
+        }else {
+            $.ajax({
+                type: 'POST',
+                url: '/insSolutionInfo',
+                cache: false,
+                data: {
+                    region_name: $("#region_code").find("option:selected").text(),
+                    region_code: $("#region_code").find("option:selected").val(),
+                    manager_no: $("#manager_no").val(),
+                    solution_name: $("#solution_name").val(),
+                    solution_desc: $("#solution_desc").val(),
+                    solution_level:$("#solution_level").find("option:selected").val(),
+                    solution_type:$("#solution_type").find("option:selected").val(),
+                    related_id: $("#id").val()
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        $("#modal_text").text("插入成功");
+                        $("#modalInfo").modal('show');
+                    } else {
+                        $("#modal_text").text("插入数据失败");
+                        $("#modalInfo").modal('show');
+                        return false;
+                    }
+
+                    // $("#initElement").val(resp);
+                },
+                error: function (resp) {
+                    // alert("查询数据失败");
+                    $("#modal_text").text("插入数据失败");
+                    $("#modalInfo").modal('show');
+                    return false;
+                },
+            });
+
+        }
+       // qryBusiSolutionInfo();
+    }
+    function getSolutionType(){
+        $.ajax({
+            type: 'POST',
+            url: '/qrySolutionType',
+            cache: false,
+            data: {
+            },
+            success: function (data) {
+                var type_data="";
+                var list = data.ROOT.BODY.solutionTypeList;
+                $.each(list, function (i, field) {
+                    //拼接json数据集字符串
+                    type_data += "<option value='" + field.trade_name + "' ";
+                    type_data += ">" + field.trade_name + "</option>";
+                });
+                $("#solution_type").append(type_data);
+                $("#qry_solution_type").append(type_data)
+            },
+            error: function (resp) {
+                // alert("查询数据失败");
+                $("#modal_text").text("插入数据失败");
+                $("#modalInfo").modal('show');
+                return false;
+
+            },
+        });
+    }
+    function addSolutionInfo(){
+        $("#id").val("");
+        $("#manager_no").val("");
+        $("#region_code").prop('selectedIndex',0);
+        $("#solution_name").val("");
+        $("#solution_desc").val("");
+        $("#fileList div").remove();
+        $("#alertInfo").modal('show');
+    }
+</script>
+</html>

@@ -1,0 +1,28 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.OutDTO;
+
+/**
+ * Created by zhouhui on 2018/3/28.
+ */
+public class SeContractQddwOutDTO extends OutDTO {
+
+    private String id;//组织结构id
+    private String name;//组织机构名称
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

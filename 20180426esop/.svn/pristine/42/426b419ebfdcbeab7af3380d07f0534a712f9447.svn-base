@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectCapitalInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoQueryDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoQueryDto" >
+        select
+            zijin_zhanghao,
+            kehu_bianhao,
+            kehu_mingcheng,
+            yinhang_zhanghao,
+            kaihuhang,
+            fengongsi,
+            zhanghao_zhuangtai,
+            zhanghu_yue,
+            keyong_yue,
+            zhanyong_zijin,
+            dongjie_zijin
+        from
+            ep_cap_capitalquery_info
+       where 1=1
+        <if test="zijin_zhanghao != ''">
+            and zijin_zhanghao = #{zijin_zhanghao}
+        </if>
+    </select>
+    <select id="selectCqLoginInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" resultType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        select a.staff_code,a.login_name,c.org_id,c.org_name
+        from bs_systemuser_info a,bs_staff_info b,bs_orgnization_info c
+        where a.staff_id = b.staff_id and b.org_id = c.org_id and a.staff_code = '112900001'
+    </select>
+    <insert id="insertCqLoginInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        insert into ep_cap_capitalapply_info(gongdan_bianhao,yewu_leixing,fengongsi,shenqingren,hangye_zhongxin,jituan_bianhao,jituan_mingcheng,jituan_zhanghao,zhanghao_mingcheng,dongjie_jine,shiyong_jine,shenqing_shijian,beizhu_xinxi,chanpin_leixing,product_id)
+        values
+        (#{gongdan_bianhao},#{yewu_leixing},#{fengongsi},#{shenqingren},#{hangye_zhongxin},#{jituan_bianhao},#{jituan_mingcheng},#{jituan_zhanghao},#{zhanghao_mingcheng},#{dongjie_jine},#{shiyong_jine},#{shenqing_shijian},#{beizhu_xinxi},#{chanpin_xinxi},#{product_id})
+    </insert>
+    <!--集团缴费-->
+    <insert id="insertCustpayInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        insert into ep_cap_capuseCustpay_info(gongdan_bianhao,kaishi_zhangqi,jieshu_zhangqi,shifou_yuda,fapiao_daima,fapiao_haoma,fapiao_jine,esop_orderId)
+        values
+        (#{gongdan_bianhao},#{kaishi_zhangqi},#{jieshu_zhangqi},#{shifou_yuda},#{fapiao_daima},#{fapiao_haoma},#{fapiao_jine},#{esop_orderId})
+    </insert>
+    <!--集团成员缴费-->
+    <insert id="insertCustmempayInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        insert into ep_cap_capuseCustmempay_info(gongdan_bianhao,kaishi_zhangqi,jieshu_zhangqi,fujian)
+        values
+        (#{gongdan_bianhao},#{kaishi_zhangqi_chengyuan},#{jieshu_zhangqi_chengyuan},#{chengyuan_xinxi_daoru})
+    </insert>
+    <!--超大集团成员缴费-->
+    <insert id="insertBigCustmempayInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        insert into ep_cap_capuseBigCustmempay_info(gongdan_bianhao,kaishi_zhangqi,jieshu_zhangqi,fujian)
+        values
+        (#{gongdan_bianhao},#{kaishi_zhangqi_CDchengyuan},#{jieshu_zhangqi_CDchengyuan},#{chengyuan_xinxi_CDdaoru})
+    </insert>
+    <!--缴纳保证金-->
+    <insert id="insertBondpayInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        insert into ep_cap_capuseBondpay_info(gongdan_bianhao,hetong_bianhao,baozhengjin_leixing,shouju_bianhao)
+        values
+        (#{gongdan_bianhao},#{hetong_bianhao_bzj},#{baozhengjin_leixing},#{shouju_bianhao})
+    </insert>
+    <!--一次性费用-->
+    <insert id="insertTerminalInfo"  parameterType="com.esop.cqDevelopment.capitalManage.dto.CapitalInfoApplyDto" >
+        insert into ep_cap_capuseTerminal_info(gongdan_bianhao,shifou_chuhuo,hetong_bianhao)
+        values
+        (#{gongdan_bianhao},#{shifou_chuhuo},#{hetong_bianhao})
+    </insert>
+    <!--过滤账号信息 临时-->
+    <select id="selectAccountPbDataNum" parameterType="com.esop.cqDevelopment.capitalManage.dto.AccountPbResolveDto" resultType="com.esop.cqDevelopment.capitalManage.dto.AccountPbResolveDto" >
+        select
+            count(1) as num
+        from
+            ep_cap_actpbresolve_info
+        where
+            jituan_zhanghao = #{jituan_zhanghao}
+        and zhuang_tai = '0'
+    </select>
+
+    <select id="selectUsedInvoiceOrderId" resultType="java.lang.String">
+        select t1.esop_orderId
+        from ep_cap_capuseCustpay_info t1,(select taskOrderId,nodeId,dealTime from ep_work_flow_info  where nodeId in ('14','13','10','1','3','4') ) t2
+        where t1.gongdan_bianhao = t2.taskOrderId and t2.dealTime = (select max(a1.dealTime) from ep_work_flow_info a1 where a1.taskOrderId = t2.taskOrderId)
+        and t1.esop_orderId is not null
+        group by t1.gongdan_bianhao
+    </select>
+
+    <update id="updateChangeStateInvoiceOrderId" parameterType="java.lang.String" >
+
+        update ep_inv_preprint_app_info set work_state='4' where application_no =
+        (select esop_orderId from ep_cap_capusecustpay_info
+        where gongdan_bianhao = #{gongdan_bianhao})
+
+    </update>
+</mapper>

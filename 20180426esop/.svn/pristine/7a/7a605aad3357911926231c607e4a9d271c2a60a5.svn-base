@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <!--竞争信息查询-->
+    <select id="selectEpCompeteInfo" parameterType="String" resultType="com.esop.busiAnalysis.dto.epCompeteInfoDto">
+        select service_no,town_name,town_id,compete_person,compete_policy,import_degree,group_name,group_id,compete_id,exp_data,prc_name,charges,related_id,
+        '&lt;button type="button" class="btn btn-info pull-left mgr-20" onclick="updFile('''||compete_id||''')" >修改&lt;/button>' as operator_str
+        from ep_compete_info
+        where 1=1
+        <if test="service_no != ''">
+            and service_no = #{service_no}
+        </if>
+        <if test="town_id != ''">
+            and town_id =#{town_id}
+        </if>
+        <if test="group_name !=''">
+            and group_name like '%'||#{group_name}||'%'
+        </if>
+        <if test="compete_id != ''">
+            and compete_id = #{compete_id}
+        </if>
+    </select>
+    <!--竞争信息录入-->
+    <select id="insertEpCompeteInfo"  parameterType="com.esop.busiAnalysis.dto.epCompeteInfoDto" resultType="int" >
+        insert into ep_compete_info(compete_id,service_no,town_name,town_id,compete_person,compete_policy,import_degree,group_id,group_name,exp_data,related_id,prc_name,charges)
+        values(#{compete_id},#{service_no},#{town_name},#{town_id},#{compete_person},#{compete_policy},#{import_degree},#{group_id},#{group_name},#{exp_data},#{related_id},#{prc_name},#{charges})
+    </select>
+    <!--通过客户经理工号查询集团id-->
+    <select id="getUnitIdInfo" parameterType="String" resultType="com.esop.busiAnalysis.dto.epCompeteInfoDto">
+        select unit_id group_id,unit_name group_name,'&lt;button class="ui-btn" onclick="editTable('''||unit_id||''','''||unit_name||''')" >选择&lt;/button>' as opt
+        from dgrpcustmsg
+        where service_no=#{service_no}
+    </select>
+    <!--通过客户经理工号查询区县信息-->
+    <select id="getServiceNoGroupInfo" parameterType="com.esop.busiAnalysis.dto.epCompeteInfoDto" resultType="Map">
+        select group_name town_name,group_id town_id from ep_sys_group_info
+        where group_id=#{town_id}
+    </select>
+    <!--获取竞争信息编码-->
+    <select id="getCompeteId" resultType="com.esop.busiAnalysis.dto.GetCompeteIdDto">
+        select seq_compete_id.Nextval compete_id from dual
+    </select>
+    <!--通过compete_id获取竞争信息-->
+    <select id="qryCompeteInfoById"  parameterType="com.esop.busiAnalysis.dto.epCompeteInfoDto" resultType="com.esop.busiAnalysis.dto.epCompeteInfoDto">
+    select a.town_name,a.town_id,a.comptee_person,a.compete_policy,a.import_degree,a.group_name,a.exp_data,a.service_no,a.group_id,a.compete_id,a.related_id,a.prc_name,a.charges,b.name relate_name,b.path relate_path, b.id
+    from ep_compete_info a,ep_upload_file_info b
+    where a.related_id= b.related_id and a.compete_id=#{compete_id}
+    </select>
+    <select id="updCompeteInfo" parameterType="com.esop.busiAnalysis.dto.epCompeteInfoDto" resultType="int">
+        update ep_compete_info set compete_id = #{compete_id}
+        <if test="service_no != ''">
+            ,service_no = #{service_no}
+        </if>
+        <if test="compete_person!= ''">
+            ,compete_person = #{compete_person}
+        </if>
+        <if test="compete_policyy != ''">
+            ,compete_policy = #{compete_policy}
+        </if>
+        <if test="import_degree != ''">
+            ,import_degree=#{import_degree}
+        </if>
+        <if test="group_nam != ''">
+            ,group_name = #{group_name}
+        </if>
+        <if test="exp_data != ''">
+            ,exp_data = #{exp_data}
+        </if>
+        <if test="service_no != ''">
+            ,service_no = #{service_no}
+        </if>
+        <if test="group_id != ''">
+
+        </if>
+    </select>
+    <!--app端竞争信息查询-->
+    <select id="getCompeteInfoById" parameterType="com.esop.busiAnalysis.dto.epCompeteInfoDto" resultType="com.esop.busiAnalysis.dto.epCompeteInfoDto">
+        select town_name,town_id,compete_person,compete_policy,import_degree,group_name,group_id,exp_data,service_no,compete_id,related_id
+        from ep_compete_info
+        where 1=1
+        <if test="compete_id != ''">
+            and compete_id = #{compete_id}
+        </if>
+    </select>
+</mapper>

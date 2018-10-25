@@ -1,0 +1,79 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class CapitalClaimApproveQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    public Result getcapitalClaimApproveInfoSvc(CapitalClaimApproveQueryDto parameter){
+        String selectTion = "selectCapitalClaimApproveInfo";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+    public Result getcapitalClaimApproveInfoSvc2(CapitalClaimApproveQueryDto parameter){
+        String selectTion = "selectCapitalClaimApproveInfo2";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+    public Result getcapitalClaimApproveInfoSvc3(CapitalClaimApproveQueryDto parameter){
+        String selectTion = "selectCapitalClaimApproveInfo3";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+    public CapitalClaimApproveQueryDto selectBasicInfoByGongdanbianhao(String  taskOrderId){
+        String selectTion = "selectBasicInfoByGongdanbianhao";
+        CapitalClaimApproveQueryDto capitalClaimApproveQueryDto=sqlSessionTemplate.selectOne(selectTion,taskOrderId);
+        return capitalClaimApproveQueryDto;
+    }
+    public Result getApproveProcessInfoSvc(CapitalClaimApproveQueryDto parameter){
+        String selectTion = "selectApproveProcessInfo";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+    public String selectLoginNameByStaffCode(String  staff_code){
+        String selectTion = "selectLoginNameByStaffCode";
+        String login_name=sqlSessionTemplate.selectOne(selectTion,staff_code);
+        return login_name;
+    }
+    public String selectOrgNameByOrgId(String  areaId){
+        String selectTion = "selectOrgNameByOrgId";
+        String name=sqlSessionTemplate.selectOne(selectTion,areaId);
+        return name;
+    }
+    public String selectBusinessByCenterCode(String  center_code){
+        String selectTion = "selectBusinessByCenterCode";
+        String business_center=sqlSessionTemplate.selectOne(selectTion,center_code);
+        return business_center;
+    }
+    public List selectAllQddw(){
+        String selectTion = "selectAllQddw";
+        List<CapitalClaimApproveQueryDto>list =sqlSessionTemplate.selectList(selectTion);
+        return list;
+    }
+    public List<CapitalClaimApproveQueryDto> selectBusinessForZhangwuyuan(String login_no){
+        String selectTion = "selectBusinessForZhangwuyuan";
+        List<CapitalClaimApproveQueryDto>list =sqlSessionTemplate.selectList(selectTion,login_no);
+        return list;
+    }
+    public List<CapitalClaimApproveQueryDto> selectBusinessCenterForZhangwuyunOrkehujingli(String login_no){
+        String selectTion = "selectBusinessCenterForZhangwuyunOrkehujingli";
+        List<CapitalClaimApproveQueryDto>list =sqlSessionTemplate.selectList(selectTion,login_no);
+        return list;
+    }
+}

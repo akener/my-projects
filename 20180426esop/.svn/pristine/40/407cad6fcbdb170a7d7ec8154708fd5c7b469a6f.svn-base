@@ -1,0 +1,100 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/base.jsp"%>
+    <%@ include file="../../pub/dataTables.jsp"%>
+    <%@ include file="../../pub/tableList.jsp"%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>ESOP工单号：</th>
+                            <td>
+                                <input type="text" id="orderID1" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>集团编号：</th>
+                            <td>
+                                <input type="text" id="groupID" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="groupMemberOperate()">查询</button>
+                            <button class="ui-btn" type="reset"  onclick="pageReset()">重置</button>
+                            <%--<button class="ui-btn" type="reset"  onclick="addRefundApply()">新增</button>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团成员资金申请待办工单</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="groupMemberOperate" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">ESOP工单号码</th>
+                            <th class="text-center">申请工单业务类型</th>
+                            <th class="text-center">分公司编码</th>
+                            <th class="text-center">申请人ID</th>
+                            <th class="text-center">行业中心</th>
+                            <th class="text-center">集团编号</th>
+                            <th class="text-center">集团名称</th>
+                            <th class="text-center">集团账号</th>
+                            <th class="text-center">集团账号名称</th>
+                            <th class="text-center">预打发票开始账期</th>
+                            <th class="text-center">预打发票结束账期</th>
+                            <th class="text-center">冻结金额</th>
+                            <th class="text-center">申请金额</th>
+                            <th class="text-center">申请时间</th>
+                           <%-- <th class="text-center">批量导入文件名</th>
+                            <th class="text-center">导入文件记录数</th>
+                            <th class="text-center">备注信息</th>
+                            <th class="text-center">产品账期</th>--%>
+                            <th class="text-center">工单状态</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--详情页面-->
+    <%@ include file="groupMemDoApprove.jsp"%>
+</body>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/groupMember/groupMember.js"></script>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+
+<sxript>
+
+</sxript>
+</html>

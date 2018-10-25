@@ -1,0 +1,208 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp" %>
+<%@ include file="../pub/dataTables.jsp" %>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no,minimum-scale=1.0, maximum-scale=1.0">
+    <title>
+        集团等级分布
+    </title>
+</head>
+
+<body class="">
+<div>
+    <div>
+        <div class="mgt-10">
+            <div id="container" style="min-width:400px;height:400px"></div>
+        </div>
+        <div style="text-align:right;">
+        <a href=gplv onClick="javascript :history.go(-1);">返回上一页</a>
+        </div>
+    </div>
+</div>
+<script>
+    var dataTmp = "";
+    $(function () {
+        GetseriesValue();  //获取数据源信息
+    });
+
+    //获取数据源信息
+    //////////////////////////////////////////////////////////////////////
+    function GetseriesValue() {
+
+        region_code = $("#region_code").val();
+
+        $.ajax({
+            type: "get",
+            url: "thisGroupInformationLevel",
+            data:{
+                region_code:$("#region_code").val()
+            },
+            cache: false,
+            success: function (result) {
+                data_xAxis = "";
+                data_series = "{name: '集团个数',data: [";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    data_xAxis += "'"+field.group_type+"类',";
+                    data_series += "{y:" + field.grp_num_level + ",url:'"+field.group_type+"'},";
+                });
+                //去除最后一个字符
+                data_series=data_series.substring(0, data_series.length - 1);
+                data_series += "]}";
+                data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                GetData(data_xAxis,data_series);
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    };
+
+    //获取数据源信息
+    //////////////////////////////////////////////////////////////////////
+    function GetseriesValue_ds(group_type) {
+
+        $.ajax({
+            type: "get",
+            url: "thisGroupInformationLevelRegion",
+            data:{
+                group_type:group_type
+            },
+            cache: false,
+            success: function (result) {
+                data_xAxis = "";
+                data_series = "{name: '集团个数',data: [";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    data_xAxis += "'"+field.region_name+"',";
+                    data_series += "{y:" + field.grp_num_level +"},";
+                });
+                //去除最后一个字符
+                data_series=data_series.substring(0, data_series.length - 1);
+                data_series += "]}";
+                data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                GetData_ds(data_xAxis,data_series);
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    };
+
+    //绑定获取数据信息操作
+    //////////////////////////////////////////////////////////////////////
+    function GetData(data_xAxis,data_series) {
+        $('#container').highcharts({
+            chart: {
+                type: 'column',
+                renderTo: 'container',
+                options: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    depth: 50,
+                    viewDistance: 25
+                }
+            },
+            title: {
+                text: '集团等级分布'
+            },
+            xAxis: {
+                categories: eval("[" + data_xAxis + "]"),
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '集团等级分布 (个)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                //在当前页面跳转
+                                GetseriesValue_ds(this.options.url);
+                            }
+                        }
+                    }
+                }
+            },
+            series: eval("[" + data_series + "]")  //获取数据源操作信息
+        });
+    }
+
+    //绑定获取数据信息操作
+    //////////////////////////////////////////////////////////////////////
+    function GetData_ds(data_xAxis,data_series) {
+        $('#container').highcharts({
+            chart: {
+                type: 'column',
+                renderTo: 'container',
+                options: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    depth: 50,
+                    viewDistance: 25
+                }
+            },
+            title: {
+                text: '集团等级分布'
+            },
+            xAxis: {
+                categories: eval("[" + data_xAxis + "]"),
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '集团等级分布 (个)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} 个</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: eval("[" + data_series + "]")  //获取数据源操作信息
+        });
+    }
+
+    function backup(){
+        window.history.forward();
+    }
+</script>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/6/28.
+ */
+//重要级别
+public class ImpLevelDto {
+    String imp_level = "";//重要级别
+    String level_name= "";//级别名
+
+    public String getImp_level() {
+        return imp_level;
+    }
+
+    public void setImp_level(String imp_level) {
+        this.imp_level = imp_level;
+    }
+
+    public String getLevel_name() {
+        return level_name;
+    }
+
+    public void setLevel_name(String level_name) {
+        this.level_name = level_name;
+    }
+}

@@ -1,0 +1,38 @@
+package com.esop.workbench.service;
+
+import com.esop.workbench.dto.WarnAndAlertDto;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class WarnAndAlertService {
+    @Autowired
+    private static Logger logger = Logger.getLogger(WarnAndAlertService.class);
+
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    //合同提醒
+    public List<WarnAndAlertDto> getContractAlertList(WarnAndAlertDto obj){
+        String selectTion = "";
+        selectTion = "selectContractAlert";
+        List list=sqlSessionTemplate.selectList(selectTion,obj);
+        return list;
+    }
+
+    //ABC类集团走访提醒
+    public List<WarnAndAlertDto> getReturnRemindList(WarnAndAlertDto obj){
+        String selectTion = "";
+        selectTion = "selectReturnRemind";
+        List list=sqlSessionTemplate.selectList(selectTion,obj);
+        return list;
+    }
+}

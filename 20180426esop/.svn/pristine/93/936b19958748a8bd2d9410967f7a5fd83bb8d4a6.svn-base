@@ -1,0 +1,135 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/11/7.
+ */
+public class CapitalInfoDto extends BaseDto {
+    private String bill;
+    private String arrival_time;
+    private String source_client;
+    private String source_num;
+    private String arrival_amount;
+    private String arrival_amount_name;
+    private String arrival_num;
+    private String publish_time;
+    private String group_name;
+    private String manager;
+    private String deal_status;
+    private String group_ids;
+    private String account_clerk;
+    private String abstracts;
+
+    public String getBill() {
+        return bill;
+    }
+
+    public void setBill(String bill) {
+        this.bill = bill;
+    }
+
+    public String getArrival_time() {
+        return arrival_time;
+    }
+
+    public void setArrival_time(String arrival_time) {
+        this.arrival_time = arrival_time;
+    }
+
+    public String getSource_client() {
+        return source_client;
+    }
+
+    public void setSource_client(String source_client) {
+        this.source_client = source_client;
+    }
+
+    public String getSource_num() {
+        return source_num;
+    }
+
+    public void setSource_num(String source_num) {
+        this.source_num = source_num;
+    }
+
+    public String getArrival_amount() {
+        return arrival_amount;
+    }
+
+    public void setArrival_amount(String arrival_amount) {
+        this.arrival_amount = arrival_amount;
+    }
+
+    public String getArrival_amount_name() {
+        return arrival_amount_name;
+    }
+
+    public void setArrival_amount_name(String arrival_amount_name) {
+        this.arrival_amount_name = arrival_amount_name;
+    }
+
+    public String getArrival_num() {
+        return arrival_num;
+    }
+
+    public void setArrival_num(String arrival_num) {
+        this.arrival_num = arrival_num;
+    }
+
+    public String getPublish_time() {
+        return publish_time;
+    }
+
+    public void setPublish_time(String publish_time) {
+        this.publish_time = publish_time;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getDeal_status() {
+        return deal_status;
+    }
+
+    public void setDeal_status(String deal_status) {
+        this.deal_status = deal_status;
+    }
+
+    public String getGroup_ids() {
+        return group_ids;
+    }
+
+    public void setGroup_ids(String group_ids) {
+        this.group_ids = group_ids;
+    }
+
+    public String getAccount_clerk() {
+        return account_clerk;
+    }
+
+    public void setAccount_clerk(String account_clerk) {
+        this.account_clerk = account_clerk;
+    }
+
+    public String getAbstracts() {
+        return abstracts;
+    }
+
+    public void setAbstracts(String abstracts) {
+        this.abstracts = abstracts;
+    }
+}

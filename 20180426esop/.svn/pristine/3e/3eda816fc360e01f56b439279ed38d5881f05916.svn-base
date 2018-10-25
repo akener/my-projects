@@ -1,0 +1,36 @@
+package com.esop.alertClassified.service;
+
+import com.esop.alertClassified.dto.BusiOppAlertDto;
+import com.esop.common.dataBase.SqlE;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class BusiOppAlertService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    public List getBusiOppAlertList(BusiOppAlertDto parameter){
+        String selectTion = "";
+        selectTion = "selectBusiOppAlert";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    public int getBusiOppAlertSet(BusiOppAlertDto parameter){
+        int number=0;
+        String selectTion = "";
+        selectTion = "updateBusiOppAlertSet";
+        number=sqlE.updateM(selectTion, parameter);
+        return number;
+    }
+}

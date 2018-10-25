@@ -1,0 +1,381 @@
+
+/**
+ * 保存集团开户信息
+ */
+function saveopen() {
+    var order_title = $("#order_title").val();
+    var notes = $("#notes").val();
+    var prod_id= $("#prod_id").val();
+    var gl_sj_zxfy = $("#gl_sj_zxfy").val();
+
+    if(order_title==null||$.trim(order_title)==''){
+        alert('请输入订单标题！');
+        $("#order_title").focus();
+        return false;
+    }
+    if(notes==null||$.trim(notes)==''){
+        alert('请输入订单描述！');
+        $("#notes").focus();
+        return false;
+    }
+    if(prod_id==null||$.trim(prod_id)==''){
+        alert('请选择开户产品！');
+        $("#prod_id").focus();
+        return false;
+    }
+    if($("#product_id").val()=="pp.jtzx.zghlwzxjnew"
+        ||$("#product_id").val()=="pp.jtzx.zgqyzxjnew"||$("#product_id").val()=="pp.jtzx.zglgxjnew") {
+        if (prod_id == "gl_sj_zxfy") {
+            if (gl_sj_zxfy == null || $.trim(gl_sj_zxfy) == '') {
+                alert('请输入专线一次性费用！');
+                $("#gl_sj_zxfy").focus();
+                return false;
+            }
+            if(isNaN(gl_sj_zxfy)){
+                alert('专线一次性费用输入数字');
+                $("#gl_sj_zxfy").focus();
+                return;
+            }
+        }
+    }
+
+    //获取附加属性值
+    //key1=xxx,key2=xxx
+    var subsProdAttrsList = "";
+
+    var subsProdAttrsValueList = "";
+    var trList = $("#attrList").children("tr");
+    var trSize = trList.length;
+
+    for(var i = 0 ;i<trSize; i++){
+        var tdArr = trList.eq(i).find("td");
+        var tdLen = tdArr.length;
+        if(tdLen==2){
+            var obj1 = tdArr.eq(0).find('select');
+            var arrName1 = obj1.attr("name");
+            var arrValue1 = obj1.val();
+            if(arrName1==null||$.trim(arrName1)==''){
+                obj1 = tdArr.eq(0).find('input');
+                arrName1 = obj1.attr("name");
+                arrValue1 = obj1.val();
+                if(arrValue1==null||$.trim(arrValue1)=='') {
+                    alert(obj1.parent().prev().text()+'不能为空');
+                    obj1.focus();
+                    return;
+                }
+                if(subsProdAttrsList==""){
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        if(isNaN(arrValue1)){
+                            alert('只能输入数字');
+                            obj1.focus();
+                            return;
+                        }
+                        subsProdAttrsList = arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = obj1.parent().prev().text() + "=" + arrValue1;
+                    }
+                }else{
+                    if(isNaN(arrValue1)){
+                        alert('只能输入数字');
+                        obj1.focus();
+                        return;
+                    }
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        subsProdAttrsList = subsProdAttrsList + "," + arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = subsProdAttrsValueList + "," + obj1.parent().prev().text() + "=" + arrValue1;
+                    }
+                }
+            }else{
+                if(arrValue1==null||$.trim(arrValue1)=='') {
+                    alert('请选择'+obj1.parent().prev().text());
+                    obj1.focus();
+                    return;
+                }
+
+                if(subsProdAttrsList==""){
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        subsProdAttrsList = arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = obj1.parent().prev().text() + "=" + obj1.find("option:selected").text();
+                    }
+                }else{
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        subsProdAttrsList = subsProdAttrsList + "," + arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = subsProdAttrsValueList + "," + obj1.parent().prev().text() + "=" + obj1.find("option:selected").text();
+                    }
+                }
+            }
+
+            var obj2 = tdArr.eq(1).find('select');
+            var arrName2 = obj2.attr("name");
+            var arrValue2 = obj2.val();
+            if(arrName2==null||$.trim(arrName2)==''){
+                obj2 = tdArr.eq(1).find('input');
+                arrName2 = obj2.attr("name");
+                arrValue2 = obj2.val();
+                if(arrValue2==null||$.trim(arrValue2)=='') {
+                    alert(obj2.parent().prev().text()+'不能为空');
+                    obj2.focus();
+                    return;
+                }
+                if(subsProdAttrsList==""){
+                    if(isNaN(arrValue2)){
+                        alert('只能输入数字');
+                        obj2.focus();
+                        return;
+                    }
+                    if(arrValue2!=null&&$.trim(arrValue2)!='') {
+                        subsProdAttrsList = arrName2 + "=" + arrValue2;
+                        subsProdAttrsValueList = obj2.parent().prev().text() + "=" + arrValue2;
+                    }
+                }else{
+                    if(isNaN(arrValue2)){
+                        alert('只能输入数字');
+                        obj2.focus();
+                        return;
+                    }
+                    if(arrValue2!=null&&$.trim(arrValue2)!='') {
+                        subsProdAttrsList = subsProdAttrsList + "," + arrName2 + "=" + arrValue2;
+                        subsProdAttrsValueList = subsProdAttrsValueList + "," + obj2.parent().prev().text() + "=" + arrValue2;
+                    }
+                }
+            }else{
+                if(arrValue2==null||$.trim(arrValue2)=='') {
+                    alert('请选择'+obj2.parent().prev().text());
+                    obj2.focus();
+                    return;
+                }
+
+                if(subsProdAttrsList==""){
+                    if(arrValue2!=null&&$.trim(arrValue2)!='') {
+                        subsProdAttrsList = arrName2 + "=" + arrValue2;
+                        subsProdAttrsValueList = obj2.parent().prev().text() + "=" + obj2.find("option:selected").text();
+                    }
+                }else{
+                    if(arrValue2!=null&&$.trim(arrValue2)!='') {
+                        subsProdAttrsList = subsProdAttrsList + "," + arrName2 + "=" + arrValue2;
+                        subsProdAttrsValueList = subsProdAttrsValueList +","+obj2.parent().prev().text() + "=" + obj2.find("option:selected").text();
+                    }
+                }
+            }
+        }else{
+            var obj1 = tdArr.eq(0).find('select');
+
+            var arrName1 = obj1.attr("name");
+            var arrValue1 = obj1.val();
+            if(arrName1==null||$.trim(arrName1)==''){
+                obj1 = tdArr.eq(0).find('input');
+                arrName1 = obj1.attr("name");
+                arrValue1 = obj1.val();
+                if(arrValue1==null||$.trim(arrValue1)=='') {
+                    alert(obj1.parent().prev().text()+'不能为空');
+                    obj1.focus();
+                    return;
+                }
+                if(subsProdAttrsList==""){
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        if(isNaN(arrValue1)){
+                            alert('只能输入数字');
+                            obj1.focus();
+                            return;
+                        }
+                        subsProdAttrsList = arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = obj1.parent().prev().text() + "=" + arrValue1;
+                    }
+                }else{
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        if(isNaN(arrValue1)){
+                            alert('只能输入数字');
+                            obj1.focus();
+                            return;
+                        }
+                        subsProdAttrsList = subsProdAttrsList + "," + arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = subsProdAttrsValueList +","+obj1.parent().prev().text() + "=" + arrValue1;
+                    }
+                }
+            }else{
+                if(arrValue1==null||$.trim(arrValue1)=='') {
+                    alert('请选择'+obj1.parent().prev().text());
+                    obj1.focus();
+                    return;
+                }
+
+                if(subsProdAttrsList==""){
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        subsProdAttrsList = arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = obj1.parent().prev().text() + "=" + obj1.find("option:selected").text();
+                    }
+                }else{
+                    if(arrValue1!=null&&$.trim(arrValue1)!='') {
+                        subsProdAttrsList = subsProdAttrsList + "," + arrName1 + "=" + arrValue1;
+                        subsProdAttrsValueList = subsProdAttrsValueList +","+obj1.parent().prev().text() + "=" + obj1.find("option:selected").text();
+                    }
+                }
+            }
+        }
+    }
+    if($("#product_id").val()=="pp.jtzx.zghlwzxjnew"
+        ||$("#product_id").val()=="pp.jtzx.zgqyzxjnew"||$("#product_id").val()=="pp.jtzx.zglgxjnew") {
+        if (prod_id == "gl_sj_zxfy") {
+            if(subsProdAttrsValueList!=null&&$.trim(subsProdAttrsValueList)!=''){
+                subsProdAttrsValueList = subsProdAttrsValueList +","+"专线一次性费用="+gl_sj_zxfy;
+            }else{
+                subsProdAttrsValueList = "专线一次性费用="+gl_sj_zxfy;
+            }
+        }
+    }
+
+    $("#saveopen").text('提交中..')
+    $("#saveopen").attr("disabled",true);
+    $.ajax({
+        type: "post",
+        datatype: "json",
+        url: "/openGroupProdNewSave",
+        data: {
+            "product_id":$("#product_id").val(),//产品编号
+            "prod_name":$("#prod_id").find("option:selected").text(),//产品名称
+            "product_name":$("#product_name").val(),
+            "contract_name":$("#contract_name").val(),
+            "chargeIds":prod_id,//选择的产品资费id
+            "first_party_address":$("#first_party_address").val(),
+            "first_party_code":$("#first_party_code").val(),//集团编号
+            "first_party":$("#first_party").val(),//集团名称
+            "subs_prod_attr_list":subsProdAttrsList,//附加属性
+            "bak3":subsProdAttrsValueList,//传给订单中心串
+            "contract_desc":$("#contract_desc").val(),
+            "gl_sj_zxfy":gl_sj_zxfy,
+
+            "first_party_phone":$("#first_party_phone").val(),//联系人电话
+            "contract_id":$("#contract_id").val(),//合同编号
+            "order_title":$("#order_title").val(),//订单标题
+            "notes":$("#notes").val(),//备注
+            "request_num": $("#order_no").val(),//建设单order_number
+
+            "login_no": $("#login_no").val(),
+            "org_id": $("#org_id").val(),
+            "subsId": $("#order_no option:selected").attr("subsId")
+
+        },
+        success: function (result) {
+            if(result=='1'){
+                alert('开户成功');
+                window.close();
+            }else{
+                alert('开户失败');
+            }
+            $("#saveopen").text('提交')
+            $("#saveopen").removeAttr("disabled");
+        }
+    })
+}
+
+function selPrivAttr() {
+    var prod_id = $("#prod_id").val();
+    if($("#product_id").val()=="pp.jtzx.zghlwzxjnew"
+        ||$("#product_id").val()=="pp.jtzx.zgqyzxjnew"||$("#product_id").val()=="pp.jtzx.zglgxjnew") {
+        if(prod_id=="gl_sj_zxfy"){
+            $("#zxfy").show();
+        }else{
+            $("#zxfy").hide();
+        }
+        return;
+    }else{
+        $("#zxfy").hide();
+    }
+
+    $("#attrList").html("");
+    if(prod_id!=null&&$.trim(prod_id)!=''){
+        $.ajax({
+            type: "post",
+            datatype: "json",
+            url: "/selPrivAttrList",
+            data: {
+                "prod_id":prod_id
+            },
+            success: function (result) {
+                var len = result.length;
+                var attrListStr = "";
+                $.each(result, function (i, field) {
+                    var attrid = field.attrid;
+                    var attrname = field.attrname;
+                    var attrtype = field.attrtype;
+                    var sqltext = field.sqltext;
+                    if(i%2==0){
+                        attrListStr = attrListStr + "<tr>";
+                    }
+                    if(attrtype=="SELECT"){
+                        attrListStr = attrListStr + "<th>" + attrname + "</th><td>";
+                        var yhSelStr = sqltext.split("$");
+                        attrListStr = attrListStr + '<select class="select-style-1" name="' + attrid + '"><option value="" selected="selected">请选择</option>';
+                        $.each(yhSelStr, function (i, field) {
+                            var data = field.split("~");
+                            if(data!=null){
+                                if(data[0]!=null&&$.trim(data[0])!=''){
+                                    attrListStr = attrListStr + '<option  value="'+data[0]+'">'+data[1]+'</option>';
+                                }
+                            }
+                        })
+                        attrListStr = attrListStr + '</select></td>';
+                    }else if(attrtype =="EDIT"){
+                        attrListStr = attrListStr + "<th>" + attrname + "</th><td>";
+                        attrListStr = attrListStr +'<input name="'+attrid+'" type="text" class="input-sty04 form-ipt"></td>';
+                    }
+                    if((i+1)==len){
+                        attrListStr = attrListStr + "</tr>";
+                    }else if((i+1)%2==0){
+                        attrListStr = attrListStr + "</tr>";
+                    }
+                });
+                $("#attrList").html(attrListStr);
+            }
+        })
+    }
+}
+
+
+function selPrivAttr2(prod_id) {
+    if(prod_id!=null&&$.trim(prod_id)!=''){
+        $.ajax({
+            type: "post",
+            datatype: "json",
+            url: "/selPrivAttrList",
+            data: {
+                "prod_id":prod_id
+            },
+            success: function (result) {
+                var len = result.length;
+                var attrListStr = "";
+                $.each(result, function (i, field) {
+                    var attrid = field.attrid;
+                    var attrname = field.attrname;
+                    var attrtype = field.attrtype;
+                    var sqltext = field.sqltext;
+                    if(i%2==0){
+                        attrListStr = attrListStr + "<tr>";
+                    }
+                    if(attrtype=="SELECT"){
+                        attrListStr = attrListStr + "<th>" + attrname + "</th><td>";
+                        var yhSelStr = sqltext.split("$");
+                        attrListStr = attrListStr + '<select class="select-style-1" name="' + attrid + '"><option value="" selected="selected">请选择</option>';
+                        $.each(yhSelStr, function (i, field) {
+                            var data = field.split("~");
+                            if(data!=null){
+                                if(data[0]!=null&&$.trim(data[0])!=''){
+                                    attrListStr = attrListStr + '<option  value="'+data[0]+'">'+data[1]+'</option>';
+                                }
+                            }
+                        })
+                        attrListStr = attrListStr + '</select></td>';
+                    }else if(attrtype =="EDIT"){
+                        attrListStr = attrListStr + "<th>" + attrname + "</th><td>";
+                        attrListStr = attrListStr +'<input name="'+attrid+'" type="text" class="input-sty04 form-ipt"></td>';
+                    }
+                    if((i+1)==len){
+                        attrListStr = attrListStr + "</tr>";
+                    }else if((i+1)%2==0){
+                        attrListStr = attrListStr + "</tr>";
+                    }
+                });
+                $("#attrList").html(attrListStr);
+            }
+        })
+    }
+}

@@ -1,0 +1,80 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/18.
+ */
+//合同到期提醒出参dto
+public class CnttInfoDto {
+    String unit_id = "";//集团id
+    String contract_no = "";//合同编号
+    String contract_name = "";//合同名称
+    String deal_time = "";//开始时间
+    String complete_time = "";//结束时间
+    String contract_loan = "";//合同金额
+    String surplus_days = "";//还有多少天到期
+    String charge_flag = "";//审批状态
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getContract_no() {
+        return contract_no;
+    }
+
+    public void setContract_no(String contract_no) {
+        this.contract_no = contract_no;
+    }
+
+    public String getContract_name() {
+        return contract_name;
+    }
+
+    public void setContract_name(String contract_name) {
+        this.contract_name = contract_name;
+    }
+
+    public String getDeal_time() {
+        return deal_time;
+    }
+
+    public void setDeal_time(String deal_time) {
+        this.deal_time = deal_time;
+    }
+
+    public String getComplete_time() {
+        return complete_time;
+    }
+
+    public void setComplete_time(String complete_time) {
+        this.complete_time = complete_time;
+    }
+
+    public String getContract_loan() {
+        return contract_loan;
+    }
+
+    public void setContract_loan(String contract_loan) {
+        this.contract_loan = contract_loan;
+    }
+
+    public String getSurplus_days() {
+        return surplus_days;
+    }
+
+    public void setSurplus_days(String surplus_days) {
+        this.surplus_days = surplus_days;
+    }
+
+    public String getCharge_flag() {
+        return charge_flag;
+    }
+
+    public void setCharge_flag(String charge_flag) {
+        this.charge_flag = charge_flag;
+    }
+}

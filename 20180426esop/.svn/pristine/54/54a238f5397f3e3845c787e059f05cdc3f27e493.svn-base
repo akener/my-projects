@@ -1,0 +1,363 @@
+package com.esop.workOrderInfo.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.SignOnRecordDto;
+import com.esop.workOrderInfo.service.OweRecordService;
+import com.esop.workOrderInfo.service.SignOnRecordService;
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by qiaojian on 2017/6/13.
+ */
+@RestController
+public class SignOnRecordController {
+    private static Logger logger = Logger.getLogger(SignOnRecordController.class);
+
+    @Autowired
+    SignOnRecordService signOnRecordService;
+    @Autowired
+    OweRecordService oweRecordService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    //导入
+    @RequestMapping(value = "/doSignRecordImport")
+    public int doSignRecordImport(SignOnRecordDto parameter){
+        int res=1;
+        Map map = new HashMap();
+
+        String org_code = parameter.getOrg_code();
+        map.put("ORG_CODE",org_code);
+        String org_name = signOnRecordService.getOrgName(map);
+        parameter.setOrg_name(org_name);
+        signOnRecordService.insertSignOnRecord(parameter);
+        return res;
+    }
+
+   /* private String getValue(HSSFCell hssfCell) {
+        if (hssfCell.getCellType() == hssfCell.CELL_TYPE_BOOLEAN) {
+            // 返回布尔类型的值
+            return String.valueOf(hssfCell.getBooleanCellValue());
+        } else if (hssfCell.getCellType() == hssfCell.CELL_TYPE_NUMERIC) {
+            // 返回数值类型的值
+            return String.valueOf(hssfCell.getNumericCellValue());
+        } else {
+            // 返回字符串类型的值
+            return String.valueOf(hssfCell.getStringCellValue());
+        }
+    }*/
+    //省签约管理员获取导入数据
+    @RequestMapping(value = "/getAllSignRecordByProvince")
+    public Result getAllSignRecordByProvince(SignOnRecordDto parameter, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        parameter.setRecord_status("01");
+        result = signOnRecordService.getAllSignRecord(parameter);
+        return result;
+    }
+
+    //省签约管理员获取批次号
+    @RequestMapping(value = "/getSignRecordIdByProvince")
+    public List<SignOnRecordDto> getSignRecordIdByProvince(SignOnRecordDto parameter){
+        parameter.setRecord_status("01");
+        return signOnRecordService.getSignRecordId(parameter);
+    }
+    //工单下发地市
+    @RequestMapping(value = "/sendSignOnRecordToRegion")
+    public int sendSignOnRecordToRegion(SignOnRecordDto parameter){
+        int res = 1;
+        try{
+            signOnRecordService.sendSignOnRecordToRegion(parameter);
+            res = 1;
+        }catch (Exception e){
+            res = -1;
+        }
+        return res;
+    }
+    //地市查看工单
+    @RequestMapping(value = "/getAllSignRecordByRegion")
+    public Result getAllSignRecordByRegion(SignOnRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        //TODO  获取地市管理员的org_code
+        //parameter.setOrg_code("10031");
+        System.out.println("getAllSignRecordByRegion --[org_code]="+parameter.getOrg_code());
+        //parameter.setRecord_status("02");
+        result = signOnRecordService.querySignRecordByRegionForHandle(parameter);
+        return result;
+    }
+    //地市管理员查询工单批次号
+    @RequestMapping(value = "/getSignRecordIdByRegion")
+    public List<SignOnRecordDto> getSignRecordIdByRegion(SignOnRecordDto parameter){
+        //TODO  获取地市管理员的org_code
+        parameter.setOrg_code("10031");
+        parameter.setRecord_status("02");
+        return signOnRecordService.getSignRecordId(parameter);
+    }
+    //地市查询区县
+    @RequestMapping(value = "/getCountyCode")
+    public List<SignOnRecordDto> getCountyCode(SignOnRecordDto parameter){
+        //TODO  获取地市管理员的org_code
+        //parameter.setOrg_code("10031");
+        System.out.println("getCountyCode --[org_code]="+parameter.getOrg_code());
+        return signOnRecordService.getCountyCode(parameter);
+    }
+    //工单下发到区县
+    @RequestMapping(value = "/sendRecordToCounty")
+    public int sendRecordToCounty(SignOnRecordDto parameter,String str){
+        int res=1;
+        String[] strs = str.split(",");
+        for(int i = 0; i < strs.length; i++){
+            parameter.setId(strs[i]);
+            res = signOnRecordService.sendRecordToCounty(parameter);
+        }
+        res = 1;
+        return res;
+    }
+
+    //区县查工单
+    @RequestMapping(value = "/getAllSignRecordByCounty")
+    public Result getAllSignRecordByCounty(SignOnRecordDto parameter,HttpServletRequest request){
+
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        //TODO  获取区县管理员的county_code
+        //parameter.setCounty_code("10020");
+        System.out.println("getAllSignRecordByCounty --[org_code]="+parameter.getCounty_code());
+        return signOnRecordService.querySignRecordByCountyForHandle(parameter);
+    }
+    //区县客户经理
+    @RequestMapping(value = "/getServiceNo")
+    public List<SignOnRecordDto> getServiceNo(SignOnRecordDto parameter){
+        //TODO  获取区县管理员的org_code
+        //parameter.setOrg_code("10020");
+        System.out.println("getServiceNo --[org_code]="+parameter.getOrg_code());
+        return signOnRecordService.getServiceNo(parameter);
+    }
+    //下发客户经理
+    @RequestMapping(value = "/sendSignRecordToService")
+    public int sendRecordToService(SignOnRecordDto parameter,String str){
+        int res=1;
+        //TODO 获取当前工号
+        String login_no = parameter.getService_no();
+        String phone_no;
+        String[] strs = str.split(",");
+        for(int i = 0; i < strs.length; i++){
+            parameter.setId(strs[i]);
+
+            String service_no = parameter.getService_no();
+            String service_name = parameter.getService_name();
+            Map queryMap = new HashMap();
+            queryMap.put("SERVICE_NO",service_no);
+            Map map = oweRecordService.getPhoneNoOfService(queryMap);
+            if(map == null || map.size() == 0){
+                continue;
+            }else{
+                phone_no = (String)map.get("PHONE_NO");
+            }
+            SignOnRecordDto sdto = new SignOnRecordDto();
+            sdto.setId(strs[i]);
+            SignOnRecordDto dto = signOnRecordService.getSignRecord(sdto);
+            String cust_id = dto.getCust_id();
+            String cust_name = dto.getCust_name();
+            String province_end_date = dto.getProvince_end_date();
+            String region_end_date = dto.getRegion_end_date();
+            String send_time = getTimeByMinute(1);
+
+            String s_msgCnt = service_name+"您好，您有一条签约工单待处理，（潜在集团编码为:"+cust_id+",集团名称:"+cust_name+",省派单截止日期"+province_end_date+",地市派单截止日期："+region_end_date+"）";
+            String param = "{\"sms_release\":\"\",\"tmpMsg\":\""+s_msgCnt+"\"}";
+            String op_code = "4222";
+            Map insertMap = new HashMap();
+            insertMap.put("PHONE_NO",phone_no);
+            insertMap.put("PARAM",param);
+            insertMap.put("SEND_TIME",send_time);
+            insertMap.put("LOGIN_NO",login_no);
+            insertMap.put("OP_CODE",op_code);
+
+            signOnRecordService.sendMessage(insertMap);
+            signOnRecordService.sendSignRecordToService(parameter);
+        }
+        res = 1;
+        return res;
+    }
+
+    //获取当前时间的前后几分钟
+    public static String getTimeByMinute(int minute) {
+
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.add(Calendar.MINUTE, minute);
+
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());
+
+    }
+    //回退至地市
+    @RequestMapping(value = "/backSignRecordToRegion")
+    public int backSignRecordToRegion(SignOnRecordDto parameter,String str){
+        int res=1;
+        String[] strs = str.split(",");
+        for(int i = 0; i < strs.length; i++){
+            parameter.setId(strs[i]);
+            res = signOnRecordService.backSignRecordToRegion(parameter);
+        }
+        res = 1;
+        return res;
+    }
+
+    //客户经理处理工单
+    @RequestMapping(value = "/getAllSignRecordByService")
+    public Result getAllSignRecordByService(SignOnRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        //TODO  获取客户经理工号
+        System.out.println("getAllSignRecordByService --[service_no]="+parameter.getService_no());
+        //parameter.setService_no("aavg6T");
+        parameter.setRecord_status("04");
+
+        return signOnRecordService.getAllSignRecord(parameter);
+    }
+    //客户经理工单处理，查询一条工单
+    @RequestMapping(value = "/getOneSignRecordByService")
+    public SignOnRecordDto getOneSignRecordByService(SignOnRecordDto parameter){
+        return signOnRecordService.getOneSignRecordByService(parameter);
+    }
+    //客户经理工单处理
+    @RequestMapping(value = "/handleSignRecordByService")
+    public int handleSignRecordByService(SignOnRecordDto parameter){
+        int res = 1;
+
+        String record_status = parameter.getRecord_status().trim();
+        try{
+            if("06".equals(record_status)){
+                //工单放弃
+                signOnRecordService.giveUpRecordByService(parameter);
+                res = 1;
+            }else if("07".equals(record_status)){
+                //回退区县
+                signOnRecordService.backRecordToCounty(parameter);
+                res = 1;
+            }else if("11".equals(record_status)){
+                String unit_id = signOnRecordService.getCustMsg(parameter);
+                if("".equals(unit_id)){
+                    //没成功
+                    res = -1;
+                }else{
+                    //成功 检查集团编码对应关系
+                    signOnRecordService.setSignRecordSuccess(parameter);
+                    res = 1;
+                }
+            }
+        }catch(Exception e){
+            res = -1;
+        }
+        return res;
+    }
+    //工单池数据查询
+    @RequestMapping("/getAllSignRecordForPool")
+    public Result getAllSignRecordForPool(SignOnRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        //TODO  获取客户经理工号
+        //parameter.setService_no("aavg6T");
+        System.out.println("getAllSignRecordForPool --[service_no]="+parameter.getService_no());
+        //获取客户经理所属地市
+        String org_code = signOnRecordService.getOrgCodeOfService(parameter);
+
+        parameter.setOrg_code(org_code);
+
+        return signOnRecordService.getAllSignRecordForPool(parameter);
+    }
+    //认领工单
+    @RequestMapping(value = "/claimSignRecordByService")
+    public int claimSignRecordByService(SignOnRecordDto parameter){
+        int res = 1;
+        //TODO  获取客户经理工号 姓名
+        /*parameter.setService_no("aavg6T");
+        parameter.setService_name("徐婧");*/
+        System.out.println("claimSignRecordByService --[service_no]="+parameter.getService_no());
+        System.out.println("claimSignRecordByService --[service_name]="+parameter.getService_name());
+        SignOnRecordDto dto = signOnRecordService.getCountyCodeByService(parameter);
+        parameter.setCounty_code(dto.getCounty_code());
+        parameter.setCounty_name(dto.getCounty_name());
+        parameter.setRecord_status("04");
+
+        try{
+            signOnRecordService.claimSignRecordByService(parameter);
+            res = 1;
+        }catch (Exception e){
+            res = -1;
+        }
+        return res;
+    }
+    //获取最新下发工单批次号
+    @RequestMapping(value = "/getSignRecordIdOfSend")
+    public SignOnRecordDto getSignRecordIdOfSend(SignOnRecordDto parameter){
+        SignOnRecordDto dto = signOnRecordService.getSignRecordIdOfSend(parameter);
+        return dto;
+    }
+    //查询回退省管理员工单
+    @RequestMapping(value = "/getSignRecordBackToProvince")
+    public Result getSignRecordBackToProvince(SignOnRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        parameter.setRecord_status("09");
+        return signOnRecordService.getAllSignRecord(parameter);
+    }
+    //结单
+    @RequestMapping(value = "/endSignRecord")
+    public int endSignRecord(SignOnRecordDto parameter){
+        return signOnRecordService.endSignRecord(parameter);
+    }
+
+    //工单查询
+    @RequestMapping("/getSignRecordForQuery")
+    public Result getSignRecordForQuery(SignOnRecordDto parameter,HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        return signOnRecordService.getSignRecordForQuery(parameter);
+    }
+    //工号等级
+    @RequestMapping(value = "/getGroupLevel")
+    public String getGroupLevel(SignOnRecordDto parameter){
+        Map map = new HashMap();
+        map.put("GROUP_ID",parameter.getOrg_code());
+        return signOnRecordService.getGroupLevel(map);
+    }
+}

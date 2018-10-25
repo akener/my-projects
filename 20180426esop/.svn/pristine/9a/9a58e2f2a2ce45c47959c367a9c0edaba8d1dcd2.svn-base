@@ -1,0 +1,70 @@
+package com.esop.basicManagement.dto;
+
+/**
+ * Created by Qiao on 2017/7/2.
+ */
+public class PwdResetDto {
+    String login_no     ="";//工号
+    String login_name   ="";
+    String password     ="";//密码
+    String org_code     ="";
+    String boos_org_code="";
+    String contract_phone = "";
+    String workNo       ="";
+
+    public String getWorkNo() {
+        return workNo;
+    }
+
+    public void setWorkNo(String workNo) {
+        this.workNo = workNo;
+    }
+
+    public String getContract_phone() {
+        return contract_phone;
+    }
+
+    public void setContract_phone(String contract_phone) {
+        this.contract_phone = contract_phone;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+
+    public String getBoos_org_code() {
+        return boos_org_code;
+    }
+
+    public void setBoos_org_code(String boos_org_code) {
+        this.boos_org_code = boos_org_code;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}

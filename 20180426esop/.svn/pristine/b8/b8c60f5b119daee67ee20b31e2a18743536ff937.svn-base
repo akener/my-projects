@@ -1,0 +1,109 @@
+package com.esop.workflow.controller;
+
+import com.esop.workflow.dto.*;
+import com.esop.workflow.model.CtDiscountCreditAuditCfg;
+import com.esop.workflow.model.CtProcMatchCfg;
+import com.esop.workflow.service.WorkFlowService;
+import com.esop.workflow.vo.Assignee;
+import com.esop.workflow.vo.Param;
+import com.esop.workflow.vo.Step;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * 工作流Controller类
+ *
+ * @author daish 2017/10/31
+ */
+@RestController
+@RequestMapping(value = "workflow")
+public class WorkFlowController {
+    private static final Logger logger = LogManager.getLogger(WorkFlowController.class);
+
+    @Autowired
+    WorkFlowService workFlowService;
+
+    /**
+     * 获取首环节（支持首环节即分支的场景）
+     *
+     * @param inDTO 入参
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/getFirstSteps", method = RequestMethod.POST)
+    public GetFirstStepsOutDTO getFirstSteps(GetFirstStepsInDTO inDTO) {
+        GetFirstStepsOutDTO outDTO = new GetFirstStepsOutDTO();
+        try {
+            CtProcMatchCfg retrievalCondition = new CtProcMatchCfg();
+            retrievalCondition.setProcTypeCode(inDTO.getProcTypeCode());
+            retrievalCondition.setDeptId(inDTO.getBranchCode());
+            retrievalCondition.setKeyValue(inDTO.getKeyValue());
+            CtProcMatchCfg ctProcMatchCfg = workFlowService.qryProcessMatch(retrievalCondition);
+            Assignee assignee = new Assignee();
+            assignee.setProcId(ctProcMatchCfg.getProcId());
+            assignee.setProcNameEn(ctProcMatchCfg.getProcNameEn());
+            assignee.setActionId(inDTO.getActionId());
+            assignee.setAssignee(inDTO.getLoginCode());
+            assignee.setAssigneeName(inDTO.getLoginName());
+            assignee.setRegionId(inDTO.getBranchCode());
+            //这里根据来登录人获取数据组织ID
+            //assignee.setRegionId("CQ.CQ.J7");
+
+            outDTO.setProcId(ctProcMatchCfg.getProcId());
+            outDTO.setProcNameEn(ctProcMatchCfg.getProcNameEn());
+            outDTO.setProcNameCh(ctProcMatchCfg.getProcNameCh());
+
+            List<Step> stepList = workFlowService.getFirstSteps(assignee);
+            outDTO.setStepList(stepList);
+        } catch (Exception e) {
+            outDTO.setReturnCode("1");
+            outDTO.setErrorMessage(e.getMessage());
+        }
+        return outDTO;
+    }
+
+    /**
+     * 获取下一环节信息
+     *
+     * @param inDTO 入参
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/getNextSteps", method = RequestMethod.POST)
+    public GetNextStepsOutDTO getNextSteps(@RequestBody GetNextStepsInDTO inDTO) {
+        GetNextStepsOutDTO outDTO = new GetNextStepsOutDTO();
+        try {
+            Assignee assignee = inDTO.getAssignee();
+            Param[] params = inDTO.getParams();
+            List<Step> stepList = workFlowService.getNextSteps(assignee, params);
+            outDTO.setStepList(stepList);
+        } catch (Exception e) {
+            outDTO.setReturnCode("1");
+            outDTO.setErrorMessage(e.getMessage());
+        }
+        return outDTO;
+    }
+
+    /**
+     * 判断audiLevel取值
+     *
+     * @param inDTO 入参
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/getAudiLevel", method = RequestMethod.POST)
+    public GetApprLevelOutDTO getNextSteps(@RequestBody GetApprLevelInDTO inDTO) {
+        GetApprLevelOutDTO outDTO = new GetApprLevelOutDTO();
+        CtDiscountCreditAuditCfg condition = new CtDiscountCreditAuditCfg();
+        condition.setProcId(inDTO.getProcId());
+        condition.setStepId(inDTO.getStepId());
+        condition.setDeptId(inDTO.getDeptId());
+        String audiLevel = workFlowService.getApprLevel(condition, inDTO.getJudgeVal());
+        outDTO.setAudiLevel(audiLevel);
+        return outDTO;
+    }
+}

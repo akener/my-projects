@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtTaskInstInfoMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtTaskInstInfo">
+    <id column="task_inst_id" jdbcType="VARCHAR" property="taskInstId" />
+    <result column="proc_inst_id" jdbcType="VARCHAR" property="procInstId" />
+    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+    <result column="deal_login_no" jdbcType="VARCHAR" property="dealLoginNo" />
+    <result column="deal_dept" jdbcType="VARCHAR" property="dealDept" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="status" jdbcType="CHAR" property="status" />
+    <result column="time_flag" jdbcType="CHAR" property="timeFlag" />
+    <result column="plan_complete_time" jdbcType="TIMESTAMP" property="planCompleteTime" />
+    <result column="deal_opinion" jdbcType="VARCHAR" property="dealOpinion" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="succ_flag" jdbcType="CHAR" property="succFlag" />
+    <result column="task_num" jdbcType="VARCHAR" property="taskNum" />
+    <result column="task_type" jdbcType="CHAR" property="taskType" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ct_task_inst_info
+    where task_inst_id = #{taskInstId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtTaskInstInfo">
+    <selectKey keyProperty="taskInstId" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ct_task_inst_info (proc_inst_id, task_id, step_id, 
+      step_name, deal_login_no, deal_dept, 
+      start_time, end_time, status, 
+      time_flag, plan_complete_time, deal_opinion, 
+      remarks, succ_flag, task_num, 
+      task_type)
+    values (#{procInstId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, 
+      #{stepName,jdbcType=VARCHAR}, #{dealLoginNo,jdbcType=VARCHAR}, #{dealDept,jdbcType=VARCHAR}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, #{status,jdbcType=CHAR}, 
+      #{timeFlag,jdbcType=CHAR}, #{planCompleteTime,jdbcType=TIMESTAMP}, #{dealOpinion,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR}, #{succFlag,jdbcType=CHAR}, #{taskNum,jdbcType=VARCHAR}, 
+      #{taskType,jdbcType=CHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.workflow.model.CtTaskInstInfo">
+    update ct_task_inst_info
+    set proc_inst_id = #{procInstId,jdbcType=VARCHAR},
+      task_id = #{taskId,jdbcType=VARCHAR},
+      step_id = #{stepId,jdbcType=VARCHAR},
+      step_name = #{stepName,jdbcType=VARCHAR},
+      deal_login_no = #{dealLoginNo,jdbcType=VARCHAR},
+      deal_dept = #{dealDept,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=CHAR},
+      time_flag = #{timeFlag,jdbcType=CHAR},
+      plan_complete_time = #{planCompleteTime,jdbcType=TIMESTAMP},
+      deal_opinion = #{dealOpinion,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      succ_flag = #{succFlag,jdbcType=CHAR},
+      task_num = #{taskNum,jdbcType=VARCHAR},
+      task_type = #{taskType,jdbcType=CHAR}
+    where task_inst_id = #{taskInstId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateSeveralFieldsByPrimaryKey" parameterType="com.esop.workflow.model.CtTaskInstInfo">
+    update ct_task_inst_info
+    set end_time = #{endTime,jdbcType=TIMESTAMP},
+    status = #{status,jdbcType=CHAR},
+    deal_opinion = #{dealOpinion,jdbcType=VARCHAR},
+    remarks = #{remarks,jdbcType=VARCHAR},
+    succ_flag = #{succFlag,jdbcType=CHAR}
+    where task_inst_id = #{taskInstId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateForStopByProcInstId" parameterType="com.esop.workflow.model.CtTaskInstInfo">
+    update ct_task_inst_info
+    set end_time = #{endTime,jdbcType=TIMESTAMP},
+    status = #{status,jdbcType=CHAR},
+    deal_opinion = #{dealOpinion,jdbcType=VARCHAR},
+    remarks = #{remarks,jdbcType=VARCHAR}
+    where proc_inst_id = #{procInstId,jdbcType=VARCHAR} and status = '0'
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select task_inst_id, proc_inst_id, task_id, step_id, step_name, deal_login_no, deal_dept, 
+    start_time, end_time, status, time_flag, plan_complete_time, deal_opinion, remarks, 
+    succ_flag, task_num, task_type
+    from ct_task_inst_info
+    where task_inst_id = #{taskInstId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select task_inst_id, proc_inst_id, task_id, step_id, step_name, deal_login_no, deal_dept, 
+    start_time, end_time, status, time_flag, plan_complete_time, deal_opinion, remarks, 
+    succ_flag, task_num, task_type
+    from ct_task_inst_info
+  </select>
+</mapper>

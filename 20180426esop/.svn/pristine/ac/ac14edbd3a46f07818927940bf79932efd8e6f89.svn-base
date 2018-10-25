@@ -1,0 +1,47 @@
+package com.esop.cust.dto;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/30.
+ */
+public class NoteInfoReturnDto {
+    String code = "";
+    String message = "";
+    String promptMsg = "";
+
+    List data = null;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getPromptMsg() {
+        return promptMsg;
+    }
+
+    public void setPromptMsg(String promptMsg) {
+        this.promptMsg = promptMsg;
+    }
+
+    public List getData() {
+        return data;
+    }
+
+    public void setData(List data) {
+        this.data = data;
+    }
+}

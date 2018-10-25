@@ -1,0 +1,391 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by tangxin on 18/1/5.
+ */
+public class GroupMoneyRecordedDto extends BaseDto {
+
+    String fen_gongs = "";
+    String hangye_zhongxin = "";
+    String caozuo_riqi = "";
+    String jituan_bianhao = "";
+    String jituan_mingcheng = "";
+    String kehu_jingli = "";
+    String shenqing_leixin = "";
+    String shenqing_danhao = "";
+    String ruzhang_jine = "";
+    String zhangwu_yuan = "";
+    String ruzhang_beizhu = "";
+    String duifang_zhanghao = "";
+    String duifang_huming = "";
+    String daozhang_riqi = "";
+    String daozhang_zhanghao = "";
+    String daozhang_huming = "";
+    String weiyibiaoshima = "";
+    String shenqing_riqi = "";
+
+    String qishi_shijian = "";
+    String zhongzhi_shijian = "";
+    String chaxun_riqi = "";
+    String chaxun_riqi2 = "";
+    String jihe_ren = "";
+    String shenqing_danhao_list = "";
+    String jihe_shijian = "";
+    String is_jihe = "";
+    String is_jihe_zhongwen = "";
+
+    String group_pay_code = "";
+    String group_pay_name = "";
+    String center_code = "";
+    String business_center = "";
+    String name = "";
+    String center_coder = "";
+    String login_name = "";
+    String login_name2 = "";
+    String login_name3= "";
+    String ruzhang_jine_yuan = "";
+
+    String process_type="";
+    String audit_date="";
+    String org_id="";
+    String login_no="";
+    String audit_status="";
+
+    public String getProcess_type() {
+        return process_type;
+    }
+
+    public void setProcess_type(String process_type) {
+        this.process_type = process_type;
+    }
+
+    public String getAudit_date() {
+        return audit_date;
+    }
+
+    public void setAudit_date(String audit_date) {
+        this.audit_date = audit_date;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getAudit_status() {
+        return audit_status;
+    }
+
+    public void setAudit_status(String audit_status) {
+        this.audit_status = audit_status;
+    }
+
+    public String getChaxun_riqi2() {
+        return chaxun_riqi2;
+    }
+
+    public void setChaxun_riqi2(String chaxun_riqi2) {
+        this.chaxun_riqi2 = chaxun_riqi2;
+    }
+
+    public String getLogin_name3() {
+        return login_name3;
+    }
+
+    public void setLogin_name3(String login_name3) {
+        this.login_name3 = login_name3;
+    }
+
+    public String getFen_gongs() {
+        return fen_gongs;
+    }
+
+    public void setFen_gongs(String fen_gongs) {
+        this.fen_gongs = fen_gongs;
+    }
+
+    public String getHangye_zhongxin() {
+        return hangye_zhongxin;
+    }
+
+    public void setHangye_zhongxin(String hangye_zhongxin) {
+        this.hangye_zhongxin = hangye_zhongxin;
+    }
+
+    public String getCaozuo_riqi() {
+        return caozuo_riqi;
+    }
+
+    public void setCaozuo_riqi(String caozuo_riqi) {
+        this.caozuo_riqi = caozuo_riqi;
+    }
+
+    public String getJituan_bianhao() {
+        return jituan_bianhao;
+    }
+
+    public void setJituan_bianhao(String jituan_bianhao) {
+        this.jituan_bianhao = jituan_bianhao;
+    }
+
+    public String getJituan_mingcheng() {
+        return jituan_mingcheng;
+    }
+
+    public void setJituan_mingcheng(String jituan_mingcheng) {
+        this.jituan_mingcheng = jituan_mingcheng;
+    }
+
+    public String getKehu_jingli() {
+        return kehu_jingli;
+    }
+
+    public void setKehu_jingli(String kehu_jingli) {
+        this.kehu_jingli = kehu_jingli;
+    }
+
+    public String getShenqing_leixin() {
+        return shenqing_leixin;
+    }
+
+    public void setShenqing_leixin(String shenqing_leixin) {
+        this.shenqing_leixin = shenqing_leixin;
+    }
+
+    public String getShenqing_danhao() {
+        return shenqing_danhao;
+    }
+
+    public void setShenqing_danhao(String shenqing_danhao) {
+        this.shenqing_danhao = shenqing_danhao;
+    }
+
+    public String getRuzhang_jine() {
+        return ruzhang_jine;
+    }
+
+    public void setRuzhang_jine(String ruzhang_jine) {
+        this.ruzhang_jine = ruzhang_jine;
+    }
+
+    public String getZhangwu_yuan() {
+        return zhangwu_yuan;
+    }
+
+    public void setZhangwu_yuan(String zhangwu_yuan) {
+        this.zhangwu_yuan = zhangwu_yuan;
+    }
+
+    public String getRuzhang_beizhu() {
+        return ruzhang_beizhu;
+    }
+
+    public void setRuzhang_beizhu(String ruzhang_beizhu) {
+        this.ruzhang_beizhu = ruzhang_beizhu;
+    }
+
+    public String getDuifang_zhanghao() {
+        return duifang_zhanghao;
+    }
+
+    public void setDuifang_zhanghao(String duifang_zhanghao) {
+        this.duifang_zhanghao = duifang_zhanghao;
+    }
+
+    public String getDuifang_huming() {
+        return duifang_huming;
+    }
+
+    public void setDuifang_huming(String duifang_huming) {
+        this.duifang_huming = duifang_huming;
+    }
+
+    public String getDaozhang_riqi() {
+        return daozhang_riqi;
+    }
+
+    public void setDaozhang_riqi(String daozhang_riqi) {
+        this.daozhang_riqi = daozhang_riqi;
+    }
+
+    public String getDaozhang_zhanghao() {
+        return daozhang_zhanghao;
+    }
+
+    public void setDaozhang_zhanghao(String daozhang_zhanghao) {
+        this.daozhang_zhanghao = daozhang_zhanghao;
+    }
+
+    public String getDaozhang_huming() {
+        return daozhang_huming;
+    }
+
+    public void setDaozhang_huming(String daozhang_huming) {
+        this.daozhang_huming = daozhang_huming;
+    }
+
+    public String getWeiyibiaoshima() {
+        return weiyibiaoshima;
+    }
+
+    public void setWeiyibiaoshima(String weiyibiaoshima) {
+        this.weiyibiaoshima = weiyibiaoshima;
+    }
+
+    public String getShenqing_riqi() {
+        return shenqing_riqi;
+    }
+
+    public void setShenqing_riqi(String shenqing_riqi) {
+        this.shenqing_riqi = shenqing_riqi;
+    }
+
+    public String getQishi_shijian() {
+        return qishi_shijian;
+    }
+
+    public void setQishi_shijian(String qishi_shijian) {
+        this.qishi_shijian = qishi_shijian;
+    }
+
+    public String getZhongzhi_shijian() {
+        return zhongzhi_shijian;
+    }
+
+    public void setZhongzhi_shijian(String zhongzhi_shijian) {
+        this.zhongzhi_shijian = zhongzhi_shijian;
+    }
+
+    public String getChaxun_riqi() {
+        return chaxun_riqi;
+    }
+
+    public void setChaxun_riqi(String chaxun_riqi) {
+        this.chaxun_riqi = chaxun_riqi;
+    }
+
+    public String getJihe_ren() {
+        return jihe_ren;
+    }
+
+    public void setJihe_ren(String jihe_ren) {
+        this.jihe_ren = jihe_ren;
+    }
+
+    public String getShenqing_danhao_list() {
+        return shenqing_danhao_list;
+    }
+
+    public void setShenqing_danhao_list(String shenqing_danhao_list) {
+        this.shenqing_danhao_list = shenqing_danhao_list;
+    }
+
+    public String getJihe_shijian() {
+        return jihe_shijian;
+    }
+
+    public void setJihe_shijian(String jihe_shijian) {
+        this.jihe_shijian = jihe_shijian;
+    }
+
+    public String getIs_jihe() {
+        return is_jihe;
+    }
+
+    public void setIs_jihe(String is_jihe) {
+        this.is_jihe = is_jihe;
+    }
+
+    public String getIs_jihe_zhongwen() {
+        return is_jihe_zhongwen;
+    }
+
+    public void setIs_jihe_zhongwen(String is_jihe_zhongwen) {
+        this.is_jihe_zhongwen = is_jihe_zhongwen;
+    }
+
+    public String getGroup_pay_code() {
+        return group_pay_code;
+    }
+
+    public void setGroup_pay_code(String group_pay_code) {
+        this.group_pay_code = group_pay_code;
+    }
+
+    public String getGroup_pay_name() {
+        return group_pay_name;
+    }
+
+    public void setGroup_pay_name(String group_pay_name) {
+        this.group_pay_name = group_pay_name;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCenter_coder() {
+        return center_coder;
+    }
+
+    public void setCenter_coder(String center_coder) {
+        this.center_coder = center_coder;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getLogin_name2() {
+        return login_name2;
+    }
+
+    public void setLogin_name2(String login_name2) {
+        this.login_name2 = login_name2;
+    }
+
+    public String getRuzhang_jine_yuan() {
+        return ruzhang_jine_yuan;
+    }
+
+    public void setRuzhang_jine_yuan(String ruzhang_jine_yuan) {
+        this.ruzhang_jine_yuan = ruzhang_jine_yuan;
+    }
+}

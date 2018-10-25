@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtProcStepRelMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtProcStepRel">
+    <id column="cfg_id" jdbcType="VARCHAR" property="cfgId" />
+    <result column="proc_id" jdbcType="VARCHAR" property="procId" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+    <result column="step_type" jdbcType="CHAR" property="stepType" />
+    <result column="filter_id" jdbcType="VARCHAR" property="filterId" />
+    <result column="jsp_path" jdbcType="VARCHAR" property="jspPath" />
+    <result column="next_flag" jdbcType="CHAR" property="nextFlag" />
+    <result column="biz_status" jdbcType="CHAR" property="bizStatus" />
+    <result column="time_flag" jdbcType="CHAR" property="timeFlag" />
+    <result column="time_limit_type" jdbcType="CHAR" property="timeLimitType" />
+    <result column="time_limit" jdbcType="VARCHAR" property="timeLimit" />
+    <result column="time_bean" jdbcType="VARCHAR" property="timeBean" />
+    <result column="multi_flag" jdbcType="CHAR" property="multiFlag" />
+    <result column="redo_flag" jdbcType="CHAR" property="redoFlag" />
+    <result column="task_type" jdbcType="CHAR" property="taskType" />
+    <result column="pre_callback" jdbcType="VARCHAR" property="preCallback" />
+    <result column="html_path" jdbcType="VARCHAR" property="htmlPath" />
+    <result column="android_base_activity" jdbcType="VARCHAR" property="androidBaseActivity" />
+    <result column="android_attach_activity" jdbcType="VARCHAR" property="androidAttachActivity" />
+    <result column="android_proctrace_activity" jdbcType="VARCHAR" property="androidProctraceActivity" />
+    <result column="android_deal_activity" jdbcType="VARCHAR" property="androidDealActivity" />
+    <result column="android_func_valid" jdbcType="CHAR" property="androidFuncValid" />
+    <result column="h5_path" jdbcType="VARCHAR" property="h5Path" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from ct_proc_step_rel
+    where cfg_id = #{cfgId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtProcStepRel">
+    <selectKey keyProperty="cfgId" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ct_proc_step_rel (proc_id, step_id, step_name,
+      step_type, filter_id, jsp_path,
+      next_flag, biz_status, time_flag,
+      time_limit_type, time_limit, time_bean,
+      multi_flag, redo_flag, task_type,
+      pre_callback, html_path, android_base_activity,
+      android_attach_activity, android_proctrace_activity,
+      android_deal_activity, android_func_valid, h5_path
+      )
+    values (#{procId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, #{stepName,jdbcType=VARCHAR},
+      #{stepType,jdbcType=CHAR}, #{filterId,jdbcType=VARCHAR}, #{jspPath,jdbcType=VARCHAR},
+      #{nextFlag,jdbcType=CHAR}, #{bizStatus,jdbcType=CHAR}, #{timeFlag,jdbcType=CHAR},
+      #{timeLimitType,jdbcType=CHAR}, #{timeLimit,jdbcType=VARCHAR}, #{timeBean,jdbcType=VARCHAR},
+      #{multiFlag,jdbcType=CHAR}, #{redoFlag,jdbcType=CHAR}, #{taskType,jdbcType=CHAR},
+      #{preCallback,jdbcType=VARCHAR}, #{htmlPath,jdbcType=VARCHAR}, #{androidBaseActivity,jdbcType=VARCHAR},
+      #{androidAttachActivity,jdbcType=VARCHAR}, #{androidProctraceActivity,jdbcType=VARCHAR},
+      #{androidDealActivity,jdbcType=VARCHAR}, #{androidFuncValid,jdbcType=CHAR}, #{h5Path,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.workflow.model.CtProcStepRel">
+    update ct_proc_step_rel
+    set proc_id = #{procId,jdbcType=VARCHAR},
+      step_id = #{stepId,jdbcType=VARCHAR},
+      step_name = #{stepName,jdbcType=VARCHAR},
+      step_type = #{stepType,jdbcType=CHAR},
+      filter_id = #{filterId,jdbcType=VARCHAR},
+      jsp_path = #{jspPath,jdbcType=VARCHAR},
+      next_flag = #{nextFlag,jdbcType=CHAR},
+      biz_status = #{bizStatus,jdbcType=CHAR},
+      time_flag = #{timeFlag,jdbcType=CHAR},
+      time_limit_type = #{timeLimitType,jdbcType=CHAR},
+      time_limit = #{timeLimit,jdbcType=VARCHAR},
+      time_bean = #{timeBean,jdbcType=VARCHAR},
+      multi_flag = #{multiFlag,jdbcType=CHAR},
+      redo_flag = #{redoFlag,jdbcType=CHAR},
+      task_type = #{taskType,jdbcType=CHAR},
+      pre_callback = #{preCallback,jdbcType=VARCHAR},
+      html_path = #{htmlPath,jdbcType=VARCHAR},
+      android_base_activity = #{androidBaseActivity,jdbcType=VARCHAR},
+      android_attach_activity = #{androidAttachActivity,jdbcType=VARCHAR},
+      android_proctrace_activity = #{androidProctraceActivity,jdbcType=VARCHAR},
+      android_deal_activity = #{androidDealActivity,jdbcType=VARCHAR},
+      android_func_valid = #{androidFuncValid,jdbcType=CHAR},
+      h5_path = #{h5Path,jdbcType=VARCHAR}
+    where cfg_id = #{cfgId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select cfg_id, proc_id, step_id, step_name, step_type, filter_id, jsp_path, next_flag, 
+    biz_status, time_flag, time_limit_type, time_limit, time_bean, multi_flag, redo_flag, 
+    task_type, pre_callback, html_path, android_base_activity, android_attach_activity, 
+    android_proctrace_activity, android_deal_activity, android_func_valid, h5_path
+    from ct_proc_step_rel
+    where cfg_id = #{cfgId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select cfg_id, proc_id, step_id, step_name, step_type, filter_id, jsp_path, next_flag,
+    biz_status, time_flag, time_limit_type, time_limit, time_bean, multi_flag, redo_flag,
+    task_type, pre_callback, html_path, android_base_activity, android_attach_activity,
+    android_proctrace_activity, android_deal_activity, android_func_valid, h5_path
+    from ct_proc_step_rel
+  </select>
+  <resultMap id="ResultMap1" type="com.esop.workflow.model.CtProcStepRel">
+    <result column="proc_id" jdbcType="VARCHAR" property="procId" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
+    <result column="step_name" jdbcType="VARCHAR" property="stepName" />
+    <result column="step_type" jdbcType="CHAR" property="stepType" />
+    <result column="filter_id" jdbcType="VARCHAR" property="filterId" />
+    <result column="jsp_path" jdbcType="VARCHAR" property="jspPath" />
+    <result column="biz_status" jdbcType="CHAR" property="bizStatus" />
+  </resultMap>
+  <select id="selectByProcIdAndStepId" parameterType="com.esop.workflow.model.CtProcStepRel" resultMap="ResultMap1">
+    select proc_id, step_id, step_name, step_type, filter_id, jsp_path, biz_status
+    from ct_proc_step_rel
+    where proc_id = #{procId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR}
+  </select>
+</mapper>

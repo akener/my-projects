@@ -1,0 +1,25 @@
+package com.esop.cqDevelopment.groupMemberPayCost.dto;
+
+/**
+ * Created by admin on 2017/11/21.
+ */
+public class ApplyOrderTypeDto {
+    private String payment_type;
+    private String payment_type_name;
+
+    public String getPayment_type() {
+        return payment_type;
+    }
+
+    public void setPayment_type(String payment_type) {
+        this.payment_type = payment_type;
+    }
+
+    public String getPayment_type_name() {
+        return payment_type_name;
+    }
+
+    public void setPayment_type_name(String payment_type_name) {
+        this.payment_type_name = payment_type_name;
+    }
+}

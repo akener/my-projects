@@ -1,0 +1,521 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<head>
+    <title>资金回退审批进度查询</title>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <input type="hidden" value="<%=login_no%>" id="login_no"/>
+        <input type="hidden" id="role_codes" value="<%=role_codes%>">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金回退</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td nowrap='nowrap'>
+                                <select id="fengongs" class="select-style-1" onchange="selectBusiness()">
+                                </select>
+                            </td>
+                            <th>入账组织：</th>
+                            <td nowrap='nowrap'>
+                                <select id="ENTERORG" class="select-style-1">
+                                </select>
+                            </td>
+                            <th>开始申请时间：</th>
+                            <td>
+                                <input type=text id="apply_date_start" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'apply_date_start',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>结束申请时间</th>
+                            <td>
+                                <input type=text id="apply_date_end" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'apply_date_end',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>回退金额：</th>
+                            <td>
+                                <input type="text" id="refund_money_yuan" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>申请人：</th>
+                            <td>
+                                <input type="text" id="applyNo" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>状态：</th>
+                            <td>
+                                <select id="deal_status" class="select-style-1">
+                                    <option value="">--请选择--</option>
+                                    <option value="10" >客户经理主管审批</option>
+                                    <option value="13" >账务员审批</option>
+                                    <option value="12" >分管领导审批</option>
+                                    <option value="1">待CRM处理</option>
+                                    <option value="2">作废</option>
+                                    <option value="3">CRM处理成功</option>
+                                    <option value="4">CRM处理失败</option>
+                                    <option value="6">CRM业务办理失败(资金已释放)</option>
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div style="display: none">
+                        <form action="" name="exportExcel" id="exportExcel" target="export"
+                              method="post" accept-charset="utf-8"></form>
+                        <iframe name="export" id="export"></iframe>
+                    </div>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="refundApproveQuery()">查询</button>
+                            <button class="ui-btn btn-success mgr-10" onclick="exportExcelRefundApproveQuery()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金回退审批进度查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="refundApprove" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">审批轨迹查询</th>
+                            <th class="text-center">操作人</th>
+                            <th class="text-center">操作时间</th>
+                            <th class="text-center">下一步处理人</th>
+                            <th class="text-center">环节</th>
+                            <th class="text-center">工单流水号</th>
+                            <th class="text-center">申请人</th>
+                            <th class="text-center">申请人工号</th>
+                            <th class="text-center">申请日期</th>
+                            <th class="text-center">出账集团</th>
+                            <th class="text-center">出账集团编号</th>
+                            <th class="text-center">资金联系人</th>
+                            <th class="text-center">联系电话</th>
+                            <th class="text-center">联系人类型</th>
+                            <th class="text-center">账本余额(元)</th>
+                            <th class="text-center">可用余额(元)</th>
+                            <th class="text-center">退款账号</th>
+                            <th class="text-center">退款户名</th>
+                            <th class="text-center">退款开户行</th>
+                            <th class="text-center">退款金额(元)</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade bs-example-modal-lg" id="approve_detail" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog" role="document" style="width:80%;">
+        <div class="modal-content">
+        <div class="main pd-10">
+            <div class="work-order-box over">
+                <div class="row mgb-10">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="header-title tc">
+                            <h3> 资金回退信息 </h3>
+                        </div>
+                    </div>
+                </div>
+                <input id="refund_id1" name="" type="hidden" value="">
+                <input id="fileName" name="" type="hidden" value="">
+                <input id="attach_file_id" name="" type="hidden" value="">
+                <div class="row col-12 bg-white">
+                    <div class="market-name-box pdlr-10 clearfix">
+                        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>申请信息</span>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <div class="row">
+                            <table class="table-infor-7" width="100%">
+                                <tbody>
+                                <tr>
+                                    <th colspan="4" style="text-align: center;font-size: medium">申请信息</th>
+                                </tr>
+                                <tr>
+                                    <th>退款申请人</th>
+                                    <td>
+                                        <input id="refund_applicant_name1" style="width:200px;text-align:left"  class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                    <th>申请日期</th>
+                                    <td>
+                                        <input type=text id="apply_date1" style="width:200px;text-align:left" class="input-sty04 form-ipt"  maxlength="11" readonly="true" disabled="disabled">
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <th>出账集团</th>
+                                    <td>
+                                        <input id="expenditure_presentation_group1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                    <th>集团编码</th>
+                                    <td>
+                                        <input id="group_num1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>资金联系人</th>
+                                    <td>
+                                        <input id="capital_contact1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                    <th>联系电话</th>
+                                    <td>
+                                        <input id="telphone1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>联系人类型</th>
+                                    <td>
+                                        <input id="contact_type1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+
+                                    </td>
+                                    <th>账本余额(元)</th>
+                                    <td>
+                                        <input id="book_balance_yuan1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>可用余额(元)</th>
+                                    <td colspan="4">
+                                        <input id="available_balance_yuan1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th colspan="4" style="text-align: center;font-size: medium">退款信息</th>
+                                </tr>
+                                <tr>
+                                    <th>退款账号</th>
+                                    <td>
+                                        <input id="refund_account1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                    <th>退款户名</th>
+                                    <td>
+                                        <input id="refund_account_name1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>退款开户行</th>
+                                    <td>
+                                        <input id="refund_opening_bank1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                    <th>退款金额(元)</th>
+                                    <td>
+                                        <input id="refund_amount_yuan1" style="width:200px;text-align:left" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th id="zhengming_cailiao_th">附件信息：</th>
+                                    <td id="doloadFile"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="row col-12 bg-white">
+                                <div class="market-name-box pdlr-10 clearfix">
+                                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>审批流程轨迹</span>
+                                </div>
+                            </div>
+                            <table class="table table-bordered" id="example_apprPros" style="width:100%;" style="white-space: nowrap">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">操作工号</th>
+                                    <th class="text-center">操作人</th>
+                                    <th class="text-center">下一步处理人工号</th>
+                                    <th class="text-center">下一步处理人</th>
+                                    <th class="text-center">下一环节ID</th>
+                                    <th class="text-center">下一环节名称</th>
+                                    <th class="text-center">处理时间</th>
+                                    <th class="text-center">是否同意</th>
+                                    <th class="text-center">审批意见</th>
+                                </tr>
+                                </thead>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript" language="javascript" class="init">
+    var root_org_name;
+    var root_org_id;
+    $(document).ready(function () {
+        var login_no="<%=login_no%>";
+        var role_codes="<%=role_codes%>";
+        root_org_id ="<%=root_org_id%>";//组织ID
+        root_org_name="<%=root_org_name%>";
+        if(root_org_id.length>8){
+            root_org_id=root_org_id.substr(0,8);
+        }
+        if(root_org_id=="CQ.CQ"||root_org_id=="CQ.CQ.C4"|| root_org_id=="CQ.CQ.0B") {
+            selectFengongs();
+        }else{
+            selectBusinessCenterForZhangwuyunOrkehujingli();
+            $("#fengongs").append("<option value="+root_org_id+">"+root_org_name+"</option>");
+        }
+    });
+    //审批进度查询
+    function refundApproveQuery() {
+        var fengongs=$("#fengongs").val();
+        var ENTERORG=$("#ENTERORG").val();
+        var startTime = $("#apply_date_start").val();
+        var endTime = $("#apply_date_end").val();
+        var refund_money_yuan=$("#refund_money_yuan").val();
+        var applyNo = $("#applyNo").val();
+        var nodeId = $("#deal_status").val();
+        var login_no = $("#login_no").val();
+        var role_codes = $("#role_codes").val();
+
+        var table = $('#refundApprove').DataTable({
+            "scrollX": true,
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            "pageLength": 5,//设置每页显示多少条记录
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                url: "/refundProgressApproveQuery",
+                type: "POST",
+                data:{
+                    refund_id:$("#refund_id").val(),
+                    ownerorgid:fengongs,
+                    businessCenter:ENTERORG,
+                    startTime:startTime,
+                    endTime:endTime,
+                    refund_amount_yuan:refund_money_yuan,
+                    file:applyNo,
+                    nodeId:nodeId,
+                    login_no:login_no,
+                    refund_applicant:login_no,
+                    role_codes:role_codes
+                }
+            },
+            "columns": [
+                {
+                    "width": "10%",
+                    render: function ( data, type, row, meta ) {
+                        return data= "<button type='button' style='width:60px' class='ui-btn mgr-10' onclick=aprrove_button('"+row.refund_id+"')>查看</button>";
+                    }
+                },
+                {data: "login_name"},
+                {data: "dealTime"},
+                {
+                    render: function ( data, type, row, meta ) {
+                        if(row.nodeId != 2){
+                            return data = row.nextDealPerson;
+                        }else{
+                            return data= "";
+                        }
+                    }
+                },
+                {data: "link_name"},
+                {data: "refund_id"},
+                {data: "applicantName"},
+                {data: "refund_applicant"},
+                {data: "apply_date"},
+                {data: "expenditure_presentation_group"},
+                {data: "group_num"},
+                {data: "capital_contact"},
+                {data: "contact_number"},
+                {data: "contact_type"},
+                {data: "book_balance_yuan"},
+                {data: "available_balance_yuan"},
+                {data: "refund_account"},
+                {data: "refund_account_name"},
+                {data: "refund_opening_bank"},
+                {data: "refund_amount_yuan"}
+            ],
+            select: true
+        });
+    }
+    function aprrove_button(param) {
+        selectRefundBasicInfo(param);//查询审批页面资金回退基本信息
+        approveProcessQuery(param);//查询审批进度
+        $("#approve_detail").modal('show');
+    }
+    function selectRefundBasicInfo(param) {
+        $.ajax({
+            url:"getRefundDetailInfo",
+            type:"post",
+            data:{refund_id:param},
+            success:function (data) {
+                $("#refund_id1").val(data.refund_id);
+                $("#refund_applicant_name1").val(data.login_name);
+                $("#apply_date1").val(data.apply_date);
+                $("#expenditure_presentation_group1").val(data.expenditure_presentation_group);
+                $("#group_num1").val(data.group_num);
+                $("#capital_contact1").val(data.capital_contact);
+                $("#telphone1").val(data.contact_number);
+                $("#contact_type1").val(data.contact_type);
+                $("#book_balance_yuan1").val(data.book_balance_yuan);
+                $("#available_balance_yuan1").val(data.available_balance_yuan);
+                $("#doloadFile a").remove();//模态框每次打开之前,清空之前的文件
+                if(data.fileName!=null&&$.trim(data.fileName)!=''){
+                    $("#fileName").val(data.fileName);
+                    $("#attach_file_id").val(data.file);
+                    $("#doloadFile").append("<a href='javascript:downloadFile()' title='"+data.fileName+"'>"+data.fileName+"</a>")
+
+                }
+                $("#refund_account1").val(data.refund_account);
+                $("#refund_account_name1").val(data.refund_account_name);
+                $("#refund_opening_bank1").val(data.refund_opening_bank);
+                $("#refund_amount_yuan1").val(data.refund_amount_yuan);
+            }
+        })
+    }
+    function approveProcessQuery(param) {
+        table = $('#example_apprPros').DataTable({
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "info": "",//去掉左下角的字
+            /* "bPaginate":false,//去掉分页，*/
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy: true,
+            "bSort":false,
+            "ajax": {
+                url: "/approveProcessQuery",
+                type: "POST",
+                data:{
+                    taskOrderId:param
+                }
+            },
+            "columns": [
+                {data: "applicantNo"},
+                {data: "login_name"},
+                {data: "nextDealPerson"},
+                {data: "nextDealPerson_name"},
+                {data: "nodeId"},
+                {data: "link_name"},
+                {data: "dealTime"},
+                {
+                    render: function ( data, type, row, meta ) {
+                        if(row.approveOpinion == "1"){
+                            return data = "是";
+                        }else if(row.approveOpinion == "2"){
+                            return data = "否";
+                        }else{
+                            return data = row.approveOpinion;
+                        }
+                    }
+                },
+                {data: "memo"}
+            ],
+            select: true,
+            buttons: [
+            ]
+        });
+    }
+    function downloadFile() {
+        var attach_file_id = $("#attach_file_id").val();
+        if(attach_file_id==null||$.trim(attach_file_id)==''){
+            alert("下载失败");
+            return;
+        }
+        window.location.href = "downloadFile?attach_file_id="+attach_file_id;
+    }
+    //审批轨迹导出EXCEL
+    function exportExcelRefundApproveQuery() {
+        var fengongs=$("#fengongs").val();
+        var ENTERORG=$("#ENTERORG").val();
+        var startTime = $("#apply_date_start").val();
+        var endTime = $("#apply_date_end").val();
+        var refund_money_yuan=$("#refund_money_yuan").val();
+        var applyNo = $("#applyNo").val();
+        var nodeId = $("#deal_status").val();
+        var login_no = $("#login_no").val();
+        var role_codes = $("#role_codes").val();
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='exportExcelRefundApproveQuery?&startTime='+startTime
+            +'&endTime='+endTime
+            +'&applicant='+login_no
+            +'&refund_money_yuan='+refund_money_yuan
+            +'&file='+applyNo
+            +'&nodeId='+nodeId
+            +'&role_codes='+role_codes
+            +'&login_no2='+login_no
+            +'&ownerorgid='+fengongs
+            +'&businessCenter='+ENTERORG;
+        f.action = actionUrl;
+        f.submit();
+    }
+    function selectFengongs() {
+        $.ajax({
+            url:"/selectAllQddw",
+            type:"post",
+            success:function (data) {
+                if(data.length==0){
+                    $("#fengongs").append("<option value=''>没有分公司</option>");
+                }else {
+                    $("#fengongs").append("<option value=''>请选择</option>");
+                    for(var i=0;i<data.length;i++){
+                        $("#fengongs").append("<option value="+data[i].id+">"+data[i].name+"</option>");
+                    }
+                }
+            }
+        })
+    }
+    function selectBusinessCenterForZhangwuyunOrkehujingli() {
+        $.ajax({
+            url:"/selectBusinessCenterForZhangwuyunOrkehujingli",
+            type:"POST",
+            data:{login_no:login_no},
+            success:function (data) {
+                if(data.length==1){
+                    $("#ENTERORG").append("<option value='"+data[0].center_code+"'>"+data[0].business_center+"</option>");
+                }else{
+                    for(var i=0;i<data.length;i++){
+                        $("#ENTERORG").append("<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>");
+                    }
+                }
+            }
+        })
+    }
+</script>

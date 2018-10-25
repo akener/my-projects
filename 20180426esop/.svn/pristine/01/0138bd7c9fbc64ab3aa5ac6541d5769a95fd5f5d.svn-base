@@ -1,0 +1,37 @@
+package com.esop.shellLoadFile.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.shellLoadFile.dto.ShellLoadDataDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class ShellLoadDataService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(ShellLoadDataService.class);
+    //查询操作
+    public Result getShellLoadDataList(ShellLoadDataDto parameter){
+        logger.info("log4j测试----------------");
+        Result result= sqlE.selectPage("shellLoadDataCompany",parameter);
+        return result;
+    }
+    //新增操作
+    public int insert(ShellLoadDataDto parameter){
+       return sqlE.insertM("insertShellLoadDataCompany",parameter);
+    }
+    //修改操作
+    public int update(ShellLoadDataDto parameter){
+        return sqlE.insertM("updateShellLoadDataCompany",parameter);
+    }
+    //删除操作
+    public int delete(ShellLoadDataDto parameter){
+        return sqlE.insertM("deleteShellLoadDataCompany",parameter);
+    }
+}

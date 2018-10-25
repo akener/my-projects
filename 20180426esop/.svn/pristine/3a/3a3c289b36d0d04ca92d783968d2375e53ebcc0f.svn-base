@@ -1,0 +1,347 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<head>
+    <title>密码重置</title>
+</head>
+<body>
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">原密码不匹配，请重试</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">密码修改成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="ok" name="ok" class="btn btn-info">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">密码修改失败</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice4">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo4">新密码与重复输入密码不匹配</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">请输入原密码</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice6">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo6">请输入新密码</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice7">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo7">请输入重复密码</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice8">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo8">请输入工号</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="workNo" value="${login_no}">
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">选择工号重置</h3>
+    </div>
+</div>
+<div id="myTabContent" class="tab-content bg-ff">
+    <div class="tab-pane fade in active" id="tj">
+        <div id='tbs1' class="box-in">
+            <table class="table-infor-7 width-th" width="100%">
+                <tr>
+                    <th>
+                        选择部门
+                    </th>
+                    <td>
+                        <input id="group_name" type="text"  class="required isLengthOf" readonly/>
+                        <input type="hidden" id="group_id">
+                        <button name='chooseParent' class='ui-btn btn-success mgr-10' onclick="chooseGroupTree('group')">选择</button>
+                    </td>
+                    <th>
+                        选择工号
+                    </th>
+                    <td colspan="2">
+                        <select id="service_no" class="selector_town input-sty04 form-ipt">
+
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div class="row mgt-20">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10"  id="update1">重置密码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">输入工号重置</h3>
+    </div>
+</div>
+<div id="myTabContent" class="tab-content bg-ff">
+    <div class="tab-pane fade in active">
+        <div class="box-in">
+            <table class="table-infor-7 width-th" width="100%">
+                <th>
+                    输入工号
+                </th>
+                <td>
+                    <input id="service_no1" type="text"  class="required isLengthOf" />
+                    <button name='chooseParent' class='ui-btn btn-success mgr-10' onclick="getName()">获取</button>
+                </td>
+                <th>姓名</th>
+                <td>
+                    <input id="service_name" type="text"  class="required isLengthOf" readonly/>
+                </td>
+            </table>
+            <div class="row mgt-20">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10" id="dosubmit">重置密码</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <%--<div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">工号</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="login_no" maxlength="6">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-info pull-right" id="dosubmit">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>--%>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+
+    $("#dosubmit").click(function () {
+
+        var login_no = $("#service_no1").val();
+        var workNo = $("#workNo").val();
+        //var password = "4cd4bca691718685";
+        if(login_no == ""){
+            $("#fault8").modal('show');
+            return ;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "updatePwd",
+            data:{
+                login_no:login_no,
+                //password:password,
+                workNo:workNo
+            }
+        }).then(function (data) {
+            if(data==1){
+                $("#fault2").modal('show');
+            }
+        });
+    });
+
+    $("#ok").click(function () {
+        location.href="prt";
+    });
+
+    function chooseGroupTree(swich){
+        $("#service_no").find('option').remove();
+        $.ajax({
+            type: "GET",
+            url: "getBossOrgCode",
+            data:{
+                org_code:$("#org_code").val()
+            }
+        }).then(function (data1) {
+            var url="/esop/zzs?type=group&org_code="+data1.boss_org_code;
+            var ret = window.showModalDialog(url,
+                '',
+                'dialogWidth:220px;dialogHeight:400px;center:1');
+            if(ret!=undefined){
+                var data=ret.split("$");
+                $("#group_id").val(data[0]);
+                $("#group_name").val(data[1]);
+            }
+            $.ajax({
+                type: "GET",
+                url: "getLogin",
+                data:{
+                    org_code:data[0]
+                }
+            }).then(function (data) {
+                $.each(data, function (index, item) {
+                    $("#service_no").append("<option value='"+item.login_no+"'>"+item.login_no+"->"+item.login_name+"</option>");
+                });
+            })
+        });
+    }
+    
+    $("#update1").click(function () {
+
+        var login_no = $("#service_no").val();
+        var workNo = $("#workNo").val();
+        //alert(login_no);
+        //var password = "4cd4bca691718685";
+        if(login_no == null || login_no == ''){
+            $("#noticeInfo8").text("请选择工号");
+            $("#fault8").modal('show');
+            return ;
+        }
+
+        $.ajax({
+            type: "GET",
+            url: "updatePwd",
+            data:{
+                login_no:login_no,
+                //password:password,
+                workNo:workNo
+            }
+        }).then(function (data) {
+            if(data==1){
+                $("#fault2").modal('show');
+            }
+        });
+    })
+
+    function getName(){
+        var login_no = $("#service_no1").val();
+        $.ajax({
+            type: "GET",
+            url: "getServiceName",
+            data:{
+                login_no:login_no
+            }
+        }).then(function (data) {
+            $("#service_name").val(data.service_name);
+        });
+
+    }
+</script>
+</html>

@@ -1,0 +1,143 @@
+package com.esop.capAdjustApply.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/11/28.
+ */
+//模拟查询接口-集团资金账户信息表 --
+public class EpCapGrpFundListInfo extends BaseDto {
+    private String grp_fund_acct_id  ;//集团资金账户号
+    private String grp_cust_id  ;//集团客户编号
+    private String grp_cust_name  ;//集团客户名称
+    private String bank_acct_id  ;//绑定银行账号
+    private String blank_name  ;//开户行
+    private String owner_org_id  ;//归属分公司
+    private String status  ;//账号状态
+    private String balance  ;//资金账户余额（分）
+    private String now_balance  ;//资金账户可用余额（分）
+    private String hold_balance  ;//占用资金（分）
+    private String freeze_fee  ;//冻结资金（分）
+
+    public EpCapGrpFundListInfo() {
+    }
+
+    public EpCapGrpFundListInfo(String grp_fund_acct_id, String grp_cust_id, String grp_cust_name, String bank_acct_id, String blank_name, String owner_org_id, String status, String balance, String now_balance, String hold_balance, String freeze_fee) {
+        this.grp_fund_acct_id = grp_fund_acct_id;
+        this.grp_cust_id = grp_cust_id;
+        this.grp_cust_name = grp_cust_name;
+        this.bank_acct_id = bank_acct_id;
+        this.blank_name = blank_name;
+        this.owner_org_id = owner_org_id;
+        this.status = status;
+        this.balance = balance;
+        this.now_balance = now_balance;
+        this.hold_balance = hold_balance;
+        this.freeze_fee = freeze_fee;
+    }
+
+    public String getGrp_fund_acct_id() {
+        return grp_fund_acct_id;
+    }
+
+    public void setGrp_fund_acct_id(String grp_fund_acct_id) {
+        this.grp_fund_acct_id = grp_fund_acct_id;
+    }
+
+    public String getGrp_cust_id() {
+        return grp_cust_id;
+    }
+
+    public void setGrp_cust_id(String grp_cust_id) {
+        this.grp_cust_id = grp_cust_id;
+    }
+
+    public String getGrp_cust_name() {
+        return grp_cust_name;
+    }
+
+    public void setGrp_cust_name(String grp_cust_name) {
+        this.grp_cust_name = grp_cust_name;
+    }
+
+    public String getBank_acct_id() {
+        return bank_acct_id;
+    }
+
+    public void setBank_acct_id(String bank_acct_id) {
+        this.bank_acct_id = bank_acct_id;
+    }
+
+    public String getBlank_name() {
+        return blank_name;
+    }
+
+    public void setBlank_name(String blank_name) {
+        this.blank_name = blank_name;
+    }
+
+    public String getOwner_org_id() {
+        return owner_org_id;
+    }
+
+    public void setOwner_org_id(String owner_org_id) {
+        this.owner_org_id = owner_org_id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getNow_balance() {
+        return now_balance;
+    }
+
+    public void setNow_balance(String now_balance) {
+        this.now_balance = now_balance;
+    }
+
+    public String getHold_balance() {
+        return hold_balance;
+    }
+
+    public void setHold_balance(String hold_balance) {
+        this.hold_balance = hold_balance;
+    }
+
+    public String getFreeze_fee() {
+        return freeze_fee;
+    }
+
+    public void setFreeze_fee(String freeze_fee) {
+        this.freeze_fee = freeze_fee;
+    }
+
+    @Override
+    public String toString() {
+        return "EpCapGrpFundListInfo{" +
+                "grp_fund_acct_id='" + grp_fund_acct_id + '\'' +
+                ", grp_cust_id='" + grp_cust_id + '\'' +
+                ", grp_cust_name='" + grp_cust_name + '\'' +
+                ", bank_acct_id='" + bank_acct_id + '\'' +
+                ", blank_name='" + blank_name + '\'' +
+                ", owner_org_id='" + owner_org_id + '\'' +
+                ", status='" + status + '\'' +
+                ", balance='" + balance + '\'' +
+                ", now_balance='" + now_balance + '\'' +
+                ", hold_balance='" + hold_balance + '\'' +
+                ", freeze_fee='" + freeze_fee + '\'' +
+                '}';
+    }
+}

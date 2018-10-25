@@ -1,0 +1,327 @@
+package com.esop.cqDevelopment.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/10/19.
+ */
+public class EpCapAdjustApplyInfo extends BaseDto {
+
+        private String id ;
+
+
+
+    private String  work_order_flowNo;//申请工单流水号
+        private String applicant ; //  申请人
+        private String out_group;  // 出账集团
+        private String out_grp_no ; //集团编号
+        private String out_linkman; // 资金联系人
+        private String out_link_phone ; // 出账集团联系人电话
+        private String out_link_type ; //联系人类型
+        private String out_balance ;// 账本余额
+        private String out_usable_balance ; //可用余额
+        private String into_group;  //入账集团
+        private String into_grp_no ;  //入账集团编号
+        private String into_linkman ;  //入账资金联系人
+        private String into_link_phone;  //联系电话
+        private String into_link_type ;  //入账联系人类型
+        private String adjust_reason ;  //调账原因
+        private String adjust_money;  //调账金额
+        private String auditor ;  //审核人
+        private String adjust_explain ;  //调账说明
+        private String work_order_status ; //工单状态
+        private String upload_attach_file ; //上传附件
+        private String apply_status ; //申请状态
+        private String next_link;  //下一环节
+        private String next_handle_man; //下一步处理人
+        private String handle_status; // 处理状态，Y表示已处理，N未处理
+        private String handle_opinion;  //处理意见
+        private String apply_date; //申请日期
+
+    public EpCapAdjustApplyInfo() {
+        
+    }
+    public String getWork_order_flowNo() {
+        return work_order_flowNo;
+    }
+
+    public void setWork_order_flowNo(String work_order_flowNo) {
+        this.work_order_flowNo = work_order_flowNo;
+    }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getOut_group() {
+        return out_group;
+    }
+
+    public void setOut_group(String out_group) {
+        this.out_group = out_group;
+    }
+
+    public String getOut_grp_no() {
+        return out_grp_no;
+    }
+
+    public void setOut_grp_no(String out_grp_no) {
+        this.out_grp_no = out_grp_no;
+    }
+
+    public String getOut_linkman() {
+        return out_linkman;
+    }
+
+    public void setOut_linkman(String out_linkman) {
+        this.out_linkman = out_linkman;
+    }
+
+    public String getOut_link_phone() {
+        return out_link_phone;
+    }
+
+    public void setOut_link_phone(String out_link_phone) {
+        this.out_link_phone = out_link_phone;
+    }
+
+    public String getOut_link_type() {
+        return out_link_type;
+    }
+
+    public void setOut_link_type(String out_link_type) {
+        this.out_link_type = out_link_type;
+    }
+
+    public String getOut_balance() {
+        return out_balance;
+    }
+
+    public void setOut_balance(String out_balance) {
+        this.out_balance = out_balance;
+    }
+
+    public String getOut_usable_balance() {
+        return out_usable_balance;
+    }
+
+    public void setOut_usable_balance(String out_usable_balance) {
+        this.out_usable_balance = out_usable_balance;
+    }
+
+    @Override
+    public String toString() {
+        return "EpCapAdjustApplyInfo{" +
+                "id='" + id + '\'' +
+                 ", work_order_flowNo='" + work_order_flowNo + '\'' +
+                ", applicant='" + applicant + '\'' +
+                ", out_group='" + out_group + '\'' +
+                ", out_grp_no='" + out_grp_no + '\'' +
+                ", out_linkman='" + out_linkman + '\'' +
+                ", out_link_phone='" + out_link_phone + '\'' +
+                ", out_link_type='" + out_link_type + '\'' +
+                ", out_balance='" + out_balance + '\'' +
+                ", out_usable_balance='" + out_usable_balance + '\'' +
+                ", into_group='" + into_group + '\'' +
+                ", into_grp_no='" + into_grp_no + '\'' +
+                ", into_linkman='" + into_linkman + '\'' +
+                ", into_link_phone='" + into_link_phone + '\'' +
+                ", into_link_type='" + into_link_type + '\'' +
+                ", adjust_reason='" + adjust_reason + '\'' +
+                ", adjust_money='" + adjust_money + '\'' +
+                ", auditor='" + auditor + '\'' +
+                ", adjust_explain='" + adjust_explain + '\'' +
+                ", work_order_status='" + work_order_status + '\'' +
+                ", upload_attach_file='" + upload_attach_file + '\'' +
+                ", apply_status='" + apply_status + '\'' +
+                ", next_link='" + next_link + '\'' +
+                ", next_handle_man='" + next_handle_man + '\'' +
+                ", handle_status='" + handle_status + '\'' +
+                ", handle_opinion='" + handle_opinion + '\'' +
+                ", apply_date='" + apply_date + '\'' +
+                '}';
+    }
+
+    public EpCapAdjustApplyInfo(String id,String work_order_flowNo, String applicant, String out_group, String out_grp_no, String out_linkman, String out_link_phone, String out_link_type, String out_balance, String out_usable_balance, String into_group, String into_grp_no, String into_linkman, String into_link_phone, String into_link_type, String adjust_reason, String adjust_money, String auditor, String adjust_explain, String work_order_status, String upload_attach_file, String apply_status, String next_link, String next_handle_man, String handle_status, String handle_opinion, String apply_date) {
+        this.id = id;
+        this.work_order_flowNo = work_order_flowNo;
+        this.applicant = applicant;
+        this.out_group = out_group;
+        this.out_grp_no = out_grp_no;
+        this.out_linkman = out_linkman;
+        this.out_link_phone = out_link_phone;
+        this.out_link_type = out_link_type;
+        this.out_balance = out_balance;
+        this.out_usable_balance = out_usable_balance;
+        this.into_group = into_group;
+        this.into_grp_no = into_grp_no;
+        this.into_linkman = into_linkman;
+        this.into_link_phone = into_link_phone;
+        this.into_link_type = into_link_type;
+        this.adjust_reason = adjust_reason;
+        this.adjust_money = adjust_money;
+        this.auditor = auditor;
+        this.adjust_explain = adjust_explain;
+        this.work_order_status = work_order_status;
+        this.upload_attach_file = upload_attach_file;
+        this.apply_status = apply_status;
+        this.next_link = next_link;
+        this.next_handle_man = next_handle_man;
+        this.handle_status = handle_status;
+        this.handle_opinion = handle_opinion;
+        this.apply_date = apply_date;
+    }
+
+
+
+    public String getInto_group() {
+        return into_group;
+    }
+
+    public void setInto_group(String into_group) {
+        this.into_group = into_group;
+    }
+
+    public String getInto_grp_no() {
+        return into_grp_no;
+    }
+
+    public void setInto_grp_no(String into_grp_no) {
+        this.into_grp_no = into_grp_no;
+    }
+
+    public String getInto_linkman() {
+        return into_linkman;
+    }
+
+    public void setInto_linkman(String into_linkman) {
+        this.into_linkman = into_linkman;
+    }
+
+    public String getInto_link_phone() {
+        return into_link_phone;
+    }
+
+    public void setInto_link_phone(String into_link_phone) {
+        this.into_link_phone = into_link_phone;
+    }
+
+    public String getInto_link_type() {
+        return into_link_type;
+    }
+
+    public void setInto_link_type(String into_link_type) {
+        this.into_link_type = into_link_type;
+    }
+
+    public String getAdjust_reason() {
+        return adjust_reason;
+    }
+
+    public void setAdjust_reason(String adjust_reason) {
+        this.adjust_reason = adjust_reason;
+    }
+
+    public String getAdjust_money() {
+        return adjust_money;
+    }
+
+    public void setAdjust_money(String adjust_money) {
+        this.adjust_money = adjust_money;
+    }
+
+    public String getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(String auditor) {
+        this.auditor = auditor;
+    }
+
+    public String getAdjust_explain() {
+        return adjust_explain;
+    }
+
+    public void setAdjust_explain(String adjust_explain) {
+        this.adjust_explain = adjust_explain;
+    }
+
+    public String getWork_order_status() {
+        return work_order_status;
+    }
+
+    public void setWork_order_status(String work_order_status) {
+        this.work_order_status = work_order_status;
+    }
+
+    public String getUpload_attach_file() {
+        return upload_attach_file;
+    }
+
+    public void setUpload_attach_file(String upload_attach_file) {
+        this.upload_attach_file = upload_attach_file;
+    }
+
+    public String getApply_status() {
+        return apply_status;
+    }
+
+    public void setApply_status(String apply_status) {
+        this.apply_status = apply_status;
+    }
+
+    public String getNext_link() {
+        return next_link;
+    }
+
+    public void setNext_link(String next_link) {
+        this.next_link = next_link;
+    }
+
+    public String getNext_handle_man() {
+        return next_handle_man;
+    }
+
+    public void setNext_handle_man(String next_handle_man) {
+        this.next_handle_man = next_handle_man;
+    }
+
+    public String getHandle_status() {
+        return handle_status;
+    }
+
+    public void setHandle_status(String handle_status) {
+        this.handle_status = handle_status;
+    }
+
+    public String getHandle_opinion() {
+        return handle_opinion;
+    }
+
+    public void setHandle_opinion(String handle_opinion) {
+        this.handle_opinion = handle_opinion;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+
+
+
+}

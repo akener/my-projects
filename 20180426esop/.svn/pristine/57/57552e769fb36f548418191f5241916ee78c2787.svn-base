@@ -1,0 +1,44 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class CapitalUseApproveQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+
+    public Result getcapitalUseApproveInfoSvc(CapitalUseApproveQueryDto parameter){
+        String selectTion = "";
+        String prod_type = parameter.getChanpin_leixing();
+        if(prod_type.equals("1")){
+            selectTion = "selectCapitalUseApproveInfo";
+        }else if(prod_type.equals("2")){
+            selectTion = "selectCapitalUseApproveInfo2";
+        }else if(prod_type.equals("3")){
+            selectTion = "selectCapitalUseApproveInfo3";
+        }else if(prod_type.equals("4")){
+            selectTion = "selectCapitalUseApproveInfo4";
+        }else if(prod_type.equals("5")){
+            selectTion = "selectCapitalUseApproveInfo5";
+        }else{
+            selectTion = "selectCapitalUseApproveInfo";
+        }
+
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+}

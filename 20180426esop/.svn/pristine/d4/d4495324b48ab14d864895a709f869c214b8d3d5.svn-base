@@ -1,0 +1,155 @@
+package com.esop.basicManagement.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class BasicManageDoBusiDto {
+    String region_code = "";
+    String region_name = "";
+    String login_region = "";
+    String district_code = "";
+    String district_name = "";
+    String login_district = "";
+    String town_code = "";
+    String office_code = "";
+    String office_name = "";
+    String login_town = "";
+    String login_no = "";
+
+    String login_no_41 = "";
+    String login_no_42 = "";
+
+    String right_code = "";
+    String right_name = "";
+
+    String landing_no = "";
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getLogin_region() {
+        return login_region;
+    }
+
+    public void setLogin_region(String login_region) {
+        this.login_region = login_region;
+    }
+
+    public String getDistrict_code() {
+        return district_code;
+    }
+
+    public void setDistrict_code(String district_code) {
+        this.district_code = district_code;
+    }
+
+    public String getDistrict_name() {
+        return district_name;
+    }
+
+    public void setDistrict_name(String district_name) {
+        this.district_name = district_name;
+    }
+
+    public String getLogin_district() {
+        return login_district;
+    }
+
+    public void setLogin_district(String login_district) {
+        this.login_district = login_district;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getOffice_code() {
+        return office_code;
+    }
+
+    public void setOffice_code(String office_code) {
+        this.office_code = office_code;
+    }
+
+    public String getOffice_name() {
+        return office_name;
+    }
+
+    public void setOffice_name(String office_name) {
+        this.office_name = office_name;
+    }
+
+    public String getLogin_town() {
+        return login_town;
+    }
+
+    public void setLogin_town(String login_town) {
+        this.login_town = login_town;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_no_41() {
+        return login_no_41;
+    }
+
+    public void setLogin_no_41(String login_no_41) {
+        this.login_no_41 = login_no_41;
+    }
+
+    public String getLogin_no_42() {
+        return login_no_42;
+    }
+
+    public void setLogin_no_42(String login_no_42) {
+        this.login_no_42 = login_no_42;
+    }
+
+    public String getRight_code() {
+        return right_code;
+    }
+
+    public void setRight_code(String right_code) {
+        this.right_code = right_code;
+    }
+
+    public String getRight_name() {
+        return right_name;
+    }
+
+    public void setRight_name(String right_name) {
+        this.right_name = right_name;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

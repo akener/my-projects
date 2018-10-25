@@ -1,0 +1,36 @@
+package com.esop.basicManagement.controller;
+
+import com.esop.basicManagement.dto.PwdResetDto;
+import com.esop.basicManagement.service.PwdResetService;
+import com.esop.common.security.DESPlus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * Created by Qiao on 2017/7/2.
+ */
+@RestController
+public class PwdUpdateController {
+    @Autowired
+    PwdResetService pwdResetService;
+
+    @RequestMapping(value = "/pwdUpdate")
+    public int updatePwd(PwdResetDto parameter){
+        int res = 1;
+        DESPlus des = null;
+        try {
+            des = new DESPlus();
+            String pwd = des.encrypt(parameter.getPassword());
+            PwdResetDto dto = new PwdResetDto();
+            dto.setLogin_no(parameter.getLogin_no());
+            dto.setPassword(pwd);
+            pwdResetService.updatePwd(dto);
+            res=1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            res=-1;
+        }
+        return res;
+    }
+}

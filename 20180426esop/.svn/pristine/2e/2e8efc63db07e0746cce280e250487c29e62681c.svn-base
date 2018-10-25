@@ -1,0 +1,57 @@
+package com.esop.alertClassified.controller;
+
+import com.esop.alertClassified.dto.AccountAlertSetDto;
+import com.esop.alertClassified.dto.AccountAlertSetNumDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class AccountAlertSetRC {
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    @Autowired
+    com.esop.alertClassified.service.AccountAlertSetService accountAlertSetService;
+    @RequestMapping(value="/accountAlertSetInfo")
+    public Result getAccountAlertSet(AccountAlertSetDto parameter, HttpServletRequest request, boolean flag){
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = accountAlertSetService.getAccountAlertSetList(parameter);
+        //JSONObject js = new
+        return result;
+    }
+    //设置阈值
+    @RequestMapping(value="/accountAlertSet")
+    public int accountAlertSet(AccountAlertSetDto parameter){
+        int result=0;
+        result=accountAlertSetService.accountAlertSet(parameter);
+        return result;
+    }
+    //判断第一次生成还是更新
+    @RequestMapping(value="/accountAlertSetJudge")
+    public List accountAlertSetJudge(AccountAlertSetNumDto parameter){
+        String result = "";
+        List<AccountAlertSetNumDto> list;
+        list=accountAlertSetService.accountAlertSetJudge(parameter);
+        return list;
+    }
+}

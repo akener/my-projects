@@ -1,0 +1,225 @@
+package com.esop.workflow.model;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class CtTaskInstInfo implements Serializable {
+    private String procId;
+
+    private String procNameEn;
+
+    private String taskInstId;
+
+    private String procInstId;
+
+    private String taskId;
+
+    private String stepId;
+
+    private String stepName;
+
+    private String dealLoginNo;
+
+    private String dealDept;
+
+    private Date startTime;
+
+    private Date endTime;
+
+    private String status;
+
+    private String timeFlag;
+
+    private Date planCompleteTime;
+
+    private String dealOpinion;
+
+    private String remarks;
+
+    private String succFlag;
+
+    private String taskNum;
+
+    private String taskType;
+
+    private String regionId;
+
+    private String bizRecordId;
+    private String opPort="";//数据来源 0 手机端 1 pc端
+
+    public String getOpPort() {
+        return opPort;
+    }
+
+    public void setOpPort(String opPort) {
+        this.opPort = opPort;
+    }
+
+    public String getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(String regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getBizRecordId() {
+        return bizRecordId;
+    }
+
+    public void setBizRecordId(String bizRecordId) {
+        this.bizRecordId = bizRecordId;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameEn() {
+        return procNameEn;
+    }
+
+    public void setProcNameEn(String procNameEn) {
+        this.procNameEn = procNameEn;
+    }
+
+    public String getTaskInstId() {
+        return taskInstId;
+    }
+
+    public void setTaskInstId(String taskInstId) {
+        this.taskInstId = taskInstId;
+    }
+
+    public String getProcInstId() {
+        return procInstId;
+    }
+
+    public void setProcInstId(String procInstId) {
+        this.procInstId = procInstId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public String getStepName() {
+        return stepName;
+    }
+
+    public void setStepName(String stepName) {
+        this.stepName = stepName;
+    }
+
+    public String getDealLoginNo() {
+        return dealLoginNo;
+    }
+
+    public void setDealLoginNo(String dealLoginNo) {
+        this.dealLoginNo = dealLoginNo;
+    }
+
+    public String getDealDept() {
+        return dealDept;
+    }
+
+    public void setDealDept(String dealDept) {
+        this.dealDept = dealDept;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTimeFlag() {
+        return timeFlag;
+    }
+
+    public void setTimeFlag(String timeFlag) {
+        this.timeFlag = timeFlag;
+    }
+
+    public Date getPlanCompleteTime() {
+        return planCompleteTime;
+    }
+
+    public void setPlanCompleteTime(Date planCompleteTime) {
+        this.planCompleteTime = planCompleteTime;
+    }
+
+    public String getDealOpinion() {
+        return dealOpinion;
+    }
+
+    public void setDealOpinion(String dealOpinion) {
+        this.dealOpinion = dealOpinion;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getSuccFlag() {
+        return succFlag;
+    }
+
+    public void setSuccFlag(String succFlag) {
+        this.succFlag = succFlag;
+    }
+
+    public String getTaskNum() {
+        return taskNum;
+    }
+
+    public void setTaskNum(String taskNum) {
+        this.taskNum = taskNum;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+}

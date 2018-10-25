@@ -1,0 +1,266 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.common.word.CreateWord;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import com.esop.cqDevelopment.elecPack.service.ElecContractService;
+import com.esop.cqDevelopment.elecPack.service.ElecPackService;
+import com.esop.cqDevelopment.elecPack.service.OrderService;
+import com.esop.workflow.dto.orderDto.OrderStartDto;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLDecoder;
+import java.util.*;
+
+/**
+ * Created by Administrator on 2017/12/4.
+ */@Controller
+public class ElecContractController {
+     @Autowired
+     ElecContractService elecContractService;
+     @Autowired
+     DataConversion dataConversion;
+     @Autowired
+     ElecPackService elecPackService;
+     @Autowired
+     OrderWorkFlowService orderWorkFlowService;
+    @Autowired
+    OrderService orderService;
+    Result result = new Result();
+    @Value("${contract_pdf_path}")
+    private String contract_pdf_path;
+    @Value("${model_xml_path}")
+    private String model_xml_path;
+
+     //挑传到合同列表页面
+    @RequestMapping("contractList")
+    public String contractList(Model model){
+        List<BsProductInfoDto> productList = elecContractService.getProductListCatalog();
+        model.addAttribute("productList",productList);
+        List<SeContractQddwDto> qddwList = elecContractService.getQddwList();
+        model.addAttribute("qddwList",qddwList);
+        return "cqDevelopment/elecPack/ContractList";
+    }
+    //分页查询合同列表
+    @RequestMapping("getElecContractListPage")
+    @ResponseBody
+     public Result getElecContractList(SeContractInfoDto parameter, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        Result result = elecContractService.getPageElecContractPage(parameter);
+        List<SeNewContractInfoDto> newContractInfoDtoList = result.getData();
+        for (int i = 0;i<newContractInfoDtoList.size();i++){//获取详细信息，用于导出
+            SeNewContractInfoDto info  = elecContractService.getContractDetailInfo(newContractInfoDtoList.get(i));
+            //判断是否已开户
+            int count = elecContractService.getOpenGrpProd(newContractInfoDtoList.get(i).getContract_id());
+            if(count==0){
+                info.setIsOpenGrpProd("2");
+            }else{
+                info.setIsOpenGrpProd("1");
+            }
+            newContractInfoDtoList.set(i,info);
+        }
+
+
+
+        result.setData(newContractInfoDtoList);
+        return  result;
+     }
+
+
+     //生成合同
+    @RequestMapping("addContract")
+    @ResponseBody
+    public Map addContract(SeNewContractInfoDto seNewContractInfo, HttpServletRequest request) throws Exception{
+        String id = "";
+        Map result = new HashMap();
+        String chargesIds = seNewContractInfo.getChargeIds();
+        Date date = new Date();
+        String chargesString = "";
+        if (!StringUtils.isEmpty(chargesIds)) {
+            //注释区域"1|a,2|b,3|c"
+            String[] aa = chargesIds.split(",");
+            for (int i = 0;i<aa.length;i++){
+                chargesString = chargesString + ","+aa[i].split("\\|")[0];//获取chargesId
+            }
+            chargesString = chargesString.substring(1,chargesString.length());
+            //注释区域
+        }
+
+        SeContractInfoDto re = elecContractService.addContract(seNewContractInfo ,"CQ.CQ.C4");//保存合同
+        String elecPackId = seNewContractInfo.getElecpack_id();
+        SeElecPackInfoDto seElecPackInfoDto = new SeElecPackInfoDto();
+        seElecPackInfoDto.setId(Integer.parseInt(elecPackId));
+        List<SeElecPackInfoDto> elecPackList = elecPackService.getElecPackList(seElecPackInfoDto);//根据模板ID获取模板（取模板名称）
+        seElecPackInfoDto = elecPackList.get(0);
+
+        seNewContractInfo.setContract_id(re.getContract_id());
+
+        //查询合同详情，确保数据不会遗漏
+        List<SeNewContractInfoDto> newContractInfoList= elecContractService.getContractInfo(seNewContractInfo);
+        seNewContractInfo = newContractInfoList.get(0);
+        seNewContractInfo = elecContractService.getContractDetailInfo(seNewContractInfo);
+
+
+        if (!StringUtils.isEmpty(seNewContractInfo.getContract_id())){//保存成功，导出pdf
+            String remark = "1";
+            elecContractService.savePdf(seNewContractInfo,re,remark);
+        }
+        if (re.getContract_id() != null){
+            //流程发起
+            //发起流程所需要的参数类
+            OrderStartDto odt=new OrderStartDto();
+            odt.setProcTypeCode("3008");
+            odt.setBranchCode("CQ.CQ");
+            odt.setKeyValue("2");
+            odt.setBizRecordId(re.getContract_id());
+            //从session中获取的
+            odt.setStartDept("CQ.CQ");
+            odt.setStartLoginNo(seNewContractInfo.getOper_no());
+            odt.setStartRegion("CQ.CQ");
+
+            String flag = orderWorkFlowService.createOrderFlowService(odt,request);
+            if (flag == "0"){
+                result.put("code", "1");
+                result.put("message","操作成功");
+            }else {
+                result.put("code", "0");
+                result.put("message","操作失败");
+            }
+
+        }else {
+            result.put("code","2");
+            result.put("message","失败");
+        }
+        return result;
+    }
+
+    //跳转到生成合同页面
+    @RequestMapping("toContractInfo")
+    public String toContractInfo(Model model, SeElecPackInfoDto elecPackInfo)throws  Exception{
+        String formSec = "CQ.CQ.C4";//从session中获取，现在写死
+
+        elecPackInfo.setCatalog_name(URLDecoder.decode(URLDecoder.decode(elecPackInfo.getCatalog_name(),"utf-8"),"utf-8"));
+        elecPackInfo.setProd_name(URLDecoder.decode(URLDecoder.decode(elecPackInfo.getProd_name(),"utf-8"),"utf-8"));
+        elecPackInfo.setPack_name(URLDecoder.decode(URLDecoder.decode(elecPackInfo.getPack_name(),"utf-8"),"utf-8"));
+        //查询该产品下的所有资费信息
+        String prod_id = elecPackInfo.getProd_code();
+        Integer elecPackId = elecPackInfo.getId();
+        String elecPackName = elecPackInfo.getPack_name();
+        String catalog_id = elecPackInfo.getCatalog_id();
+        SeProductChargeInfoDto productChargeInfo = new SeProductChargeInfoDto();
+/*        BsProductInfoDto bsProductInfoDto = new BsProductInfoDto();
+        bsProductInfoDto.setCatalog_id(catalog_id);
+        productChargeInfo.setProductInfo(bsProductInfoDto);*/
+        productChargeInfo.setProd_id(prod_id);
+        List<SeProductChargeInfoDto> productChargeInfoList = elecContractService.getProductChargeInfoList(productChargeInfo);
+        SeContractQddwDto qddwDto = elecContractService.getContractQddw(formSec);
+
+        model.addAttribute("productChargeInfoList",productChargeInfoList);
+        model.addAttribute("elecPackId",elecPackId);
+        model.addAttribute("prod_id",prod_id);
+        model.addAttribute("elecPackName",elecPackName);
+        model.addAttribute("catalog_name",elecPackInfo.getCatalog_name());
+        model.addAttribute("prod_name",elecPackInfo.getProd_name());
+        model.addAttribute("qddwDto",qddwDto);
+        return "cqDevelopment/elecPack/ContractInfo";//返回增加合同详情页面
+    }
+
+    //获取集团客户信息
+    @RequestMapping("getCtUnionList")
+    @ResponseBody
+    public Result getCtUnionList(CtUnionInfoDto parameter, HttpServletRequest request){
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        Result result = elecContractService.getCtUnionListPage(parameter);
+        return result;
+    }
+
+    @RequestMapping("toContractDetailInfo")
+    public String toContractDetailInfo(Model model,SeNewContractInfoDto seNewContractInfoDto){
+        SeElecPackInfoDto elecPackInfoDto = new SeElecPackInfoDto();
+        elecPackInfoDto.setId(Integer.valueOf(seNewContractInfoDto.getElecpack_id()));
+        elecPackInfoDto = elecContractService.getElecPackPath(elecPackInfoDto);
+
+        if (!StringUtils.isEmpty(seNewContractInfoDto.getContract_id())){
+            List<SeNewContractInfoDto> contractInfoList= elecContractService.getContractInfo(seNewContractInfoDto);
+            seNewContractInfoDto = contractInfoList.get(0);
+            seNewContractInfoDto = elecContractService.getContractDetailInfo(seNewContractInfoDto);
+
+            model.addAttribute("contract",seNewContractInfoDto);
+        }
+        return elecPackInfoDto.getBak1();
+    }
+
+
+    @RequestMapping("toContractChargeInfo")
+    public String toContractChargeInfo(Model model,SeNewContractInfoDto seNewContractInfoDto){
+
+
+        SeElecPackInfoDto elecPackInfoDto = new SeElecPackInfoDto();
+        elecPackInfoDto.setId(Integer.valueOf(seNewContractInfoDto.getElecpack_id()));
+        elecPackInfoDto = elecContractService.getElecPackPath(elecPackInfoDto);
+
+        SeProductChargeInfoDto productChargeInfo = new SeProductChargeInfoDto();
+        productChargeInfo.setProd_id(elecPackInfoDto.getProd_code());
+        List<SeContractChargesInfo> contractChargesList = new ArrayList<>();
+        if (!StringUtils.isEmpty(seNewContractInfoDto.getContract_id())){//修改的时候,查询结果不一样
+            List<SeNewContractInfoDto> newContractInfoList= elecContractService.getContractInfo(seNewContractInfoDto);
+            seNewContractInfoDto = newContractInfoList.get(0);
+            seNewContractInfoDto = elecContractService.getContractDetailInfo(seNewContractInfoDto);
+            productChargeInfo.setProd_id(seNewContractInfoDto.getProduct_id());
+            contractChargesList = elecContractService.getContractChargesByContractId(seNewContractInfoDto);
+            String notIn = "";
+            if (contractChargesList != null && contractChargesList.size()>0){
+                notIn = contractChargesList.get(0).getProduct_charge_id() + "";
+            }
+            if (contractChargesList != null && contractChargesList.size()>1){
+                for (int i =1;i<contractChargesList.size();i++){
+                    notIn = notIn + "," + contractChargesList.get(i).getProduct_charge_id();
+                }
+            }
+            productChargeInfo.setNot_in_chargeId(notIn);
+
+        }
+        List<SeProductChargeInfoDto> productChargeInfoList = elecContractService.getProductChargeInfoList(productChargeInfo);
+
+        model.addAttribute("productChargeInfoList",productChargeInfoList);
+        model.addAttribute("contractChargesList",contractChargesList);
+        model.addAttribute("prod_id",elecPackInfoDto.getProd_code());
+        model.addAttribute("prod_name",elecPackInfoDto.getProd_name());
+        return elecPackInfoDto.getBak2();
+    }
+
+    @RequestMapping("changeContract")//产品变更
+    public String changeContract(String contract_id) {
+        SeNewContractInfoDto seNewContractInfoDto = new SeNewContractInfoDto();
+        seNewContractInfoDto.setContract_id(contract_id);
+        List<SeNewContractInfoDto> contractInfoList = elecContractService.getContractInfo(seNewContractInfoDto);
+        seNewContractInfoDto = contractInfoList.get(0);
+        seNewContractInfoDto = elecContractService.getContractDetailInfo(seNewContractInfoDto);
+        return "";
+    }
+
+    @RequestMapping("uploadFileWindow")//文件上传窗口返回
+    public String uploadFile() {
+        return "cqDevelopment/elecPack/uploadWindow";
+    }
+}

@@ -1,0 +1,82 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.ReturnMsgDto;
+import com.esop.cqDevelopment.capitalManage.dto.StateOfWorkOptDto;
+import com.esop.cqDevelopment.capitalManage.service.StateOfWorkOptService;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class StateOfWorkOptRC {
+    @Autowired
+    StateOfWorkOptService stateOfWorkOptService;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+
+    //修改工单编号
+    @RequestMapping(value="/stateOfWorkOpt")
+    public ReturnMsgDto putStateOfWorkInfo(StateOfWorkOptDto parameter, HttpServletRequest request, boolean flag){
+        int result;
+        if(parameter.getORDER_NUMBER()!=null&&parameter.getORDER_STATUS()!=null&&!parameter.getORDER_NUMBER().equals("")&&!parameter.getORDER_STATUS().equals("")){
+            if(parameter.getORDER_NUMBER().startsWith("120")||parameter.getORDER_NUMBER().startsWith("220")){
+                EpInvPreprintAppInfo appInfo = new EpInvPreprintAppInfo();
+                appInfo.setApplicationNo(parameter.getORDER_NUMBER());
+                if("3".equals(parameter.getORDER_STATUS())){//工单处理成功
+                    EpInvPreprintAppInfo appinfo1 = prePrintInvoiceService.qryInvAppInfo(parameter.getORDER_NUMBER());
+                    if("2".equals(appinfo1.getIsRed())){//非冲红工单
+                        appInfo.setWorkState("3");//3-待回款
+                    } else if("1".equals(appinfo1.getIsRed())) {//冲红工单回调
+                        appInfo.setWorkState("5");//5-已冲红
+                        appInfo.setApplicationNo(appinfo1.getOriginalApplicationNo());
+                        prePrintInvoiceService.updateWorkState(appInfo);
+                        appInfo.setWorkState("3");
+                        appInfo.setApplicationNo(parameter.getORDER_NUMBER());
+                    }
+                    else //作废工单回调
+                    {
+                        appInfo.setWorkState("6");//6-已作废
+                        appInfo.setApplicationNo(appinfo1.getOriginalApplicationNo());
+                        prePrintInvoiceService.updateWorkState(appInfo);
+                        appInfo.setWorkState("3");
+                        appInfo.setApplicationNo(parameter.getORDER_NUMBER());
+                    }
+                } else {//工单处理失败
+                    appInfo.setWorkState("7");//7-开票失败
+                }
+                result = prePrintInvoiceService.updateWorkState(appInfo);
+            } else {
+                result = stateOfWorkOptService.putStateOfWorkInfoSvc(parameter);
+            }
+        }else {
+            result = 666;
+        }
+
+        ReturnMsgDto returnMsgDto = new ReturnMsgDto();
+        if(result==1){
+            returnMsgDto.setRes_code("0");
+            returnMsgDto.setRes_desc("工单状态更新成功！");
+        }else if(result==666){
+            returnMsgDto.setRes_code("998");
+            returnMsgDto.setRes_desc("不能插入空数据！");
+        }else {
+            returnMsgDto.setRes_code("999");
+            returnMsgDto.setRes_desc("工单状态更新失败！");
+        }
+
+        return returnMsgDto;
+    }
+}

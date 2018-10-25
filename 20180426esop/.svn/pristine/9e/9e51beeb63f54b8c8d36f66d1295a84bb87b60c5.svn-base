@@ -1,0 +1,26 @@
+package com.esop.callServiceOtherSys.service;
+
+
+import com.esop.callServiceOtherSys.dto.ManagerInfoQueryDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class ManagerInfoQueryService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    public List getManagerInfoSvc(ManagerInfoQueryDto parameter){
+        String selectTion = "";
+        selectTion = "selectManagerInfoXml";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

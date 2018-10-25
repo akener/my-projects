@@ -1,0 +1,35 @@
+package com.esop.capAdjustApply.service;
+
+import com.esop.capAdjustApply.dto.EpCapBalanceRpt;
+import com.esop.capAdjustApply.dto.EpCapCardTrackRpt;
+import com.esop.capAdjustApply.dto.EpCapRefundDailyRpt;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Created by user on 2017/10/27.
+ */
+//资金回退日报
+@Repository
+public class CapDailyRptSvr {
+    @Autowired
+    SqlE sqlE;
+    //查询资金回退日报信息
+    public Result getRefundDailyRpt(EpCapRefundDailyRpt parameter) {
+        Result result = sqlE.selectPage("qryCapRefundDailyRpt", parameter);
+        return result;
+    }
+
+    //查询资金余额日报表信息
+    public Result getBalanceDailyRpt(EpCapBalanceRpt parameter) {
+        Result result = sqlE.selectPage("getBalanceDailyRpt", parameter);
+        return result;
+    }
+
+    public Result getCardOUtRpt(EpCapCardTrackRpt parameter) {
+        Result result = sqlE.selectPage("getCardOUtRpt", parameter);
+        return result;
+    }
+}

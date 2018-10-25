@@ -1,0 +1,239 @@
+editor = new $.fn.DataTable.Editor( {
+} );
+
+table = $('#example').DataTable( {
+    dom: "Bfrtip",
+    bLengthChange:true,
+    "bFilter": false,
+    "pageLength": 10,//设置每页显示多少条记录
+    "language": {
+        "url": "/esop/static/data/Chinese.json"
+    }, //多语言配置
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url:"getRoleInfoList",
+        type:"POST"
+    },
+    columns: [
+        { data: "role_code" },
+        { data: "role_name" },
+        { data: "role_describe" },
+        { data: "parent_name" },
+        { data: "create_login" },
+        { data: "create_date" }
+    ],
+    select: true,
+    buttons: [
+    ]
+} );
+
+function resetAdd(){
+    $("#parent_name1").val("");
+    $("#parent_code1").val("");
+    $("#role_code1").val("");
+    $("#role_name1").val("");
+    $("#role_describe1").val("");
+    $("#role_vilid_flag1").find("option[value='1']").attr("selected", false);
+    $("#role_vilid_flag1").find("option[value='0']").attr("selected", false);
+}
+
+function resetUpdate(){
+    $("#parent_code2").val("");
+    $("#parent_name2").val("");
+    $("#role_code2").val("");
+    $("#role_name2").val("");
+    $("#role_describe2").val("");
+    $("#role_vilid_flag2").find("option[value='1']").attr("selected", false);
+    $("#role_vilid_flag2").find("option[value='0']").attr("selected", false);
+}
+
+function resetQry(){
+    $("#parent_name3").val("");
+    $("#role_code3").val("");
+    $("#role_name3").val("");
+    $("#role_describe3").val("");
+    $("#role_vilid_flag3").find("option[value='1']").attr("selected", false);
+    $("#role_vilid_flag3").find("option[value='0']").attr("selected", false);
+}
+//角色树
+function chooseRoleTree(swich){
+    if('parent' == swich){
+        var url="/esop/crt?type=parent";
+        var ret = window.showModalDialog(url,'','dialogWidth:220px;dialogHeight:400px;center:1');
+        if(ret!=undefined){
+            var data=ret.split("$");
+            $("#parent_name1").val(data[1]);
+            $("#parent_code1").val(data[0]);
+            $.ajax({
+                type: "GET",
+                url: "getNextRoleCode",
+                data:{
+                    role_code:data[0]
+                }
+            }).then(function (data1) {
+                //alert("0"+data1);
+                $("#role_code1").val("0"+data1);
+            });
+        }
+
+    }else if('child' == swich){
+        var url="/esop/crt?type=child";
+        var ret = window.showModalDialog(url,'','dialogWidth:220px;dialogHeight:400px;center:1');
+        if(ret!=undefined){
+            var data=ret.split("$");
+            $("#role_code3").val(data[0]);
+            $("#role_name3").val(data[1]);
+            $.ajax({
+                type: "GET",
+                url: "getRoleInfoByRoleCode",
+                data:{
+                    role_code:data[0]
+                }
+            }).then(function (data1) {
+                $("#parent_name3").val(data1.parent_name);
+                $("#role_describe3").val(data1.role_describe);
+                if(data1.role_vilid_flag == '1'){
+                    $("#role_vilid_flag3").find("option[value='1']").attr("selected",true);
+                }
+                if(data1.role_vilid_flag == '0'){
+                    $("#role_vilid_flag3").find("option[value='0']").attr("selected",true);
+                }
+            });
+        }
+    }
+}
+
+function chooseRoleTree1(swich){
+    if('child' == swich) {
+        var url = "/esop/crt?type=child";
+        var ret = window.showModalDialog(url, '', 'dialogWidth:220px;dialogHeight:400px;center:1');
+        if (ret != undefined) {
+            var data = ret.split("$");
+            $("#role_code2").val(data[0]);
+            $("#role_name2").val(data[1]);
+            $.ajax({
+                type: "GET",
+                url: "getRoleInfoByRoleCode",
+                data: {
+                    role_code: data[0]
+                }
+            }).then(function (data1) {
+                $("#parent_name2").val(data1.parent_name);
+                $("#parent_code2").val(data1.parent_code);
+                $("#role_describe2").val(data1.role_describe);
+                if (data1.role_vilid_flag == '1') {
+                    $("#role_vilid_flag2").find("option[value='1']").attr("selected", true);
+                }
+                if (data1.role_vilid_flag == '0') {
+                    $("#role_vilid_flag2").find("option[value='0']").attr("selected", true);
+                }
+            });
+        }
+    }
+}
+
+function role_add(){
+    var create_login = $("#login_no").val();
+    var parent_code = $("#parent_code1").val();
+    var parent_name = $("#parent_name1").val();
+    var role_code = $("#role_code1").val();
+    var role_name = $("#role_name1").val();
+    var role_vilid_flag = $("#role_vilid_flag1").val();
+    var role_describe = $("#role_describe1").val();
+
+    if(parent_name == ""){
+        $("#false3").modal('show');
+        return;
+    }
+    if(role_name == ""){
+        $("#false1").modal('show');
+        return;
+    }
+    if(role_describe == ""){
+        $("#false2").modal('show');
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "insertRoleInfo",
+        data:{
+            parent_code:parent_code,
+            role_code:role_code,
+            role_name:role_name,
+            role_vilid_flag:role_vilid_flag,
+            role_describe:role_describe,
+            create_login:create_login
+        }
+    }).then(function (data1) {
+        if(data1 == 1){
+            $("#success").modal('show');
+            resetAdd();
+            reQuery();
+        }
+    });
+}
+
+function role_update(){
+    var role_code = $("#role_code2").val();
+    var role_name = $("#role_name2").val();
+    var role_vilid_flag = $("#role_vilid_flag2").val();
+    var role_describe = $("#role_describe2").val();
+
+    if(role_code == ""){
+        $("#false4").modal('show');
+        return ;
+    }
+    if(role_name == ""){
+        $("#false1").modal('show');
+        return;
+    }
+    if(role_describe == ""){
+        $("#false2").modal('show');
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: "updateRoleInfo",
+        data: {
+            role_code: role_code,
+            role_name:role_name,
+            role_vilid_flag:role_vilid_flag,
+            role_describe:role_describe
+        }
+    }).then(function (data1) {
+        if(data1 == 1){
+            $("#success").modal('show');
+            resetUpdate();
+            reQuery();
+        }
+    });
+}
+
+function reQuery(){
+    table = $('#example').DataTable( {
+        "processing": true,
+        "serverSide": true,
+        destroy: true,
+        "bFilter": false,
+        //"bSort":false,
+        "bLengthChange": false,
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        ajax: {
+            url:"getRoleInfoList",
+            type:"POST"
+        },
+        columns: [
+            { data: "role_code" },
+            { data: "role_name" },
+            { data: "role_describe" },
+            { data: "parent_name" },
+            { data: "create_login" },
+            { data: "create_date" }
+        ],
+    } );
+}

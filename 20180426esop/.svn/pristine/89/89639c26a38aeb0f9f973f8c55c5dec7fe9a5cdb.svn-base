@@ -1,0 +1,311 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by tangxin on 18/1/5.
+ */
+public class GroupMoneyChangeDto extends BaseDto {
+
+    String org_id = "";
+    String hangye_zhongxin = "";
+    String group_id = "";
+    String group_name = "";
+    String group_manager = "";
+    String request_type = "";
+    String request_id = "";
+    String recorded_money = "";
+    String rebate_money = "";
+    String occupy_money = "";
+    String freeze_money = "";
+    String balance_money = "";
+    String usable_money = "";
+    String notes = "";
+    String zhangwu_yuan = "";
+    String shenqing_riqi="";
+
+    String qishi_shijian="";
+    String zhongzhi_shijian="";
+    String chaxun_riqi = "";
+
+    String group_pay_code="";
+    String group_pay_name="";
+    String center_code="";
+    String business_center="";
+    String name="";
+    String login_name="";
+    String login_name2="";
+
+
+    String recorded_money_yuan = "";
+    String rebate_money_yuan = "";
+    String occupy_money_yuan = "";
+    String freeze_money_yuan = "";
+    String balance_money_yuan = "";
+    String usable_money_yuan = "";
+    String left_money="";
+
+    public String getLeft_money() {
+        return left_money;
+    }
+
+    public void setLeft_money(String left_money) {
+        this.left_money = left_money;
+    }
+
+    public String getChaxun_riqi() {
+        return chaxun_riqi;
+    }
+
+    public void setChaxun_riqi(String chaxun_riqi) {
+        this.chaxun_riqi = chaxun_riqi;
+    }
+
+    public String getRecorded_money_yuan() {
+        return recorded_money_yuan;
+    }
+
+    public void setRecorded_money_yuan(String recorded_money_yuan) {
+        this.recorded_money_yuan = recorded_money_yuan;
+    }
+
+    public String getRebate_money_yuan() {
+        return rebate_money_yuan;
+    }
+
+    public void setRebate_money_yuan(String rebate_money_yuan) {
+        this.rebate_money_yuan = rebate_money_yuan;
+    }
+
+    public String getOccupy_money_yuan() {
+        return occupy_money_yuan;
+    }
+
+    public void setOccupy_money_yuan(String occupy_money_yuan) {
+        this.occupy_money_yuan = occupy_money_yuan;
+    }
+
+    public String getFreeze_money_yuan() {
+        return freeze_money_yuan;
+    }
+
+    public void setFreeze_money_yuan(String freeze_money_yuan) {
+        this.freeze_money_yuan = freeze_money_yuan;
+    }
+
+    public String getBalance_money_yuan() {
+        return balance_money_yuan;
+    }
+
+    public void setBalance_money_yuan(String balance_money_yuan) {
+        this.balance_money_yuan = balance_money_yuan;
+    }
+
+    public String getUsable_money_yuan() {
+        return usable_money_yuan;
+    }
+
+    public void setUsable_money_yuan(String usable_money_yuan) {
+        this.usable_money_yuan = usable_money_yuan;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getLogin_name2() {
+        return login_name2;
+    }
+
+    public void setLogin_name2(String login_name2) {
+        this.login_name2 = login_name2;
+    }
+
+    public String getShenqing_riqi() {
+        return shenqing_riqi;
+    }
+
+    public void setShenqing_riqi(String shenqing_riqi) {
+        this.shenqing_riqi = shenqing_riqi;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getHangye_zhongxin() {
+        return hangye_zhongxin;
+    }
+
+    public void setHangye_zhongxin(String hangye_zhongxin) {
+        this.hangye_zhongxin = hangye_zhongxin;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getGroup_manager() {
+        return group_manager;
+    }
+
+    public void setGroup_manager(String group_manager) {
+        this.group_manager = group_manager;
+    }
+
+    public String getRequest_type() {
+        return request_type;
+    }
+
+    public void setRequest_type(String request_type) {
+        this.request_type = request_type;
+    }
+
+    public String getRequest_id() {
+        return request_id;
+    }
+
+    public void setRequest_id(String request_id) {
+        this.request_id = request_id;
+    }
+
+    public String getRecorded_money() {
+        return recorded_money;
+    }
+
+    public void setRecorded_money(String recorded_money) {
+        this.recorded_money = recorded_money;
+    }
+
+    public String getRebate_money() {
+        return rebate_money;
+    }
+
+    public void setRebate_money(String rebate_money) {
+        this.rebate_money = rebate_money;
+    }
+
+    public String getOccupy_money() {
+        return occupy_money;
+    }
+
+    public void setOccupy_money(String occupy_money) {
+        this.occupy_money = occupy_money;
+    }
+
+    public String getFreeze_money() {
+        return freeze_money;
+    }
+
+    public void setFreeze_money(String freeze_money) {
+        this.freeze_money = freeze_money;
+    }
+
+    public String getBalance_money() {
+        return balance_money;
+    }
+
+    public void setBalance_money(String balance_money) {
+        this.balance_money = balance_money;
+    }
+
+    public String getUsable_money() {
+        return usable_money;
+    }
+
+    public void setUsable_money(String usable_money) {
+        this.usable_money = usable_money;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getZhangwu_yuan() {
+        return zhangwu_yuan;
+    }
+
+    public void setZhangwu_yuan(String zhangwu_yuan) {
+        this.zhangwu_yuan = zhangwu_yuan;
+    }
+
+    public String getQishi_shijian() {
+        return qishi_shijian;
+    }
+
+    public void setQishi_shijian(String qishi_shijian) {
+        this.qishi_shijian = qishi_shijian;
+    }
+
+    public String getZhongzhi_shijian() {
+        return zhongzhi_shijian;
+    }
+
+    public void setZhongzhi_shijian(String zhongzhi_shijian) {
+        this.zhongzhi_shijian = zhongzhi_shijian;
+    }
+
+    public String getGroup_pay_code() {
+        return group_pay_code;
+    }
+
+    public void setGroup_pay_code(String group_pay_code) {
+        this.group_pay_code = group_pay_code;
+    }
+
+    public String getGroup_pay_name() {
+        return group_pay_name;
+    }
+
+    public void setGroup_pay_name(String group_pay_name) {
+        this.group_pay_name = group_pay_name;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+}

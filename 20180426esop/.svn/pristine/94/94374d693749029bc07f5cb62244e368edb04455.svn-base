@@ -1,0 +1,30 @@
+package com.esop.common.jaxb;
+
+import javax.xml.bind.annotation.*;
+
+/**
+ * Created by wangbl on 2017/3/14.
+ */
+@XmlRootElement(name = "Message")
+public class Message {
+
+    Header header;
+
+    IBody body;
+
+    public Header getHeader() {
+        return header;
+    }
+    @XmlElement(name = "Header")
+    public void setHeader(Header header) {
+        this.header = header;
+    }
+
+    public IBody getIBody() {
+        return body;
+    }
+    @XmlElement(name = "Body")
+    public void setIBody(IBody body) {
+        this.body = body;
+    }
+}

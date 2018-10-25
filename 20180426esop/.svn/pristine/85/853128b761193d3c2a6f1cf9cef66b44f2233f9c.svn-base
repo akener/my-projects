@@ -1,0 +1,25 @@
+package com.esop.alertClassified.service;
+
+import com.esop.alertClassified.dto.AccountWarnStatusSetRcDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class AccountWarnStatusSetRcService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(AccountWarnStatusSetRcService.class);
+    //更新操作
+    public int updateAccountWarnStatus(AccountWarnStatusSetRcDto parameter){
+        logger.info("log4j测试----------------");
+        int result= sqlE.updateM("updateAlertArrearwarnStatus",parameter);
+        return result;
+    }
+}

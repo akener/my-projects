@@ -1,0 +1,136 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**查询管理办法实体
+ * Created by lilei on 2017/7/8
+ */
+public class selMethodDto extends BaseDto{
+
+    private String  DT_RowId ="";
+    private String createName="";//创建者
+    private String  title="";//文件名
+    private String  content="";//内容概要
+    private String  content_detail="";//文件内容
+    private String  pub_date="";//创建时间
+    private String  code="";//编号
+    private String  pub_type="";//发布方式
+    private String  pub_createno="";//创建工号
+    private String sTime="";//开始时间
+    private String vTime="";//结束时间
+    private String parent_group_id="";//地市、区县编码
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getCreateName() {
+        return createName;
+    }
+
+    public void setCreateName(String createName) {
+        this.createName = createName;
+    }
+
+    public String getParent_group_id() {
+        return parent_group_id;
+    }
+
+    public void setParent_group_id(String parent_group_id) {
+        this.parent_group_id = parent_group_id;
+    }
+
+    public String getsTime() {
+        return sTime;
+    }
+
+    public void setsTime(String sTime) {
+        this.sTime = sTime;
+    }
+
+    public String getvTime() {
+        return vTime;
+    }
+
+    public void setvTime(String vTime) {
+        this.vTime = vTime;
+    }
+
+    public String getPub_createno() {
+        return pub_createno;
+    }
+
+    public void setPub_createno(String pub_createno) {
+        this.pub_createno = pub_createno;
+    }
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent_detail() {
+        return content_detail;
+    }
+
+    public void setContent_detail(String content_detail) {
+        this.content_detail = content_detail;
+    }
+
+    public String getPub_date() {
+        return pub_date;
+    }
+
+    public void setPub_date(String pub_date) {
+        this.pub_date = pub_date;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getPub_type() {
+        return pub_type;
+    }
+
+    public void setPub_type(String pub_type) {
+        this.pub_type = pub_type;
+    }
+
+    @Override
+    public String toString() {
+        return "selMethodDto{" +
+                "DT_RowId='" + DT_RowId + '\'' +
+                ", createName='" + createName + '\'' +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", content_detail='" + content_detail + '\'' +
+                ", pub_date='" + pub_date + '\'' +
+                ", code='" + code + '\'' +
+                ", pub_type='" + pub_type + '\'' +
+                ", pub_createno='" + pub_createno + '\'' +
+                ", sTime='" + sTime + '\'' +
+                ", vTime='" + vTime + '\'' +
+                ", parent_group_id='" + parent_group_id + '\'' +
+                '}';
+    }
+}

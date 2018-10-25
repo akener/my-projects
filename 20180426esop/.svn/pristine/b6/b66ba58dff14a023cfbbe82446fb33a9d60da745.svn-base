@@ -1,0 +1,29 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.service.EpTradeMedicineService;
+import com.esop.workbench.dto.EpTradeMedicineDto;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/5/26.
+ */
+@RestController
+public class EpTradeMedicineController {
+    @Autowired
+    EpTradeMedicineService epTradeMedicineService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result=new Result();
+    @RequestMapping(value="/epTradeMedicine")
+    public List getEpTradeList(EpTradeMedicineDto epTradeMedicineDto){
+        List list = epTradeMedicineService.getEpTradeList(epTradeMedicineDto);
+        System.out.println("controller打印测试-----"+list);
+        return list;
+    }
+}

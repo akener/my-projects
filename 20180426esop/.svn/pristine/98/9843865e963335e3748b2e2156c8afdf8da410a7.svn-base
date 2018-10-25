@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="developRepository">
+    <!--查询行业拓展信息-->
+    <select id="getDiagnStatistics" parameterType="String" resultType="com.esop.visitInfo.dto.DiagnStatisticsDto">
+      select (select e.group_name from ep_sys_group_info e,ep_sys_group_rel f
+       where e.group_id = f.parent_group_id and f.denorm_level =(select max(denorm_level)-1
+        from ep_sys_group_rel where group_id = a.group_id)and f.group_id = a.group_id) as p_group_name,
+        c.group_name,
+        a.LOGIN_NO,
+        a.BOSS_NO,
+        a.NET_ID,
+        d.trade_name,
+        a.ADDRESS,
+        a.VISIT_COMPANY,
+        a.UNIT_ID,
+        b.contact_person,
+        b.contact_phone,
+        a.BRDBD_TYPE,
+        a.BRDBD_WIDTH,
+        a.BRDBD_POSTAGE,
+        a.BRDBD_ENDDATE,
+        a.TEL_TYPE,
+        a.TEL_NO,
+        a.TEL_POSTAGE,
+        a.TEL_ENDDATE,
+        a.DDN_TYPE,
+        a.DDN_WIDTH,
+        a.DDN_POSTAGE,
+        a.DDN_ENDDATE,
+        a.TOTAL_NUM,
+        a.YD_NUM,
+        a.LT_NUM,
+        a.DX_NUM,
+        a.MONTH_RATE,
+        a.inf_demand_id
+         from ep_ind_indexpand_info a,
+        dGrpCustMsg b,
+        ep_sys_group_info c,
+        sgrpbigtradecode d
+         where a.unit_id =b.cust_id(+)
+         and a.group_id = c.group_id(+)
+         and a.industry_id = trim(d.trade_code(+))
+         and a.group_id=#{group_id}
+    </select>
+    <!--根据条件查询行业拓展信息-->
+    <select id="getDiagnStatist" parameterType="String" resultType="com.esop.visitInfo.dto.DiagnStatisticsDto">
+     select (select e.group_name from ep_sys_group_info e,ep_sys_group_rel f
+     where e.group_id = f.parent_group_id and f.denorm_level =(select max(denorm_level)-1
+     from ep_sys_group_rel where group_id = a.group_id)and f.group_id = a.group_id) as p_group_name,
+     c.group_name,
+     a.LOGIN_NO,
+     a.BOSS_NO,
+     a.NET_ID,
+     d.trade_name,
+     a.ADDRESS,
+     a.VISIT_COMPANY,
+     a.UNIT_ID,
+     b.contact_person,
+     b.contact_phone,
+     a.BRDBD_TYPE,
+     a.BRDBD_WIDTH,
+     a.BRDBD_POSTAGE,
+     a.BRDBD_ENDDATE,
+     a.TEL_TYPE,
+     a.TEL_NO,
+     a.TEL_POSTAGE,
+     a.TEL_ENDDATE,
+     a.DDN_TYPE,
+     a.DDN_WIDTH,
+     a.DDN_POSTAGE,
+     a.DDN_ENDDATE,
+     a.TOTAL_NUM,
+     a.YD_NUM,
+     a.LT_NUM,
+     a.DX_NUM,
+     a.MONTH_RATE,
+     a.inf_demand_id
+     from ep_ind_indexpand_info a,
+     dGrpCustMsg b,
+     ep_sys_group_info c,
+     sgrpbigtradecode d
+     where a.unit_id =b.cust_id(+)
+     and a.group_id = c.group_id(+)
+     and a.industry_id = trim(d.trade_code(+))
+     and a.group_id=#{group_id} and a.unit_id=#{unit_id} and a.login_no=#{login_no}
+    </select>
+    <!--查询合同审批管理信息-->
+    <select id="getControBusin" parameterType="String" resultType="com.esop.visitInfo.dto.ControactBusDto">
+        select t.contract_id,
+               t.unit_id,
+               t.contract_no,
+               t.contract_name,
+               t.deal_time,
+               t.complete_time,
+               t.contract_file,
+               t.create_date,
+               b.login_name,
+               d.group_name,
+               t.note,
+               t.contract_loan,
+               t.renew_sign,
+               t.charge_flag,
+               t.goods_no,
+               t.goods_not,
+               t.dept_no,
+               t.dept_not,
+               t.stop_not
+          from dgrpcontractinfo t, ep_sys_loginmsg_info b, ep_sys_group_info d
+         where 1 = 1
+           and t.create_login = b.login_no(+)
+           and t.org_code = d.group_id(+)
+           and t.goods_no = #{goods_no}
+           and t.org_code in (select group_id
+                                from ep_sys_group_rel
+                               where parent_group_id = #{parent_group_id})
+
+    </select>
+    <!--根据条件查询合同审批管理信息-->
+    <select id="getControactdinfo" parameterType="String" resultType="com.esop.visitInfo.dto.ControactBusDto">
+     select
+      t.contract_id,
+      t.unit_id,
+      t.contract_no,
+      t.contract_name,
+      t.deal_time,
+      t.complete_time,
+      t.contract_file,
+      t.create_date,
+      b.login_name,
+      d.group_name,
+      t.note,
+      t.contract_loan,
+      t.renew_sign,
+      t.charge_flag,
+      t.goods_no,
+      t.goods_not,
+      t.dept_no,
+      t.dept_not,
+      t.stop_not
+      from dgrpcontractinfo t, ep_sys_loginmsg_info b, ep_sys_group_info d
+      where 1 = 1
+      and t.create_login = b.login_no(+)
+      and t.org_code = d.group_id(+)
+      and t.goods_no = #{goods_no}
+      and t.org_code in (select group_id
+      from ep_sys_group_rel
+      where parent_group_id = #{parent_group_id})
+     and contract_no = #{contract_no}
+     <![CDATA[and to_char(t.create_date, 'yyyy-mm-dd') >= #{deal_time}
+     and to_char(t.create_date, 'yyyy-mm-dd') <= #{complete_time}]]>
+    </select>
+    <!--查询-->
+    <select id="getControbusman" parameterType="com.esop.visitInfo.dto.ControactBusDto" resultType="com.esop.visitInfo.dto.ControactBusDto">
+        select t.contract_id,
+               t.unit_id,
+               t.contract_no,
+               t.contract_name,
+               t.deal_time,
+               t.complete_time,
+               t.contract_file,
+               to_char(t.create_date,'yyyy-mm-dd hh24:mi:ss') create_date,
+               b.login_name,
+               d.group_name,
+               t.note,
+               t.contract_loan,
+               t.renew_sign
+          from dgrpcontractinfo t, ep_sys_loginmsg_info b, ep_sys_group_info d
+         where 1 = 1
+           and t.create_login = b.login_no(+)
+           and t.org_code = d.group_id(+)
+           and t.contract_id = #{contract_id}
+    </select>
+
+    <!--新增-->
+    <select id="insertControbus" parameterType="com.esop.visitInfo.dto.ControactBusDto" resultType="com.esop.visitInfo.dto.ControactBusDto">
+        insert into dgrpcontractinfo(
+        contract_id,unit_id,contract_no,contract_name,contract_loan,deal_time,complete_time,
+        create_date,create_login,org_code,note,contract_file,charge_flag,goods_not,
+        renew_sign,goods_no,dept_no,dept_not,stop_not
+        )
+         values(
+         to_number(#{contract_id}),to_number(#{unit_id}),#{contract_no},#{contract_name},#{contract_loan},#{deal_time},#{complete_time},
+         sysdate,#{create_login},(select group_id from ep_sys_group_info where group_name=#{org_code}),#{note},#{contract_file},#{charge_flag},#{goods_not},
+         #{renew_sign},#{goods_no},#{dept_no},#{dept_not},#{stop_not}
+         )
+    </select>
+    <!--修改-->
+    <select id="updateControbus" parameterType="com.esop.visitInfo.dto.ControactBusDto" resultType="com.esop.visitInfo.dto.ControactBusDto">
+        update dgrpcontractinfo set
+         contract_id=to_number(#{contract_id}),unit_id=to_number(#{unit_id}),contract_no=#{contract_no},contract_name=#{contract_name},
+         contract_loan=#{contract_loan},deal_time=#{deal_time},complete_time=#{complete_time},
+        create_date=sysdate,create_login=#{create_login},org_code=(select group_id from ep_sys_group_info where group_name=#{org_code}),note=#{note},
+        contract_file=#{contract_file},charge_flag=#{charge_flag},goods_not=#{goods_not},
+        renew_sign=#{renew_sign},goods_no=#{goods_no},dept_no=#{dept_no},dept_not=#{dept_not},stop_not=#{stop_not}
+         where contract_id=to_number(#{contract_id})
+    </select>
+
+</mapper>

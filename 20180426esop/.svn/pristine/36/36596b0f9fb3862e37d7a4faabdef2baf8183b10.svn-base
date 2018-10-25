@@ -1,0 +1,54 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by wangbl on 2017/5/30.
+ */
+//智能终端查询接口返回参数
+
+public class UnitPayStatisticsDto {
+    String manager_no = "";//客户经理工号
+    String manager_name = "";//客户经理名称
+    /*String unit_id = "";//集团编号
+    String unit_name = "";//集团名称*/
+
+    float totalunify_fee = 0;// 统付收入汇总
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+   /* public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }*/
+
+    public float getTotalunify_fee() {
+        return totalunify_fee;
+    }
+
+    public void setTotalunify_fee(float totalunify_fee) {
+        this.totalunify_fee = totalunify_fee;
+    }
+}

@@ -1,0 +1,67 @@
+package com.esop.common.jaxb;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Created by wangbl on 2017/3/14.
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
+public class MsgHeader {
+    String SOURCE_SYSTEM_ID ="";//系统标识
+    String SOURCE_SYSTEM_NAME ="";//系统名称
+    String SUBMIT_DATE ="";//调用时间
+    String PAGE_SIZE ="";//页大小
+    String CURRENT_PAGE ="";//访问页
+    String TOTAL_RECORD ="";//记录总数
+
+    public String getSOURCE_SYSTEM_ID() {
+        return SOURCE_SYSTEM_ID;
+    }
+
+    public void setSOURCE_SYSTEM_ID(String SOURCE_SYSTEM_ID) {
+        this.SOURCE_SYSTEM_ID = SOURCE_SYSTEM_ID;
+    }
+
+    public String getSOURCE_SYSTEM_NAME() {
+        return SOURCE_SYSTEM_NAME;
+    }
+
+    public void setSOURCE_SYSTEM_NAME(String SOURCE_SYSTEM_NAME) {
+        this.SOURCE_SYSTEM_NAME = SOURCE_SYSTEM_NAME;
+    }
+
+    public String getSUBMIT_DATE() {
+        return SUBMIT_DATE;
+    }
+
+    public void setSUBMIT_DATE(String SUBMIT_DATE) {
+        this.SUBMIT_DATE = SUBMIT_DATE;
+    }
+
+    public String getPAGE_SIZE() {
+        return PAGE_SIZE;
+    }
+
+    public void setPAGE_SIZE(String PAGE_SIZE) {
+        this.PAGE_SIZE = PAGE_SIZE;
+    }
+
+    public String getCURRENT_PAGE() {
+        return CURRENT_PAGE;
+    }
+
+    public void setCURRENT_PAGE(String CURRENT_PAGE) {
+        this.CURRENT_PAGE = CURRENT_PAGE;
+    }
+
+    public String getTOTAL_RECORD() {
+        return TOTAL_RECORD;
+    }
+
+    public void setTOTAL_RECORD(String TOTAL_RECORD) {
+        this.TOTAL_RECORD = TOTAL_RECORD;
+    }
+}

@@ -1,0 +1,926 @@
+package com.esop.basicManagement.controller;
+
+
+import com.esop.basicManagement.dto.*;
+
+import com.esop.common.jaxb.CallCrmService;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.common.security.DESPlus;
+import com.esop.common.security.IdEncryption;
+import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@RestController
+public class BasicManagementRC {
+    @Autowired
+    com.esop.basicManagement.service.BasicManagementService basicManagementService;
+    @Autowired
+    CallCrmService callCrmService;
+    private static Logger logger = Logger.getLogger(BasicManagementRC.class);
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    @Value("${service4ALoginRole}")
+    private String service4ALoginRole;
+
+    @RequestMapping(value="/basicManagement")
+    public String getBasicManagement(BasicManagementDto parameter, HttpServletRequest request, boolean flag){
+        List<BasicManagementDto> list;
+
+        String id_iccid = parameter.getId_card_no();
+        if(!id_iccid.equals("")&&id_iccid!=null){
+            try {
+                DESPlus des = new DESPlus("sitech");
+                id_iccid = des.encrypt(id_iccid);
+                parameter.setId_card_no(id_iccid);
+            }catch (Exception e){
+                return "";
+            }
+        }
+
+        list = basicManagementService.getBasicManagementList(parameter);
+        String num = list.get(0).getNum();
+        return num;
+    }
+
+    @RequestMapping(value="/basicManagementUC")
+    public String getBasicManagementUC(BasicManagementDto parameter, HttpServletRequest request, boolean flag){
+        List<BasicManagementDto> list;
+        list = basicManagementService.getBasicManagementListUC(parameter);
+        String num = list.get(0).getNum();
+        return num;
+    }
+
+    //插入
+    //@RequestMapping(value="/basicManagementAdd")
+    public Map managementAdd(BasicManagementDto parameter){
+        Map map=new HashMap();
+        try {
+            String result="0,新增失败";
+            int rst = 0;
+            HttpURLConnection conn = null;
+
+
+            String role_code = parameter.getRole_code();
+            List<BasicManagementDto> listCrmFuncNum;
+            parameter.setRole_code(parameter.getRole_code()+"01");
+            listCrmFuncNum = basicManagementService.getCrmFuncNum(parameter);
+            String num = listCrmFuncNum.get(0).getNum();
+            parameter.setRole_code(role_code);
+
+            //营业同步+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            //获取营业密码
+            String login_no = parameter.getLanding_no();
+            System.out.println("login_no---------------"+login_no);
+            List<BasicManagementDto> list;
+            list = basicManagementService.getBusiPasswordListUC(parameter);
+            if(list.size()>0) {
+                String pwd = list.get(0).getBoss_password();
+                //获取org_code
+                String org_code = parameter.getBusido_region()+parameter.getBusido_town()+parameter.getOffice_town()+parameter.getLogin_no().substring(4,6);
+                parameter.setOrg_code(org_code);
+                //取当前时间
+                Date current = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                String dateNow = sdf.format(current);
+                dateNow+="000000";
+                //营业同步 开始
+                /*String xmlParamter= "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root>";
+                xmlParamter+="<psworkno>"+login_no+"</psworkno>";//操作工号
+                xmlParamter+="<psworkpwd>"+pwd+"</psworkpwd>";//操作工号密码(营业密码)
+                xmlParamter+="<psopcode>8002</psopcode>";//写死8002
+                xmlParamter+="<poptype>0</poptype>";//0_增加;1_修改;2_查询
+                xmlParamter+="<ploginno>"+parameter.getLogin_no()+"</ploginno>";//要增加的工号
+                xmlParamter+="<ploginname>"+parameter.getLogin_name()+"</ploginname>";//名称
+                xmlParamter+="<ploginflag>2</ploginflag>";//工号类型 默认传 2
+                xmlParamter+="<ploginpwd>"+parameter.getPassword()+"</ploginpwd>";//密码明文
+                xmlParamter+="<ppowercode>"+parameter.getBoss_role_code()+"</ppowercode>";//boss角色代码
+                //xmlParamter+="<ppowercode>011605</ppowercode>";
+                xmlParamter+="<ppowerright>"+parameter.getRight_code()+"</ppowerright>";//boss角色权限
+                xmlParamter+="<prptright>7</prptright>";//报表权限默认7
+                xmlParamter+="<pallowbegin>"+dateNow+"</pallowbegin>";//开始时间
+                xmlParamter+="<pallowend>20500101000000</pallowend>";//结束时间
+                xmlParamter+="<pexpiretime>20500101000000</pexpiretime>";//到期时间
+                xmlParamter+="<ptrytimes>0</ptrytimes>";//登陆次数--默认0
+                xmlParamter+="<pvalidflag>1</pvalidflag>";//0_无效;1_有效
+                xmlParamter+="<pmaintainflag>0</pmaintainflag>";//维护标志(0_非维护;1_维护)
+                xmlParamter+="<porgcode>"+org_code+"</porgcode>";//归属代码org_code
+                xmlParamter+="<pDeptcode></pDeptcode>";//部门代码(传空)
+                xmlParamter+="<plastIpadd>10.110.22.167</plastIpadd>";//登陆IP地址
+                xmlParamter+="<preloginflag>1</preloginflag>";//重复登陆标志(0_不允许,1_允许)
+                xmlParamter+="<ploginstatus>2</ploginstatus>";//登陆状态(1_签到,2_签退)（默认传2）
+                xmlParamter+="<popnote></popnote>";//操作备注
+                xmlParamter+="<ploginphone>"+parameter.getContract_phone()+"</ploginphone>";//工号电话
+                xmlParamter+="<pregionchar>Y</pregionchar>";//异地操作权限（默认传 Y）
+                xmlParamter+="<vpersonId></vpersonId>";//人员ID(暂时不用)
+                xmlParamter+="<paccountno>"+parameter.getLogin_no()+"</paccountno>";//帐号代码---同工号代码
+                xmlParamter+="<pacctype>1</pacctype>";//帐号类型(1_BOSS工号;2_客服工号)（默认传 1）
+                xmlParamter+="<vgroupId>"+parameter.getGroup_id()+"</vgroupId>";//组织节点号码
+                xmlParamter+="<skfpassword></skfpassword>";
+                xmlParamter+="<seq_mailcode>"+parameter.getLogin_no()+"</seq_mailcode>";//邮箱 小于10位
+                xmlParamter+="<vloginway>0</vloginway>";//登陆方式0-原有登陆方式 默认传0
+                xmlParamter+="<vrejectflag>0</vrejectflag>";//是否剔除实收中的统计(0不剔除1剔除)(传0)
+                xmlParamter+="<vrejecttype></vrejecttype>";
+                xmlParamter+="<ioacode>"+parameter.getOa_no()+"</ioacode>";//待确认
+                xmlParamter+="<ioatitle>"+parameter.getOa_title()+"</ioatitle>";//待确认
+                xmlParamter+="</root>";
+                System.out.println("+++++++++++++++++++++++++ xmlParamter = "+xmlParamter);
+                String resulXml = callCrmService.CrmWebserviceCall("s8002CfmWS_XML",xmlParamter);
+                System.out.println("+++++++++++++++++++++++++ resulXml = "+resulXml);
+                resulXml = resulXml.replace("&", "&amp;");
+
+                Document dom= DocumentHelper.parseText(resulXml);
+                Element R=dom.getRootElement();
+                String return_code_boss=R.element("RETURN_CODE").getText();
+                String return_msg_boss=R.element("RETURN_MSG").getText();
+                result = return_code_boss+","+return_msg_boss;
+                map.put("result",return_msg_boss);
+                if (resulXml.indexOf("成功") > 0) {*/
+                    String passwd = parameter.getPassword();
+                    String passwd4A = parameter.getPassword();
+                    DESPlus desplus = new DESPlus();
+                    passwd = desplus.encrypt(passwd);
+                    parameter.setPassword(passwd);
+
+                    String id_iccid = parameter.getId_card_no();
+                    DESPlus des = new DESPlus("sitech");
+                    id_iccid = des.encrypt(id_iccid);
+                    parameter.setId_card_no(id_iccid);
+
+/*
+
+                    rst=basicManagementService.insertBasicManagementFuncList(parameter);
+                    if (rst != 1) {
+                        map.put("result","同步工号的营业功能权限失败！");
+                        return map;
+                    }
+*/
+
+                    rst=basicManagementService.insertBasicManagementList(parameter);
+                    if (rst == 1) {
+                        rst = basicManagementService.insertGrpManagerMsgList(parameter);
+                        if (rst == 1) {
+                            String url = service4ALoginRole+"call4AService_UserAdd";
+                            url+="?userid="+parameter.getLogin_no();
+                            url+="&username="+parameter.getLogin_name();
+                            url+="&userpassword="+passwd4A;
+                            url+="&phone="+parameter.getContract_phone();
+                            url+="&roleid="+parameter.getRole_code();
+                            url+="&orgid="+parameter.getGroup_id();
+
+                            System.out.println("############################ url = "+url);
+
+                            URL target = new URL(url);
+                            conn = (HttpURLConnection) target.openConnection();
+                            conn.setDoInput(true);
+                            conn.setDoOutput(true);
+                            conn.setRequestMethod("POST");
+                            conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+
+                            //OutputStream os = conn.getOutputStream();
+                            //os.write(paramDto.getParam().getBytes("utf8"));
+
+                            InputStream is = conn.getInputStream();
+                            byte[] b = new byte[1024];
+                            int len = 0;
+                            String resp = "";
+                            while((len = is.read(b)) != -1){
+                                String ss = new String(b,0,len,"UTF-8");
+                                resp += ss;
+                            }
+                            System.out.println("出参-----------"+resp);
+                            if(resp.indexOf("成功") > 0){
+
+                                if(parameter.getIs_grp_staff1().equals("Y")) {
+                                    //一级ESOP同步 开始
+                                    String regioncode = parameter.getGroup_id();
+                                    String tempRegionCode = "0000";
+                                    if ("10031".equals(regioncode)) {           //哈尔滨
+                                        tempRegionCode = "4510";
+                                    } else if ("10032".equals(regioncode)) {     //齐齐哈尔
+                                        tempRegionCode = "4520";
+                                    } else if ("10033".equals(regioncode)) {     //牡丹江
+                                        tempRegionCode = "4530";
+                                    } else if ("10034".equals(regioncode)) {     //佳木斯
+                                        tempRegionCode = "4540";
+                                    } else if ("10035".equals(regioncode)) {     //双鸭山
+                                        tempRegionCode = "4690";
+                                    } else if ("10036".equals(regioncode)) {     //七台河
+                                        tempRegionCode = "4640";
+                                    } else if ("10037".equals(regioncode)) {     //鸡西
+                                        tempRegionCode = "4670";
+                                    } else if ("10038".equals(regioncode)) {     //鹤岗
+                                        tempRegionCode = "4680";
+                                    } else if ("10039".equals(regioncode)) {     //伊春
+                                        tempRegionCode = "4580";
+                                    } else if ("10040".equals(regioncode)) {     //黑河
+                                        tempRegionCode = "4560";
+                                    } else if ("10041".equals(regioncode)) {     //绥化
+                                        tempRegionCode = "4550";
+                                    } else if ("10042".equals(regioncode)) {     //大兴安岭
+                                        tempRegionCode = "4570";
+                                    } else if ("10043".equals(regioncode)) {     //大庆
+                                        tempRegionCode = "4590";
+                                    }
+
+                                    String xmlOLEsopParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><REQUEST_INFO>";
+                                    xmlOLEsopParamter += "<loginNo>" + parameter.getLogin_no() + "</loginNo>";
+                                    xmlOLEsopParamter += "<orgCode>" + parameter.getGroup_id() + "</orgCode>";
+                                    xmlOLEsopParamter += "<opCode>451e</opCode>";
+                                    xmlOLEsopParamter += "<Action>1</Action>";
+                                    xmlOLEsopParamter += "<StaffNumber>" + parameter.getGrp_staff_number1() + "</StaffNumber>";
+                                    xmlOLEsopParamter += "<CompanyID>451</CompanyID>";
+                                    xmlOLEsopParamter += "<Mobile>" + parameter.getContract_phone() + "</Mobile>";
+                                    xmlOLEsopParamter += "<RoleType>" + parameter.getGrp_role_code() + "</RoleType>";
+                                    if (parameter.getGrp_role_code().indexOf("4") > 0) {
+                                        //1跨省数据专线 2跨省数据专线 3双跨融合通信 4短彩信 5WLAN统付 6流量统付 7CDN业务
+                                        xmlOLEsopParamter += "<BusiType>1,2,3,4,5,6,7</BusiType>";
+                                    }
+                                    xmlOLEsopParamter += "<Type>" + parameter.getGrpusertype() + "</Type>";
+                                    xmlOLEsopParamter += "<Location>" + tempRegionCode + "</Location>";
+                                    xmlOLEsopParamter += "<NeedRemind>" + parameter.getNeed_remind() + "</NeedRemind>";
+                                    xmlOLEsopParamter += "<DisplayName>" + parameter.getLogin_name() + "</DisplayName>";
+                                    xmlOLEsopParamter += "<Notes></Notes>";
+                                    xmlOLEsopParamter += "</REQUEST_INFO></ROOT>";
+                                    System.out.println("+++++++++++++++++++++++++ xmlParamter = " + xmlOLEsopParamter);
+                                    String resulOLEsopXml = callCrmService.CrmWebserviceCall("s451eWSXML", xmlOLEsopParamter);
+                                    resulOLEsopXml = resulOLEsopXml.replace("&", "&amp;");
+
+                                    Document dom_oneEsop= DocumentHelper.parseText(resulOLEsopXml);
+                                    Element R_oneEsop=dom_oneEsop.getRootElement();
+                                    String return_code=R_oneEsop.element("RETURN_CODE").getText();
+                                    String return_msg=R_oneEsop.element("RETURN_MSG").getText();
+                                    System.out.println(return_code);
+                                    System.out.println(return_msg);
+
+                                    if(num.equals("0")){
+                                        map.put("result","添加成功！");
+                                    }else {
+                                        map.put("result","添加成功！本操作涉及CRM功能赋权，请确认相关工号是否已在CRM系统完成相关赋权！");
+                                    }
+                                    return map;
+                                }else {
+                                    if(num.equals("0")){
+                                        map.put("result","添加成功！");
+                                    }else {
+                                        map.put("result","添加成功！本操作涉及CRM功能赋权，请确认相关工号是否已在CRM系统完成相关赋权！");
+                                    }
+                                    return map;
+                                }
+                            }else {
+                                //result = "9997,4A同步失败！";
+                                map.put("result","4A同步失败！");
+                                return map;
+                            }
+                            //return result;
+                        }else{
+                            //result = "9996,客户经理信息数据插入失败！";
+                            map.put("result","客户经理信息数据插入失败！");
+                            return map;
+                        }
+                    }else{
+                        //result = "9993,ESOP工号数据插入失败！";
+                        map.put("result","ESOP工号数据插入失败！");
+                        return map;
+                    }
+                /*} else {
+                    //return result;
+                    return map;
+                }*/
+                //营业同步 结束
+                //营业同步+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+            }else{
+                System.out.println("查询操作工号营业密码失败!");
+                map.put("result","查询操作工号营业密码失败!");
+                return map;
+            }
+        }catch (Exception e){
+            //return "9990,系统错误，请联系系统管理员！";
+            map.put("result","系统错误，请联系系统管理员！");
+            return map;
+        }
+    }
+
+    //查询
+    @RequestMapping(value="/basicManagementQuery")
+    public List<BasicManagementDto> managementQuery(BasicManagementDto parameter){
+        try {
+            DESPlus des = new DESPlus("sitech");
+            IdEncryption idEncryption = new IdEncryption();
+
+            List<BasicManagementDto> list;
+
+            list=basicManagementService.queryBasicManagementList(parameter);
+            //System.out.println("length -------------"+list.size());
+            if(list.size()>0){
+                BasicManagementDto basicManagementDto= (BasicManagementDto)list.get(0);
+                if(!basicManagementDto.getId_card_no().equals("")) {
+                    logger.info("Id_card_no=========================dddddddd=======" + des.decrypt(basicManagementDto.getId_card_no()));
+                    String idCardNo = des.decrypt(basicManagementDto.getId_card_no());
+                    idCardNo = idEncryption.encryptData(idCardNo);
+                    System.out.println("/n/n+++++++++++++++++ idCardNo = " + idCardNo);
+                    basicManagementDto.setId_card_no(idCardNo);
+                    list.add(0, basicManagementDto);
+                }
+            }
+            return list;
+
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    //更新
+    @RequestMapping(value="/basicManagementUpdate")
+    public Map managementUpdate(BasicManagementDto parameter){
+        Map map=new HashMap();
+        try {
+            int result=0;
+            HttpURLConnection conn = null;
+
+            String role_code = parameter.getRole_code();
+            List<BasicManagementDto> listCrmFuncNum;
+            parameter.setRole_code(parameter.getRole_code()+"01");
+            listCrmFuncNum = basicManagementService.getCrmFuncNum(parameter);
+            String num = listCrmFuncNum.get(0).getNum();
+            parameter.setRole_code(role_code);
+
+            if(!parameter.getLanding_no().equals(parameter.getLogin_no())) {
+                String passwd = parameter.getPassword();
+                DESPlus desplus = new DESPlus();
+                passwd = desplus.encrypt(passwd);
+                parameter.setPassword(passwd);
+
+                String id_iccid = parameter.getId_card_no();
+                DESPlus des = new DESPlus("sitech");
+                id_iccid = des.encrypt(id_iccid);
+                parameter.setId_card_no(id_iccid);
+
+                //营业更新+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+                //获取营业密码
+                String login_no = parameter.getLanding_no();
+                List<BasicManagementDto> list;
+                list = basicManagementService.getBusiPasswordListUC(parameter);
+                if (list.size() > 0) {
+                    String pwd = list.get(0).getBoss_password();
+                    //获取当前工号信息
+                    String login_no_now = parameter.getLogin_no();
+                    BasicManagementUpdateDto basicManagementUpdateDto = new BasicManagementUpdateDto();
+                    basicManagementUpdateDto.setTp_login(login_no_now);
+                    List<BasicManagementUpdateDto> list_now;
+                    list_now = basicManagementService.queryBasicManagementUpdateList(basicManagementUpdateDto);
+                    if (list_now.size() > 0) {
+                        List<BasicManagementDto> list_bossGroup;
+                        list_bossGroup = basicManagementService.getBusiPGroupListUC(parameter);
+                        //取当前时间
+                        Date current = new Date();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                        String dateNow = sdf.format(current);
+                        dateNow += "070000";
+                        //营业同步 开始
+                        //CallCrmService callCrmService = new CallCrmService();
+                        /*String xmlParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root>";
+                        xmlParamter += "<psworkno>" + login_no + "</psworkno>";//操作工号
+                        xmlParamter += "<psworkpwd>" + pwd + "</psworkpwd>";//操作工号密码(营业密码)
+                        xmlParamter += "<psopcode>8002</psopcode>";//写死8002
+                        xmlParamter += "<poptype>1</poptype>";//0_增加;1_修改;2_查询
+                        xmlParamter += "<ploginno>" + login_no_now + "</ploginno>";//要增加的工号
+                        xmlParamter += "<ploginname>" + parameter.getLogin_name() + "</ploginname>";//名称
+                        xmlParamter += "<ploginflag>2</ploginflag>";//工号类型 默认传 2
+                        xmlParamter += "<ploginpwd>" + desplus.decrypt(list_now.get(0).getPassword()) + "</ploginpwd>";//密码明文
+                        xmlParamter += "<ppowercode>" + list_now.get(0).getBoss_role_code() + "</ppowercode>";//boss角色代码
+                        xmlParamter += "<ppowerright>" + list_now.get(0).getRight_code() + "</ppowerright>";//boss角色权限
+                        xmlParamter += "<prptright>7</prptright>";//报表权限默认7
+                        xmlParamter += "<pallowbegin>" + dateNow + "</pallowbegin>";//开始时间
+                        xmlParamter += "<pallowend>20500101235959</pallowend>";//结束时间
+                        xmlParamter += "<pexpiretime>20500101000000</pexpiretime>";//到期时间
+                        xmlParamter += "<ptrytimes>0</ptrytimes>";//登陆次数--默认0
+                        xmlParamter += "<pvalidflag>" + parameter.getVilid_flag() + "</pvalidflag>";//0_无效;1_有效
+                        xmlParamter += "<pmaintainflag>0</pmaintainflag>";//维护标志(0_非维护;1_维护)
+                        xmlParamter += "<porgcode>" + list_now.get(0).getOrg_code() + "</porgcode>";//归属代码org_code
+                        xmlParamter += "<pDeptcode></pDeptcode>";//部门代码(传空)
+                        xmlParamter += "<plastIpadd>10.110.22.167</plastIpadd>";//登陆IP地址
+                        xmlParamter += "<preloginflag>1</preloginflag>";//重复登陆标志(0_不允许,1_允许)
+                        xmlParamter += "<ploginstatus>2</ploginstatus>";//登陆状态(1_签到,2_签退)（默认传2）
+                        xmlParamter += "<popnote></popnote>";//操作备注
+                        xmlParamter += "<ploginphone>" + parameter.getContract_phone() + "</ploginphone>";//工号电话
+                        xmlParamter += "<pregionchar>Y</pregionchar>";//异地操作权限（默认传 Y）
+                        xmlParamter += "<vpersonId></vpersonId>";//人员ID(暂时不用)
+                        xmlParamter += "<paccountno>" + login_no_now + "</paccountno>";//帐号代码---同工号代码
+                        xmlParamter += "<pacctype>1</pacctype>";//帐号类型(1_BOSS工号;2_客服工号)（默认传 1）
+                        xmlParamter += "<vgroupId>" + list_bossGroup.get(0).getGroup_id() + "</vgroupId>";//组织节点号码
+                        xmlParamter += "<skfpassword></skfpassword>";
+                        xmlParamter += "<seq_mailcode>" + login_no_now + "</seq_mailcode>";//邮箱 小于10位
+                        xmlParamter += "<vloginway>0</vloginway>";//登陆方式0-原有登陆方式 默认传0
+                        xmlParamter += "<vrejectflag>0</vrejectflag>";//是否剔除实收中的统计(0不剔除1剔除)(传0)
+                        xmlParamter += "<vrejecttype></vrejecttype>";
+                        xmlParamter += "<ioacode>"+parameter.getOa_no()+"</ioacode>";//待确认
+                        xmlParamter += "<ioatitle>"+parameter.getOa_title()+"</ioatitle>";//待确认
+                        xmlParamter += "</root>";
+                        System.out.println("+++++++++++++++++++++++++ xmlParamter = " + xmlParamter);
+                        String resulXml = callCrmService.CrmWebserviceCall("s8002CfmWS_XML", xmlParamter);
+                        System.out.println("+++++++++++++++++++++++++ resulXml = " + resulXml);
+                        resulXml = resulXml.replace("&", "&amp;");*/
+
+//                    Document dom = DocumentHelper.parseText(resulXml);
+//                    Element R = dom.getRootElement();
+//                    String return_code = R.element("RETURN_CODE").getText();
+//                    System.out.println("+++++++++++++++++++++++++ resulXml = [" + return_code + "]");
+//                    if (return_code.equals("000000")) {
+                        BasicManagementGrpStaffDto basicManagementGrpStaffDto = new BasicManagementGrpStaffDto();
+                        List<BasicManagementGrpStaffDto> grpStaffList;
+                        basicManagementGrpStaffDto.setLogin_no(login_no_now);
+                        grpStaffList=basicManagementService.queryBasicManagementGrpStaffList(basicManagementGrpStaffDto);
+                        String before_isgrpstaff = "";
+                        if (grpStaffList.size()>0){
+                            before_isgrpstaff = grpStaffList.get(0).getIs_grp_staff();
+                        }
+                        String isGrpStaff = parameter.getIs_grp_staff();
+
+
+                        /*Document dom= DocumentHelper.parseText(resulXml);
+                        Element R=dom.getRootElement();
+                        String return_code_boss=R.element("RETURN_CODE").getText();
+                        String return_msg_boss=R.element("RETURN_MSG").getText();
+                        map.put("result",return_msg_boss);
+
+                        if (resulXml.indexOf("成功") > 0) {*/
+                            result = basicManagementService.updateBasicManagementList(parameter);
+                            if (result == 1) {
+                                result = basicManagementService.updateGrpManagerMsgList(parameter);
+                                if (result == 1) {
+                                    String url = service4ALoginRole+"call4AService_UserUpdate";
+                                    url+="?userid="+parameter.getLogin_no();
+                                    url+="&username="+parameter.getLogin_name();
+                                    url+="&userpassword="+desplus.decrypt(list_now.get(0).getPassword());
+                                    url+="&phone="+parameter.getContract_phone();
+                                    url+="&roleid="+parameter.getRole_code();
+                                    url+="&orgid="+parameter.getGroup_id();
+
+                                    System.out.println("############################ url = "+url);
+
+                                    URL target = new URL(url);
+                                    conn = (HttpURLConnection) target.openConnection();
+                                    conn.setDoInput(true);
+                                    conn.setDoOutput(true);
+                                    conn.setRequestMethod("POST");
+                                    conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+
+                                    //OutputStream os = conn.getOutputStream();
+                                    //os.write(paramDto.getParam().getBytes("utf8"));
+
+                                    InputStream is = conn.getInputStream();
+                                    byte[] b = new byte[1024];
+                                    int len = 0;
+                                    String resp = "";
+                                    while((len = is.read(b)) != -1){
+                                        String ss = new String(b,0,len,"UTF-8");
+                                        resp += ss;
+                                    }
+                                    System.out.println("出参-----------"+resp);
+                                    if(resp.indexOf("成功") > 0){
+                                        if(parameter.getIs_grp_staff1().equals("Y")) {
+                                            //一级ESOP同步 开始
+                                            String regioncode = parameter.getGroup_id();
+                                            String tempRegionCode = "0000";
+                                            if ("10031".equals(regioncode)) {           //哈尔滨
+                                                tempRegionCode = "4510";
+                                            } else if ("10032".equals(regioncode)) {     //齐齐哈尔
+                                                tempRegionCode = "4520";
+                                            } else if ("10033".equals(regioncode)) {     //牡丹江
+                                                tempRegionCode = "4530";
+                                            } else if ("10034".equals(regioncode)) {     //佳木斯
+                                                tempRegionCode = "4540";
+                                            } else if ("10035".equals(regioncode)) {     //双鸭山
+                                                tempRegionCode = "4690";
+                                            } else if ("10036".equals(regioncode)) {     //七台河
+                                                tempRegionCode = "4640";
+                                            } else if ("10037".equals(regioncode)) {     //鸡西
+                                                tempRegionCode = "4670";
+                                            } else if ("10038".equals(regioncode)) {     //鹤岗
+                                                tempRegionCode = "4680";
+                                            } else if ("10039".equals(regioncode)) {     //伊春
+                                                tempRegionCode = "4580";
+                                            } else if ("10040".equals(regioncode)) {     //黑河
+                                                tempRegionCode = "4560";
+                                            } else if ("10041".equals(regioncode)) {     //绥化
+                                                tempRegionCode = "4550";
+                                            } else if ("10042".equals(regioncode)) {     //大兴安岭
+                                                tempRegionCode = "4570";
+                                            } else if ("10043".equals(regioncode)) {     //大庆
+                                                tempRegionCode = "4590";
+                                            }
+
+                                            String syncType = "2";
+                                            if("N".equals(before_isgrpstaff)&&"Y".equals(isGrpStaff)){
+                                                syncType = "1";      //如果之前没有总部权限  修改成有  就是添加操作
+                                            }else if("Y".equals(before_isgrpstaff)&&"N".equals(isGrpStaff)){
+                                                syncType = "3";      //如果之前有  修改成没有  就是删除操作
+                                            }else if("Y".equals(before_isgrpstaff)&&"Y".equals(isGrpStaff)){
+                                                syncType = "2";      //如果之前有  目前还是有  就是修改操作
+                                            }
+
+                                            String xmlOLEsopParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><REQUEST_INFO>";
+                                            xmlOLEsopParamter += "<loginNo>" + parameter.getLogin_no() + "</loginNo>";
+                                            xmlOLEsopParamter += "<orgCode>" + parameter.getGroup_id() + "</orgCode>";
+                                            xmlOLEsopParamter += "<opCode>451e</opCode>";
+                                            xmlOLEsopParamter += "<Action>"+syncType+"</Action>";
+                                            xmlOLEsopParamter += "<StaffNumber>" + parameter.getGrp_staff_number1() + "</StaffNumber>";
+                                            xmlOLEsopParamter += "<CompanyID>451</CompanyID>";
+                                            xmlOLEsopParamter += "<Mobile>" + parameter.getContract_phone() + "</Mobile>";
+                                            xmlOLEsopParamter += "<RoleType>" + parameter.getGrp_role_code() + "</RoleType>";
+                                            if (parameter.getGrp_role_code().indexOf("4") > 0) {
+                                                //1跨省数据专线 2跨省数据专线 3双跨融合通信 4短彩信 5WLAN统付 6流量统付 7CDN业务
+                                                xmlOLEsopParamter += "<BusiType>1,2,3,4,5,6,7</BusiType>";
+                                            }
+                                            xmlOLEsopParamter += "<Type>" + parameter.getGrpusertype() + "</Type>";
+                                            xmlOLEsopParamter += "<Location>" + tempRegionCode + "</Location>";
+                                            xmlOLEsopParamter += "<NeedRemind>" + parameter.getNeed_remind() + "</NeedRemind>";
+                                            xmlOLEsopParamter += "<DisplayName>" + parameter.getLogin_name() + "</DisplayName>";
+                                            xmlOLEsopParamter += "<Notes></Notes>";
+                                            xmlOLEsopParamter += "</REQUEST_INFO></ROOT>";
+                                            System.out.println("+++++++++++++++++++++++++ xmlParamter = " + xmlOLEsopParamter);
+                                            String resulOLEsopXml = callCrmService.CrmWebserviceCall("s451eWSXML", xmlOLEsopParamter);
+                                            resulOLEsopXml = resulOLEsopXml.replace("&", "&amp;");
+
+                                            Document dom_oneEsop= DocumentHelper.parseText(resulOLEsopXml);
+                                            Element R_oneEsop=dom_oneEsop.getRootElement();
+                                            String return_code=R_oneEsop.element("RETURN_CODE").getText();
+                                            String return_msg=R_oneEsop.element("RETURN_MSG").getText();
+                                            System.out.println(return_code);
+                                            System.out.println(return_msg);
+
+                                            if(num.equals("0")){
+                                                map.put("result","修改成功！");
+                                            }else {
+                                                map.put("result","修改成功！本操作涉及CRM功能赋权，请确认相关工号是否已在CRM系统完成相关赋权！");
+                                            }
+                                            return map;
+                                        }else {
+                                            if(num.equals("0")){
+                                                map.put("result","修改成功！");
+                                            }else {
+                                                map.put("result","修改成功！本操作涉及CRM功能赋权，请确认相关工号是否已在CRM系统完成相关赋权！");
+                                            }
+                                            return map;
+                                        }
+                                    }else {
+                                        map.put("result","4A同步失败！");
+                                        return map;
+                                    }
+                                    //return result;
+                                }else{
+                                    map.put("result","客户经理信息数据修改失败！");
+                                    return map;
+                                }
+                            }else{
+                                map.put("result","ESOP工号数据修改失败！");
+                                return map;
+                            }
+                        /*} else {
+                            return map;
+                        }*/
+                    } else {
+                        System.out.println("查询工号信息失败!");
+                        map.put("result","查询工号信息失败!");
+                        return map;
+                    }
+                } else {
+                    System.out.println("查询操作工号营业密码失败!");
+                    map.put("result","查询操作工号营业密码失败!");
+                    return map;
+                }
+            } else {
+                System.out.println("不能修改自己的工号!");
+                map.put("result","不能修改自己的工号!");
+                return map;
+            }
+            //营业更新 结束
+            //营业同步+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        }catch (Exception e){
+            map.put("result","系统错误，请联系系统管理员！");
+            return map;
+        }
+    }
+
+    //@RequestMapping(value="/basicManagementBossLogInfInsert")
+    public Map managementBossLogInfInsert(BasicManagementDto parameter){
+        Map map=new HashMap();
+        int result;
+        HttpURLConnection conn = null;
+        try {
+            String passwd = parameter.getPassword();
+            String passwd4A = parameter.getPassword();
+            DESPlus desplus = new DESPlus();
+            passwd = desplus.encrypt(passwd);
+            parameter.setPassword(passwd);
+
+            String id_iccid = parameter.getId_card_no();
+            DESPlus des = new DESPlus("sitech");
+            id_iccid = des.encrypt(id_iccid);
+            parameter.setId_card_no(id_iccid);
+
+            result = basicManagementService.insertBasicBossChangeList(parameter);
+            if (result == 1) {
+                result = basicManagementService.insertGrpManagerBossMsgList(parameter);
+                if (result == 1) {
+                    String url = service4ALoginRole+"call4AService_UserAdd";
+                    url+="?userid="+parameter.getLogin_no();
+                    url+="&username="+parameter.getLogin_name();
+                    url+="&userpassword="+passwd4A;
+                    url+="&phone="+parameter.getContract_phone();
+                    url+="&roleid="+parameter.getRole_code();
+                    url+="&orgid="+parameter.getGroup_id();
+
+                    System.out.println("############################ url = "+url);
+
+                    URL target = new URL(url);
+                    conn = (HttpURLConnection) target.openConnection();
+                    conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+
+                    //OutputStream os = conn.getOutputStream();
+                    //os.write(paramDto.getParam().getBytes("utf8"));
+
+                    InputStream is = conn.getInputStream();
+                    byte[] b = new byte[1024];
+                    int len = 0;
+                    String resp = "";
+                    while((len = is.read(b)) != -1){
+                        String ss = new String(b,0,len,"UTF-8");
+                        resp += ss;
+                    }
+                    System.out.println("出参-----------"+resp);
+                    if(resp.indexOf("成功") > 0){
+
+                        if(parameter.getIs_grp_staff4().equals("Y")) {
+                            //一级ESOP同步 开始
+                            String regioncode = parameter.getGroup_id();
+                            String tempRegionCode = "0000";
+                            if ("10031".equals(regioncode)) {           //哈尔滨
+                                tempRegionCode = "4510";
+                            } else if ("10032".equals(regioncode)) {     //齐齐哈尔
+                                tempRegionCode = "4520";
+                            } else if ("10033".equals(regioncode)) {     //牡丹江
+                                tempRegionCode = "4530";
+                            } else if ("10034".equals(regioncode)) {     //佳木斯
+                                tempRegionCode = "4540";
+                            } else if ("10035".equals(regioncode)) {     //双鸭山
+                                tempRegionCode = "4690";
+                            } else if ("10036".equals(regioncode)) {     //七台河
+                                tempRegionCode = "4640";
+                            } else if ("10037".equals(regioncode)) {     //鸡西
+                                tempRegionCode = "4670";
+                            } else if ("10038".equals(regioncode)) {     //鹤岗
+                                tempRegionCode = "4680";
+                            } else if ("10039".equals(regioncode)) {     //伊春
+                                tempRegionCode = "4580";
+                            } else if ("10040".equals(regioncode)) {     //黑河
+                                tempRegionCode = "4560";
+                            } else if ("10041".equals(regioncode)) {     //绥化
+                                tempRegionCode = "4550";
+                            } else if ("10042".equals(regioncode)) {     //大兴安岭
+                                tempRegionCode = "4570";
+                            } else if ("10043".equals(regioncode)) {     //大庆
+                                tempRegionCode = "4590";
+                            }
+
+                            String xmlOLEsopParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT><REQUEST_INFO>";
+                            xmlOLEsopParamter += "<loginNo>" + parameter.getLogin_no() + "</loginNo>";
+                            xmlOLEsopParamter += "<orgCode>" + parameter.getGroup_id() + "</orgCode>";
+                            xmlOLEsopParamter += "<opCode>451e</opCode>";
+                            xmlOLEsopParamter += "<Action>1</Action>";
+                            xmlOLEsopParamter += "<StaffNumber>" + parameter.getGrp_staff_number4() + "</StaffNumber>";
+                            xmlOLEsopParamter += "<CompanyID>451</CompanyID>";
+                            xmlOLEsopParamter += "<Mobile>" + parameter.getContract_phone() + "</Mobile>";
+                            xmlOLEsopParamter += "<RoleType>" + parameter.getGrp_role_code() + "</RoleType>";
+                            if (parameter.getGrp_role_code().indexOf("4") > 0) {
+                                //1跨省数据专线 2跨省数据专线 3双跨融合通信 4短彩信 5WLAN统付 6流量统付 7CDN业务
+                                xmlOLEsopParamter += "<BusiType>1,2,3,4,5,6,7</BusiType>";
+                            }
+                            xmlOLEsopParamter += "<Type>" + parameter.getGrpusertype() + "</Type>";
+                            xmlOLEsopParamter += "<Location>" + tempRegionCode + "</Location>";
+                            xmlOLEsopParamter += "<NeedRemind>" + parameter.getNeed_remind() + "</NeedRemind>";
+                            xmlOLEsopParamter += "<DisplayName>" + parameter.getLogin_name() + "</DisplayName>";
+                            xmlOLEsopParamter += "<Notes></Notes>";
+                            xmlOLEsopParamter += "</REQUEST_INFO></ROOT>";
+                            System.out.println("+++++++++++++++++++++++++ xmlParamter = " + xmlOLEsopParamter);
+                            String resulOLEsopXml = callCrmService.CrmWebserviceCall("s451eWSXML", xmlOLEsopParamter);
+
+                            Document dom= DocumentHelper.parseText(resulOLEsopXml);
+                            Element R=dom.getRootElement();
+                            String return_code=R.element("RETURN_CODE").getText();
+                            String return_msg=R.element("RETURN_MSG").getText();
+                            System.out.println(return_code);
+                            System.out.println(return_msg);
+
+                            map.put("result","添加成功");
+                            return map;
+                        }else {
+                            map.put("result","添加成功");
+                            return map;
+                        }
+                    }else {
+                        map.put("result","4A同步失败！");
+                        return map;
+                    }
+                    //return result;
+                }else{
+                    map.put("result","客户经理信息数据插入失败！");
+                    return map;
+                }
+            }else{
+                map.put("result","ESOP工号数据插入失败！");
+                return map;
+            }
+        }catch (Exception e){
+            map.put("result","系统错误，请联系系统管理员！");
+            return map;
+        }
+    }
+
+    //获取组织树
+    @RequestMapping(value="/groupTreeMsg_group")
+    public List getGroupTreeMsg_group(GroupTreeDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManagementService.getGroupTreeMsgGroupList(parameter);
+        return list;
+    }
+    //获取角色树
+    @RequestMapping(value="/groupTreeMsg_role")
+    public List getGroupTreeMsg_role(GroupTreeDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManagementService.getGroupTreeMsgRoleList(parameter);
+        return list;
+    }
+    //获取BOSS角色树
+    @RequestMapping(value="/groupTreeMsg_bossRole")
+    public List getGroupTreeMsg_bossRole(GroupTreeInDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        GroupTreeDto groupTreeDto = new GroupTreeDto();
+        groupTreeDto.setId(parameter.getLanding_no());
+        groupTreeDto.setpId(parameter.getpId());
+        list = basicManagementService.getGroupTreeMsgBossRoleList(groupTreeDto);
+        return list;
+    }
+    //获取BOSS组织树
+    @RequestMapping(value="/groupTreeMsg_bossGroup")
+    public List getGroupTreeMsg_bossGroup(GroupTreeDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicManagementService.getGroupTreeMsgBossGroupList(parameter);
+        return list;
+    }
+    //---------------- 新增
+    //----------------  qiaojian
+    //插入工号审批表
+    @RequestMapping(value = "/insertLoginMsgMid")
+    public Map insertLoginMsgMid(BasicManagementDto parameter){
+        Map map = new HashMap();
+        String passwd = parameter.getPassword();
+        DESPlus desplus = null;
+        try {
+            desplus = new DESPlus();
+            passwd = desplus.encrypt(passwd);
+            parameter.setPassword(passwd);
+
+            String id_iccid = parameter.getId_card_no();
+            DESPlus des = new DESPlus("sitech");
+            id_iccid = des.encrypt(id_iccid);
+            parameter.setId_card_no(id_iccid);
+
+            parameter.setExamine_type("0");
+
+            if("1".equals(parameter.getHas_boss())){
+                //获取org_code
+                String org_code = parameter.getBusido_region()+parameter.getBusido_town()+parameter.getOffice_town()+parameter.getLogin_no().substring(4,6);
+                parameter.setOrg_code(org_code);
+            }
+
+            int res = basicManagementService.insertLoginMsgMid(parameter);
+            if(res == 1){
+                map.put("result","工号添加申请成功");
+            }else{
+                map.put("result","工号添加申请失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("result","工号添加申请失败");
+        }
+
+        return map;
+    }
+
+    @RequestMapping(value = "/getLoginMsgMidList")
+    public Result getLoginMsgMidList(BasicManagementDto parameter, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        result = basicManagementService.getLoginMsgMidList(parameter);
+        return result;
+    }
+
+    @RequestMapping(value = "/getLoginMsgMidDetail")
+    public BasicManagementDto getLoginMsgMidDetail(BasicManagementDto parameter){
+        BasicManagementDto dto = new BasicManagementDto();
+        try {
+            dto = basicManagementService.getLoginMsgMidDetail(parameter);
+            DESPlus des = new DESPlus("sitech");
+            String idcard_no = dto.getId_card_no();
+            idcard_no = des.decrypt(idcard_no);
+            IdEncryption idEncryption = new IdEncryption();
+            idcard_no = idEncryption.encryptData(idcard_no);
+            dto.setId_card_no(idcard_no);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return dto;
+    }
+
+    @RequestMapping(value = "/updateLoginMsgMid")
+    public Map updateLoginMsgMid(BasicManagementDto parameter){
+        Map map = new HashMap();
+
+        String examine_type = parameter.getExamine_type();
+
+        if("2".equals(examine_type)){
+            //不通过
+            try{
+                basicManagementService.updateLoginMsgMid(parameter);
+                map.put("result","操作成功");
+            }catch (Exception e){
+                map.put("result","操作失败");
+            }
+        }else{
+            BasicManagementDto dto = basicManagementService.getLoginMsgMidByOrderId(parameter);
+
+            String idcard_no = "";
+            String password = "";
+            try {
+                DESPlus desplus = new DESPlus();
+                DESPlus des = new DESPlus("sitech");
+
+                idcard_no = dto.getId_card_no();
+                idcard_no = des.decrypt(idcard_no);
+
+                password = dto.getPassword();
+                password = desplus.decrypt(password);
+
+                dto.setId_card_no(idcard_no);
+                dto.setPassword(password);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String has_boss = dto.getHas_boss();
+            if("0".equals(has_boss)){//有boss工号
+                dto.setIs_grp_staff4(dto.getIs_grp_staff());
+                dto.setGrp_staff_number4(dto.getGrp_staff_number());
+                map = managementBossLogInfInsert(dto);
+                String result = (String)map.get("result");
+                System.out.println("result-------------"+result);
+                if(result.indexOf("成功") > 0){
+                    basicManagementService.updateLoginMsgMid(parameter);
+                }
+            }else{
+                dto.setIs_grp_staff1(dto.getIs_grp_staff());
+                dto.setGrp_staff_number1(dto.getGrp_staff_number());
+                dto.setLanding_no(parameter.getLanding_no());
+                map = managementAdd(dto);
+                String result = (String)map.get("result");
+                if(result.indexOf("成功") > 0){
+                    basicManagementService.updateLoginMsgMid(parameter);
+                }
+            }
+
+        }
+        return map;
+    }
+}

@@ -1,0 +1,155 @@
+package com.esop.invoice.model;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class EpInvPreprintActInfo {
+    private Integer recSerialNo;
+
+    private String applicationNo;
+
+    private String groupAccountId;
+
+    private String groupAccountName;
+
+    private String taxNo;
+
+    private String taxAddress;
+
+    private String taxPhone;
+
+    private String taxBank;
+
+    private String taxBankAccount;
+
+    private String isGeneralTaxpayer;
+
+    private BigDecimal invoiceValue;
+
+    private String arrearsAccountPeriod;
+
+    private BigDecimal arrearsAmount;
+
+    public Integer getRecSerialNo() {
+        return recSerialNo;
+    }
+
+    public void setRecSerialNo(Integer recSerialNo) {
+        this.recSerialNo = recSerialNo;
+    }
+
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getGroupAccountId() {
+        return groupAccountId;
+    }
+
+    public void setGroupAccountId(String groupAccountId) {
+        this.groupAccountId = groupAccountId;
+    }
+
+    public String getGroupAccountName() {
+        return groupAccountName;
+    }
+
+    public void setGroupAccountName(String groupAccountName) {
+        this.groupAccountName = groupAccountName;
+    }
+
+    public String getTaxNo() {
+        return taxNo;
+    }
+
+    public void setTaxNo(String taxNo) {
+        this.taxNo = taxNo;
+    }
+
+    public String getTaxAddress() {
+        return taxAddress;
+    }
+
+    public void setTaxAddress(String taxAddress) {
+        this.taxAddress = taxAddress;
+    }
+
+    public String getTaxPhone() {
+        return taxPhone;
+    }
+
+    public void setTaxPhone(String taxPhone) {
+        this.taxPhone = taxPhone;
+    }
+
+    public String getTaxBank() {
+        return taxBank;
+    }
+
+    public void setTaxBank(String taxBank) {
+        this.taxBank = taxBank;
+    }
+
+    public String getTaxBankAccount() {
+        return taxBankAccount;
+    }
+
+    public void setTaxBankAccount(String taxBankAccount) {
+        this.taxBankAccount = taxBankAccount;
+    }
+
+    public String getIsGeneralTaxpayer() {
+        return isGeneralTaxpayer;
+    }
+
+    public void setIsGeneralTaxpayer(String isGeneralTaxpayer) {
+        this.isGeneralTaxpayer = isGeneralTaxpayer;
+    }
+
+    public BigDecimal getInvoiceValue() {
+        return invoiceValue;
+    }
+
+    public void setInvoiceValue(BigDecimal invoiceValue) {
+        this.invoiceValue = invoiceValue;
+    }
+
+    public String getArrearsAccountPeriod() {
+        return arrearsAccountPeriod;
+    }
+
+    public void setArrearsAccountPeriod(String arrearsAccountPeriod) {
+        this.arrearsAccountPeriod = arrearsAccountPeriod;
+    }
+
+    public BigDecimal getArrearsAmount() {
+        return arrearsAmount;
+    }
+
+    public void setArrearsAmount(BigDecimal arrearsAmount) {
+        this.arrearsAmount = arrearsAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "EpInvPreprintActInfo{" +
+                "recSerialNo=" + recSerialNo +
+                ", applicationNo='" + applicationNo + '\'' +
+                ", groupAccountId='" + groupAccountId + '\'' +
+                ", groupAccountName='" + groupAccountName + '\'' +
+                ", taxNo='" + taxNo + '\'' +
+                ", taxAddress='" + taxAddress + '\'' +
+                ", taxPhone='" + taxPhone + '\'' +
+                ", taxBank='" + taxBank + '\'' +
+                ", taxBankAccount='" + taxBankAccount + '\'' +
+                ", isGeneralTaxpayer='" + isGeneralTaxpayer + '\'' +
+                ", invoiceValue=" + invoiceValue +
+                ", arrearsAccountPeriod=" + arrearsAccountPeriod +
+                ", arrearsAmount=" + arrearsAmount +
+                '}';
+    }
+}

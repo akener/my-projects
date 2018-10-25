@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OweRecordServiceRepository">
+    <select id="insertOweRecord" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        insert into ep_owerecord_info (
+            id,
+            record_id,
+            cust_id,
+            cust_name,
+            org_code,
+            product_id,
+            product_name,
+            pay_period,
+            owe_money,
+            account_end_date,
+            service_no,
+            service_name,
+            record_status,
+            op_time,
+            org_name
+        ) values (
+            s_ep_upload_file_info_r.nextval,
+            #{record_id},
+            #{cust_id},
+            #{cust_name},
+            #{org_code},
+            #{product_id},
+            #{product_name},
+            #{pay_period},
+            #{owe_money},
+            #{account_end_date},
+            #{service_no},
+            #{service_name},
+            #{record_status},
+            #{op_time},
+            #{org_name}
+        )
+    </select>
+    <!-- 展示省管理员导入未下发工单 -->
+    <select id="getAllRecord" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+          select id,record_id,cust_id,cust_name,org_code,org_name,product_id,product_name,pay_period,owe_money,account_end_date,
+          service_no,service_name,record_status,record_end_date,op_time,fault_reason,ending_time,login_no,resend from ep_owerecord_info
+          where record_status=#{record_status}
+          <if test="record_id != null and record_id != ''">
+              and record_id = #{record_id}
+          </if>
+    </select>
+    <!-- 获取未下发工单批次号 -->
+    <select id="getRecordId" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select distinct(record_id) record_id from ep_owerecord_info where record_status='01'
+    </select>
+    <!-- 省管理员工单下发地市 -->
+    <select id="sendAllRecord" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status='02',record_end_date=#{record_end_date} where record_status='01'
+        <if test="record_id != null and record_id != ''">
+            and record_id=#{record_id}
+        </if>
+    </select>
+    <!-- 地市管理员展示所有未转发客户经理工单 -->
+    <select id="getRecordByGroup" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+          select id,record_id,cust_id,cust_name,org_code,product_id,product_name,pay_period,owe_money,account_end_date,
+          service_no,service_name,record_status,record_end_date,op_time,fault_reason,ending_time,login_no,resend from ep_owerecord_info
+          where org_code=#{org_code} and record_status='02'
+    </select>
+    <!-- 地市管理员按地市区县转发工单至客户经理 -->
+    <select id="sendRecordToService" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status='03'  where record_status='02' and org_code in
+        (select t.group_id from ep_sys_group_rel t where t.group_id=#{org_code} or t.parent_group_id=#{org_code})
+    </select>
+    <!-- 获取客户经理名下的工单数据 -->
+    <select id="getAllRecordByService" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+         select id,record_id,cust_id,cust_name,org_code,product_id,product_name,pay_period,owe_money,account_end_date,
+          service_no,service_name,record_status,record_end_date,op_time,fault_reason,ending_time,login_no,resend from ep_owerecord_info
+          where record_status='03' and service_no=#{service_no}
+    </select>
+    <!-- 根据record_id和product_id获取一条工单，因为每一批次产品id唯一 -->
+    <select id="getOneRecordByService" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select id,record_id,cust_id,cust_name,org_code,product_id,product_name,pay_period,owe_money,account_end_date,
+          service_no,service_name,record_status,record_end_date,op_time,fault_reason,ending_time,login_no,resend from ep_owerecord_info
+        where id=#{id}
+    </select>
+    <!-- //工单催缴失败 status = 05 -->
+    <select id="setRecordFail" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status=#{record_status},fault_reason=#{fault_reason},ending_time=#{ending_time},resend=#{resend}
+        where id=#{id}
+    </select>
+    <!-- 工单催缴成功 status = 04 -->
+    <select id="setRecordSuccess" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status=#{record_status},ending_time=#{ending_time}
+        where id=#{id}
+    </select>
+    <!-- 根据product_id 查询user_no  用来查询集团产品余额，校验是否催缴成功 -->
+    <select id="getUserNoByProductId" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="Map">
+        select user_no from dgrpusermsg t where t.id_no=#{product_id} and t.run_code != 'a'
+    </select>
+    <!-- //获取客户经理催缴失败返回地市管理员工单 -->
+    <select id="getReturnRecordFromService" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select id,record_id,cust_id,cust_name,org_code,product_id,product_name,pay_period,owe_money,account_end_date,
+          service_no,service_name,record_status,record_end_date,op_time,fault_reason,ending_time,login_no,resend from ep_owerecord_info
+        where record_status='05' and org_code in (select t.group_id from ep_sys_group_rel t where t.group_id=#{org_code} or t.parent_group_id=#{org_code})
+    </select>
+    <!-- 对客户经理退回的工单重新派发 -->
+    <select id="resendRecordToService" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status=#{record_status},login_no=#{login_no},resend=#{resend},record_end_date=#{record_end_date}
+        where id=#{id}
+    </select>
+    <!-- 工单回退至省欠费管理员处 -->
+    <select id="backToProvince" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status=#{record_status},login_no=#{login_no}
+        where id=#{id}
+    </select>
+    <!-- 获取一条工单信息明细 -->
+    <select id="getOneRecordDetail" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select  t.id,
+                t.org_name,
+                t.record_id,
+                t.cust_id,
+                t.cust_name,
+                t.org_code,
+                t.product_id,
+                t.product_name,
+                t.pay_period,
+                t.owe_money,
+                t.account_end_date,
+                t.service_no,
+                t.service_name,
+                DECODE(TRIM(t.record_status),
+                       '01',
+                       '省欠费管理员导入',
+                       '02',
+                       '下发地市欠费管理员',
+                       '03',
+                       '转发至客户经理',
+                       '04',
+                       '催缴成功结单',
+                       '05',
+                       '回退至地市欠费管理员',
+                       '06',
+                       '回退至省欠费管理员',
+                       '07',
+                       '催缴失败结单') record_status,
+                t.record_end_date,
+                t.op_time,
+                t.fault_reason,
+                t.ending_time
+          from ep_owerecord_info t
+          where id=#{id}
+    </select>
+    <!-- 获取地市退回工单数据 -->
+    <select id="getReturnRecordFromGroup" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select id,record_id,cust_id,cust_name,org_code,product_id,product_name,pay_period,owe_money,account_end_date,
+          service_no,service_name,record_status,record_end_date,op_time,fault_reason,ending_time,login_no,resend from ep_owerecord_info
+        where record_status=#{record_status}
+    </select>
+    <!-- 省管理员结单 -->
+    <select id="endRecord" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="int">
+        update ep_owerecord_info set record_status=#{record_status},login_no=#{login_no}
+        where 1=1 and record_status='06'
+        <if test="id != null and id != ''">
+           and id=#{id}
+        </if>
+    </select>
+    <!-- 查询客户经理手机号 -->
+    <select id="getPhoneNoOfService" parameterType="Map" resultType="Map">
+        select t.phone_no from dgrpmanagermsg t where t.service_no=#{SERVICE_NO}
+    </select>
+    <!-- 给客户经理发送短信 -->
+    <select id="sendMessageToService" parameterType="Map" resultType="int">
+        insert into push_sms_crm_0(
+               SEQ,
+               TEMPLATEID,
+               PARAMETER,
+               SERVICE_NO,
+               PHONE_NO,
+               INSERT_TIME,
+               OP_CODE,
+               LOGIN_NO,
+               SERV_NO,
+               SERV_NAME,
+               SUB_PHONE_SEQ,
+               SEND_TIME,
+               HOLD1,
+               HOLD2,
+               HOLD3,
+               HOLD4,
+               HOLD5,
+               REAL_SEND_TIME)
+        values (
+              pushsms_seq.nextval,
+              'CRM_0558',
+              #{PARAM},
+              '',
+              #{PHONE_NO},
+              sysdate,
+              #{OP_CODE},
+              #{LOGIN_NO},
+              '',
+              '',
+              '',
+              to_date(#{SEND_TIME}, 'yyyy-mm-dd hh24:mi:ss'),
+              '',
+              '',
+              '',
+              '',
+              '',
+              null
+        )
+    </select>
+    <!-- 工单查询 -->
+    <select id="getOweRecordByXX" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+          select
+                t.id,
+                t.org_name,
+                t.record_id,
+                t.cust_id,
+                t.cust_name,
+                t.org_code,
+                t.product_id,
+                t.product_name,
+                t.pay_period,
+                t.owe_money,
+                t.account_end_date,
+                t.service_no,
+                t.service_name,
+                t.record_status record_status,
+                DECODE(TRIM(t.record_status),
+                       '01',
+                       '省欠费管理员导入',
+                       '02',
+                       '下发地市欠费管理员',
+                       '03',
+                       '转发至客户经理',
+                       '04',
+                       '催缴成功结单',
+                       '05',
+                       '回退至地市欠费管理员',
+                       '06',
+                       '回退至省欠费管理员',
+                       '07',
+                       '催缴失败结单') status_name,
+                t.record_end_date,
+                t.op_time,
+                t.fault_reason,
+                t.ending_time
+          from ep_owerecord_info t
+          where 1=1
+          <if test="record_id != null and record_id != ''">
+              and record_id=#{record_id}
+          </if>
+          <if test="service_no != null and service_no != ''">
+              and service_no=#{service_no} and record_status in ('03','04','05','06','07')
+          </if>
+          <if test="record_status != null and record_status != ''">
+              and record_status=#{record_status}
+          </if>
+          <if test="org_code != null and org_code != ''">
+              and org_code=#{org_code}
+          </if>
+    </select>
+    <!-- 获取工单批次号 -->
+    <select id="getRecordIdByXX" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select distinct(record_id) record_id from ep_owerecord_info where 1=1
+        <if test="service_no != null and service_no != ''">
+            and service_no=#{service_no} and record_status in ('03','04','05','06','07')
+        </if>
+        <if test="org_code != null and org_code != ''">
+            and org_code=#{org_code}
+        </if>
+    </select>
+    <!-- 获取批次号序列 -->
+    <select id="getOweRecordIdSeq" resultType="String">
+        select OWERECORD_SEQ.Nextval SEQ from dual
+    </select>
+    <!-- 获取org_name -->
+    <select id="getOrgName" parameterType="Map" resultType="String">
+        select distinct(name) org_name from dgrpgroups t where t.group_id=#{ORG_CODE}
+    </select>
+    <!-- 查询附件 -->
+    <select id="getFileOfOweRecord" parameterType="com.esop.common.uploadFile.UploadFileInfoDto" resultType="com.esop.common.uploadFile.UploadFileInfoDto">
+        select id,path,name,oa_file,valid,create_date,update_date,related_id from ep_upload_file_info where valid=1 and  related_id=#{related_id}
+    </select>
+    <!-- 获取最新下发工单批次号 -->
+    <select id="getRecordIdOfSend" parameterType="com.esop.workOrderInfo.dto.OweRecordDto" resultType="com.esop.workOrderInfo.dto.OweRecordDto">
+        select distinct(record_id) record_id,op_time from ep_owerecord_info t order by op_time desc
+    </select>
+</mapper>

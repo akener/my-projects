@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="custProAgrLedServiceRepository">
+    <select id="getGroupMsg" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="com.esop.custLedger.dto.CustLedgerDto">
+        select
+        group_id ,trim(name) group_name,tree_str,boss_org_code
+        from dGrpGroups where 1=1
+        <if test="flag == 1">
+            and group_id not in ('99039','99040','99041','99042','99043','99050','99051','99052','99053')
+            and  (active_flag='Y' or active_flag is null) and parent_group_id=#{org_code} order by tree_str
+        </if>
+        <if test="flag == 2">
+            and (active_flag='Y' or active_flag is null) and parent_group_id=#{org_code} order by tree_str
+        </if>
+        <if test="flag == 3">
+            and denorm_level=0 and (active_flag='Y' or active_flag is null) and group_id=#{org_code}
+        </if>
+    </select>
+
+    <select id="getLoginType" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="String">
+        select login_type from dgrpmanagermsg where service_no=#{service_no}
+    </select>
+
+    <select id="queryCustProAgrLedDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="com.esop.custLedger.dto.CustLedgerDto">
+        select t.ck_time,t.ck_info,t.pro_des from ep_vip_prdagtass_info t where t.unit_id = #{UnitId} and t.prod_id = #{GrpIdNo} and t.op_time = #{OpTime} and flag = '1'
+    </select>
+
+    <select id="updateCustProAgrLed" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="int">
+        insert into ep_vip_prdagtass_info (
+          UNIT_ID, PROD_ID, PROD_NAME, OP_TIME, OP_LOGIN, CK_TIME, CK_INFO, PRO_DES, IN_TIME, FLAG
+        )
+        values
+        (#{UnitId},#{GrpIdNo}, #{UserName},to_char(to_date( #{OpTime} ,'yyyy-mm-dd hh24:mi:ss'),'yyyymmddhh24miss'), #{OpLogin}, #{ck_time}, #{ck_info}, #{pro_des}, sysdate, '1')
+    </select>
+
+    <select id="queryDlineCtaAssDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="com.esop.custLedger.dto.CustLedgerDto">
+        select t.ck_time,t.ck_info,t.pro_des from ep_vip_prdagtass_info t where t.unit_id = #{UnitId} and t.prod_id = #{GrpAccountId} and t.op_time = #{OpTime} and flag = '2'
+    </select>
+
+    <select id="updateDlineCtaAssDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="int">
+        insert into ep_vip_prdagtass_info (
+          UNIT_ID, PROD_ID, PROD_NAME, OP_TIME, OP_LOGIN, CK_TIME, CK_INFO, PRO_DES, IN_TIME, FLAG
+        )
+        values
+        (#{UnitId},#{GrpAccountId}, #{GrpAccountId},to_char(to_date( #{OpTime} ,'yyyy-mm-dd hh24:mi:ss'),'yyyymmddhh24miss'), #{OpLogin}, #{ck_time}, #{ck_info}, #{pro_des}, sysdate, '2')
+    </select>
+
+    <select id="queryPrdPtgChgAddDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="com.esop.custLedger.dto.CustLedgerDto">
+        select t.ck_time,t.ck_info,t.pro_des from ep_vip_prdagtass_info t where t.unit_id = #{UnitId} and t.prod_id = #{GrpIdNo} and t.op_time = #{OpTime} and flag = '3'
+    </select>
+
+    <select id="updatePrdPtgChgAddDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="int">
+        insert into ep_vip_prdagtass_info (
+        UNIT_ID, PROD_ID, PROD_NAME, OP_TIME, OP_LOGIN, CK_TIME, CK_INFO, PRO_DES, IN_TIME, FLAG
+        )
+        values
+        (#{UnitId},#{GrpIdNo}, #{UserName},to_char(to_date( #{OpTime} ,'yyyy-mm-dd hh24:mi:ss'),'yyyymmddhh24miss'), #{OpLogin}, #{ck_time}, #{ck_info}, #{pro_des}, sysdate, '3')
+    </select>
+
+    <select id="getSeqNextVal" resultType="String">
+        select s_ep_upload_file_info_r.nextval from dual
+    </select>
+
+    <select id="insertManageMethod" parameterType="com.esop.custLedger.dto.MethodDto" resultType="int">
+        insert into ep_sys_manidea_info(
+            code,
+            title,
+            content,
+            content_detail,
+            pub_date,
+            pub_createno,
+            pub_type
+        ) values (
+            #{code},
+            #{title},
+            #{content},
+            #{content_detail},
+            sysdate,
+            #{pub_createno},
+            #{pub_type}
+        )
+    </select>
+
+    <select id="queryCustMemInAssDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="com.esop.custLedger.dto.CustLedgerDto">
+       select t.ck_time,t.ck_info,t.pro_des from ep_vip_prdagtass_info t where t.unit_id = #{UnitId} and t.prod_id = #{GrpIdNo} and t.prod_name = #{Login_accept} and t.op_time = #{OpTime} and flag = '4'
+    </select>
+
+    <select id="updateyCustMemInAssDetail" parameterType="com.esop.custLedger.dto.CustLedgerDto" resultType="int">
+        insert into ep_vip_prdagtass_info (
+        UNIT_ID, PROD_ID, PROD_NAME, OP_TIME, OP_LOGIN, CK_TIME, CK_INFO, PRO_DES, IN_TIME, FLAG
+        )
+        values
+        (#{UnitId},#{GrpIdNo}, #{Login_accept},to_char(to_date( #{OpTime} ,'yyyy-mm-dd hh24:mi:ss'),'yyyymmddhh24miss'), #{OpLogin}, #{ck_time}, #{ck_info}, #{pro_des}, sysdate, '4')
+    </select>
+
+</mapper>

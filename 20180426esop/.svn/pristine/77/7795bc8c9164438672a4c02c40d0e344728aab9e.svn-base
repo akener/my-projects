@@ -1,0 +1,122 @@
+package com.esop.noteinformation.dto;
+
+/**
+ * Created by Administrator on 2017/7/14 0014.
+ */
+public class NoterelDTO  {
+    //地市
+    String group_id ="";
+   //地市名称
+    String  group_name="";
+    //
+    String denorm_level="";
+    //上一级
+    String parent_group_id="";
+    //组合键值
+    String  root="";
+    //工号
+    String login_no="";
+    //姓名
+    String login_name="";
+
+
+    //序列名
+    String  contract_rel="";
+    //真实文件名
+    String contract_file="";
+    //保存的文件名
+    String contract_save="";
+
+    public String getContract_file() {
+        return contract_file;
+    }
+
+    public void setContract_file(String contract_file) {
+        this.contract_file = contract_file;
+    }
+
+    public String getContract_rel() {
+        return contract_rel;
+    }
+
+    public void setContract_rel(String contract_rel) {
+        this.contract_rel = contract_rel;
+    }
+
+    public String getContract_save() {
+        return contract_save;
+    }
+
+    public void setContract_save(String contract_save) {
+        this.contract_save = contract_save;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getDenorm_level() {
+        return denorm_level;
+    }
+
+    public void setDenorm_level(String denorm_level) {
+        this.denorm_level = denorm_level;
+    }
+
+    public String getParent_group_id() {
+        return parent_group_id;
+    }
+
+    public void setParent_group_id(String parent_group_id) {
+        this.parent_group_id = parent_group_id;
+    }
+
+    public String getRoot() {
+        return root;
+    }
+
+    public void setRoot(String root) {
+        this.root = root;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    @Override
+    public String toString() {
+        return "NoterelDTO{" +
+                "group_id='" + group_id + '\'' +
+                ", group_name='" + group_name + '\'' +
+                ", denorm_level='" + denorm_level + '\'' +
+                ", parent_group_id='" + parent_group_id + '\'' +
+                ", root='" + root + '\'' +
+                ", login_no='" + login_no + '\'' +
+                ", login_name='" + login_name + '\'' +
+                '}';
+    }
+}

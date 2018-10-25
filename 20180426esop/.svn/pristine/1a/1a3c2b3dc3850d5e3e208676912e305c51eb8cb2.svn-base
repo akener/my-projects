@@ -1,0 +1,440 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/12/15.
+ */
+public class HistoryOffsetInfoDto extends BaseDto{
+    //历史短款冲销基本信息
+    String taskOrderId = "";//工单流水号
+    String applyDate = "";//申请日期
+    String applicant = "";//申请人工号
+    String applicantName = "";//申请人姓名
+    String role_codes = "";//角色ID
+    String outGroup = "";//出账集团
+    String outGroupNo = "";//出账集团编号
+    String capitalContact = "";//资金联系人
+    String contactNumber = "";//联系人电话
+    String contactType = "";//联系人类型
+    String applyAmount = "";//本次申请使用金额
+    String historyOffsetAmount = "";//冲减历史短款金额
+    //附件
+    String file = "";//附件id
+    String fileName = "";//附件名称
+
+    String remark = "";//备注
+
+    //集团资金账户信息
+    String grpfundacctid = "";//集团资金账户号
+    String grpcustid = "";//集团客户编号
+    String grpcustname = "";//集团客户名称
+    String bankacctid = "";//绑定银行账号
+    String bankname = "";//开户行
+    String ownerorgid = "";//归属分公司
+    String ownerorgname = "";//归属分公司名称
+    String status = "";//账号状态
+    String balance = "";//资金账户余额（分）
+    String nowbalance = "";//资金账户可用余额（分）
+    String holdbalance = "";//占用资金（分）
+    String freezefee = "";//冻结资金（分）
+    String startTime = "";//开始时间
+    String endTime = "";//结束时间
+    String runningWarterNo="";//短款记录流水
+    String businessCenter ="";//行业中心
+    //审批信息
+    String login_name = "";
+    String dealTime = "";
+    String nextDealPerson = "";
+    String link_name = "";
+    String nodeId = "";
+    String applicantNo = "";
+    String approveOpinion = "";
+    String memo ="";
+
+    String applyAmount_yuan = "";//本次申请使用金额（元）
+    String historyOffsetAmount_yuan = "";//冲减历史短款金额（元）
+    String balance_yuan = "";//资金账户余额（元）
+    String nowbalance_yuan = "";//资金账户可用余额（元）
+    String holdbalance_yuan = "";//占用资金（元）
+    String freezefee_yuan = "";//冻结资金（元）
+    String login_no="";
+    String login_no2="";
+
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_no2() {
+        return login_no2;
+    }
+
+    public void setLogin_no2(String login_no2) {
+        this.login_no2 = login_no2;
+    }
+
+    public String getBusinessCenter() {
+        return businessCenter;
+    }
+
+    public void setBusinessCenter(String businessCenter) {
+        this.businessCenter = businessCenter;
+    }
+
+    public String getRole_codes() {
+        return role_codes;
+    }
+
+    public void setRole_codes(String role_codes) {
+        this.role_codes = role_codes;
+    }
+
+    public String getOwnerorgname() {
+        return ownerorgname;
+    }
+
+    public void setOwnerorgname(String ownerorgname) {
+        this.ownerorgname = ownerorgname;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getRunningWarterNo() {
+        return runningWarterNo;
+    }
+
+    public void setRunningWarterNo(String runningWarterNo) {
+        this.runningWarterNo = runningWarterNo;
+    }
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public String getOutGroup() {
+        return outGroup;
+    }
+
+    public void setOutGroup(String outGroup) {
+        this.outGroup = outGroup;
+    }
+
+    public String getOutGroupNo() {
+        return outGroupNo;
+    }
+
+    public void setOutGroupNo(String outGroupNo) {
+        this.outGroupNo = outGroupNo;
+    }
+
+    public String getCapitalContact() {
+        return capitalContact;
+    }
+
+    public void setCapitalContact(String capitalContact) {
+        this.capitalContact = capitalContact;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(String contactType) {
+        this.contactType = contactType;
+    }
+
+    public String getApplyAmount() {
+        return applyAmount;
+    }
+
+    public void setApplyAmount(String applyAmount) {
+        this.applyAmount = applyAmount;
+    }
+
+    public String getHistoryOffsetAmount() {
+        return historyOffsetAmount;
+    }
+
+    public void setHistoryOffsetAmount(String historyOffsetAmount) {
+        this.historyOffsetAmount = historyOffsetAmount;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getGrpfundacctid() {
+        return grpfundacctid;
+    }
+
+    public void setGrpfundacctid(String grpfundacctid) {
+        this.grpfundacctid = grpfundacctid;
+    }
+
+    public String getGrpcustid() {
+        return grpcustid;
+    }
+
+    public void setGrpcustid(String grpcustid) {
+        this.grpcustid = grpcustid;
+    }
+
+    public String getGrpcustname() {
+        return grpcustname;
+    }
+
+    public void setGrpcustname(String grpcustname) {
+        this.grpcustname = grpcustname;
+    }
+
+    public String getBankacctid() {
+        return bankacctid;
+    }
+
+    public void setBankacctid(String bankacctid) {
+        this.bankacctid = bankacctid;
+    }
+
+    public String getBankname() {
+        return bankname;
+    }
+
+    public void setBankname(String bankname) {
+        this.bankname = bankname;
+    }
+
+    public String getOwnerorgid() {
+        return ownerorgid;
+    }
+
+    public void setOwnerorgid(String ownerorgid) {
+        this.ownerorgid = ownerorgid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getNowbalance() {
+        return nowbalance;
+    }
+
+    public void setNowbalance(String nowbalance) {
+        this.nowbalance = nowbalance;
+    }
+
+    public String getHoldbalance() {
+        return holdbalance;
+    }
+
+    public void setHoldbalance(String holdbalance) {
+        this.holdbalance = holdbalance;
+    }
+
+    public String getFreezefee() {
+        return freezefee;
+    }
+
+    public void setFreezefee(String freezefee) {
+        this.freezefee = freezefee;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getNextDealPerson() {
+        return nextDealPerson;
+    }
+
+    public void setNextDealPerson(String nextDealPerson) {
+        this.nextDealPerson = nextDealPerson;
+    }
+
+    public String getLink_name() {
+        return link_name;
+    }
+
+    public void setLink_name(String link_name) {
+        this.link_name = link_name;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+    public String getApproveOpinion() {
+        return approveOpinion;
+    }
+
+    public void setApproveOpinion(String approveOpinion) {
+        this.approveOpinion = approveOpinion;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getApplyAmount_yuan() {
+        return applyAmount_yuan;
+    }
+
+    public void setApplyAmount_yuan(String applyAmount_yuan) {
+        this.applyAmount_yuan = applyAmount_yuan;
+    }
+
+    public String getHistoryOffsetAmount_yuan() {
+        return historyOffsetAmount_yuan;
+    }
+
+    public void setHistoryOffsetAmount_yuan(String historyOffsetAmount_yuan) {
+        this.historyOffsetAmount_yuan = historyOffsetAmount_yuan;
+    }
+
+    public String getBalance_yuan() {
+        return balance_yuan;
+    }
+
+    public void setBalance_yuan(String balance_yuan) {
+        this.balance_yuan = balance_yuan;
+    }
+
+    public String getNowbalance_yuan() {
+        return nowbalance_yuan;
+    }
+
+    public void setNowbalance_yuan(String nowbalance_yuan) {
+        this.nowbalance_yuan = nowbalance_yuan;
+    }
+
+    public String getHoldbalance_yuan() {
+        return holdbalance_yuan;
+    }
+
+    public void setHoldbalance_yuan(String holdbalance_yuan) {
+        this.holdbalance_yuan = holdbalance_yuan;
+    }
+
+    public String getFreezefee_yuan() {
+        return freezefee_yuan;
+    }
+
+    public void setFreezefee_yuan(String freezefee_yuan) {
+        this.freezefee_yuan = freezefee_yuan;
+    }
+}

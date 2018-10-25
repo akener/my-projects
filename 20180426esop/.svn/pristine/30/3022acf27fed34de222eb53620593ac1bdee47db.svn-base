@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectLogisticsCompany"  parameterType="String" resultType="com.esop.base.dto.LogisticsCompanyDto" >
+        select lc_id as DT_RowId,lc_id,lc_name,create_login,create_date
+        from h_logistics_company_info where 1=1
+        <if test="lc_id != ''">
+            and lc_id =#{lc_id}
+        </if>
+    </select>
+    <select id="insertLogisticsCompany"  parameterType="com.esop.base.dto.LogisticsCompanyDto" resultType="int" >
+            insert into h_logistics_company_info(lc_id,lc_name,create_login,create_date) values(s_h_logistics_company_info.nextval,#{lc_name},#{create_login},sysdate)
+    </select>
+    <select id="updateLogisticsCompany"  parameterType="com.esop.base.dto.LogisticsCompanyDto" resultType="int" >
+            update h_logistics_company_info set lc_name = #{lc_name},create_login = #{create_login},create_date = sysdate where lc_id=#{lc_id}
+    </select>
+    <select id="deleteLogisticsCompany" parameterType="com.esop.base.dto.LogisticsCompanyDto" resultType="int" >
+        DELETE FROM h_logistics_company_info WHERE lc_id=#{lc_id}
+    </select>
+</mapper>

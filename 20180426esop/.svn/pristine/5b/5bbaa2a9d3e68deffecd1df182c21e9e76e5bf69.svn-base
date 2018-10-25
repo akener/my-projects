@@ -1,0 +1,43 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/5.
+ */
+public class GrpPrcRoleNoInfoDto {
+    String manager_no = "";//客户经理编号
+    String manager_name = "";//客户经理名称
+    String prc_name = "";//产品名称
+    int prc_roleno = 0;//产品成员数
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getPrc_name() {
+        return prc_name;
+    }
+
+    public void setPrc_name(String prc_name) {
+        this.prc_name = prc_name;
+    }
+
+    public int getPrc_roleno() {
+        return prc_roleno;
+    }
+
+    public void setPrc_roleno(int prc_roleno) {
+        this.prc_roleno = prc_roleno;
+    }
+}

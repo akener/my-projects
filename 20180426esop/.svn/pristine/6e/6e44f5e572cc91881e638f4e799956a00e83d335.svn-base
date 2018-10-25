@@ -1,0 +1,25 @@
+package com.esop.workflow.exception;
+
+/**
+ * 工作流异常
+ */
+public class BpmException extends RuntimeException {
+
+    public BpmException() {
+        super();
+    }
+
+    public BpmException(String msg) {
+        super(msg);
+    }
+
+    public BpmException(Throwable cause) {
+        super();
+        super.initCause(cause);
+    }
+
+    public BpmException(String msg, Throwable cause) {
+        super(msg);
+        super.initCause(cause);
+    }
+}

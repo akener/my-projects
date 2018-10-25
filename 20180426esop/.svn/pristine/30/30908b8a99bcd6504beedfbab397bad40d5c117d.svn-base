@@ -1,0 +1,153 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/12/11.
+ */
+public class BankDealRequestParamDto extends BaseDto {
+    private  String  OPERTYPE;//操作员类型
+    private  String  ISQRYCOUNT;//查询类型
+    private  String  STARTTRADEDATE;//起始交易日期
+    private  String  ENDTRADEDATE;//终止交易日期
+    private  String  AREAID;//分公司编码
+    private  String  ENTERORG;//入账组织
+    private  String  CUSTMGR;//客户经理（编号）
+    private  String  QRYTYPE;//查询类型
+    private  String  CLAIMOID;//稽核标识码
+    private  String  FEE;//金额
+    private  String  GRPCUSTID;//入账集团单位（集团编号）
+    private  String  ACCOUNTCLERK;//账务员
+    private  String  STARTAPPLYDATE;//起始申请时间
+    private  String  ENDAPPLYDATE;//终止申请时间
+    private  String  PAGES;//页码
+    private  String  PAGERECS;//页记录数
+
+    public String getPAGERECS() {
+        return PAGERECS;
+    }
+
+    public void setPAGERECS(String PAGERECS) {
+        this.PAGERECS = PAGERECS;
+    }
+
+    public String getOPERTYPE() {
+        return OPERTYPE;
+    }
+
+    public void setOPERTYPE(String OPERTYPE) {
+        this.OPERTYPE = OPERTYPE;
+    }
+
+    public String getISQRYCOUNT() {
+        return ISQRYCOUNT;
+    }
+
+    public void setISQRYCOUNT(String ISQRYCOUNT) {
+        this.ISQRYCOUNT = ISQRYCOUNT;
+    }
+
+    public String getSTARTTRADEDATE() {
+        return STARTTRADEDATE;
+    }
+
+    public void setSTARTTRADEDATE(String STARTTRADEDATE) {
+        this.STARTTRADEDATE = STARTTRADEDATE;
+    }
+
+    public String getENDTRADEDATE() {
+        return ENDTRADEDATE;
+    }
+
+    public void setENDTRADEDATE(String ENDTRADEDATE) {
+        this.ENDTRADEDATE = ENDTRADEDATE;
+    }
+
+    public String getAREAID() {
+        return AREAID;
+    }
+
+    public void setAREAID(String AREAID) {
+        this.AREAID = AREAID;
+    }
+
+    public String getENTERORG() {
+        return ENTERORG;
+    }
+
+    public void setENTERORG(String ENTERORG) {
+        this.ENTERORG = ENTERORG;
+    }
+
+    public String getCUSTMGR() {
+        return CUSTMGR;
+    }
+
+    public void setCUSTMGR(String CUSTMGR) {
+        this.CUSTMGR = CUSTMGR;
+    }
+
+    public String getQRYTYPE() {
+        return QRYTYPE;
+    }
+
+    public void setQRYTYPE(String QRYTYPE) {
+        this.QRYTYPE = QRYTYPE;
+    }
+
+    public String getCLAIMOID() {
+        return CLAIMOID;
+    }
+
+    public void setCLAIMOID(String CLAIMOID) {
+        this.CLAIMOID = CLAIMOID;
+    }
+
+    public String getFEE() {
+        return FEE;
+    }
+
+    public void setFEE(String FEE) {
+        this.FEE = FEE;
+    }
+
+    public String getGRPCUSTID() {
+        return GRPCUSTID;
+    }
+
+    public void setGRPCUSTID(String GRPCUSTID) {
+        this.GRPCUSTID = GRPCUSTID;
+    }
+
+    public String getACCOUNTCLERK() {
+        return ACCOUNTCLERK;
+    }
+
+    public void setACCOUNTCLERK(String ACCOUNTCLERK) {
+        this.ACCOUNTCLERK = ACCOUNTCLERK;
+    }
+
+    public String getSTARTAPPLYDATE() {
+        return STARTAPPLYDATE;
+    }
+
+    public void setSTARTAPPLYDATE(String STARTAPPLYDATE) {
+        this.STARTAPPLYDATE = STARTAPPLYDATE;
+    }
+
+    public String getENDAPPLYDATE() {
+        return ENDAPPLYDATE;
+    }
+
+    public void setENDAPPLYDATE(String ENDAPPLYDATE) {
+        this.ENDAPPLYDATE = ENDAPPLYDATE;
+    }
+
+    public String getPAGES() {
+        return PAGES;
+    }
+
+    public void setPAGES(String PAGES) {
+        this.PAGES = PAGES;
+    }
+}

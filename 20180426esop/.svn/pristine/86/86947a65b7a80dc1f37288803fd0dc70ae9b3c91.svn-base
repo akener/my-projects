@@ -1,0 +1,181 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.dto.OrderDto;
+import com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto;
+import com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2018/4/2.
+ */
+@Repository
+public class ElecPackImplService {
+    private static Logger logger = LoggerFactory.getLogger(OrderService.class);
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    ElecContractService elecContractService;
+
+    @Value("${file_username}")
+    String username;
+    @Value("${file_tenant_name}")
+    String tenant_name;
+    @Value("${file_password}")
+    String password;
+    @Value("${file_url}")
+    String url;
+    @Value("${order_center_url}")
+    String order_center_url;
+    //容器名称
+    String contentName = "esopContent";
+
+    public String getContractInfoByBak1(String json){
+        System.out.println("json是：---------"+json);
+        JSONObject jsonResponse=new JSONObject();
+        jsonResponse.put("errCd","0000");
+        jsonResponse.put("errMsg","成功");
+        jsonResponse.put("resultMap","");
+        try {
+            JSONObject req=new JSONObject(json);
+            String bak1 = req.getString("bak1");
+            String first_party = req.getString("first_party");
+            String contract_name = req.getString("contract_name");
+            String first_party_code = req.getString("first_party_code");
+
+            if (StringUtils.isEmpty(first_party_code)){
+                jsonResponse.put("errCd","00001");
+                jsonResponse.put("errMsg","集团编号不能为空");
+                jsonResponse.put("resultMap","");
+                return jsonResponse.toString();
+            }
+
+            SeNewContractInfoDto seNewContractInfoDto = new SeNewContractInfoDto();
+            seNewContractInfoDto.setBak1(bak1);
+            seNewContractInfoDto.setFirst_party(first_party);
+            seNewContractInfoDto.setContract_name(contract_name);
+            seNewContractInfoDto.setFirst_party_code(first_party_code);
+            List<SeNewContractInfoDto> contractList = new ArrayList<SeNewContractInfoDto>();
+            contractList = sqlSessionTemplate.selectList("getContractByBak1",seNewContractInfoDto);
+            if (contractList.size() == 0){
+                jsonResponse.put("errCd","00000");
+                jsonResponse.put("errMsg","查询结果为空");
+                jsonResponse.put("resultMap","");
+                return jsonResponse.toString();
+            }
+
+            JSONArray array = new JSONArray();
+            for(int i = 0;i < contractList.size(); i++ ){
+                SeNewContractInfoDto contractInfo = elecContractService.getContractDetailInfo(contractList.get(i));
+                List<SeProductChargeInfoDto> contractChargesList = elecContractService.getProductChargesByContractId(contractInfo);
+                JSONObject object = new JSONObject();
+                object.put("first_party",contractInfo.getFirst_party());//集团单位
+                object.put("first_party_code",contractInfo.getFirst_party_code());//集团单位编码
+                object.put("first_party_address",contractInfo.getFirst_party_address());//集团单位地址
+                object.put("bak1",contractInfo.getBak1());//合同编号
+                object.put("contract_name",contractInfo.getContract_name());//合同名称
+                object.put("internet_count","0");//互联网专线条数
+                object.put("internet_pay","0");//互联网专线每月缴费
+                object.put("data_count","0");//数据专线每月条数
+                object.put("data_pay","0");//数据专线每月缴费
+                //对象存储器配置
+                OrderDto dto = new OrderDto();
+                if (!StringUtils.isEmpty(contractInfo.getAttach_file_id())){
+                    dto = sqlSessionTemplate.selectOne("seltfattachfileinfo",contractInfo.getAttach_file_id());
+                }
+                object.put("file_url",url + "openstack/swift/object/download/inputStream");//文件下载地址
+                object.put("file_id",dto.getNewFileName());//文件ID
+                object.put("tenant_name", tenant_name);//用户名称
+                object.put("username", username);//租户名称
+                object.put("password", password);//密码
+                object.put("contentName",contentName);//容器名
+                object.put("pdf_file_name",contractInfo.getContract_pdf_name());//获取PDF文件名
+
+                if(contractInfo.getElecpack_id().equals("5")){
+                    //互联网专线
+                    object.put("internet_count",contractChargesList.size()+"");//互联网专线条数
+                    object.put("internet_pay",contractInfo.getTotal_amount());//互联网专线每月缴费
+                }else if (contractInfo.getElecpack_id().equals("6") || contractInfo.getElecpack_id().equals("7")){
+                    //数据专线
+                    object.put("data_count",contractChargesList.size());//数据专线每月条数
+                    object.put("data_pay",contractInfo.getTotal_amount());//数据专线每月缴费
+                }
+                object.put("lease_term",contractInfo.getLease_term());//租用期限
+
+                JSONObject internet_line1 = new JSONObject();
+                internet_line1.put("bandwidth","");//带宽
+                internet_line1.put("pay","");//应收缴费
+                if (contractInfo.getElecpack_id().equals("5")){
+                    //互联网专线
+                    internet_line1.put("bandwidth",contractInfo.getBandwidth());//带宽
+                    internet_line1.put("pay",contractInfo.getTotal_amount());//应收缴费
+                }
+                internet_line1.put("access_address",contractInfo.getFirst_access_address());//接入地址
+                internet_line1.put("access_type",contractInfo.getInterface_type());//接口类型
+                object.put("internet_line1",internet_line1);//互联网专线1
+
+                JSONObject internet_line2 = new JSONObject();//
+                internet_line2.put("bandwidth","");//带宽
+                internet_line2.put("pay","");//应收缴费
+                internet_line2.put("access_address","");//接入地址
+                internet_line2.put("access_type","");//接口类型
+                object.put("internet_line2",internet_line2);//互联网专线2，暂时为空
+
+                JSONObject data_line3 = new JSONObject();
+                data_line3.put("bandwidth","");//带宽
+                data_line3.put("pay","");//应收缴费
+                if (contractInfo.getElecpack_id().equals("6") || contractInfo.getElecpack_id().equals("7")){
+                    //数据专线
+                    data_line3.put("bandwidth",contractInfo.getBandwidth());//带宽
+                    data_line3.put("pay",contractInfo.getTotal_amount());//应收缴费
+                }
+                data_line3.put("a_access_name",contractInfo.getFirst_connection_interface());//A端名称
+                data_line3.put("a_access_address", contractInfo.getA_access_address());//A端接入地址
+                data_line3.put("z_access_name",contractInfo.getSecond_connection_interface());//Z端名称
+                data_line3.put("z_access_address",contractInfo.getZ_access_address());//Z端地址
+                data_line3.put("access_type",contractInfo.getA_interface_type());//接口类型
+                object.put("data_line3",data_line3);
+
+                object.put("first_invoice_band",contractInfo.getFirst_invoice_band());//客户单位开户行
+                object.put("first_invoice_number",contractInfo.getFirst_invoice_number());//客户单位付款账号
+                object.put("first_invoice_username",contractInfo.getFirst_invoice_username());//客户单位付款户名
+                object.put("first_taxpayer_code",contractInfo.getFirst_taxpayer_code());//客户单位纳税人识别号
+                object.put("payment", contractInfo.getPayment());///付费方式
+                object.put("pay_cycle",contractInfo.getPay_cycle());//缴费周期
+                object.put("second_invoice_band",contractInfo.getSecond_invoice_band());//移动公司收款开户	行
+                object.put("second_invoice_number",contractInfo.getSecond_invoice_number());//移动公	司收款账号
+                object.put("second_invoice_username", contractInfo.getSecond_invoice_username());//移动公司收款户名
+                object.put("second_taxpayer_code",contractInfo.getSecond_taxpayer_code());//移动公司收款纳税人识别号
+                object.put("first_contacts_name",contractInfo.getFirst_contacts_name());//客户缴费联系人姓名
+                object.put("first_contacts_id_card", contractInfo.getFirst_contacts_id_card());///客户缴	费联系人身份证号
+                object.put("first_contacts_email",contractInfo.getFirst_contacts_email());//客户缴费联系人邮箱
+                object.put("first_contacts_phone",contractInfo.getFirst_contacts_phone());//客户缴费联系人电话
+
+                array.put(object);
+            }
+
+            jsonResponse.put("resultMap",array);
+            orderService.saveBossLog("",json,jsonResponse.toString(),"订单中心查询专线合同详情--成功","","false");
+        }catch (Exception e){
+            System.out.println("异常为：----"+e);
+            logger.error(e.getMessage());
+            jsonResponse.put("errCd","0001");
+            jsonResponse.put("errMsg","调用失败");
+            jsonResponse.put("resultMap","");
+            orderService.saveBossLog("",json,jsonResponse.toString(),"订单中心查询专线合同详情--失败","","false");
+        }
+        return jsonResponse.toString();
+    }
+}

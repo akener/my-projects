@@ -1,0 +1,316 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>合同详情</title>
+
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <style type="text/css">
+
+        .row{
+            overflow: visible;
+        }
+    </style>
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3> 合同详情 </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>合同信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <div class="row pd-10 bor-cc pos-rel">
+                        <h1 class="head-postl">1、集团客户信息</h1>
+                        <form id="contract">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody>
+                                <tr>
+                                    <th style="border-top: 1px dashed #999;border-left: 1px dashed #999"></th><td style="border-top: 1px dashed #999;border-right: 1px dashed #999">甲方集团信息</td>
+                                    <th style="border-top: 1px dashed #999"></th><td style="border-top: 1px dashed #999;border-right: 1px dashed #999">乙方集团信息</td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 集团名称：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party" name="first_party" type="text" class="input-sty04 form-ipt" value="${contract.first_party}" disabled>
+                                        <%--<button type="button" class="ui-btn fs-14 btn-login" style="height:34px;">集团信息</button>--%>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 乙方单位：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <select class="select-style-1" id="yf_first_party" style = "width:auto" disabled >
+                                            <%--<option selected="selected" value="0">请选择</option>--%>
+                                            <option <c:if test="${contract.second_party == '中国移动通信集团重庆有限公司'}">selected="selected"</c:if>>中国移动通信集团重庆有限公司</option>
+                                            <option <c:if test="${contract.second_party == qddwDto.fullName}">selected="selected"</c:if>>${qddwDto.fullName}</option>
+                                        </select>
+                                        <%--<input id="yf_first_party" name="yf_first_party" type="text" class="input-sty04 form-ipt" value="${contract.second_party}">--%>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 集团编码：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_code" name="first_party_code" type="text" class="input-sty04 form-ipt" value="${contract.first_party_code}" disabled>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 法定代表人/负责人：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_charge" name="yf_first_party_charge" type="text" class="input-sty04 form-ipt" value="${contract.second_party_charge}" disabled>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 法定代表人/负责人：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_charge" name="first_party_charge" type="text" class="input-sty04 form-ipt" value="${contract.first_party_charge}" disabled>
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_address" name="yf_first_party_address" type="text" class="input-sty04 form-ipt" value="${contract.second_party_address}" disabled >
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 地址：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_address" name="first_party_address" type="text" class="input-sty04 form-ipt" value="${contract.first_party_address}" disabled >
+                                    </td>
+                                    <th>
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_phone" name="yf_first_party_phone" type="text" class="input-sty04 form-ipt" value="${contract.second_party_phone}" disabled >
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999">
+                                        <i style="color:red;">*</i> 电话：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="first_party_phone" name="first_party_phone" type="text" class="input-sty04 form-ipt" value="${contract.first_party_phone}" disabled >
+                                    </td>
+                                    <th>
+                                        邮编：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999">
+                                        <input id="yf_first_party_post_code" name="yf_first_party_post_code" type="text" class="input-sty04 form-ipt" value="${contract.second_party_post_code}" disabled >
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <th style="border-left: 1px dashed #999;border-bottom: 1px dashed #999">
+                                        邮编：
+                                    </th>
+                                    <td style="border-right: 1px dashed #999;;border-bottom: 1px dashed #999">
+                                        <input id="first_party_post_code" name="first_party_post_code" type="text" class="input-sty04 form-ipt" value="${contract.first_party_post_code}" disabled >
+                                    </td>
+                                    <th style="border-bottom: 1px dashed #999"></th>
+                                    <td style="border-right: 1px dashed #999;border-bottom: 1px dashed #999"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel" id="chargesInfo">
+
+                    </div>
+
+                    <div class="row pd-10 mgt-30 bor-cc pos-rel">
+                        <h1 class="head-postl">3、合同信息</h1>
+                        <div class="row">
+                            <table class="table-infor-7 width-th-1" width="100%">
+                                <tbody id="tbody_contract"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mgt-20">
+                        <div class="tl mgl-30">
+                            <a href="downloadFile?attach_file_id=${contract.attach_file_id}" class="ui-linka down-a">PDF文件下载</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>合同流程处理轨迹</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table id="trancesTb" class="cost-table" width="100%;">
+                        <tbody>
+                        <tr>
+                            <th>任务编号</th>
+                            <th>任务名称</th>
+                            <th>处理人</th>
+                            <th>处理时间</th>
+                            <th>处理意见</th>
+                            <th>处理备注</th>
+                            <th></th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="procInstId" type="hidden" value="${proc_inst_id}"/><%--流程实例ID--%>
+<input id="contract_id" type="hidden" value="${contract.contract_id}"><%--原合同ID--%>
+<input id="elecpack_id" type="hidden" value="${contract.elecpack_id}"><%--模板id--%>
+
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //加载合同信息、产品信息模块
+        getContractModel();
+        //显示隐藏字段
+        changeByTemplate();
+        //加载处理流程
+        selOrderTrances();
+
+    });
+    //加载合同信息、产品信息模块
+    function getContractModel() {
+        //资费信息
+        $.ajax({
+            type: 'POST',
+            url: 'toContractChargeInfo',
+            data: {
+                "contract_id": $("#contract_id").val(),
+                "elecpack_id":$("#elecpack_id").val()
+            },
+            dataType: 'text',
+            success: function (data) {
+                $("#chargesInfo").html(data);
+                $(".display_line").css('display','none');
+                $(".disabled_number").attr('disabled',true);
+
+            },
+            error: function (data) {
+                alert("加载资费信息失败！");
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: 'toContractDetailInfo',
+            data: {
+                "contract_id": $("#contract_id").val(),
+                "elecpack_id":$("#elecpack_id").val()
+            },
+            dataType: 'text',
+            success: function (data) {
+                $("#tbody_contract").html(data);
+                $(".disabled_cloum").attr("disabled",true);
+                $(".display_line").css('display','none');
+                $(".disabled_cloum").css('color','gray');
+            },
+            error: function (data) {
+                alert("加载合同信息模板失败！");
+            }
+        });
+    }
+    //显示隐藏字段
+    function changeByTemplate() {
+        $("#button_proc").css('display','none');
+        $(".addCharge").css('display','none');
+
+        var stepId = $("#stepId").val();
+        if(stepId == 1 || stepId == 4 || stepId == 5 || stepId == 6 || stepId == 12 || stepId == 15 || stepId == 7){
+            $(".display").css('display','none');
+            $(".display_th").html("");
+        }else{
+            //是否需要上次处理
+            $("#idea5").change(function () {
+                var isPass = $("#idea5 option:selected").val();
+                if(isPass == 0){
+                    $(".display").css('display','none');
+                    $(".display_th").html("");
+                    getNextStep();
+                }
+                if (isPass == 1){
+                    $(".display").css('display','block');
+                    $(".display_th").html("是否需要上级审批：");
+                    getNextStep();
+                }
+            });
+        }
+        if(stepId != 5){
+            $(".contract_td").css('display','none');
+            $(".contract_th").html("");
+        }
+        if (stepId == 7){
+            $(".display_next").css('display','none');
+            $(".isPass").css('display','none');
+            $(".remark").css('display','none');
+        }else {
+            $(".chose_file").css('display','none');
+            $(".chose_time").css('display','none');
+        }
+    }
+
+    function selOrderTrances(procInstId){
+        $.ajax({
+            url: "orderflow/getTrance",
+            type: "post",
+            "data": {
+                "procInstId": $("#procInstId").val()
+            },
+            success: function (result) {
+                $.each(result, function (i, field) {
+                    var dealOpinion = "";
+                    var dealRemarks = "";
+                    if(field.dealOpinion != null && field.dealOpinion != ""){
+                        dealOpinion = field.dealOpinion;
+                    }
+                    if(field.dealRemarks != null && field.dealRemarks != ""){
+                        dealRemarks = field.dealRemarks;
+                    }
+                    var trStr = "<tr class='tr-data-cc'><td>" + field.taskInstId +"</td><td>" +field.stepName+"</td><td>" + field.dealName +"</td><td>" + field.dealDateTime +"</td><td>" + dealOpinion
+                        +"</td><td>"+dealRemarks +"</td></tr>";
+                    $("#trancesTb").append(trStr);
+                })
+            }
+        });
+    }
+
+
+</script>
+</html>

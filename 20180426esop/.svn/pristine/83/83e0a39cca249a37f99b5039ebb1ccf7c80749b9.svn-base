@@ -1,0 +1,70 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.GroupProfileDto;
+import com.esop.workbench.service.GroupProfileService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by liuxiao on 2017/6/27.
+ */
+@RestController
+public class GroupProfileController {
+    @Autowired
+    GroupProfileService groupProfileService;
+    private static Logger logger = Logger.getLogger(GroupProfileController.class);
+    //查询集团数
+    @RequestMapping(value="/getGrpNum")
+    public List getGrpNumList(GroupProfileDto groupProfileDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        groupProfileDto.setRegion_code(region_code);
+        return groupProfileService.getGroupNum(groupProfileDto);
+    }
+    //查询集团成员数
+    @RequestMapping(value="/getGrpMemNum")
+    public List getGrpMemNumList(GroupProfileDto groupProfileDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        groupProfileDto.setRegion_code(region_code);
+        return groupProfileService.getGrpMemNum(groupProfileDto);
+    }
+    //查询集团重要成员数
+    @RequestMapping(value="/getGrpImpMemNum")
+    public List getGrpImpMemNumList(GroupProfileDto groupProfileDto, HttpServletRequest request){
+        String region_code = request.getParameter("region_code");
+        groupProfileDto.setRegion_code(region_code);
+        return groupProfileService.getGrpImpMemNum(groupProfileDto);
+    }
+    //查询集团总收入数
+    @RequestMapping(value="/getAllIncomeNum")
+    public List getAllIncomeNumList(GroupProfileDto groupProfileDto, HttpServletRequest request){
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("01","10031");
+        map.put("02","10032");
+        map.put("03","10033");
+        map.put("04","10034");
+        map.put("05","10035");
+        map.put("06","10036");
+        map.put("07","10037");
+        map.put("08","10038");
+        map.put("09","10039");
+        map.put("10","10040");
+        map.put("11","10041");
+        map.put("12","10042");
+        map.put("13","10043");
+        String region_code = request.getParameter("region_code");
+        String eff_date = request.getParameter("eff_date");
+        if(region_code!=""){
+            region_code = map.get(region_code);
+        }
+        groupProfileDto.setRegion_code(region_code);
+        groupProfileDto.setEff_date(eff_date);
+        return groupProfileService.getAllIncomeNum(groupProfileDto);
+    }
+}

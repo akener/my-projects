@@ -1,0 +1,71 @@
+package com.esop.workbench.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by liuxiao on 2017/6/21.
+ */
+public class MarketingActivitiesDto extends BaseDto{
+    String market_name = "";    //营销活动名称
+    String market_content = ""; //营销活动内容描述
+    String eff_date = "";       //失效日期
+    String market_no = "";      //营销活动号
+    String start_time = "";
+    String end_time = "";
+    String opt = "";
+    public String getMarket_name() {
+        return market_name;
+    }
+
+    public void setMarket_name(String market_name) {
+        this.market_name = market_name;
+    }
+
+    public String getMarket_content() {
+        return market_content;
+    }
+
+    public void setMarket_content(String market_content) {
+        this.market_content = market_content;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+
+    public String getMarket_no() {
+        return market_no;
+    }
+
+    public void setMarket_no(String market_no) {
+        this.market_no = market_no;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
+    }
+
+    public String getOpt() {
+        return opt;
+    }
+
+    public void setOpt(String opt) {
+        this.opt = opt;
+    }
+}

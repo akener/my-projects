@@ -1,0 +1,42 @@
+package com.esop.basicManagement.controller;
+
+import com.esop.basicManagement.dto.ProductListDto;
+import com.esop.common.jaxb.CallCrmService;
+import com.esop.common.jaxb.JsonToXml;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+public class ProductListRC {
+    @Autowired
+    CallCrmService callCrmService;
+    //更新
+    @RequestMapping(value="/productListQuery")
+    public Map<String, Object> productListQuery(ProductListDto parameter){
+        String xmlParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root>";
+        xmlParamter += "<LOGIN_ACCEPT>0</LOGIN_ACCEPT>";//操作工号
+        xmlParamter += "<CHN_SOURCE>01</CHN_SOURCE>";//操作工号密码(营业密码)
+        xmlParamter += "<OP_CODE></OP_CODE>";
+        xmlParamter += "<LOGIN_NO></LOGIN_NO>";
+        xmlParamter += "<LOGIN_PWD></LOGIN_PWD>";
+        xmlParamter += "<PHONE_NO></PHONE_NO>";
+        xmlParamter += "<USER_PWD></USER_PWD>";
+        //xmlParamter += "<UNIT_ID>"+parameter.getUnit_id()+"</UNIT_ID>";
+        xmlParamter += "<UNIT_ID>4510232744</UNIT_ID>";
+        xmlParamter += "</root>";
+        String resultXml = callCrmService.CrmWebserviceCall("sGroupProductList_XML", xmlParamter);
+
+        resultXml=resultXml.replaceAll(" type=\"string\"","");
+        System.out.println("resulXml="+resultXml);
+        JsonToXml jsonToXml = new JsonToXml();
+        JSONObject json1 = new JSONObject( jsonToXml.xml2json(resultXml));
+
+         System.out.println("json1="+json1.toMap().toString());
+         return json1.toMap();
+    }
+}

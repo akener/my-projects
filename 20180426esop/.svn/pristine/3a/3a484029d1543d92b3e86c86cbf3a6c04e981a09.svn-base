@@ -1,0 +1,142 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * @Description:
+ * @Date: Created by yuansp on 2017/6/23.
+ * @Modify by:
+ */
+public class RegionMonitorExtraDto extends BaseDto {
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    String DT_RowId         = "";
+
+    private String region_name = "";//地市名称
+    private String region_no = "";//地市编码
+    private int work = 0;//现场办公次数
+    private int workTotal = 0;//现场办公任务数
+    private int workPercent = 0;//宽带完成率
+
+    private int sign = 0;//签约
+    private int signTotal = 0;//签约任务数
+    private int signPercent = 0;//签约完成率
+
+    private int recover = 0;//欠费回收
+    private int recoverTotal = 0;//欠费回收任务数
+    private int recoverPercent = 0;//欠费回收完成率
+
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getRegion_no() {
+        return region_no;
+    }
+
+    public void setRegion_no(String region_no) {
+        this.region_no = region_no;
+    }
+
+    public int getWork() {
+        return work;
+    }
+
+    public void setWork(int work) {
+        this.work = work;
+    }
+
+    public int getWorkTotal() {
+        return workTotal;
+    }
+
+    public void setWorkTotal(int workTotal) {
+        this.workTotal = workTotal;
+    }
+
+    public int getWorkPercent() {
+        return workPercent;
+    }
+
+    public void setWorkPercent(int workPercent) {
+        this.workPercent = workPercent;
+    }
+
+    public int getSign() {
+        return sign;
+    }
+
+    public void setSign(int sign) {
+        this.sign = sign;
+    }
+
+    public int getSignTotal() {
+        return signTotal;
+    }
+
+    public void setSignTotal(int signTotal) {
+        this.signTotal = signTotal;
+    }
+
+    public int getSignPercent() {
+        return signPercent;
+    }
+
+    public void setSignPercent(int signPercent) {
+        this.signPercent = signPercent;
+    }
+
+    public int getRecover() {
+        return recover;
+    }
+
+    public void setRecover(int recover) {
+        this.recover = recover;
+    }
+
+    public int getRecoverTotal() {
+        return recoverTotal;
+    }
+
+    public void setRecoverTotal(int recoverTotal) {
+        this.recoverTotal = recoverTotal;
+    }
+
+    public int getRecoverPercent() {
+        return recoverPercent;
+    }
+
+    public void setRecoverPercent(int recoverPercent) {
+        this.recoverPercent = recoverPercent;
+    }
+
+    @Override
+    public String toString() {
+        return "RegionMonitorExtraDto{" +
+                "DT_RowId='" + DT_RowId + '\'' +
+                ", region_name='" + region_name + '\'' +
+                ", region_no='" + region_no + '\'' +
+                ", work=" + work +
+                ", workTotal=" + workTotal +
+                ", workPercent=" + workPercent +
+                ", sign=" + sign +
+                ", signTotal=" + signTotal +
+                ", signPercent=" + signPercent +
+                ", recover=" + recover +
+                ", recoverTotal=" + recoverTotal +
+                ", recoverPercent=" + recoverPercent +
+                '}';
+    }
+}

@@ -1,0 +1,176 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ include file="../../pub/public_include.jsp"%>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <title>缴费周期订单发起</title>
+</head>
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>订单发起 </h3>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input id="procTypeCode" name="procTypeCode" type="hidden" value="3008">
+            <input id="branchCode" name="branchCode" type="hidden" value="CQ.CQ">
+            <input id="keyValue" name="keyValue" type="hidden" value="1">
+            <input id="loginCode" name="" type="hidden" value="112900001">
+            <input id="loginName" name="" type="hidden" value="思特奇员工">
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>缴费周期订单发起</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>合同序号：</th>
+                            <td style="color:#1792CD;">${countinfor.contract_id }</td>
+                            <th>合同编号：</th>
+                            <td style="color:red;">${countinfor.pack_no}</td>
+
+                        </tr>
+                        <tr>
+                            <th>集团账户编码：</th>
+                            <td style="color:#1792CD;">${countinfor.account_code}</td>
+                            <th>集团账户名称：</th>
+                            <td> ${countinfor.account_name}</td>
+
+                        </tr>
+                        <tr>
+
+                            <th>集团产品用户编码：</th>
+                            <td style="color:#1792CD;">${countinfor.grp_subsid}</td>
+                            <th>缴费周期：</th>
+                            <td style="color:#1792CD;"><input  id="pay_cycle" value="${countinfor.pay_cycle}"> </td>
+
+                        </tr>
+
+                        <tr>
+                            <th>工单标题</th>
+                            <td> <input type="text" id="bak1" value="" class="input-sty04 form-ipt"> </td>
+                        </tr>
+                        <tr>
+                            <th>备注：</th>
+                            <td colspan="3">
+                                <textarea  id="remarks" rows="3" class="ui-text form-ctrl" style="width:90%;"></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>下一步环节</th>
+                            <td>
+                                <input id="next_deal1" type="text" class="input-sty04 form-ipt" readonly="true">
+                            </td>
+
+                            <th>下一步环节处理人</th>
+                            <td>
+                                <select id="ASSIGNEE_1">
+
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" id="commit">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        loadFirstSteps();
+
+
+        $("#commit").on("click",function () {
+            var  ids= "${countinfor.id}";
+            var  remarks=$("#remarks").val();
+            var  bak1=$("#bak1").val();//
+
+            $.post("/esop/SaveOderinfo", {
+                "id":ids,
+                "bak2":remarks,
+                "bak1":bak1,
+                "startDept":"CQ.CQ",
+                "startLoginNo":"112900001",
+                "startRegion":"CQ.CQ",
+                "procTypeCode":"3008",
+                "keyValue":"1",
+                "pay_cycle":$("#pay_cycle").val(),
+                "branchCode":"CQ.CQ"
+            } ,function (data){
+                if (data =="0") {
+                    alert("提交成功！")
+                    window.close();
+
+                }
+
+            } );
+
+
+        });
+
+    });
+
+
+    function loadFirstSteps() {
+        $.ajax({
+            type: 'POST',
+            url: '/esop/workflow/getFirstSteps',
+            data: {
+                "procTypeCode":$("#procTypeCode").val(),
+                "branchCode":$("#branchCode").val(),
+                "keyValue":$("#keyValue").val(),
+                "loginCode":$("#loginCode").val(),
+                "loginName":$("#loginName").val()
+            },
+            success: loadFirstStepsHandler
+        });
+    }
+
+
+    function loadFirstStepsHandler(data) {
+        //   alert(JSON.stringify(data));
+        //   var returnCode = data.returnCode;
+        var stepList = data.stepList[0];
+        $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+        //  alert(stepList.ctProcStepRel.stepName);
+        // $('#next_stepName').text(stepList.ctProcStepRel.stepName);
+
+        for (var i = 0; i < 3; i++) {     //循环添加多个值
+            $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+        }
+
+    }
+
+</script>
+
+
+
+</html>

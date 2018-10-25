@@ -1,0 +1,23 @@
+package com.esop.invoice.dto;
+
+import com.esop.invoice.vo.InvApprListVo;
+import com.esop.workflow.dto.OutDTO;
+
+import java.util.List;
+
+/**
+ * 预打发票审批列表查询OutDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class QryInvApprListOutDTO extends OutDTO{
+    private List<InvApprListVo> apprVos;
+
+    public List<InvApprListVo> getApprVos() {
+        return apprVos;
+    }
+
+    public void setApprVos(List<InvApprListVo> apprVos) {
+        this.apprVos = apprVos;
+    }
+}

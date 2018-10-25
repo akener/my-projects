@@ -1,0 +1,187 @@
+$(document).ready(function() {
+    querydomain();
+    queryElecOrder();
+})
+
+
+/**
+ * 查询电子订单
+ */
+function queryElecOrder() {
+
+    $('#orderlist').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "bSort":false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax:{
+            url:"/queryOrderInfos",
+            type:"POST",
+            "data":{
+                "request_num":$("#request_num").val(),
+                "order_title":$("#order_title").val(),
+                "union_code":$("#union_code").val(),
+                "union_name":$("#union_name").val(),
+                "create_date_start":$("#create_date_start").val(),
+                "create_date_end":$("#create_date_end").val(),
+                "op_code":$("#op_code").val(),
+                "state":$("#state").val()
+            }
+        },
+        columns: [
+            { data: "request_num",render: function ( data, type, row, meta ) {
+                if(row.state=="作废" || row.state=="已受理"  )
+                    var button="<button class=\"btn btn-default\" disabled=\"disabled\" type=\"submit\" >作废</button>";
+                else
+                    var button="<button class=\"ui-btn mgr-10\" type=\"submit\" onclick=\"stopOrder('"+row.proc_inst_id+"','"+row.request_num+"')\">作废</button>";
+                    return button ;
+            }},
+            { data: "request_num" },
+            { data: "op_name" },
+            { data: "order_title" },
+            { data: "union_code" },
+            { data: "union_name" },
+            { data: "create_date" },
+            { data: "state",render: function ( data, type, row, meta ) {
+                // var state=stateChange(row.state);
+                return row.state ;
+            }}
+            ],
+        buttons: []})
+}
+
+/**
+ * 编辑电子订单
+ * @param request_num 订单号
+ */
+function stopOrder(proc_inst_id,request_num){
+    if(window.confirm("确认作废流程?")){
+        $.post("/stopElecOrder",{proc_inst_id:proc_inst_id,request_num:request_num},function (result) {
+            if (result=1){
+                alert("作废成功！");
+                queryElecOrder();
+            }
+            else
+                alert("作废成功！");
+        })
+    }
+}
+
+
+/**
+ * method 组装查询状态
+ * 0    审批中
+ * 1    拟稿中
+ * 2    启用
+ * 3    作废
+ */
+function stateChange(data) {
+    var state="审批中";
+    switch (data){
+        case "0":
+            state="审批中";
+            break;
+        case "1":
+            state="受理中";
+            break;
+        case "2":
+            state="已受理";
+            break;
+        case "3":
+            state="驳回";
+            break;
+        case "4":
+            state="作废";
+            break;
+    }
+    return state;
+}
+
+/**
+ * 弹出新增发起业务
+ */
+function addnew(){
+    $("#newapply").modal('show');
+    $('#newapplyinfo').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "bInfo":false,
+        "bSort":false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: false,
+        destroy: true,
+        ajax:{
+            url:"/queryOrderNew",
+            type:"POST",
+            "data":{            }
+        },
+        columns: [
+            { data: "op_name" },
+            { data: "",render: function ( data, type, row, meta ) {
+                    var button="<button class=\"btn btn-default\" type='submit'  onclick=\"newAdd('"+row.path+"')\">新建</button>";
+                return button ;
+            }}
+        ],
+        buttons: []})
+}
+
+/**
+ * 弹出新建订单
+ */
+function newAdd(path){
+    window.open(path);
+}
+
+//查询界面业务类型下拉
+function querydomain(){
+    $("#op_code").empty();
+    $("#op_code").append("<option value=''>全部</option>")
+    $.ajax({
+        url:"queryTemplateDomain",
+        type:"POST",
+        data:{},
+        success:function (data) {
+                 var opstr;
+                for(var i=0;i<data.length;i++){
+                    opstr += "<option value='"+data[i].op_code+"'>"+data[i].op_name+"</option>";
+                }
+                $("#op_code").append(opstr);
+            }
+        })
+}
+//导出到excel
+function exportExc(){
+
+
+    //SQL查询所需参数为实体类传值样例
+    /*var className='com.esop.cqDevelopment.elecPack.dto.OrRequestinstInfoDto';
+    var key='request_num,order_title,union_code,union_name,create_date_start,create_date_end,state,op_code';
+    var value=$("#request_num").val()+","+$("#order_title").val()+","+$("#union_code").val()+","+$("#union_name").val()
+        +$("#create_date_start").val()+","+$("#create_date_end").val()+","+$("#op_code").val()+","+$("#state").val();
+    var selectId='queryOrderInfos';
+    var tableHead="订单号,业务类型,订单名,集团编码,集团名称,创建日期,状态";
+    var methods="getRequest_num,getOrder_title,getUnion_code,getUnion_name,getCreate_date_start,getCreate_date_end,getState,getOp_code";*/
+    var f = document.getElementById('exportExcel');
+    var actionUrl ='expertOrderQuery?request_num='+$("#request_num").val()
+        +'&order_title='+$("#order_title").val()
+        +'&union_code='+$("#union_code").val()
+        +'&union_name='+$("#union_name").val()
+        +'&create_date_start='+$("#create_date_start").val()
+        +'&create_date_end='+$("#create_date_end").val()
+        +'&op_code='+$("#op_code").val()
+        +'&state='+$("#state").val();
+    f.action = actionUrl;
+    f.submit();
+}

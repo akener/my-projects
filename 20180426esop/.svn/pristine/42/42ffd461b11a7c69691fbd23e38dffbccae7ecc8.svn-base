@@ -1,0 +1,99 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by liuxiao on 2017/5/27.
+ */
+public class MemberStatementDto extends BaseDto{
+    String DT_RowId = "";
+    String region_code = ""; //地市代码
+    String region_name = ""; //地市名称
+    String town_code = "";//区县代码
+    String town_name = "";//区县名称
+    String manager_no = "";//客户经理工号
+    String manager_name = "";//客户经理名称
+    String manager_boss_no = "";//集客BOSS工号
+    String user_amout = "";//新发展4G用户数(月新增数)
+    String eff_date = "";//日期
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getManager_boss_no() {
+        return manager_boss_no;
+    }
+
+    public void setManager_boss_no(String manager_boss_no) {
+        this.manager_boss_no = manager_boss_no;
+    }
+
+    public String getUser_amout() {
+        return user_amout;
+    }
+
+    public void setUser_amout(String user_amout) {
+        this.user_amout = user_amout;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

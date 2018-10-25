@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtDiscountCreditAuditCfgMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtDiscountCreditAuditCfg">
+    <result column="cfg_id" jdbcType="VARCHAR" property="cfgId" />
+    <result column="proc_id" jdbcType="VARCHAR" property="procId" />
+    <result column="step_id" jdbcType="VARCHAR" property="stepId" />
+    <result column="self_fee_min" jdbcType="VARCHAR" property="selfFeeMin" />
+    <result column="self_fee_max" jdbcType="VARCHAR" property="selfFeeMax" />
+    <result column="late_fee_min" jdbcType="VARCHAR" property="lateFeeMin" />
+    <result column="late_fee_max" jdbcType="VARCHAR" property="lateFeeMax" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="audit_flag" jdbcType="VARCHAR" property="auditFlag" />
+    <result column="dept_id" jdbcType="VARCHAR" property="deptId" />
+    <result column="sum_fee_min" jdbcType="VARCHAR" property="sumFeeMin" />
+    <result column="sum_fee_max" jdbcType="VARCHAR" property="sumFeeMax" />
+    <result column="oc_flag" jdbcType="VARCHAR" property="ocFlag" />
+    <result column="oa_flag" jdbcType="VARCHAR" property="oaFlag" />
+    <result column="sum_flag" jdbcType="VARCHAR" property="sumFlag" />
+  </resultMap>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtDiscountCreditAuditCfg">
+    <selectKey keyProperty="cfgId" order="AFTER" resultType="java.lang.String">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ct_discount_credit_audit_cfg (proc_id, step_id, self_fee_min, 
+      self_fee_max, late_fee_min, late_fee_max, 
+      note, audit_flag, dept_id, 
+      sum_fee_min, sum_fee_max, oc_flag, 
+      oa_flag, sum_flag)
+    values (#{procId,jdbcType=VARCHAR}, #{stepId,jdbcType=VARCHAR}, #{selfFeeMin,jdbcType=VARCHAR}, 
+      #{selfFeeMax,jdbcType=VARCHAR}, #{lateFeeMin,jdbcType=VARCHAR}, #{lateFeeMax,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{auditFlag,jdbcType=VARCHAR}, #{deptId,jdbcType=VARCHAR}, 
+      #{sumFeeMin,jdbcType=VARCHAR}, #{sumFeeMax,jdbcType=VARCHAR}, #{ocFlag,jdbcType=VARCHAR}, 
+      #{oaFlag,jdbcType=VARCHAR}, #{sumFlag,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select cfg_id, proc_id, step_id, self_fee_min, self_fee_max, late_fee_min, late_fee_max, 
+    note, audit_flag, dept_id, sum_fee_min, sum_fee_max, oc_flag, oa_flag, sum_flag
+    from ct_discount_credit_audit_cfg
+  </select>
+  <select id="select4Apprival" parameterType="com.esop.workflow.model.CtDiscountCreditAuditCfg" resultMap="BaseResultMap">
+    select cfg_id, proc_id, step_id, self_fee_min, self_fee_max, late_fee_min, late_fee_max,
+    note, audit_flag, dept_id, sum_fee_min, sum_fee_max, oc_flag, oa_flag, sum_flag
+    from ct_discount_credit_audit_cfg
+    where proc_id = #{procId,jdbcType=VARCHAR} and step_id = #{stepId,jdbcType=VARCHAR} and dept_id = #{deptId,jdbcType=VARCHAR}
+  </select>
+</mapper>

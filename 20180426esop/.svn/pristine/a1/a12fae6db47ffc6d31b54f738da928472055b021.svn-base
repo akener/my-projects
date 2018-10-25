@@ -1,0 +1,162 @@
+
+function getNextStep(){
+    b=$("#stepId").val();
+    var t={};
+
+    key1="procId";
+    value1=$("#procId").val();
+    t[key1]=value1;
+
+    key2="procNameEn";
+    value2=$("#procNameEn").val();
+    t[key2]=value2;
+
+    key3="stepId";
+    value3=$("#stepId").val();
+    t[key3]=value3;
+
+    key4="bizRecordId";
+    value4=$("#bizRecordId").val();
+    t[key4]=value4;
+
+    key5="procInstId";
+    value5=$("#procInstId").val();
+    t[key5]=value5;
+
+    key6="regionId";
+    value6=$("#regionId").val();
+    t[key6]=value6;
+
+    $.ajax({
+        type: 'POST',
+        url: 'orderflow/getNextSteps',
+        data:t,
+        success: loadNexttStepsHandler
+    });
+
+}
+
+function loadNexttStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    var stepList = data.stepList[0]
+    $("#next_deal6").val(stepList.ctProcStepRel.stepName);
+    //  alert(stepList.ctProcStepRel.stepName);
+    // $('#next_stepName').text(stepList.ctProcStepRel.stepName);
+
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+        $("#ASSIGNEE_3").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+    }
+
+}
+
+function reSubmit(){
+
+    var order_title = $("#order_title").val();
+    var notes = $("#notes").val();
+    var next_deal6 = $("#next_deal6").val();
+    var ASSIGNEE_3 = $("#ASSIGNEE_3").val();
+    if(order_title==null||$.trim(order_title)==''){
+        alert('请输入订单标题！');
+        $("#order_title").focus();
+        return;
+    }
+    if(notes==null||$.trim(notes)==''){
+        alert('请输入订单描述！');
+        $("#notes").focus();
+        return;
+    }
+    if(next_deal6==null||$.trim(next_deal6)==''){
+        alert('请输入下一步环节！');
+        $("#next_deal6").focus();
+        return;
+    }
+    if(ASSIGNEE_3==null||$.trim(ASSIGNEE_3)==''){
+        alert('请输入下一步环节处理人！');
+        $("#ASSIGNEE_3").focus();
+        return;
+    }
+
+
+    var t = {};
+
+    key = "procInstId";
+    value = $("#procInstId").val();
+    t[key] = value;
+
+    key1 = "taskInstId";
+    value1 = $("#taskInstId").val();
+    t[key1] = value1;
+
+    key2 = "taskId";
+    value2 = $("#taskId").val();
+    t[key2] = value2;
+
+    key3 = "stepId";
+    value3 = $("#stepId").val();
+    t[key3] = value3;
+
+    key4 = "procId";
+    value4 = $("#procId").val();
+    t[key4] = value4;
+
+
+    key5 = "dealOpinion";
+    value5 = "重新提交";
+    t[key5] = value5;
+
+    key6 = "remarks";
+    value6 = "修改";
+    t[key6] = value6;
+
+
+
+    key7 = "ASSIGNEE_3" ;
+    value7 = $("#assignee_3").val();
+    t[key7] = value7;
+
+    $.ajax({
+        url: "/orderflow/submitTask",
+        type: "post",
+        "data": t,
+        success: function (result) {
+            upOpensave();
+        },
+    });
+}
+
+
+function upOpensave() {
+    $.ajax({
+        type: "post",
+        datatype: "json",
+        url: "/upOpenGroupProdNew",
+        data: {
+            "product_id":$("#prod_id").val(),
+            "product_name":$("#prod_id").find("option:selected").text(),
+            "request_num":request_num,
+            "order_title":$("#order_title").val(),
+            "notes":$("#notes").val(),
+
+        },
+        success: function (result) {
+            if(result>0){
+              alert("重新提交成功！");
+              open(location, '_self').close();
+            }else {
+                alert("重新提交失败！");
+            }
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
+

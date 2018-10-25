@@ -1,0 +1,98 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!--POP-资费弹窗-->
+<div id="login-boxs" class="row col-12" style="display:none;">
+    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+        <div class="row mgt-10 pdb-10 border-ed">
+            <h1 class="head-title">产品资费列表</h1>
+            <div class="row">
+                <div class="row col-12">
+                    <div class="pd-20 pos-rel" style="background-color:#fff;">
+                        <div class="active-cost-box" style="padding-bottom:0;">
+                            <table class="cost-table" width="100%;">
+                                <thead>
+                                <tr>
+                                    <th>价格</th>
+                                    <th>带宽</th>
+                                    <th>数量</th>
+                                    <th>备注</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody id="price_tbody">
+                                <c:forEach items="${productChargeInfoList}" var="charge">
+                                    <tr class="charge_id" chargeId="${charge.id}" >
+                                        <td class="price">${charge.price}</td>
+                                        <td class="content">${charge.content}</td>
+                                        <td class="numbers">${charge.number}</td>
+                                        <td class="remark">${charge.charge_desc}</td>
+                                        <td><input type="button" class="addCharge" onclick="addCharge(this);" value="添加"/></td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<h1 class="head-postl">2、产品信息</h1>
+<table class="table-infor-7 width-th-1" width="100%">
+    <tbody>
+    <tr>
+        <th>
+            产品：
+        </th>
+        <td style="color:#0B8FD2;">
+            <input id="prod_id" name="product_id" type="hidden" value="${prod_id}"  class="input-sty04 form-ipt">
+            <input id="prod_name" name="product_name" type="hidden" value="${prod_name}"  class="input-sty04 form-ipt">
+            ${prod_name}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            资费：
+        </th>
+        <td>
+            <button id="button_proc" type="button" class="ui-btn btn-warn fs-12 btn-logins display_line" onclick="showChargesInfo();">添加</button>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div class="active-cost-box tc" style="padding-bottom:0;">
+                <div class="row-tab" style="width:90%;">
+                    <table class="cost-table rev-tabs" width="100%;">
+                        <thead>
+                        <tr>
+                            <th>价格</th>
+                            <th>带宽(M)</th>
+                            <th>数量（条）</th>
+                            <th>备注</th>
+                            <th class="display_line">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="chargeList">
+                        <c:forEach items="${contractChargesList}" var="charge">
+                            <tr class="charge_id" chargeId="${charge.product_charge_id}">
+                                <td class="price">${charge.price}</td>
+                                <td class="content">${charge.content}</td>
+                                <td class="numbers" >
+                                    <input type="number" class="input-sty04 form-ipt disabled_number" onblur="changeNum(this)"  value="${charge.number}"/>
+                                </td>
+                                <td class="remark">${charge.remark}</td>
+                                <td class="display_line"><input type="button" class="deleteCharge display_line" onclick="deleteCharge(this);" value="删除"/></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script>
+
+</script>

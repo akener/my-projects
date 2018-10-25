@@ -1,0 +1,52 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRefundDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class GroupMoneyRefundService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    public List groupMoneyRefundSvc(GroupMoneyRefundDto groupMoneyRefundDto){
+        String selectTion = "";
+        selectTion = "groupMoneyRefundDto";
+        List<GroupMoneyRefundDto> list=sqlE.selectM(selectTion,groupMoneyRefundDto);
+        return list;
+    }
+    public List groupMoneyAllRefund(GroupMoneyRefundDto groupMoneyRefundDto){
+        String selectTion = "";
+        selectTion = "groupMoneyAllRefund";
+        List<GroupMoneyRefundDto> list=sqlE.selectM(selectTion,groupMoneyRefundDto);
+        return list;
+    }
+    public List groupMoneyMonthRefund(GroupMoneyRefundDto groupMoneyRefundDto){
+        String selectTion = "";
+        selectTion = "groupMoneyMonthRefund";
+        List<GroupMoneyRefundDto> list=sqlE.selectM(selectTion,groupMoneyRefundDto);
+        return list;
+    }
+    public int  jihehuitui(GroupMoneyRefundDto groupMoneyRefundDto ){
+        String selectTion = "";
+        selectTion = "jihehuitui";
+        int i=sqlSessionTemplate.update(selectTion,groupMoneyRefundDto);
+        return i;
+    }
+    public int  bohuihuitui(GroupMoneyRefundDto groupMoneyRefundDto ){
+        String selectTion = "";
+        selectTion = "bohuihuitui";
+        int i=sqlSessionTemplate.update(selectTion,groupMoneyRefundDto);
+        return i;
+    }
+}

@@ -1,0 +1,168 @@
+function getNextStep(){
+    b=$("#stepId").val();
+    var t={};
+
+    key1="procId";
+    value1=$("#procId").val();
+    t[key1]=value1;
+
+    key2="procNameEn";
+    value2=$("#procNameEn").val();
+    t[key2]=value2;
+
+    key3="stepId";
+    value3=$("#stepId").val();
+    t[key3]=value3;
+
+    key4="bizRecordId";
+    value4=$("#bizRecordId").val();
+    t[key4]=value4;
+
+    key5="procInstId";
+    value5=$("#procInstId").val();
+    t[key5]=value5;
+
+    key6="regionId";
+    value6=$("#regionId").val();
+    t[key6]=value6;
+
+    $.ajax({
+        type: 'POST',
+        url: 'orderflow/getNextSteps',
+        data:t,
+        success: loadNexttStepsHandler
+    });
+
+}
+
+function loadNexttStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    if(data.returnCode=="1"){
+        $("#next_deal6").val("加载下一步环节出错！");
+        $("#subButton6").attr("disabled",true);
+    }
+    console.log(data);
+    if(data.returnCode=="0"){
+        var stepList = data.stepList[0];
+        $("#next_deal6").val(stepList.ctProcStepRel.stepName);
+
+        for (var i = 0; i < 3; i++) {     //循环添加多个值
+            $("#ASSIGNEE_3").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+        }
+    }
+
+}
+
+function reSubmit(){
+    var t = {};
+
+    key = "procInstId";
+    value = $("#procInstId").val();
+    t[key] = value;
+
+    key1 = "taskInstId";
+    value1 = $("#taskInstId").val();
+    t[key1] = value1;
+
+    key2 = "taskId";
+    value2 = $("#taskId").val();
+    t[key2] = value2;
+
+    key3 = "stepId";
+    value3 = $("#stepId").val();
+    t[key3] = value3;
+
+    key4 = "procId";
+    value4 = $("#procId").val();
+    t[key4] = value4;
+
+    key5 = "dealOpinion";
+    value5 = "重新提交";
+    t[key5] = value5;
+
+    key6 = "remarks";
+    value6 = $("#remark6").val();
+    t[key6] = value6;
+
+
+    key7 = "ASSIGNEE_3" ;
+    value7 = $("#ASSIGNEE_3").val();
+    t[key7] = value7;
+
+    $.ajax({
+        url: "/orderflow/submitTask",
+        type: "post",
+        "data": t,
+        success: function (result) {
+            updateGroupPayContactInfo2();
+            alert("重新提交成功！！！！");
+            open(location, '_self').close();
+        },
+    });
+}
+function selectGroupPayContactByRequsetNum6() {
+    $.ajax({
+        url: "/selectGroupPayContacterInfo2",
+        type: "post",
+        "data":{
+            "id":id
+        },
+        success: function (data) {
+            $("#email6").val(data.email);
+            $("#link_man6").val(data.link_man);
+            $("#mobile_no6").val(data.mobile_no);
+            $("#address6").val(data.address);
+            $("#id_number6").val(data.id_number);
+            $("#union_name6").val(data.union_name);
+            $("#union_code6").val(data.union_code);
+            $("#account_name6").val(data.account_name);
+            $("#account_code6").val(data.account_code);
+        },
+    });
+}
+
+function updateGroupPayContactInfo2() {
+    $.ajax({
+        url: "/updateGroupPayContacterInfo",
+        type: "post",
+        "data": {
+            "id": id,
+            "request_num":request_num,
+            "modify_no":loginCode,
+            "link_man": $("#link_man6").val(),
+            "mobile_no": $("#mobile_no6").val(),
+            "address": $("#address6").val(),
+            "id_number": $("#id_number6").val(),
+            "email": $("#email6").val(),
+        },
+        success: function (data) {
+
+        }
+    })
+}
+
+
+function selOrderTrances(){
+    $.ajax({
+        url: "orderflow/getTrance",
+        type: "post",
+        "data": {
+            "procInstId":  $("#procInstId").val()
+        },
+        success: function (result) {
+            $.each(result, function (i, field) {
+                var trStr = "<tr class='tr-data-cc'><td>" + field.taskInstId +"</td><td>" +field.stepName+"</td><td>" + field.dealName +"</td><td>" + field.dealDateTime +"</td><td>" + field.dealOpinion
+                    +"</td><td>"+field.dealRemarks +"</td></tr>";
+                $("#trancesTb").append(trStr);
+            })
+        }
+    });
+}
+
+
+
+
+
+
+

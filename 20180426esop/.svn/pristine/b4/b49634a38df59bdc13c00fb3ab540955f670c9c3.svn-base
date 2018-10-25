@@ -1,0 +1,108 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Shinelon on 2017/6/5.
+ */
+public class ManagerAmountTOP50Dto extends BaseDto{
+    String DT_RowId = "";
+   String region_code = "";
+   String region_name = "";
+   String town_code = "";
+   String town_name = "";
+   String manager_no = "";
+   String manager_name = "";
+   String manager_boss_no = "";
+   String user_amout = "";
+   String rank = "";
+   String eff_date = "";
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getManager_boss_no() {
+        return manager_boss_no;
+    }
+
+    public void setManager_boss_no(String manager_boss_no) {
+        this.manager_boss_no = manager_boss_no;
+    }
+
+    public String getUser_amout() {
+        return user_amout;
+    }
+
+    public void setUser_amout(String user_amout) {
+        this.user_amout = user_amout;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

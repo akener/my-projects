@@ -1,0 +1,150 @@
+// JavaScript Document
+/*
+ 初始：$("#id").UED_navtab();
+ */
+
+(function($){
+    $.fn.UED_navtab=function(option){
+        //默认配置
+        var defaults={
+            //配置参数
+            activeClass:'active', //激活class
+            height:'100%', //组件高度（包含tab标题栏的高度），可接受参数：auto（自适应？？尚未实现），100%（父容器高度），数字
+            leftArrow:"<a class='leftArrow' href='#'>＜</a>", //左箭头dom
+            rightArrow:"<a class='rightArrow' href='#'>＞</a>", //右箭头dom
+            titleLiMargin:0,//tab标题间的间距，用于计算滚动距离
+            arrowWidth:30, //左右滚动箭头的宽度，用于宽度计算补差
+            max:20 //tab数量限制
+        };
+
+        return this.each(function(i,n){
+            var $this = $(this),
+                _rel =  strToJson($this.attr("data-rel")),
+                option = $.extend(true,{},defaults,option,_rel)
+            $title = $this.children(".navtab-title"),
+                $content = $this.children(".navtab-content"),
+                $leftArrow = $(option.leftArrow),
+                $rightArrow = $(option.rightArrow)
+            ;
+
+            //方法：设置高度，参数（数字或100%）
+            $.fn.UED_navtab.setHeight = function(h){
+                var navtabHeight;
+                if(h=="auto"){
+                    navtabHeight = 400;
+                }else if(option.height=="100%"){
+                    navtabHeight = $this.parent().innerHeight();
+                }else{
+                    navtabHeight = h;
+                }
+
+                if(typeof navtabHeight == "number"){
+                    var th = $title.outerHeight(true);
+                    $this.data("height",navtabHeight-th);
+                    $content.height(navtabHeight-th).find("iframe").height(navtabHeight-th);
+                }else{
+                    alert("$.fn.UED_navtab.setHeight()参数错误！");
+                }
+            };
+            //获取初始标题栏实际宽度
+            var liw = 0;
+            $title.find("ul>li").each(function(){
+                liw = liw + $(this).width() + option.titleLiMargin;
+                $this.data("liw",liw);
+            });
+            monitor();
+            //检测tab标题栏变化
+            function monitor(){
+                var tw = $title.width(),
+                    liw = $this.data("liw");
+                maxLeft = liw-tw+60;
+                if(liw>tw-2*option.arrowWidth){
+                    $leftArrow.show();
+                    $rightArrow.show();
+                    $title.find(">ul").css("margin-left","30px");
+                }else{
+                    $leftArrow.hide();
+                    $rightArrow.hide();
+                    $title.find(">ul").css("margin-left","0");
+                }
+            }
+            //方法：向左滚动
+            $.fn.UED_navtab.srcollLeft = function(){
+                var left =parseFloat($('.nav-tabs').css('margin-left'));
+                $(".nav-tabs").stop(false,true);
+                if(left<=30 ) {
+                    left = -200 + left;
+                    if (left >= -maxLeft) {
+                        $('.nav-tabs').css('margin-left', left);
+                    } else {
+                        $('.nav-tabs').css('margin-left', -maxLeft);
+                    }
+                }
+            };
+
+            //方法：向右滚动
+            $.fn.UED_navtab.srcollRight = function(){
+                var left =parseFloat($('.nav-tabs').css('margin-left'));
+                $(".nav-tabs").stop(false,true);
+                if(left>= -maxLeft ) {
+                    left = +200 + left;
+                    if (left < 30) {
+                        $('.nav-tabs').css('margin-left', left);
+                    } else {
+                        $('.nav-tabs').css('margin-left', 30);
+                    }
+                }
+            };
+
+
+            /*UI初始化*/
+            //设置高度
+           // $this.UED_navtab.setHeight(option.height);
+
+            //插入左右滚动箭头
+            $title.prepend($leftArrow).append($rightArrow);
+            //生成loading遮罩
+            //$content.append($mask);
+
+            /*绑定行为*/
+            //左箭头行为
+            $leftArrow.bind("click",function(e){
+                var e = e || window.event;
+                e.preventDefault();
+                $this.UED_navtab.srcollLeft();
+            });
+            //右箭头行为
+            $rightArrow.bind("click",function(e){
+                var e = e || window.event;
+                e.preventDefault();
+                $this.UED_navtab.srcollRight();
+            });
+            //点击标题a行为
+            $title.delegate("ul>li>a","click",function(e){ //点击标题行为
+                var e = e || window.event;
+                e.preventDefault();
+                var $this = $(this);
+                var _index = $this.parent('li').index();
+                $this.parent('li').addClass('active').siblings('li').removeClass('active');
+
+                $(this).closest('.navtab-title').next('.navtab-content').find('.navtab-item').eq(_index).show()
+                    .siblings('.navtab-item').hide();
+
+            });
+            //默认激活第一个tab
+            $title.find("ul>li>a").eq(0).trigger("click");
+        });
+    }
+
+    function strToJson(str){
+        str = str? str:"";
+        return  eval( "({" + str + "})" );
+    }
+
+    $(function(){
+        $('div[data-role="navtab"]').UED_navtab();
+    });
+
+})(jQuery);
+
+

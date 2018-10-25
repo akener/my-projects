@@ -1,0 +1,61 @@
+package com.esop.base.dto;
+
+/**
+ * Created by wangbl on 16/7/27.
+ */
+public class ServiceNoInfoDto {
+    String org_code="";       //组织编码
+    String boss_org_code="";  //对应boss组织编码
+    String service_name="";   //客户经理名称
+    String phone_no="";       //客户经理电话
+    String group_name="";     //组织名称
+    String service_no="";     //客户经理工号
+
+    public String getOrg_code() {
+        return org_code;
+    }
+
+    public void setOrg_code(String org_code) {
+        this.org_code = org_code;
+    }
+
+    public String getBoss_org_code() {
+        return boss_org_code;
+    }
+
+    public void setBoss_org_code(String boss_org_code) {
+        this.boss_org_code = boss_org_code;
+    }
+
+    public String getService_name() {
+        return service_name;
+    }
+
+    public void setService_name(String service_name) {
+        this.service_name = service_name;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+}

@@ -1,0 +1,71 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by admin on 2017/12/6.
+ */
+public class WorkFlowInfoDto {
+    private String taskOrderId;//申请单流水号ID
+    private String applicantNo;//申请人
+    private String nextDealPerson;//下一步处理人
+    private String nodeId;
+    private String dealTime;//处理时间
+    private String approveOpinion;//审批意见
+    private String memo;//备注
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getNextDealPerson() {
+        return nextDealPerson;
+    }
+
+    public void setNextDealPerson(String nextDealPerson) {
+        this.nextDealPerson = nextDealPerson;
+    }
+
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getApproveOpinion() {
+        return approveOpinion;
+    }
+
+    public void setApproveOpinion(String approveOpinion) {
+        this.approveOpinion = approveOpinion;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+}

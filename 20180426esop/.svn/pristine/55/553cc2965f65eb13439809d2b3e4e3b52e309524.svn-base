@@ -1,0 +1,285 @@
+<%@ page pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+    <link rel="icon" href="./favicon.ico">
+    <title>日志管理</title>
+</head>
+<body>
+<!-- 下发工单提示框 -->
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice10">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo10">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button id="sendCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div align="center" style="padding-top:5px; padding-left:1px;width: 100%;height:200px;background-color:#ffffff ">
+    <div class="title-style04" style="height: 30px;width: 99%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+        <h5 align="left">&nbsp;&nbsp;◆&nbsp;日志管理</h5>
+    </div>
+    <div style="background-color:#c0e9ef;border:1px solid #9ce4ef;width: 99%;height: 95px">
+        <table border="1" cellpadding="0" cellspacing="0" width="100%" align="center"
+               style="margin-top: 8px;border:1px solid #2A97DC ">
+            <tr>
+                <th width="150px" class="text-center">
+                    操作功能
+                </th>
+                <td width="300px">
+                    <input id="opCode" type="text" name="opCode" style="width: 200px"/>
+
+                </td>
+                <th width="150px" class="text-center">
+                    组织机构
+                </th>
+                <td width="300px">
+                    <select id="groupName" name="groupName" onclick="xuanze()" style="width: 200px">
+                        <option value="">--全部--</option>
+                    </select>
+                </td>
+
+                <th width="150px" class="text-center">
+                    开始时间
+                </th>
+                <td width="300px">
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:150px"  id="beginTime" name="beginTime" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+
+                </td>
+
+
+            </tr>
+            <tr>
+                <th width="150px" class="text-center">
+                    归属系统
+                </th>
+                <td width="300px">
+                    <select id="outSysId" name="outSysId" style="width: 200px">
+                        <option value="">--全部--</option>
+                    </select>
+
+                </td>
+                <th width="150px" class="text-center">
+                    操作人员
+                </th>
+                <td width="300px">
+                    <select id="loginNo" name="loginNo" style="width: 200px">
+                        <option value="">--全部--</option>
+                    </select>
+
+                </td>
+                <th width="150px" class="text-center">
+                    结束时间
+                </th>
+                <td width="300px">
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:150px"  id="endTime" name="endTime" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                </td>
+
+
+            </tr>
+        </table>
+    </div>
+    <div id="operation_button" align="center" style="margin-top: 15px;padding-top:6px;height:40px;width:99%;background-color:#c0e9ef;border:1px solid #2A97DC;">
+        <button type="button" class="btn-style02" name="printsub" id="printsub">查询</button>&nbsp;
+        <button type="button" class="btn-style02" name="reset1" onclick="pageReset()">重置</button>&nbsp;
+    </div>
+</div>
+<div style="height: 30px;width: 100%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+    <h5 align="left" style="margin-top: 4px">&nbsp;&nbsp;◆&nbsp;日志列表</h5>
+</div>
+<div >
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center" >操作功能</th>
+            <th class="text-center">归属系统</th>
+            <th class="text-center">操作工号</th>
+            <th class="text-center">工号名称</th>
+            <th class="text-center">工号归属</th>
+            <th class="text-center">对应BOSS工号</th>
+            <th class="text-center">对应经分工号</th>
+            <th class="text-center">操作时间</th>
+            <th class="text-center">IP地址</th>
+        </tr>
+        </thead>
+
+    </table>
+</div>
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+
+    $(document).ready(function () {
+        prdCity();
+        prdsysout();
+        //时间控件
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            pickerPosition: "bottom-left"
+        });
+
+     });
+
+    //查询
+    $("#printsub").click(function () {
+        editor = new $.fn.DataTable.Editor( {
+        } );
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            //"sScrollY":230,"sScrollX":200,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            bserverSide: true,//服务端进行分页处理
+            destroy:true,
+            ajax: {
+                url:"/getlogManageInff",
+                type:"POST",
+                data:{
+                    "op_code":$("#opCode").val(),
+                    "out_sys_id":$("#outSysId").val(),
+                    "group_name":$("#groupName").val(),
+                    "login_no":$("#loginNo").val(),
+                    "open_date":$("#beginTime").val(),
+                    "audit_date":$("#endTime").val()
+                }
+            },
+            columns: [
+
+                { data: "function_name" },
+                { data: "out_sys_name" },
+                { data: "login_no" },
+                { data: "login_name" },
+                { data: "group_name" },
+                { data: "bass_login_no1" },
+                { data: "boss_login_no" },
+                { data: "op_time" },
+                { data: "ip_addr" }
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    });
+
+    //重置
+    function pageReset(){
+        location.reload();
+    }
+
+    //循环遍历地市
+    function  prdCity() {
+        $.ajax({
+            type:"post",
+            url:"/getCity",
+            data:{
+                "parent_group_id":group_id
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                if(index==0){
+                    //alert(item.group_id)
+                    $("#groupName").append("<option value='"+item.group_id+"'>"+'├'+""+item.name+"</option>");
+                }else{
+                    $("#groupName").append("<option value='"+item.group_id+"'>"+'&nbsp;&nbsp;├'+""+item.group_id+""+item.name+"</option>");
+                }
+
+            });
+        });
+    }
+
+    function xuanze() {
+        peop();
+    }
+
+    //操作人员
+    function peop() {
+        $.ajax({
+            type:"post",
+            url:"/getloginmsg",
+            data:{
+                "group_id":$("#groupName").val()
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+
+                $("#loginNo").append("<option value='"+item.login_no+"'>"+item.login_name+"</option>");
+            });
+        });
+    }
+
+
+    //归属系统
+    function prdsysout() {
+        $.ajax({
+            type:"post",
+            url:"/getOutsystemDuf"
+
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+
+                $("#outSysId").append("<option value='"+item.out_sys_id+"'>"+item.out_sys_name+"</option>");
+            });
+        });
+    }
+
+
+
+    
+
+</script>
+</html>

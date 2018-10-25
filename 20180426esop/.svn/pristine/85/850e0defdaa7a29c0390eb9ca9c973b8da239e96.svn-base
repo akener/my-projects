@@ -1,0 +1,138 @@
+package com.esop.workOrderInfo.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.*;
+import com.esop.workOrderInfo.service.ContractInfoShowService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+
+/**
+ * Created by qiaojian on 2017/5/31.
+ */
+@RestController
+public class ContractInfoShowController {
+    private static Logger logger = Logger.getLogger(ContractInfoShowController.class);
+
+
+    @Autowired
+    ContractInfoShowService contractInfoShowService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+
+    //查询地市下所有区县信息
+    @RequestMapping(value = "/selectContractAll")
+    public List<CountyInfoDto> selAllContractByGroupId(CountyInfoDto in ,HttpServletRequest request){
+        in.setGroup_id(request.getParameter("group_id"));
+        List<CountyInfoDto> lsst=contractInfoShowService.qryContractByGroupId(in);
+        return  lsst;
+    }
+    //查询合同信息
+    @RequestMapping(value = "/selContractInfoMsg")
+    public Result qryContractInfoMsg(CountyContractDto in , HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        String conId=request.getParameter("contractId");
+        String conNo=request.getParameter("contractNo");
+        String sTime=request.getParameter("sTime");
+        String vTime=request.getParameter("vTime");
+        in.setContract_no(conNo);//合同编号
+        in.setsTime(sTime);//合同创建时间开始范围
+        in.setvTime(vTime);//合同创建时间结束范围
+        in.setGroup_id(conId);//地市编号（必传值）
+        result=contractInfoShowService.showAllContractMsg(in);
+        return  result;
+    }
+    //查询历史合同
+    @RequestMapping(value = "/selHisContractInfo")
+    public Result qryHisContractInfoByContractNo(CountyContractDto in , HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        String conId=request.getParameter("contractId");
+        in.setContract_id(conId);//合同编号
+        result=contractInfoShowService.showHisContractMsgInfo(in);
+        return  result;
+    }
+
+    //查询区县
+    @RequestMapping(value = "/selGroupIdAndGroupName")
+    public List<GroupMsgDto> selgroupIdAndName(GroupMsgDto in , HttpServletRequest request){
+        in.setParent_group_id(request.getParameter("group_id"));
+        List<GroupMsgDto> lsst=contractInfoShowService.getGroupAndName(in);
+        return  lsst;
+    }
+    //查询工号
+    @RequestMapping(value = "/selCreateLogin")
+    public List<LoginInfoDto> selCreateLoginNoMsg(LoginInfoDto in , HttpServletRequest request){
+        in.setGroup_id(request.getParameter("group_id"));
+        List<LoginInfoDto> lsst=contractInfoShowService.getCreateLoginNo(in);
+        return  lsst;
+    }
+    //管理办法查询
+    @RequestMapping(value = "/showSelMethod")
+    public Result qryContractInfoMsg(selMethodDto in , HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        in.setPage(page);
+        in.setPub_createno(request.getParameter("createLogion"));
+        in.setTitle(request.getParameter("titleId"));
+        in.setContent_detail(request.getParameter("contentId"));
+        in.setsTime(request.getParameter("sTime"));
+        in.setvTime(request.getParameter("vTime"));
+        in.setPub_type(request.getParameter("pubType"));
+        in.setParent_group_id(request.getParameter("groupId"));
+        result=contractInfoShowService.showInquiryMethod(in);
+        return  result;
+    }
+
+    //查看数据根据code
+    @RequestMapping(value = "/selMethodByCode")
+    public selMethodDto selMethodInfoByCode(selMethodDto in , HttpServletRequest request){
+        in.setCode(request.getParameter("codeId"));
+        selMethodDto lsst=contractInfoShowService.getMethodRecordByCode(in);
+        return  lsst;
+    }
+
+    //修改前查数据根据code
+    @RequestMapping(value = "/selMethodByCodeForUp")
+    public selMethodDto selMethodByCodeForUpdate(selMethodDto in , HttpServletRequest request){
+        in.setCode(request.getParameter("codeId"));
+        selMethodDto lsst=contractInfoShowService.getMethodByCodeForUpdate(in);
+        return  lsst;
+    }
+
+    @RequestMapping(value = "/upMethodByCode")
+    public int upMethodInfoByCode(HttpServletRequest request){
+
+        selMethodDto upDto=new selMethodDto();
+        upDto.setCode(request.getParameter("codeId"));
+        upDto.setContent(request.getParameter("strContent"));
+        upDto.setContent_detail(request.getParameter("strDetail"));
+        upDto.setTitle(request.getParameter("strTitle"));
+        upDto.setPub_type(request.getParameter("strPubType"));
+        int result=0;
+        int res=contractInfoShowService.updateMethodByCode(upDto);
+        if(res !=-1){
+            //成功
+            result=1;
+        }else{
+            //失败
+            result=2;
+        }
+
+        return result;
+    }
+}

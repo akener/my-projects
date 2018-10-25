@@ -1,0 +1,64 @@
+package com.esop.noteinformation.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.noteinformation.controller.NoteinfoController;
+import com.esop.noteinformation.dto.NoteinfoDTO;
+import com.esop.noteinformation.dto.NoterelDTO;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/12 0012.
+ */
+
+@Repository
+public class NoteinfoService {
+   @Autowired
+    SqlE sqlE;
+    private Logger logger = Logger.getLogger(NoteinfoService.class);
+
+   //查询信息
+    public Result query(NoteinfoDTO noteinfoDTO){
+        return sqlE.selectPage("query",noteinfoDTO);
+    }
+    public Result queryinfo(NoteinfoDTO noteinfoDTO){
+        return sqlE.selectPage("qrynoteinfo",noteinfoDTO);
+    }
+    public List<NoteinfoDTO> qyrNoteId(NoteinfoDTO dto){
+      return   sqlE.selectM("qryNoteId",dto);
+    }
+   public  List<NoteinfoDTO>  qryName(NoteinfoDTO dto){
+       return   sqlE.selectM("qryName",dto);
+
+   }
+   public   int  insertnote(NoteinfoDTO dto){
+       return  sqlE.insertM("insertnote",dto);
+   }
+    public   int  insertnoterel(NoteinfoDTO dto){
+        return  sqlE.insertM("insertnoterel",dto);
+    }
+    public   int  insnoterel(NoteinfoDTO dto){
+        return  sqlE.insertM("insnoterel",dto);
+    }
+    public List<NoterelDTO> qrynoterel(NoterelDTO dto){
+        return  sqlE.selectM("qrynoterel",dto);
+    }
+
+    public List<NoterelDTO> qrygroupinfo(NoterelDTO dto){
+        List list=sqlE.selectM("qrygroupinfo",dto);
+        return  list;
+    }
+    public  String  qrynoteseq(){
+
+        return   sqlE.selectM("qrynoteseq").get(0).toString();
+    }
+
+    public void updateNote(NoteinfoDTO dto){
+        sqlE.updateM("updateNote",dto);
+    }
+}

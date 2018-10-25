@@ -1,0 +1,78 @@
+package com.esop.productInfo.dto;
+
+/**
+ * Created by wangbl on 2017/6/2.
+ */
+public class ProductDictDto {
+    String first_type         ="";//一级类别
+    String first_name         ="";//一级类别名称
+    String secondary_type     ="";//二级类别
+    String secondary_name     ="";//二级类别名称
+    String prod_id	          ="";//产品编码
+    String prod_name	      ="";//产品名称
+    String del_flag           ="";//是否可删除标示1表示不可删除，0表示可删除
+    String landing_no         ="";//
+    public String getFirst_type() {
+        return first_type;
+    }
+
+    public void setFirst_type(String first_type) {
+        this.first_type = first_type;
+    }
+
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name = first_name;
+    }
+
+    public String getSecondary_type() {
+        return secondary_type;
+    }
+
+    public void setSecondary_type(String secondary_type) {
+        this.secondary_type = secondary_type;
+    }
+
+    public String getSecondary_name() {
+        return secondary_name;
+    }
+
+    public void setSecondary_name(String secondary_name) {
+        this.secondary_name = secondary_name;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public String getDel_flag() {
+        return del_flag;
+    }
+
+    public void setDel_flag(String del_flag) {
+        this.del_flag = del_flag;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

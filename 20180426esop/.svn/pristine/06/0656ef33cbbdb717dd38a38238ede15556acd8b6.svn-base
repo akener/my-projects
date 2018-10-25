@@ -1,0 +1,20 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.OutDTO;
+
+/**
+ * 实收：查询同一实收集团账户是否存在审批中或待开票的申请工单OutDTO
+ *
+ * @author daish 2017/11/20
+ */
+public class QryAcctSSInvOrderOutDTO extends OutDTO {
+    private String applicationNos;
+
+    public String getApplicationNos() {
+        return applicationNos;
+    }
+
+    public void setApplicationNos(String applicationNos) {
+        this.applicationNos = applicationNos;
+    }
+}

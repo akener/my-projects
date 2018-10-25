@@ -1,0 +1,428 @@
+package com.esop.cust.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cust.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 2017/5/30.
+ */
+@Repository
+public class GrpStatisticsInfoService {
+    @Autowired
+    SqlE sqlE;
+    //esop与旗舰店接口问题
+    //客户经理信息查询
+    public List<CustManagerInfoDto> qryCustManagerMsg(EpMesagePushDto param){
+
+        List<GrpInterfaceParameterDto> list = sqlE.selectM("qryCustId",param);
+        List<CustManagerInfoDto> listsnd = new ArrayList<CustManagerInfoDto>();
+        if(list.size()>0){
+            listsnd = sqlE.selectM("qryCustManagerMsg",list.get(0));
+        }
+        return  listsnd;
+    }
+    //客户留言信息推送
+    @Transactional
+    public int sMessage(EpMesagePushDto param){
+        List<EpMesagePushDto> idNolist = sqlE.selectM("qryIdNo",param);
+        if(idNolist.size()>0){
+            param.setId_no(idNolist.get(0).getId_no());
+
+            List<EpMesagePushDto> list = sqlE.selectM("qryMesagePushMsg",param);
+            EpMesagePushDto dto = list.get(0);
+            param.setName(dto.getName());
+            param.setUnit_id(dto.getUnit_id());
+            param.setUnit_name(dto.getUnit_name());
+
+            if(dto.getMan_type().equals("1")){
+                param.setMan_type("1");//重要成员
+            }else{
+                param.setMan_type("0");//普通成员
+            }
+            if(param.getIsServ_no().equals("Y")){
+                return  sqlE.insertM("isSvrsMessage",param);
+            }else{
+                return  sqlE.insertM("sMessage",param);
+            }
+        }else{
+            return  0;
+        }
+    }
+    //查询推送的客户留言信息
+    public List<EpMesagePushDto> qryEpMesagePushMsg(EpMesagePushDto param){
+        Result result = sqlE.selectPage("qryEpMesagePushMsg",param);
+        return result.getData();
+        // return sqlE.selectM("qryEpMesagePushMsg",param);
+    }
+    //查询旗舰店列表
+    public List<EpMesagePushDto> qryCustList(EpMesagePushDto param){
+        return  sqlE.selectM("qryCustList",param);
+    }
+    //修改未读信息为已读信息
+    public int updateReaded(EpMesagePushDto param){
+        return sqlE.updateM("updateReaded",param);
+    }
+
+    //集团信息概览
+    //查询集团总数和集团成员数量以及集团重要成员数量
+    public GrpStatisticsInfoDto getGrpStatisticsInfo(GrpInterfaceParameterDto param){
+        List list = sqlE.selectM("getGrpStatisticsInfo",param);
+        GrpStatisticsInfoDto grpDto=new GrpStatisticsInfoDto();
+        if(list.size()!=0) {
+            grpDto = (GrpStatisticsInfoDto)list.get(0);
+        }
+        return grpDto;
+    }
+    //查询集团成员数量以及集团重要成员数量
+    public GrpStatisticsDto qryGrpMemberNums(GrpInterfaceParameterDto param){
+        GrpStatisticsDto grpDto = new GrpStatisticsDto();
+        List list = sqlE.selectM("qryGrpMemberNums",param);
+        if(list.size()!=0) {
+            grpDto = (GrpStatisticsDto)list.get(0);
+        }
+        return grpDto;
+    }
+    //集团基本信息查询
+    //根据客户经理工号查询匹配的集团
+    public List<GrpListDto> qryGrpList(GrpInterfaceParameterDto param){
+
+        String type = param.getGrp_status();
+        String sqllist = "qryGrpList";
+        if(type.equals("03")){
+            sqllist = "qryGrpList_qz";
+        }else if(type.equals("04")){
+            sqllist = "qryGrpList_jz";
+        }else if(type.equals("00")){
+            sqllist ="qryAllGrpList";
+        }else{
+            sqllist = "qryGrpList";
+        }
+
+        Result rs =  sqlE.selectPage(sqllist,param);
+        List<GrpListDto> list = rs.getData();
+        return  list;
+
+    }
+    //根据集团编号查询集团基本信息
+    public List<GrpBaseInfoDto>  qryGrpBaseInfo(GrpInterfaceParameterDto param){
+        String type  = param.getGrp_status();
+        String sqlList = "";
+        if(type.equals("03")){
+            sqlList = "qryGrpBaseInfo_qz";
+        }else if(type.equals("04")){
+            sqlList = "qryGrpBaseInfo_jz";
+        }else{
+            sqlList = "qryGrpBaseInfo";
+        }
+
+        return  sqlE.selectM(sqlList,param);
+    }
+
+    //集团信息录入
+    //在集团信息录入的时候，将旧的集团信息到集团客户信息历史表中 //判断登录工号为aavg21不能修改省级重点把控集团为其他类型！没弄！
+    @Transactional
+    public int insertGrpCustMsgHis (GrpInterfaceParameterDto param){
+        //  GrpStatisticsInfoService service = new GrpStatisticsInfoService();
+        int [] flags = new int[9];
+        GrpInterfaceParameterDto grpinterParam = (GrpInterfaceParameterDto)sqlE.selectM("qrysMaxSysAccept",param).get(0);
+        param.setUpdate_accept(grpinterParam.getUpdate_accept());
+        if(param.getGrp_status().equals("01")){//判断集团类型：根据集团类型对不同历史表进行操作
+           /* param.setTable_name("dGrpCustMsg");
+            param.setTable_name_his("dGrpCustMsgHis")*/;
+            param.setUpdate_code("101010");
+            flags[1] = sqlE.insertM("insertGrpCustMsgHis",param)&sqlE.updateM("updateGrpBseInfo",param);//&sqlE.updateM("updateDCustMsg",param);
+            /*if(param.getService_no().equals("aavg21")){//当登陆工号为aavg21  此处还得在看看！
+                flags[0] =  sqlE.updateM("updateWhenGZHY",param)&sqlE.insertM("insertGrpCustMsgAddHis",param);
+            }else{
+                flags[0] =1;
+            }
+            flags[0] = flags[1]&flags[0];*/
+            flags[0] = flags[1];
+            /*param.setField_code("KHFWD");
+            param.setField_value(param.getSvcLvl());
+            List list = sqlE.selectM("isExistServiceLevel",param);
+            if(list.size()>0){
+                param.setUpdate_type("u");
+                flags[2]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateGrpCustMsgAdd",param);
+            }else{
+                param.setUpdate_type("a");
+                flags[2] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            param.setField_code("GZHY");
+            List list_secondd = sqlE.selectM("isExistServiceLevel",param);
+            if(list_secondd.size()>0){
+                param.setUpdate_type("u");
+                param.setField_value("noSelect");
+                param.setOther_value("noSelect");
+                param.setNote("总部关注行业修改操作（FIELD_CODE为GZHY,FIELD_VALUE为总部关注大行业标识,OTHER_VALUE为总部关注小行业标识）");
+                flags[3]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateWhenGZHY",param);;
+            }else{
+                param.setUpdate_type("a");
+                flags[3] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            param.setField_code("0002");
+            param.setField_value("");
+            List list__third = sqlE.selectM("isExistServiceLevel",param);
+            if(list__third.size()>0){
+                param.setUpdate_type("u");
+                flags[4]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateGrpCustMsgAdd",param);
+            }else{
+                param.setUpdate_type("a");
+                flags[4] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            param.setField_code("0003");
+            List list_fourth = sqlE.selectM("isExistServiceLevel",param);
+            if(list_fourth.size()>0){
+                param.setUpdate_type("u");
+                flags[5]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateGrpCustMsgAdd",param);
+            }else{
+                param.setUpdate_type("a");
+                flags[5] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            param.setField_code("0012");
+            param.setField_value("null");
+            List list_fifth = sqlE.selectM("isExistServiceLevel",param);
+            if(list_fifth.size()>0){
+                param.setUpdate_type("u");
+                flags[6]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateGrpCustMsgAdd",param);
+            }else{
+                param.setUpdate_type("a");
+                flags[6] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            param.setField_code("0011");
+            List list_sixth = sqlE.selectM("isExistServiceLevel",param);
+            if(list_sixth.size()>0){
+                param.setUpdate_type("u");
+                flags[7]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateGrpCustMsgAdd",param);
+            }else{
+                param.setUpdate_type("a");
+                flags[7] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            param.setField_code("0010");
+            List list_eigth = sqlE.selectM("isExistServiceLevel",param);
+            if(list_eigth.size()>0){
+                param.setUpdate_type("u");
+                flags[8]= sqlE.insertM("insertGrpCustMsgAddHis",param)&sqlE.updateM("updateGrpCustMsgAdd",param);
+            }else{
+                param.setUpdate_type("a");
+                flags[8] = sqlE.insertM("insertGrpCustMsgAdd",param)&sqlE.insertM("insertGrpCustMsgAddHis");
+            }
+            return flags[0]&flags[2]&flags[3]&flags[4]&flags[5]&flags[6]&flags[7]&flags[8];*/
+            return  flags[0];
+        }else  if(param.getGrp_status().equals("03")){
+            param.setUpdate_code("101030");
+
+            /*param.setTable_name("dGrpPreMsg");
+            param.setTable_name_his("dGrpPreMsgHis");//此处还得对集团信息进行更新*/
+            flags[0] = sqlE.insertM("insertGrpPreMsgHis",param)
+                    &sqlE.updateM("updatedGrpPreMsg",param);//&sqlE.updateM("updateDCustMsg",param);
+            return flags[0];
+        }else{
+            if(param.getGrp_status().equals("02")){
+                param.setUpdate_code("101020");
+                flags[0]= sqlE.insertM("insertGrpCustMsgHis",param)&sqlE.updateM("updateGrpBseInfo",param);
+                return flags[0];
+              /*  param.setTable_name("dGrpCustMsg");
+                param.setTable_name_his("dGrpCustMsgHis");*/
+            }else{
+                param.setUpdate_code("101040");
+                flags[0]= sqlE.insertM("insertGrpCustPotMsgHis",param)&sqlE.updateM("updateddCustPotMsg",param);
+
+                /*param.setTable_name("dGrpCustPotMsg");
+                param.setTable_name_his("dGrpCustPotMsgHis");*/
+                return flags[0];
+            }
+
+        }
+    }
+
+
+
+    //集团重要成员添加
+    //根据集团编号查询集团重要成员
+    public List<GrpImpMemberDto> impMemberList(GrpInterfaceParameterDto param){
+        return sqlE.selectM("impMemberList",param);
+    }
+    //根据号码验证是否为重要成员
+    public List<GrpImpMemberDto> isImpMember(GrpInterfaceParameterDto param){
+        return sqlE.selectM("isImpMember",param);
+    }
+    //当添加重要成员时验证的号码不是重要成员查询号码对应的客户信息
+    public List<CustMsgDto> qryCust(GrpInterfaceParameterDto param){
+        return sqlE.selectM("qryCust",param);
+    }
+
+    //集团重要成员录入前查询电话号码对应用户在dCustDoc中存在的信息
+    public List<CustDocDto> qryCustDoc(CustMsgDto param){
+        return sqlE.selectM("qryCustDoc",param);
+    }
+
+    //查询集团类别和重要级别
+    public Map qryEntType(){
+        Map<String,Object> map = new HashMap<String,Object>();
+        List list = sqlE.selectM("qryEntType");
+        List listFirst = sqlE.selectM("qryGrpImpEntTypeFirst");
+        List listSecond = sqlE.selectM("qryGrpImpEntType");
+        if(list.size()>0){
+            map.put("return_msg","查询成功");
+            map.put("return_code","000000");
+            map.put("ent_typ",list);
+            map.put("ImpEntTypeFirst",listFirst);
+            map.put("GrpImpEntType",listSecond);
+        }else{
+            map.put("return_msg","数据为空");
+            map.put("return_code","-1");
+        }
+
+        return map;
+
+    }
+    //添加重要成员时为dGrpCustImpManMsg表添加重要成员信息
+    @Transactional
+    public int insertCustImpManMsg(GrpImpMemberAddDto param){
+        GrpImpMemberAddDto grpImpMemberAddDto = (GrpImpMemberAddDto)sqlE.selectM("qryImpId",param).get(0);
+        GrpImpMemberAddDto grpImpMeDto = (GrpImpMemberAddDto)sqlE.selectM("qryUpdateAccept",param).get(0);
+        param.setImp_id(grpImpMemberAddDto.getImp_id());
+        param.setUpdate_accept(grpImpMeDto.getUpdate_accept());
+        System.out.println(param.getImp_id()+" :     -");
+        System.out.println(param.getUpdate_accept()+" :     :");
+        int flag =  sqlE.insertM("insertCustImpManMsg",param)&
+                sqlE.insertM("insertCustImpManMsgHis",param) &
+                sqlE.insertM("grpCustImpManMsgAdd",param) &
+                sqlE.insertM("grpCustImpManMsgAddHis",param);
+        return flag;
+    }
+
+    //集团重要成员信息录入（更改）--的查询
+    public List<GrpImpMemberAddDto> qryGrpCustImpManMsg(GrpImpMemberAddDto param){
+        GrpImpMemberAddDto grpImpMember = new GrpImpMemberAddDto();
+        List list = sqlE.selectM("qryGrpCustImpManMsg",param);
+
+        return list;
+    }
+    //更新集团重要成员信息
+    @Transactional
+    public int updateGrpCustImpManMsg(GrpImpMemberAddDto param){
+        int flag = sqlE.updateM("updateGrpCustImpManMsg",param);
+        return  flag;//&sqlE.updateM("updateGrpCustImpManMsgAdd",param);
+    }
+    //集团竞争对手
+    public List qryCompeteInfoMsg(GrpInterfaceParameterDto param){
+        return sqlE.selectM("qryCompeteInfoMsg",param);
+    }
+
+
+
+    //合同提前一月到期提醒
+    public List qryCnttInfo(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("qryCnttInfo",param);
+    }
+
+    //集团重要成员生日提醒
+    public List qryImpManBirthDay(GrpInterfaceParameterDto param){
+        System.out.println(param.getService_no()+"客户经理工号");
+        return sqlE.selectM("qryImpManBirthDay",param);
+    }
+
+    //集团客户重要成员生日提醒短信下发
+    @Transactional
+    public int insertBirthMsg(SendBirthMsgDto param){
+        System.out.println("dddddddd");
+        return  sqlE.insertM("insertBirthMsg",param);
+    }
+    //合同审批
+    //校验权限
+    public String validateRoleType(CnttExamineDto param){
+
+        List<CnttExamineDto> list = sqlE.selectM("validateRoleType",param);
+        if(list.get(0).getRole_zc().equals("1")){
+            return list.get(0).getRole_zc();
+        }else{
+            return "0";
+        }
+    }
+    //查询地区编码
+    public List<DGrpGroupsDto> qryGoupId(CnttExamineDto param){
+        List<DGrpGroupsDto> list = sqlE.selectM("qryGoupId",param);
+        return list;
+    }
+    //查询负责地区及编码
+    public  Map qryGroupIdAndName(CnttExamineDto param){
+        List<DGrpGroupsDto> list = sqlE.selectM("qryGoupId",param);
+        Map<String,Object> map = new HashMap<String, Object>();
+        if(list.size()>0){
+            param.setParent_group_id(list.get(0).getParent_group_id());
+            List<DGrpGroupsDto>  listsnd = sqlE.selectM("qryGroupIdAndName",param);
+            if(listsnd.size()>0){
+                map.put("msg","查询成功");
+                map.put("grp_id_and_name",listsnd);
+            }else{
+                map.put("msg","查询失败");
+            }
+        }else{
+            map.put("msg","查询地区编码失败");
+        }
+        return  map;
+    }
+    //合同待审批列表和详情(查询详细信息时将分页中的页码置为-1)
+    public List qryCnttExamineList(CnttExamineDto param){
+        //   return   sqlE.selectM("qryCnttExamineList",param);
+        List<CnttExamineListDto> list = new ArrayList<CnttExamineListDto>();
+        if(param.getPage().getPageNumber()==-1){
+            list = sqlE.selectM("qryCnttExamineList",param);
+        }else{
+            Result rs =  sqlE.selectPage("qryCnttExamineList",param);
+            list = rs.getData();
+        }
+        return  list;
+    }
+    //合同审批
+    @Transactional
+    public int cnttExamine(CnttExamineDto param){
+        if(param.getCharge_flag().equals("5")){
+            param.setZc_status("zc_tg");
+            param.setIsOk("支撑人通过");
+        }else{
+            param.setZc_status("zc_dh");
+            param.setIsOk("支撑人不通过");
+        }
+
+        return sqlE.updateM("cnttExamine",param)&sqlE.insertM("insertgrpcontractinfohis",param);
+    }
+    //走访提醒
+    public List<VisitReminderDto> visitReminderList(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("visitReminderList",param);
+    }
+    //公告
+    //查询未读去的公告数
+    public List<NoteListSizeDto> qryNoteCount(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("qryNoteCount",param);
+    }
+    //查询公告列表
+    public List<NotListInfoDto> qryNoteList(GrpInterfaceParameterDto param){
+        if(param.getRead_flag().equals("Y")){
+            return  sqlE.selectM("qryNoteList",param);
+        }else{
+            return  sqlE.selectM("qryReadNoteList",param);
+        }
+
+    }
+    //查询公告详细信息
+    public List<NoteInfoDto> qryNoteInfo(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("qryNoteInfo",param);
+    }
+    //公告未读改为已读
+    @Transactional
+    public int updateReadFlag(GrpInterfaceParameterDto param){
+        return  sqlE.updateM("updateReadFlag",param);
+    }
+}

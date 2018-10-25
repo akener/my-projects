@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KpiStatisRepository">
+    <!--统付收入统计接口-->
+    <select id="unitPayStatistics" parameterType="com.esop.cust.dto.KpiStatisParameterDto" resultType="com.esop.cust.dto.UnitPayStatisticsDto" >
+     select manager_no,manager_name,
+        sum(extax_unify_fee) totalunify_fee
+        FROM ep_group_income
+        where 1=1
+        <if test="in_time != ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(#{in_time},'yyyy-MM')
+        </if>
+        <if test="in_time == ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(to_char(sysdate,'yyyy-MM'),'yyyy-MM')
+        </if>
+        <if test="service_no != ''">
+            and manager_no = #{service_no}
+        </if>
+        <if test="unit_id != ''">
+            and unit_id = #{unit_id}
+        </if>
+        group by manager_name,manager_no
+    </select>
+    <!--信息化收入统计接口-->
+    <select id="infomationIncomeStatic" parameterType="com.esop.cust.dto.KpiStatisParameterDto" resultType="com.esop.cust.dto.InfomationIncomeStaticDto">
+     select manager_no,manager_name,
+             sum(income) total_income
+      FROM ep_group_income
+      where 1=1
+        <if test="in_time != ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(#{in_time},'yyyy-MM')
+        </if>
+        <if test="in_time == ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(to_char(sysdate,'yyyy-MM'),'yyyy-MM')
+        </if>
+        <if test="service_no != ''">
+            and manager_no = #{service_no}
+        </if>
+        <if test="unit_id != ''">
+            and unit_id = #{unit_id}
+        </if>
+      group by manager_name,manager_no
+    </select>
+    <!--新发展4G用户数-->
+  <select id="user4GStatistic" parameterType="com.esop.cust.dto.KpiStatisParameterDto" resultType="com.esop.cust.dto.UserAmoutStatisDto">
+       select manager_boss_no,manager_name,user_amout
+       from ep_develop_report
+       where 1=1
+      <if test="service_no != ''">
+          and manager_boss_no = #{service_no}
+      </if>
+       <if test="in_time == ''">
+           and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = to_char(sysdate,'yyyy-MM')
+       </if>
+      <if test="in_time != ''">
+          and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = #{in_time}
+      </if>
+      order by user_amout desc
+    </select>
+    <!--宽带(家庭宽带+集团宽带)-->
+    <select id="widthStatis" parameterType="com.esop.cust.dto.WidthStatisParamDto" resultType="com.esop.cust.dto.WidthStatisDto">
+        select manager_no,count(*) total_width
+        from ep_width_dep
+        where 1=1
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+        <if test="in_time == ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = to_char(sysdate,'yyyy-MM')
+        </if>
+        <if test="in_time != ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = #{in_time}
+        </if>
+        group by manager_no
+    </select>
+   <!-- 集团ab类保有率-->
+    <select id="unitAbRetentionRate" parameterType="com.esop.cust.dto.KpiStatisParameterDto" resultType="com.esop.cust.dto.UnitABRetentionRateDto">
+        SELECT manager_no,manager_name ,round(avg(retention_rate),2) retention_rate
+        FROM ep_retention_rate
+        where 1=1
+        <if test="service_no != ''">
+            and manager_no = #{service_no}
+        </if>
+        <if test="in_time == ''">
+            and eff_date = to_char(sysdate,'yyyy-MM')
+        </if>
+        <if test="in_time != ''">
+            and eff_date = #{in_time}
+        </if>
+        <if test="unit_id != ''">
+            and unit_id = #{unit_id}
+        </if>
+        GROUP BY manager_name,manager_no
+    </select>
+    <!--新签约-->
+    <select id="getUnitSign" parameterType="com.esop.cust.dto.KpiStatisParameterDto" resultType="com.esop.cust.dto.NewUnitSignDto">
+    select  manager_no, manager_name, sum(sign_amount) sign_amount
+    from ep_unit_sign
+    where 1=1
+        <if test="service_no != ''">
+            and manager_no = #{service_no}
+        </if>
+        <if test="in_time == ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = to_char(sysdate,'yyyy-MM')
+        </if>
+        <if test="in_time != ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = #{in_time}
+        </if>
+        group by manager_no,manager_name
+    </select>
+    <!--当月业务办理量-->
+    <select id="getBusDealInfo" parameterType="com.esop.cust.dto.KpiStatisParameterDto" resultType="com.esop.cust.dto.BusiDealInfoTempDto">
+        SELECT a.emp_name manager_name,b.login_no manager_no, directory_name, sum(work_count) work_count
+        FROM ep_amout_payment a, ep_sys_loginmsg_info b
+        WHERE a.employee_no = b.mis_no(+) AND b.login_no =#{service_no}
+        <if test="in_time != ''">
+            and amout_expire = #{in_time}
+        </if>
+        <if test="in_time == ''">
+            and amout_expire = to_char(sysdate,'yyyyMM')
+        </if>
+        GROUP BY employee_no,emp_name,login_no,directory_name
+    </select>
+    <!--绩效统计-->
+    <select id="getPerformanceInfo" parameterType="com.esop.cust.dto.PerformanceParamDto" resultType="com.esop.cust.dto.PerformanceInfoDto">
+       select rownum as rank,examine_name,employee_no,employee_name,employee_grade,employee_level from
+      (select examine_name,emp_code as employee_no,employee_name,employee_grade,employee_level
+      from ep_performance_info a
+      where examine_name = #{examine_name} and region_code = #{region_code}
+      order by to_number(employee_grade) desc)
+      where rownum &lt; 51
+      union
+      SELECT rank,examine_name,employee_no,employee_name,employee_grade,employee_level FROM
+      (SELECT  ROWNUM AS rank,examine_name,employee_no,employee_name,employee_grade,employee_level FROM
+      (SELECT examine_name,emp_code as employee_no,employee_name,employee_grade,employee_level
+      from ep_performance_info where examine_name = #{examine_name} and region_code = #{region_code}
+      order by to_number(employee_grade) desc) ) a,ep_sys_loginmsg_new b
+      where a.employee_no = b.mis_no
+        and  b.login_no=#{employee_no}
+
+    </select>
+    <select id="getExamineName" parameterType="com.esop.cust.dto.PerformanceParamDto" resultType="com.esop.cust.dto.PerformanceInfoDto">
+        select distinct examine_name
+        from ep_performance_info
+        where 1=1
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+    </select>
+    <!--量酬报表-->
+    <select id="getAmoutPaymentInfo" parameterType="com.esop.cust.dto.AmoutPaymentParamDto" resultType="com.esop.cust.dto.AmoutPaymentInfoDto">
+        select rownum as rank,region_name,town_name,employee_no,boss_no,payment_money_mon,payment_money_year from(
+        select a.region_name,a.town_name,a.employee_no,a.boss_no,a.payment_money_mon,b.payment_money_year from
+        (select region_name,town_name,employee_no,boss_no,sum(replace(replace(payment_money,chr(13),''),chr(10),'')) payment_money_mon
+        from ep_amout_payment
+        where 1=1
+        <if test="in_time != ''">
+            and amout_expire = to_char(add_months(to_date(#{in_time},'yyyyMM'),-1) ,'yyyyMM')
+        </if>
+        <if test="in_time == ''">
+            and amout_expire = to_char(add_months(sysdate, -1),'yyyyMM')
+        </if>
+        <if test="region_code != ''">and region_code = #{region_code}
+        </if>
+        group by region_name,town_name,employee_no,boss_no) a,
+        (select region_name,employee_no,boss_no,sum(replace(replace(payment_money,chr(13),''),chr(10),'')) payment_money_year
+        from
+        ep_amout_payment
+        where to_char(to_date(amout_expire,'yyyyMM'),'yyyy') = to_char(sysdate,'yyyy')
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        group by region_name,employee_no,boss_no)b
+        where a.employee_no = b.employee_no and a.boss_no = b.boss_no
+        order by
+        <if test='sort_flag == "Y"'>
+            payment_money_year desc
+        </if>
+        <if test='sort_flag == "M"'>
+            payment_money_mon desc
+        </if>)
+        where 1=1
+        <if test="rank_num != ''">
+            and rownum &lt;= #{rank_num}
+        </if>
+        UNION
+        select rank,region_name,town_name,employee_no,boss_no,payment_money_mon,payment_money_year from
+        (select rownum as rank,region_name,town_name,employee_no,boss_no,payment_money_mon,payment_money_year from(
+        select a.region_name,a.town_name,a.employee_no,a.boss_no,a.payment_money_mon,b.payment_money_year from
+        (select region_name,town_name,employee_no,boss_no,sum(replace(replace(payment_money,chr(13),''),chr(10),'')) payment_money_mon
+        from ep_amout_payment
+        where 1=1
+        <if test="in_time != ''">
+            and amout_expire = to_char(add_months(to_date(#{in_time},'yyyyMM'),-1) ,'yyyyMM')
+        </if>
+        <if test="in_time == ''">
+            and amout_expire = to_char(add_months(sysdate, -1),'yyyyMM')
+        </if>
+        <if test="region_code != ''">and region_code = #{region_code}
+        </if>
+        group by region_name,town_name,employee_no,boss_no) a,
+        (select region_name,employee_no,boss_no,sum(payment_money) payment_money_year
+        from
+        ep_amout_payment
+        where to_char(to_date(amout_expire,'yyyyMM'),'yyyy') = to_char(sysdate,'yyyy')
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        group by region_name,employee_no,boss_no)b
+        where a.employee_no = b.employee_no and a.boss_no = b.boss_no
+        order by
+        <if test='sort_flag == "Y"'>
+            payment_money_year desc
+        </if>
+        <if test='sort_flag == "M"'>
+            payment_money_mon desc
+        </if>))a, ep_sys_loginmsg_new b
+        where a.employee_no = b.mis_no
+        and b.login_no=#{employee_no}
+    </select>
+    <!--我的集团成员级产品成员数-->
+    <select id="getGrpPrcRoleNoInfo" parameterType="com.esop.cust.dto.GrpPrcRoleNoParamDto" resultType="com.esop.cust.dto.GrpPrcRoleNoInfoDto">
+        select manager_no,manager_name,prc_name,sum(prc_roleno) prc_roleno
+        from ep_group_income
+        where 1=1
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+        <if test="unit_id != ''">
+        and unit_id = #{unit_id}
+        </if>
+        <if test="in_time != ''">
+            and #{eff_date} = #{in_time}
+        </if>
+        <if test="in_time == ''">
+            and eff_date = to_char(sysdate,'yyyy-MM')
+        </if>
+        group by manager_no,manager_name,prc_name
+    </select>
+    <!--我的集团4G成员数、平均dou、平均arpu-->
+    <select id="getWebMemberInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.GrpWebMemberDto">
+        select manager_no,manager_name,meb_4g_cnt,meb_4g_dou,meb_4g_arpu
+        from ep_info_overview
+        where 1=1
+        <if test="service_no != ''">
+            and manager_no = #{service_no}
+        </if>
+    </select>
+
+    <select id="getKpiInfo" parameterType="com.esop.cust.dto.PcKpiInfoParamDto" resultType="com.esop.cust.dto.PcKpiInfoDto">
+      select 'unit_pay' kpi_target,round(sum(extax_unify_fee),2) kpi_value, manager_no
+      from ep_group_income
+      where manager_no=#{landing_no}
+        <if test="eff_date != ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(#{eff_date},'yyyy-MM')
+        </if>
+        <if test="eff_date == ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(to_char(sysdate,'yyyy-MM'),'yyyy-MM')
+        </if>
+      GROUP BY manager_no
+      UNION SELECT 'info_income',round(sum(income),2), manager_no
+      from ep_group_income where manager_no=#{landing_no}
+        <if test="eff_date != ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(#{eff_date},'yyyy-MM')
+        </if>
+        <if test="eff_date == ''">
+            and to_date(eff_date,'yyyy-MM') &lt;= to_date(to_char(sysdate,'yyyy-MM'),'yyyy-MM')
+        </if>
+       GROUP BY manager_no
+       UNION select 'new_4Guser_num',user_amout ,manager_boss_no
+       from ep_develop_report
+       where manager_boss_no=#{landing_no}
+        <if test="eff_date != ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = #{eff_date}
+        </if>
+        <if test="eff_date == ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = to_char(sysdate,'yyyy-MM')
+        </if>
+       UNION SELECT 'width_num',count(*) ,manager_name
+       from ep_width_dep
+       where manager_no=#{landing_no}
+        <if test="eff_date != ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = #{eff_date}
+        </if>
+        <if test="eff_date == ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = to_char(sysdate,'yyyy-MM')
+        </if>
+        GROUP BY manager_name
+        UNION SELECT 'retention_rate', round(avg(retention_rate),2) ,manager_no
+        from ep_retention_rate
+        where manager_no=#{landing_no}
+        <if test="eff_date != ''">
+            and eff_date = #{eff_date}
+        </if>
+        <if test="eff_date == ''">
+            and eff_date = to_char(sysdate,'yyyy-MM')
+        </if>
+        GROUP BY manager_no
+        UNION select  'unitsign_num',sum(sign_amount) ,manager_no
+        from ep_unit_sign
+        where manager_no=#{landing_no}
+        <if test="eff_date != ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = #{eff_date}
+        </if>
+        <if test="eff_date == ''">
+            and to_char(to_date(eff_date,'yyyy-MM-dd'),'yyyy-MM') = to_char(sysdate,'yyyy-MM')
+        </if>
+        group by manager_no
+    </select>
+</mapper>

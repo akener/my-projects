@@ -1,0 +1,5 @@
+package com.esop.workflow.dto;
+
+public class InDTO {
+
+}

@@ -1,0 +1,103 @@
+package com.esop.workflow.vo;
+
+/**
+ * 用于传参
+ */
+public class Assignee {
+    private String procId; //流程模板ID
+    private String procNameEn; //流程英文名，对应BPM流程发布名
+    private String actionId; //指定actionId
+    private String assignee; //当前登录工号
+    private String assigneeName; //当前登录姓名
+    private String regionId; //所属分公司编码
+    private String stepId; // 环节ID
+    private String procInstId; //流程实例ID
+    private String bizRecordId; //业务编号
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameEn() {
+        return procNameEn;
+    }
+
+    public void setProcNameEn(String procNameEn) {
+        this.procNameEn = procNameEn;
+    }
+
+    public String getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public String getAssigneeName() {
+        return assigneeName;
+    }
+
+    public void setAssigneeName(String assigneeName) {
+        this.assigneeName = assigneeName;
+    }
+
+    public String getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(String regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public String getProcInstId() {
+        return procInstId;
+    }
+
+    public void setProcInstId(String procInstId) {
+        this.procInstId = procInstId;
+    }
+
+    public String getBizRecordId() {
+        return bizRecordId;
+    }
+
+    public void setBizRecordId(String bizRecordId) {
+        this.bizRecordId = bizRecordId;
+    }
+
+    @Override
+    public String toString() {
+        return "Assignee{" +
+                "procId='" + procId + '\'' +
+                ", procNameEn='" + procNameEn + '\'' +
+                ", actionId='" + actionId + '\'' +
+                ", assignee='" + assignee + '\'' +
+                ", assigneeName='" + assigneeName + '\'' +
+                ", regionId='" + regionId + '\'' +
+                ", stepId='" + stepId + '\'' +
+                ", procInstId='" + procInstId + '\'' +
+                ", bizRecordId='" + bizRecordId + '\'' +
+                '}';
+    }
+}

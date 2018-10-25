@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectFuncTreeMsg"  parameterType="com.esop.basicManagement.dto.GroupTreeDto" resultType="com.esop.basicManagement.dto.GroupTreeDto" >
+        select function_code as id,
+        parent_code as pId,
+        trim(function_name) as name,
+        'true' as open,
+        'false' as nocheck,
+        (case when function_code in (select c.function_code from ep_sys_rolefunc_rel_new c where c.role_code = #{id}) then 'true' else 'false' end) as checked
+        from ep_sys_funccode_new b
+        where b.vilid_flag = '1'
+        <if test="pId != ''">
+            and b.function_code = #{pId}
+        </if>
+        union all
+        select *
+        from (select unique t.function_code as id,
+        t.parent_code as pId,
+        trim(t.function_name) as name,
+        'false' as open,
+        'false' as nocheck,
+        (case when function_code in (select c.function_code from ep_sys_rolefunc_rel_new c where c.role_code = #{id}) then 'true' else 'false' end) as checked
+        from ep_sys_funccode_new t
+        where t.vilid_flag = '1') a
+        <if test="pId != ''">
+            start with  a.pId = #{pId}
+        </if>
+        connect by prior a.id = a.pId
+    </select>
+    <insert id="insertFunctionInfoXml"  parameterType="com.esop.basicManagement.dto.BasicFunctionDealDto" >
+        insert into ep_sys_rolefunc_rel_new (ROLE_CODE,FUNCTION_CODE,LOGIN_NO,OP_TIME,OP_NOTE)
+        values (#{role_code},#{function_code},#{landing_no},sysdate,'')
+    </insert>
+    <delete id="deleteFunctionInfoXml" parameterType="com.esop.basicManagement.dto.BasicFunctionDealDto">
+        DELETE FROM ep_sys_rolefunc_rel_new WHERE role_code=#{role_code}
+    </delete>
+</mapper>

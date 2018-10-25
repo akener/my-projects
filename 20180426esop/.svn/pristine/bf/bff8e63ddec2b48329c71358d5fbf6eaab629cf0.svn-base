@@ -1,0 +1,36 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class StateOfWorkOptDto {
+
+    //工号信息查询
+    String ORDER_NUMBER = "";
+    String ORDER_STATUS = "";
+    String STATUS_EXPLAIN = "";
+
+    public String getORDER_NUMBER() {
+        return ORDER_NUMBER;
+    }
+
+    public void setORDER_NUMBER(String ORDER_NUMBER) {
+        this.ORDER_NUMBER = ORDER_NUMBER;
+    }
+
+    public String getORDER_STATUS() {
+        return ORDER_STATUS;
+    }
+
+    public void setORDER_STATUS(String ORDER_STATUS) {
+        this.ORDER_STATUS = ORDER_STATUS;
+    }
+
+    public String getSTATUS_EXPLAIN() {
+        return STATUS_EXPLAIN;
+    }
+
+    public void setSTATUS_EXPLAIN(String STATUS_EXPLAIN) {
+        this.STATUS_EXPLAIN = STATUS_EXPLAIN;
+    }
+}

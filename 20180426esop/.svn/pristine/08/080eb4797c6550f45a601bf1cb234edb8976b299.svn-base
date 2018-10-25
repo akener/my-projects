@@ -1,0 +1,55 @@
+package com.esop.basicManagement.service;
+
+
+import com.esop.basicManagement.dto.BasicRoleDealDto;
+import com.esop.common.dataBase.SqlE;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@Repository
+public class BasicRoleDealService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    //查询
+    public List queryBasicLoginList(BasicRoleDealDto parameter){
+
+        String selectTion = "";
+        selectTion = "queryBasicLoginMsg";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public List queryBasicRoleList(BasicRoleDealDto parameter){
+
+        String selectTion = "";
+        selectTion = "queryBasicRoleMsg";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public List queryBasicRoleFcList(BasicRoleDealDto parameter){
+
+        String selectTion = "";
+        selectTion = "queryBasicRoleFcMsg";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public int insertLoginRoRel(BasicRoleDealDto parameter){
+
+        int number;
+        String selectTion = "insertLoginRolRel";
+        number=sqlE.updateM(selectTion, parameter);
+        return number;
+    }
+    //删除操作
+    public int deleteLoginRoRel(BasicRoleDealDto parameter){
+        return sqlE.deleteM("deleteLoginRolRel",parameter);
+    }
+}

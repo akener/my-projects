@@ -1,0 +1,542 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+import java.util.Date;
+
+/**
+ * Created by Administrator on 2017/12/4.
+ */
+public class CtUnionInfoDto extends BaseDto {//集团客户信息
+    private String union_code = "";
+    private String union_name = "";
+    private String service_no = "";
+    private String city = "";
+    private String county = "";
+    private String town = "";
+    private String cert_type_code = "";
+    private String idcard = "";
+    private String cert_addr = "";
+    private String union_addr = "";
+    private String post_code = "";
+    private String phone_no = "";
+    private String fax = "";
+    private String website = "";
+    private String industry_type1 = "";
+    private String industry_type2 = "";
+    private String area_code = "";
+    private String business_scope = "";
+    private String capital_code = "";
+    private String capital_num = "";
+    private String legal_person = "";
+    private String union_org_code = "";
+    private String enterprise_code = "";
+    private String income = "";
+    private String note = "";
+    private String profile = "";
+    private String create_time = "";
+    private String eval_level = "";
+    private String assess_flag = "";
+    private String union_level_code = "";
+    private String union_status = "";
+    private String scale_code = "";
+    private long employee_num;
+    private String distrub_flag = "";
+    private String net_code = "";
+    private String fee_flag = "";
+    private String halt_flag = "";
+    private String partner = "";
+    private String create_name = "";
+    private Date create_date ;
+    private String update_name = "";
+    private String op_desc = "";
+    private Date update_date;
+    private String org_id = "";
+    private String sale_no = "";
+    private String establish_date = "";
+    private String major_flag = "";
+    private String risk_flag = "";
+    private String letter_name = "";
+    private String letter_phone = "";
+    private String letter_addr = "";
+    private String letter_post = "";
+    private String product_no = "";
+    private String union_parent = "";
+    private String union_child = "";
+    private String industry_org = "";
+    private String vocaionkind1 = "";
+    private String vocaionkind2 = "";
+    private String vocaionkind3 = "";
+
+    public String getVocaionkind1() {
+        return vocaionkind1;
+    }
+
+    public void setVocaionkind1(String vocaionkind1) {
+        this.vocaionkind1 = vocaionkind1;
+    }
+
+    public String getVocaionkind2() {
+        return vocaionkind2;
+    }
+
+    public void setVocaionkind2(String vocaionkind2) {
+        this.vocaionkind2 = vocaionkind2;
+    }
+
+    public String getVocaionkind3() {
+        return vocaionkind3;
+    }
+
+    public void setVocaionkind3(String vocaionkind3) {
+        this.vocaionkind3 = vocaionkind3;
+    }
+
+    public String getUnion_code() {
+        return union_code;
+    }
+
+    public void setUnion_code(String union_code) {
+        this.union_code = union_code;
+    }
+
+    public String getUnion_name() {
+        return union_name;
+    }
+
+    public void setUnion_name(String union_name) {
+        this.union_name = union_name;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
+    public String getTown() {
+        return town;
+    }
+
+    public void setTown(String town) {
+        this.town = town;
+    }
+
+    public String getCert_type_code() {
+        return cert_type_code;
+    }
+
+    public void setCert_type_code(String cert_type_code) {
+        this.cert_type_code = cert_type_code;
+    }
+
+    public String getIdcard() {
+        return idcard;
+    }
+
+    public void setIdcard(String idcard) {
+        this.idcard = idcard;
+    }
+
+    public String getCert_addr() {
+        return cert_addr;
+    }
+
+    public void setCert_addr(String cert_addr) {
+        this.cert_addr = cert_addr;
+    }
+
+    public String getUnion_addr() {
+        return union_addr;
+    }
+
+    public void setUnion_addr(String union_addr) {
+        this.union_addr = union_addr;
+    }
+
+    public String getPost_code() {
+        return post_code;
+    }
+
+    public void setPost_code(String post_code) {
+        this.post_code = post_code;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getFax() {
+        return fax;
+    }
+
+    public void setFax(String fax) {
+        this.fax = fax;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public void setWebsite(String website) {
+        this.website = website;
+    }
+
+    public String getIndustry_type1() {
+        return industry_type1;
+    }
+
+    public void setIndustry_type1(String industry_type1) {
+        this.industry_type1 = industry_type1;
+    }
+
+    public String getIndustry_type2() {
+        return industry_type2;
+    }
+
+    public void setIndustry_type2(String industry_type2) {
+        this.industry_type2 = industry_type2;
+    }
+
+    public String getArea_code() {
+        return area_code;
+    }
+
+    public void setArea_code(String area_code) {
+        this.area_code = area_code;
+    }
+
+    public String getBusiness_scope() {
+        return business_scope;
+    }
+
+    public void setBusiness_scope(String business_scope) {
+        this.business_scope = business_scope;
+    }
+
+    public String getCapital_code() {
+        return capital_code;
+    }
+
+    public void setCapital_code(String capital_code) {
+        this.capital_code = capital_code;
+    }
+
+    public String getCapital_num() {
+        return capital_num;
+    }
+
+    public void setCapital_num(String capital_num) {
+        this.capital_num = capital_num;
+    }
+
+    public String getLegal_person() {
+        return legal_person;
+    }
+
+    public void setLegal_person(String legal_person) {
+        this.legal_person = legal_person;
+    }
+
+    public String getUnion_org_code() {
+        return union_org_code;
+    }
+
+    public void setUnion_org_code(String union_org_code) {
+        this.union_org_code = union_org_code;
+    }
+
+    public String getEnterprise_code() {
+        return enterprise_code;
+    }
+
+    public void setEnterprise_code(String enterprise_code) {
+        this.enterprise_code = enterprise_code;
+    }
+
+    public String getIncome() {
+        return income;
+    }
+
+    public void setIncome(String income) {
+        this.income = income;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getEval_level() {
+        return eval_level;
+    }
+
+    public void setEval_level(String eval_level) {
+        this.eval_level = eval_level;
+    }
+
+    public String getAssess_flag() {
+        return assess_flag;
+    }
+
+    public void setAssess_flag(String assess_flag) {
+        this.assess_flag = assess_flag;
+    }
+
+    public String getUnion_level_code() {
+        return union_level_code;
+    }
+
+    public void setUnion_level_code(String union_level_code) {
+        this.union_level_code = union_level_code;
+    }
+
+    public String getUnion_status() {
+        return union_status;
+    }
+
+    public void setUnion_status(String union_status) {
+        this.union_status = union_status;
+    }
+
+    public String getScale_code() {
+        return scale_code;
+    }
+
+    public void setScale_code(String scale_code) {
+        this.scale_code = scale_code;
+    }
+
+    public long getEmployee_num() {
+        return employee_num;
+    }
+
+    public void setEmployee_num(long employee_num) {
+        this.employee_num = employee_num;
+    }
+
+    public String getDistrub_flag() {
+        return distrub_flag;
+    }
+
+    public void setDistrub_flag(String distrub_flag) {
+        this.distrub_flag = distrub_flag;
+    }
+
+    public String getNet_code() {
+        return net_code;
+    }
+
+    public void setNet_code(String net_code) {
+        this.net_code = net_code;
+    }
+
+    public String getFee_flag() {
+        return fee_flag;
+    }
+
+    public void setFee_flag(String fee_flag) {
+        this.fee_flag = fee_flag;
+    }
+
+    public String getHalt_flag() {
+        return halt_flag;
+    }
+
+    public void setHalt_flag(String halt_flag) {
+        this.halt_flag = halt_flag;
+    }
+
+    public String getPartner() {
+        return partner;
+    }
+
+    public void setPartner(String partner) {
+        this.partner = partner;
+    }
+
+    public String getCreate_name() {
+        return create_name;
+    }
+
+    public void setCreate_name(String create_name) {
+        this.create_name = create_name;
+    }
+
+    public Date getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(Date create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getUpdate_name() {
+        return update_name;
+    }
+
+    public void setUpdate_name(String update_name) {
+        this.update_name = update_name;
+    }
+
+    public String getOp_desc() {
+        return op_desc;
+    }
+
+    public void setOp_desc(String op_desc) {
+        this.op_desc = op_desc;
+    }
+
+    public Date getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(Date update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getSale_no() {
+        return sale_no;
+    }
+
+    public void setSale_no(String sale_no) {
+        this.sale_no = sale_no;
+    }
+
+    public String getEstablish_date() {
+        return establish_date;
+    }
+
+    public void setEstablish_date(String establish_date) {
+        this.establish_date = establish_date;
+    }
+
+    public String getMajor_flag() {
+        return major_flag;
+    }
+
+    public void setMajor_flag(String major_flag) {
+        this.major_flag = major_flag;
+    }
+
+    public String getRisk_flag() {
+        return risk_flag;
+    }
+
+    public void setRisk_flag(String risk_flag) {
+        this.risk_flag = risk_flag;
+    }
+
+    public String getLetter_name() {
+        return letter_name;
+    }
+
+    public void setLetter_name(String letter_name) {
+        this.letter_name = letter_name;
+    }
+
+    public String getLetter_phone() {
+        return letter_phone;
+    }
+
+    public void setLetter_phone(String letter_phone) {
+        this.letter_phone = letter_phone;
+    }
+
+    public String getLetter_addr() {
+        return letter_addr;
+    }
+
+    public void setLetter_addr(String letter_addr) {
+        this.letter_addr = letter_addr;
+    }
+
+    public String getLetter_post() {
+        return letter_post;
+    }
+
+    public void setLetter_post(String letter_post) {
+        this.letter_post = letter_post;
+    }
+
+    public String getProduct_no() {
+        return product_no;
+    }
+
+    public void setProduct_no(String product_no) {
+        this.product_no = product_no;
+    }
+
+    public String getUnion_parent() {
+        return union_parent;
+    }
+
+    public void setUnion_parent(String union_parent) {
+        this.union_parent = union_parent;
+    }
+
+    public String getUnion_child() {
+        return union_child;
+    }
+
+    public void setUnion_child(String union_child) {
+        this.union_child = union_child;
+    }
+
+    public String getIndustry_org() {
+        return industry_org;
+    }
+
+    public void setIndustry_org(String industry_org) {
+        this.industry_org = industry_org;
+    }
+}

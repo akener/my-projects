@@ -1,0 +1,126 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Administrator on 2017/6/29.
+ */
+public class ExcellentCaseDto extends BaseDto{
+    String manager_no="";//客户经理工号
+    String manager_name = "";//客户经理名称
+    String excellent_case_name = "";//案例名称
+    String describee = "";//案例描述
+    String excellent_no = "";//案例编号
+    String region_name = "";//地市名称
+    String region_code = "";//地市编码
+    String related_id = "";//附件关联id
+    String relate_name = "";//附件名
+    String relate_path = "";//附件路径
+    String operator_str = "";//
+    String id = "";
+    String create_date = "";//案例创建时间
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOperator_str() {
+        return operator_str;
+    }
+
+    public void setOperator_str(String operator_str) {
+        this.operator_str = operator_str;
+    }
+
+    public String getRelate_name() {
+        return relate_name;
+    }
+
+    public void setRelate_name(String relate_name) {
+        this.relate_name = relate_name;
+    }
+
+    public String getRelate_path() {
+        return relate_path;
+    }
+
+    public void setRelate_path(String relate_path) {
+        this.relate_path = relate_path;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getExcellent_case_name() {
+        return excellent_case_name;
+    }
+
+    public void setExcellent_case_name(String excellent_case_name) {
+        this.excellent_case_name = excellent_case_name;
+    }
+
+    public String getDescribee() {
+        return describee;
+    }
+
+    public void setDescribee(String describee) {
+        this.describee = describee;
+    }
+
+    public String getExcellent_no() {
+        return excellent_no;
+    }
+
+    public void setExcellent_no(String excellent_no) {
+        this.excellent_no = excellent_no;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+}

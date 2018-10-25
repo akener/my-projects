@@ -1,0 +1,267 @@
+package com.esop.cqDevelopment.businessCenter.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.businessCenter.dto.BusinessCenter;
+import com.esop.cqDevelopment.businessCenter.service.BusinessCenterService;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalClaimApproveQueryDto;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+
+@Controller
+public class BusinessCenterController {
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    BusinessCenterService businessCenterService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+
+    Result result=new Result();
+    @RequestMapping(value = "/createBusinessCenter")
+    @ResponseBody
+    public BusinessCenter createBusinessCenter(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+        String[] group_pay=request.getParameter("groupPayValue").split(",");
+        String group_pay_code=group_pay[0];
+        String group_pay_id=group_pay[1];
+        List<BusinessCenter> i=businessCenterService.selectBusinessCenterByPayId(group_pay_id);
+        if(i.size()==0){
+            businessCenter.setCenter_code(group_pay_code+"7901");
+            businessCenter.setBusiness_center("行业一中心");
+        }else{
+           String lastTwo= i.get(i.size()-1).getCenter_code().substring(4,6);
+            int x=Integer.parseInt(lastTwo)+1;
+            NumberToChn nbc=new NumberToChn();
+            String y= nbc.NumberToChn(x);
+            String z=Integer.toString(x);
+            if(z.length()==1){
+                z="0"+z;
+            }
+            businessCenter.setCenter_code(group_pay_code+"79"+z);
+            businessCenter.setBusiness_center("行业"+y+"中心");
+        }
+        businessCenter.setGroup_pay_id(group_pay_id);
+        return businessCenter;
+    }
+
+    @RequestMapping(value = "/insertBusinessCenter")
+    @ResponseBody
+    public int insertBusinessCenter(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd");
+        String now=sdf2.format(date);
+        businessCenter.setOper_time(now);
+        int i=businessCenterService.insertBusinessCenter(businessCenter);
+        return i;
+    }
+    @RequestMapping(value = "/selectBusinessCenter")
+    @ResponseBody
+    public Result selectBusinessCenter(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        businessCenter.setPage(page);
+        if("CQ.CQ".equals(businessCenter.getRoot_org_id())||"CQ.CQ.C4".equals(businessCenter.getRoot_org_id())||"CQ.CQ.0B".equals(businessCenter.getRoot_org_id())){
+            businessCenter.setRoot_org_id("");
+        }
+        result = businessCenterService.selectBusinessCenterPage(businessCenter);
+        return result;
+    }
+    @RequestMapping(value = "/exportBusinessCenter")
+    @ResponseBody
+    public String exportBusinessCenter(BusinessCenter businessCenter, HttpServletRequest request, HttpServletResponse response){
+
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心编码","行业中心名称","创建时间"};
+        String[] methods = {"getGroup_pay_name","getCenter_code","getBusiness_center","getOper_time"};
+
+        PageParameter page=new PageParameter();
+        page.setPageRecords(99999);
+        businessCenter.setPage(page);
+
+        if("CQ.CQ".equals(businessCenter.getRoot_org_id())||"CQ.CQ.C4".equals(businessCenter.getRoot_org_id())||"CQ.CQ.0B".equals(businessCenter.getRoot_org_id())){
+            businessCenter.setRoot_org_id("");
+        }
+        result = businessCenterService.selectBusinessCenterPage(businessCenter);
+        List <CapitalClaimApproveQueryDto> reslist=result.getData();
+        try {
+            orderWorkFlowService.getExport(tableHeader, methods, reslist,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+
+    @RequestMapping(value = "/selectRole")
+    @ResponseBody
+    public List<BusinessCenter> selectRole(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+        String  group_pay_code=businessCenter.getRegion_code().substring(0,2);
+        String fen_gongs=businessCenterService.selectFengongs(group_pay_code);
+        List<BusinessCenter> i=businessCenterService.selectRole(fen_gongs);
+        return i;
+    }
+    @RequestMapping(value = "/insertBusinessCenterRel")
+    @ResponseBody
+    public int insertBusinessCenterRel(String role){
+        int o=0;
+        BusinessCenter businessCenter=new BusinessCenter();
+        Date date = new Date();
+        SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd");
+        String now=sdf2.format(date);
+        String []role1=role.split("@");
+        for(int l=0;l<role1.length;l++){
+            String[] role2=role1[l].split("#");
+            String staff_code=role2[0];
+            String staff_name=role2[1];
+            String oper_no=role2[2];
+            String oper_time=now;
+            String center_code=role2[3];
+            String bak1=role2[4];
+            businessCenter.setOper_time(oper_time);
+            businessCenter.setStaff_code(staff_code);
+            businessCenter.setStaff_name(staff_name);
+            businessCenter.setOper_no(oper_no);
+            businessCenter.setCenter_code(center_code);
+            businessCenter.setBak1(bak1);
+             o=businessCenterService.insertBusinessCenterRel(businessCenter);
+        }
+        return o;
+    }
+    @RequestMapping(value = "/selectBusinessCenterRel")
+    @ResponseBody
+    public Result selectBusinessCenterRel(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+        Result result=new Result();
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        businessCenter.setPage(page);
+        result = businessCenterService.selectBusinessCenterRel(businessCenter);
+        return result;
+    }
+    @RequestMapping(value = "/selectCenterCode")
+    @ResponseBody
+    public BusinessCenter selectCenterCode(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+        return  businessCenterService.selectCenterCode(businessCenter).get(0);
+    }
+    @RequestMapping(value = "/selectGroupBusinessCode")
+    @ResponseBody
+    public List<BusinessCenter> selectGroupBusinessCode(){
+        List<BusinessCenter> i=businessCenterService.selectGroupBusinessCode();
+        return i;
+    }
+    @RequestMapping(value = "/selectGroupCodeForFengongs")
+    @ResponseBody
+    public BusinessCenter selectGroupCodeForFengongs(String root_org_id){
+        BusinessCenter businessCenter=businessCenterService.selectGroupCodeForFengongs(root_org_id);
+        return businessCenter;
+    }
+    @RequestMapping(value = "/selectBusinessCenterByLoginNo")
+    @ResponseBody
+    public BusinessCenter selectBusinessCenterByLoginNo(HttpServletRequest request, boolean flag){
+        BusinessCenter businessCenter=new BusinessCenter();
+             String login_no=request.getParameter("login_no");
+             try {
+                 businessCenter=  businessCenterService.selectBusinessCenterByLoginNo(login_no);
+             }catch (Exception e){
+                 e.printStackTrace();
+             }
+           return businessCenter;
+    }
+    @RequestMapping(value = "/selectAllBusiness")
+    @ResponseBody
+    public List<BusinessCenter> selectAllBusiness(){
+        List<BusinessCenter> i=businessCenterService.selectAllBusiness();
+        return i;
+    }
+    @RequestMapping(value = "/selectRolRel")
+    @ResponseBody
+    public Result selectRolRel(BusinessCenter businessCenter, HttpServletRequest request, boolean flag){
+        Result result=new Result();
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        businessCenter.setPage(page);
+        String center_code=businessCenter.getCenter_code();
+        String group_pay_code=center_code.substring(0,2);
+        String region_code= businessCenterService.selectFengongsByRegioncode(group_pay_code);
+       businessCenter.setRegion_code(region_code);
+        String roleType=businessCenter.getRoleType();
+        List<BusinessCenter> i=new ArrayList<>();
+        businessCenter.setReturn_code("1");
+       try{
+        if("1".equals(roleType)){
+            result=businessCenterService.selectRolRelForManager(businessCenter);
+            if(result.getData().size()==0){
+                BusinessCenter businessCenter1=new BusinessCenter();
+                businessCenter1.setReturn_code("3");
+                result.getData().add(businessCenter1);
+            }
+        }else{
+           String bak1= businessCenterService.selectZhangwuyuan(center_code);
+           if("2".equals(bak1)){
+               BusinessCenter businessCenter2=new BusinessCenter();
+               businessCenter2.setReturn_code("0");
+               i.add(businessCenter2);
+               result.setData(i);
+           }else {
+               result=businessCenterService.selectAllBusinessForZhangwuyuanByLoginNo(businessCenter);
+               if(result.getData().size()==0){
+                   BusinessCenter businessCenter3=new BusinessCenter();
+                   businessCenter3.setReturn_code("2");
+                   result.getData().add(businessCenter3);
+               }
+           }
+        }
+       }catch (Exception e){
+
+       }
+        return result;
+    }
+    @RequestMapping(value = "/deleteCenterStaffRell")
+    @ResponseBody
+    public int deleteCenterStaffRell(String id){
+        int  i=businessCenterService.deleteCenterStaffRell(id);
+        return i;
+    }
+    @RequestMapping(value = "/selectBusinessCenterForZhangwuyun")
+    @ResponseBody
+    public List<BusinessCenter> selectBusinessCenterForZhangwuyun(String login_no){
+        List<BusinessCenter> i=businessCenterService.selectBusinessCenterForZhangwuyun(login_no);
+        return i;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+

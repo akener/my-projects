@@ -1,0 +1,32 @@
+$(document).ready(function() {
+    $.ajax({
+        type: "POST",
+        //url: "http://172.21.3.91:8082/greeting",
+        url: "http://172.21.3.91:8082/invokeService",
+        data: {serviceName:"greeting",
+            param:"{name:'spring world'}"}
+    }).then(function(data, status, jqxhr) {
+        dec(data.result);
+    });
+    /*
+    var dec = function (data){
+        alert("密文出参:------"+data);
+        //rspdata = DES3.decrypt(key,data.toString().replace(/\s+/g, ""));
+        rspdata = data.toString().replace(/\s+/g, "");
+        alert(rspdata);
+        console.log("--->>>出参："+rspdata);
+        //alert("出参:------"+rspdata);
+        //window[backfunc](rspdata);
+    }
+    $.ajax({
+        //url: "http://localhost:8082/greeting_esb",
+        url: "http://localhost:8082/invokeService",
+        dataType:"json",
+        data: {id:12345,
+            content:'spring world'}
+    }).then(function(data, status, jqxhr) {alert(data.ROOT.BODY.INPUT_VALUE);
+       $('.greeting-id').append(data.age);
+       $('.greeting-content').append(data.Name);
+       console.log(jqxhr);
+    });*/
+});

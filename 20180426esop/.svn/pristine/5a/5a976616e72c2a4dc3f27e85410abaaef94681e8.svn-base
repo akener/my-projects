@@ -1,0 +1,180 @@
+package com.esop.workbench.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by liuxiao on 2017/6/19.
+ */
+public class AmountPaymentDto extends BaseDto{
+    String DT_RowId = "";
+    String rownum = "";
+    String amout_expire = "";       //账期
+    String region_code = "";        //地市编码
+    String region_name = "";        //地市名称
+    String town_code = "";          //区县编码
+    String town_name = "";          //区县名称
+    String boss_no = "";            //boss工号
+    String employee_no = "";        //员工编号
+    String directory_name = "";     //目录名称
+    String payment_criterion = "";  //量酬标准
+    String payment_money = "";      //量酬金额
+    String role_name = "";          //角色名
+    String sum_payment = "";        //量酬总额
+    String avg_payment = "";        //人均量酬
+    String op_time = "";            //全年量酬年份
+    String ampay_year_live = "";    //全年量酬上限
+    String opt = "";                //操作选项
+    String old_time = "";           //量酬成本上限原时间
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getRownum() {
+        return rownum;
+    }
+
+    public void setRownum(String rownum) {
+        this.rownum = rownum;
+    }
+
+    public String getAmout_expire() {
+        return amout_expire;
+    }
+
+    public void setAmout_expire(String amout_expire) {
+        this.amout_expire = amout_expire;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String towm_code) {
+        this.town_code = towm_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getBoss_no() {
+        return boss_no;
+    }
+
+    public void setBoss_no(String boss_no) {
+        this.boss_no = boss_no;
+    }
+
+    public String getEmployee_no() {
+        return employee_no;
+    }
+
+    public void setEmployee_no(String employee_no) {
+        this.employee_no = employee_no;
+    }
+
+    public String getDirectory_name() {
+        return directory_name;
+    }
+
+    public void setDirectory_name(String directory_name) {
+        this.directory_name = directory_name;
+    }
+
+    public String getPayment_criterion() {
+        return payment_criterion;
+    }
+
+    public void setPayment_criterion(String payment_criterion) {
+        this.payment_criterion = payment_criterion;
+    }
+
+    public String getPayment_money() {
+        return payment_money;
+    }
+
+    public void setPayment_money(String payment_money) {
+        this.payment_money = payment_money;
+    }
+
+    public String getRole_name() {
+        return role_name;
+    }
+
+    public void setRole_name(String role_name) {
+        this.role_name = role_name;
+    }
+
+    public String getSum_payment() {
+        return sum_payment;
+    }
+
+    public void setSum_payment(String sum_payment) {
+        this.sum_payment = sum_payment;
+    }
+
+    public String getAvg_payment() {
+        return avg_payment;
+    }
+
+    public void setAvg_payment(String avg_payment) {
+        this.avg_payment = avg_payment;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getAmpay_year_live() {
+        return ampay_year_live;
+    }
+
+    public void setAmpay_year_live(String ampay_year_live) {
+        this.ampay_year_live = ampay_year_live;
+    }
+
+    public String getOpt() {
+        return opt;
+    }
+
+    public void setOpt(String opt) {
+        this.opt = opt;
+    }
+
+    public String getOld_time() {
+        return old_time;
+    }
+
+    public void setOld_time(String old_time) {
+        this.old_time = old_time;
+    }
+}

@@ -1,0 +1,100 @@
+package com.esop.noteinformation.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.noteinformation.dto.NoteinfoDTO;
+import com.esop.noteinformation.dto.NoterelDTO;
+import com.esop.noteinformation.service.NoteinfoService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/12 0012.
+ */
+@RestController
+public class NoteinfoController {
+    @Autowired
+    NoteinfoService noteinfoService;
+    private Logger logger = Logger.getLogger(NoteinfoController.class);
+    //设置翻页初始值
+    @Autowired
+    DataConversion dataConversion;
+    //公告信息查询
+    @RequestMapping(value = "/noteinfo")
+    public Result query(NoteinfoDTO parameter, HttpServletRequest request){
+        String group_id = request.getParameter("group_id");
+        logger.info("group_id:"+group_id);
+        Result result = new Result();
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = noteinfoService.query(parameter);
+        return result;
+
+    }
+    @RequestMapping(value = "/qrynotefinfo")
+    public Result queryinfo(NoteinfoDTO parameter, HttpServletRequest request){
+        String group_id = request.getParameter("group_id");
+        logger.info("group_id:"+group_id);
+        Result result = new Result();
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+        result = noteinfoService.queryinfo(parameter);
+        return result;
+
+    }
+
+
+    //查询单个公告信息
+    @RequestMapping(value = "/qrynoteinfo")
+    public NoteinfoDTO qryNoteId(NoteinfoDTO parameter){
+        noteinfoService.updateNote(parameter);
+        return noteinfoService.qyrNoteId(parameter).get(0);
+    }
+    //查询附件名称
+    @RequestMapping(value="/qrynotename")
+    public List<NoteinfoDTO> qryName(NoteinfoDTO parameter,HttpServletRequest request){
+        String note_id = request.getParameter("note_id");
+        logger.info("group_id:"+note_id);
+        parameter.setNote_id(note_id);
+        return noteinfoService.qryName(parameter);
+    }
+    //增加公告信息
+    @RequestMapping(value="/qrynoteadd")
+    public int insertnote(NoteinfoDTO parameter){
+        return noteinfoService.insertnote(parameter);
+    }
+    //增加公告接收人信息
+    @RequestMapping(value="/qrynotereladd")
+    public int insertnoterel(NoteinfoDTO parameter){
+        return noteinfoService.insertnoterel(parameter);
+    }
+    //查询接收人员
+    @RequestMapping(value="/qrynoterel")
+  public  List<NoterelDTO> qrynoterel(NoterelDTO parameter){
+      return noteinfoService.qrynoterel(parameter);
+  }
+    //查询部门
+    @RequestMapping(value="/qrygroupinfo")
+    public List<NoterelDTO> qrygroupinfo(NoterelDTO parameter){
+        return noteinfoService.qrygroupinfo(parameter);
+    }
+    //获取序列值
+    @RequestMapping(value="/qrynoteseq")
+    public  String qrynoteseq(){
+        return noteinfoService.qrynoteseq();
+    }
+    //插入接收人
+    @RequestMapping(value="/insnoterel")
+    public int insnoterel(NoteinfoDTO parameter){
+        return noteinfoService.insnoterel(parameter);
+    }
+}

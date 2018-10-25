@@ -1,0 +1,209 @@
+package com.esop.capAdjustApply.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/10/27.
+ */
+//集团资金退款日报表
+public class EpCapRefundDailyRpt extends BaseDto {
+    private  String  id ;
+    private  String  ltd ; //分公司
+    private  String  industry_center ;//行业中心
+    private  String   refund_grp_name;//退款集团单位名称
+    private  String  refund_grp_code ;//退款集团单位编码
+    private  String  refund_amount ;//退款金额
+    private  String  apply_No ;//申请单号
+    private  String   work_sheet_status;//工单状态
+    private  String  ws_completion_date ;//工单办结日期
+    private  String  applicant ;//申请人
+    private  String  apply_date ;//申请日期
+    private  String   apply_amount;//申请金额(元)
+    private  String  lister ;//制表人
+    private  String  auditor ;//稽核人
+    private  String  reviewer ;//复核人
+    private  String  start_date ;//开始时间
+    private  String  end_date ;//结束时间
+
+    public EpCapRefundDailyRpt() {
+    }
+
+    public EpCapRefundDailyRpt(String id, String ltd, String industry_center, String refund_grp_name, String refund_grp_code, String refund_amount, String apply_No, String work_sheet_status, String ws_completion_date, String applicant, String apply_date, String apply_amount, String lister, String auditor, String reviewer, String start_date, String end_date) {
+        this.id = id;
+        this.ltd = ltd;
+        this.industry_center = industry_center;
+        this.refund_grp_name = refund_grp_name;
+        this.refund_grp_code = refund_grp_code;
+        this.refund_amount = refund_amount;
+        this.apply_No = apply_No;
+        this.work_sheet_status = work_sheet_status;
+        this.ws_completion_date = ws_completion_date;
+        this.applicant = applicant;
+        this.apply_date = apply_date;
+        this.apply_amount = apply_amount;
+        this.lister = lister;
+        this.auditor = auditor;
+        this.reviewer = reviewer;
+        this.start_date = start_date;
+        this.end_date = end_date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLtd() {
+        return ltd;
+    }
+
+    public void setLtd(String ltd) {
+        this.ltd = ltd;
+    }
+
+    public String getIndustry_center() {
+        return industry_center;
+    }
+
+    public void setIndustry_center(String industry_center) {
+        this.industry_center = industry_center;
+    }
+
+    public String getRefund_grp_name() {
+        return refund_grp_name;
+    }
+
+    public void setRefund_grp_name(String refund_grp_name) {
+        this.refund_grp_name = refund_grp_name;
+    }
+
+    public String getRefund_grp_code() {
+        return refund_grp_code;
+    }
+
+    public void setRefund_grp_code(String refund_grp_code) {
+        this.refund_grp_code = refund_grp_code;
+    }
+
+    public String getRefund_amount() {
+        return refund_amount;
+    }
+
+    public void setRefund_amount(String refund_amount) {
+        this.refund_amount = refund_amount;
+    }
+
+    public String getApply_No() {
+        return apply_No;
+    }
+
+    public void setApply_No(String apply_No) {
+        this.apply_No = apply_No;
+    }
+
+    public String getWork_sheet_status() {
+        return work_sheet_status;
+    }
+
+    public void setWork_sheet_status(String work_sheet_status) {
+        this.work_sheet_status = work_sheet_status;
+    }
+
+    public String getWs_completion_date() {
+        return ws_completion_date;
+    }
+
+    public void setWs_completion_date(String ws_completion_date) {
+        this.ws_completion_date = ws_completion_date;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getApply_amount() {
+        return apply_amount;
+    }
+
+    public void setApply_amount(String apply_amount) {
+        this.apply_amount = apply_amount;
+    }
+
+    public String getLister() {
+        return lister;
+    }
+
+    public void setLister(String lister) {
+        this.lister = lister;
+    }
+
+    public String getAuditor() {
+        return auditor;
+    }
+
+    public void setAuditor(String auditor) {
+        this.auditor = auditor;
+    }
+
+    public String getReviewer() {
+        return reviewer;
+    }
+
+    public void setReviewer(String reviewer) {
+        this.reviewer = reviewer;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    @Override
+    public String toString() {
+        return "EpCapRefundDailyRpt{" +
+                "id='" + id + '\'' +
+                ", ltd='" + ltd + '\'' +
+                ", industry_center='" + industry_center + '\'' +
+                ", refund_grp_name='" + refund_grp_name + '\'' +
+                ", refund_grp_code='" + refund_grp_code + '\'' +
+                ", refund_amount='" + refund_amount + '\'' +
+                ", apply_No='" + apply_No + '\'' +
+                ", work_sheet_status='" + work_sheet_status + '\'' +
+                ", ws_completion_date='" + ws_completion_date + '\'' +
+                ", applicant='" + applicant + '\'' +
+                ", apply_date='" + apply_date + '\'' +
+                ", apply_amount='" + apply_amount + '\'' +
+                ", lister='" + lister + '\'' +
+                ", auditor='" + auditor + '\'' +
+                ", reviewer='" + reviewer + '\'' +
+                ", start_date='" + start_date + '\'' +
+                ", end_date='" + end_date + '\'' +
+                '}';
+    }
+}

@@ -1,0 +1,85 @@
+package com.esop.base.service;
+
+import com.esop.base.dto.LogInfoDto;
+import com.esop.base.dto.ResourceTreeDto;
+import com.esop.base.dto.SessionDto;
+import com.esop.common.JSTree.JSTreeDto;
+import com.esop.common.JSTree.JSTreeNonOpenDto;
+import com.esop.common.dataBase.SqlE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/27.
+ */
+@Repository
+public class BasePubService {
+    @Autowired
+    SqlE sqlE;
+    //查询组织机构数据
+    public List<JSTreeNonOpenDto> getParentId(JSTreeDto obj){
+        return sqlE.selectM("getParentId", obj);
+    }
+
+    public List<JSTreeNonOpenDto> getOrgJSTree(JSTreeDto obj){
+        return sqlE.selectM("selectGroupMsgByParentId", obj);
+    }
+    //查询资源结构数据
+    public List<JSTreeNonOpenDto> getResourceJSTree(ResourceTreeDto obj){
+        return sqlE.selectM("selectResourceByParentId", obj);
+    }
+    //查询字典表数据
+    public List getDataDictionary(String tableName){
+        //sqlE.selectM("selectOrgParentId", obj);
+        List list = sqlE.selectS("select * from "+tableName);
+        for(int i=0;i<list.size();i++){
+            System.out.println(list.get(i).toString());
+        }
+        return sqlE.selectS("select * from "+tableName);
+    }
+    //查询工号信息
+    public List<SessionDto> getSessionLoginInfo(SessionDto obj){
+        List list=sqlE.selectM("getSessionLoginInfo", obj);
+        List list1;
+        if(list.size()==0){
+            return list;
+        }else {
+            list1=sqlE.selectM("getIdentityCode", (SessionDto)list.get(0));
+            ((SessionDto)list.get(0)).setIdentity_code(list1.get(0).toString());
+            return list;
+        }
+    }
+    //查询工号归属工作台
+    public String selectWorkAreaUrl(SessionDto param){
+        List list =sqlE.selectM("selectWorkAreaUrl",param);
+        String workAreaUrl="0";//0表示不存在此工号
+        if(list.size()!=0) {
+            workAreaUrl = ((SessionDto)list.get(0)).getWork_area_url();
+        }
+        return workAreaUrl;
+    }
+    //查询工号密码
+    public String selectLoginNoPassword(SessionDto param){
+        List list =sqlE.selectM("selectLoginNoPassword",param);
+        String password="0";//0表示不存在此工号
+        if(list.size()!=0) {
+            password = ((SessionDto)list.get(0)).getPassword();
+        }
+        return password;
+    }
+    //查询工号信息
+    public SessionDto selectLoginNoInfo(SessionDto param){
+        SessionDto sessionDto = new SessionDto();
+        List list = sqlE.selectM("selectLoginNoInfo",param);
+        if(list.size()>0){
+            sessionDto = (SessionDto)list.get(0);
+        }
+        return sessionDto;
+    }
+    //日志记录
+    public int insertLogInfo(LogInfoDto parameter){
+        return sqlE.insertM("insertLogInfo",parameter);
+    }
+}

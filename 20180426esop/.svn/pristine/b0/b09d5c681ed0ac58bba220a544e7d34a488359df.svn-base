@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HallRepository">
+    <select id="selectBroadbandDepStatement" parameterType="String" resultType="com.esop.busiAnalysis.dto.BroadbandDepStatementDto" >
+        select rownum as DT_RowId,region_name,town_name,manager_name,unit_id,unit_name,width_no,to_char(op_time,'yyyy-MM-dd') op_time
+        from EP_WIDTH_DEP where 1=1
+        <if test="region_code != ''">
+            and region_code =#{region_code}
+        </if>
+        <if test="town_code != ''">
+            and town_code =#{town_code}
+        </if>
+        <if test="unit_id != ''">
+            and unit_id =#{unit_id}
+        </if>
+        <if test="manager_name != ''">
+            and manager_name =#{manager_name}
+        </if>
+        <if test="start_time != ''">
+            and to_date (to_char(op_time,'yyyy-mm-dd'),'yyyy-mm-dd') >= to_date(#{start_time},'yyyy-mm-dd')
+        </if>
+        <if test="end_time != ''">
+            and to_date (to_char(op_time,'yyyy-mm-dd'),'yyyy-mm-dd') &lt;= to_date(#{end_time},'yyyy-mm-dd')
+        </if>
+    </select>
+</mapper>

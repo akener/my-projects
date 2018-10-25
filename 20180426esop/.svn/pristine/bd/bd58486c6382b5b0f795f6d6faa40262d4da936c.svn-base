@@ -1,0 +1,61 @@
+package com.esop.custLedger.dto;
+
+/**
+ * Created by Qiao on 2017/7/14.
+ */
+public class MethodDto {
+    String title              ="";
+    String content            ="";
+    String content_detail     ="";
+    String pub_createno       ="";
+    String pub_type           ="";
+    String code               ="";
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent_detail() {
+        return content_detail;
+    }
+
+    public void setContent_detail(String content_detail) {
+        this.content_detail = content_detail;
+    }
+
+    public String getPub_createno() {
+        return pub_createno;
+    }
+
+    public void setPub_createno(String pub_createno) {
+        this.pub_createno = pub_createno;
+    }
+
+    public String getPub_type() {
+        return pub_type;
+    }
+
+    public void setPub_type(String pub_type) {
+        this.pub_type = pub_type;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+}

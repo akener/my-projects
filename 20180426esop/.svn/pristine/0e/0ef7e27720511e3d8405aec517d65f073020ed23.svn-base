@@ -1,0 +1,495 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: qiaojian
+  Date: 2017/6/2
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+
+
+    <link rel="icon" href="./favicon.ico">
+    <title>地市管理员工单处理</title>
+    <%--<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/html5shiv.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/respond.min.js"></script>
+    <!--<script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/modal.js"></script>-->
+    <script type="text/javascript" language="javascript" src="/esop/static/js/app.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/jstree/js/jstree.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/common.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.editor.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/dataTables.tableTools.js"></script>--%>
+
+</head>
+
+<!--<hr />-->
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="service_name" value="${login_name}">
+<input type="hidden" id="org_code" value="${group_id}">
+<input type="hidden" id="org_name" value="${group_name}">
+<input type="hidden" id="role_code" value="${role_code}">
+<input type="hidden" id="role_name" value="${role_name}">
+<!-- 转发工单提示框 -->
+<div class="modal fade" id="send" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">转发工单</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">确认转发所有工单吗？</label>
+            </div>
+            <div class="modal-footer">
+                <button id="send_record" name="send_record" class="btn btn-info">是</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 重派单提示 -->
+<div class="modal fade" id="resend" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">重新派单</h4>
+            </div>
+            <div class="box box-solid box-default">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Horizontal Form -->
+                        <div class="box">
+                            <div class="form-horizontal">
+                                <div class="box-body">
+                                    <div class="form-group">
+                                        <label class="col-sm-4 control-label">工单截止日期</label>
+                                        <div class="col-sm-4">
+                                            <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                                                <input readonly class="form-control" id="record_end_date" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">确认重新派发该条工单？</label>
+            </div>
+            <div class="modal-footer">
+                <button id="resend_record" name="resend_record" class="btn btn-info">是</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 退回省管理员提示 -->
+<div class="modal fade" id="back" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">回工派单</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo">确认回退工单至省管理员处？</label>
+            </div>
+            <div class="modal-footer">
+                <button id="back_record" name="back_record" class="btn btn-info">是</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">否</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">该条工单已经重新派发过，不可重新派单</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice1">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo1">修改工单截止日期不能超过省派单截止日期30天</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="norecord" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">没有可处理工单</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+       <h3 class="box-title">地市管理员工单转发</h3>
+       <input type="hidden" id="end_date" >
+   </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-info" id="sendRecord">一键转发</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<table id="example" class="display" cellspacing="0" width="100%">
+    <thead>
+    <tr>
+        <th class="text-center">批次号</th>
+        <th class="text-center">集团编码</th>
+        <th class="text-center">集团名称</th>
+        <th class="text-center">产品编码</th>
+        <th class="text-center">产品名称</th>
+        <th class="text-center">缴费周期</th>
+        <th class="text-center">欠费金额</th>
+        <th class="text-center">账期结束时间</th>
+        <th class="text-center">客户经理工号</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr>
+            <th class="text-center">批次号</th>
+            <th class="text-center">集团编码</th>
+            <th class="text-center">集团名称</th>
+            <th class="text-center">产品编码</th>
+            <th class="text-center">产品名称</th>
+            <th class="text-center">缴费周期</th>
+            <th class="text-center">欠费金额</th>
+            <th class="text-center">账期结束时间</th>
+            <th class="text-center">客户经理工号</th>
+        </tr>
+    </tfoot>
+</table>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">客户经理催缴失败工单</h3>
+        <input type="hidden" id="record_id" value="">
+        <input type="hidden" id="product_id" value="">
+        <input type="hidden" id="id" value="">
+        <input type="hidden" id="resend_flag" value="">
+    </div>
+    <div class="box-body">
+        <table id="table" class="table table-hover table-bordered">
+            <tr>
+                <th class="text-center">批次号</th>
+                <th class="text-center">集团编码</th>
+                <th class="text-center">集团名称</th>
+                <th class="text-center">产品编码</th>
+                <th class="text-center">产品名称</th>
+                <th class="text-center">客户经理</th>
+                <th class="text-center">催缴失败原因</th>
+                <th class="text-center">操作</th>
+            </tr>
+        </table>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var service_no = $("#service_no").val();
+    var service_name = $("#service_name").val();
+    var role_code = $("#role_code").val();
+    var role_name = $("#role_name").val();
+    var org_code = $("#org_code").val();
+    var org_name = $("#org_name").val();
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    $(document).ready(function() {
+
+                editor = new $.fn.DataTable.Editor( {
+                } );
+
+                table = $('#example').DataTable( {
+                    dom: "Bfrtip",
+                    bLengthChange:true,
+                    "bFilter": false,
+                    "pageLength": 10,//设置每页显示多少条记录
+                    "language": {
+                        "url": "/esop/static/data/Chinese.json"
+                    }, //多语言配置
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url:"getRecordByGroup",
+                        type:"POST",
+                        data:{
+                            org_code:org_code
+                        }
+                    },
+                    columns: [
+                       {
+                           data: "record_id",
+                           render:function (data, type, row, meta) {
+                               return "<a href='#' onclick='showDetail("+row.id+")'>" + row.record_id + "</a>"
+                           }
+                       },
+                        { data: "cust_id" },
+                        { data: "cust_name" },
+                        { data: "product_id" },
+                        { data: "product_name" },
+                        { data: "pay_period" },
+                        { data: "owe_money" },
+                        { data: "account_end_date" },
+                        { data: "service_no" }
+                    ],
+                    select: true,
+                    buttons: [
+                    ]
+                } );
+
+                //查询客户经理退回工单
+               $.ajax({
+                   type: "GET",
+                   url: "getReturnRecordFromService",
+                   data:{
+                       org_code:org_code
+                   }
+               }).then(function (data) {
+                   $.each(data, function (index, item) {
+                       $("#table").append("<tr id=''><td id='record' width='10%'><a href='#' onclick='getOneOweRecord("+item.id+")'><input type='hidden' id='record_id' value='"+item.record_id+"' />"
+                       + item.record_id + "</a></td><td width='10%'>" + item.cust_id + "</td><td width='10%'>" + item.cust_name + "</td><td width='10%'>" + item.product_id + "</td><td width='10%'>" + item.product_name + "</td>" +
+                       "</td><td width='10%'>"+item.service_no+"-->"+item.service_name+"</td><td width='20%'>"+item.fault_reason +"</td>"+
+                       "<td width='15%'><button type='submit' class='btn btn-info' onclick='resend("+item.id+","+item.resend+",\""+item.record_end_date+"\")'>重新派单</button>"+
+                       "<button type='submit' class='btn btn-danger' onclick='backRecord("+item.id+")'>回退上级</button></td></tr>");
+                   });
+               });
+});
+   $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+
+    function showDetail(id){
+        location.href="showOneOweRecordDetail?id="+id+"&&flag=gi";
+    }
+    function getOneOweRecord(id){
+        location.href="showOneOweRecordDetail?id="+id+"&&flag=gi";
+    }
+
+    //转发工单
+    $("#sendRecord").click(function(){
+        //获取datable总行数
+        var dataTable = $('#example').DataTable();
+        var info = dataTable.page.info();
+        var dataRows = info.recordsTotal;
+        if(dataRows == 0){
+            $('#norecord').modal('show');
+        }else{
+            $('#send').modal('show');
+        }
+
+    });
+    $("#send_record").click(function(){
+        $.ajax({
+            type:"GET",
+            url:"sendRecordToService",
+            data:{
+                org_code:org_code,
+                login_no:service_no
+            }
+        }).then(function(data){
+            if(data == 1){
+                //alert("工单转发成功");
+                document.location.reload();
+            }else{
+                //alert("工单转发失败");
+            }
+
+        });
+    });
+
+    //重派工单
+    function resend(id,resend,record_end_date){
+        $("#record_end_date").val(record_end_date);
+        $("#end_date").val(record_end_date);
+        $("#id").val(id);
+        $("#resend_flag").val(resend);
+        $('#resend').modal('show');
+
+    }
+    $("#resend_record").click(function(){
+
+        var end_date = $("#end_date").val();
+        var record_end_date = $("#record_end_date").val();
+
+        var d1 = new Date(end_date).getTime();
+        var d2 = new Date(record_end_date).getTime();
+
+        var days=Math.floor((d2-d1)/(24*3600*1000));
+
+        if(days>30){
+            $("#fault1").modal('show');
+            return false;
+        }
+
+
+       var id = $("#id").val();
+       var resend = $("#resend_flag").val();
+
+        if(resend == '0'){
+            $('#resend').modal('hide');
+            $('#fault').modal('show');
+            //alert("该条工单已经重新派发过，不可重派");
+            return false;
+        }
+        else{
+            resend = '0';
+             $.ajax({
+                type:"GET",
+                url:"resendRecordToService",
+                data:{
+                    id:id,
+                    resend:resend,
+                    org_code:org_code,
+                    logon_no:service_no,
+                    record_end_date:record_end_date
+                }
+            }).then(function(data){
+                if(data >= 0){
+                    //alert("工单重新派发成功");
+                    location.href="/esop/showOweRecordByGroup";
+                }else{
+                    //alert("工单重新派发失败");
+                }
+
+            });
+        }
+    });
+
+    //回退工单
+    function backRecord(id){
+
+        $("#back").modal('show');
+        $("#id").val(id);
+    }
+
+    $("#back_record").click(function(){
+         var id = $("#id").val();
+         $.ajax({
+            type:"GET",
+            url:"backToProvince",
+            data:{
+                id:id,
+                login_no:service_no
+            }
+        }).then(function(data){
+            if(data >= 0){
+               // alert("工单回退成功");
+                location.href="showOweRecordByGroup";
+            }else{
+                //alert("工单回退失败");
+            }
+
+        });
+    });
+
+
+</script>
+</html>

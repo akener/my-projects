@@ -1,0 +1,155 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.SessionDto;
+import com.esop.pub.ServiceUrlBean;
+import okhttp3.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 2017/6/13.
+ */
+//处理系统登陆入口
+@Controller
+public class LoginController {
+    private static Logger logger = Logger.getLogger(LoginController.class);
+    @Autowired
+    ServiceUrlBean serviceUrlBean ;
+    //4A登陆 by wangbl
+    @RequestMapping(value = "login4A")
+    public String login4A(Model model, HttpServletRequest request, String Token){
+        System.out.println("login4A=Token值是否取到="+Token);
+
+            Token=Token+"@"+request.getRemoteAddr();
+            String[] tokenInfo = Token.split("@");
+            model.addAttribute("token", Token);
+            model.addAttribute("username", Token);
+            model.addAttribute("password", tokenInfo[1]);
+        return "base/login";
+    }
+
+    //登陆界面 by wangbl
+    @RequestMapping(value = "login")
+    public String login(){
+        return "base/login";
+    }
+    //登陆界面 by wangbl
+    @RequestMapping(value = "lgn")
+    public String lgn(Model model, HttpServletRequest request, String Token){
+        String login_no="aavg38";
+        if(Token==null) Token="";
+        if(!Token.equals("")){
+            Token=Token+"@"+request.getRemoteAddr();
+            String[] tokenInfo = Token.split("@");
+            model.addAttribute("username", Token);
+            model.addAttribute("password", tokenInfo[1]);
+            model.addAttribute("token",Token);
+            login_no=tokenInfo[1];
+            logger.info("username="+Token);
+            logger.info("password="+tokenInfo[1]);
+            logger.info("Token="+Token);
+            OkHttpClient client = new OkHttpClient();
+            String returnInfo="";
+            try {//"aavg38"
+                System.out.println("获取IP地址真实信息======"+request.getHeader("x-forwarded-for"));
+                String remoteAddr="";
+                if (request.getHeader("x-forwarded-for") == null) {
+                    remoteAddr=request.getRemoteAddr();
+                }else {
+                    remoteAddr = request.getHeader("x-forwarded-for");
+                }
+                RequestBody body = new FormBody.Builder()
+                        .add("op_code","0000")//0000表示登录
+                        .add("ip_addr",remoteAddr)
+                        .add("login_no", tokenInfo[1])
+                        .add("login_no_4a",tokenInfo[3])
+                        .build();
+                Request okrequest = new Request.Builder()
+                        .url("http://"+serviceUrlBean.getServiceUrl() + "/insertLogInfo")
+                        //.url("http://localhost:8082/esop/setSessionInfo")
+                        .post(body)
+                        .build();
+                Response okresponse = client.newCall(okrequest).execute();
+                returnInfo=okresponse.body().string();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        return "base/lgn";
+    }
+    //登陆成功后跳转 by wangbl
+    @RequestMapping(value = "jump")
+    public String jump(HttpSession session,Model model, HttpServletRequest request, String Token, String username, String password){
+        /*SessionDto obj=new SessionDto();
+        session.setAttribute("versonType", "normal");
+        session.setAttribute("rightkey_public_flag", "1");
+        session.setAttribute("workNo", username);
+        session.setAttribute("orgCode", "HLJ.HEB.01");
+        session.setAttribute("workName", "测试工号");
+        session.setAttribute("ipAddr", "172.163.1.22");
+        session.setAttribute("regCode", "10114");
+        System.out.println("登陆工号："+username);
+        System.out.println("登陆密码："+password);
+        System.out.println("session中存放的工号名字："+session.getAttribute("workNo"));
+        String href_url="";
+        OkHttpClient client = new OkHttpClient();
+        try {//"aavg38"
+            String[] tokenInfo = username.split("@");
+            if(tokenInfo.length>1){
+                username=tokenInfo[1];
+            }
+            RequestBody body = new FormBody.Builder()
+                    .add("login_no", username)
+                    .build();
+            Request okrequest = new Request.Builder()
+                    //.url("http://"+serviceUrlBean.getServiceUrl() + "/esop/selectWorkAreaUrl")
+                    .url("http://localhost:8082/esop/selectWorkAreaUrl")
+                    .post(body)
+                    .build();
+            Response okresponse = client.newCall(okrequest).execute();
+            href_url=okresponse.body().string();
+            System.out.println("dddse测试="+href_url);
+            if(!href_url.equals("0")){
+                model.addAttribute("href_url",href_url);
+            }else{
+                model.addAttribute("href_url","/esop/login");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }*/
+        //return "base/securityCheck";
+        return "login";
+    }
+    @RequestMapping(value = "frontEndSetSessionInfo")
+    public String frontEndSetSessionInfo(String username, String password){
+        System.out.println("--#username="+username);
+        System.out.println("--#password="+password);
+        String returnInfo="";
+        OkHttpClient client = new OkHttpClient();
+        try {//"aavg38"
+            RequestBody body = new FormBody.Builder()
+                    .add("login_no", username)
+                    .add("password",password)
+                    .build();
+            Request okrequest = new Request.Builder()
+                    .url("http://"+serviceUrlBean.getServiceUrl() + "/setSessionInfo")
+                    //.url("http://localhost:8082/esop/setSessionInfo")
+                    .post(body)
+                    .build();
+            Response okresponse = client.newCall(okrequest).execute();
+            returnInfo=okresponse.body().string();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        //return "base/securityCheck";
+        return returnInfo;
+    }
+}

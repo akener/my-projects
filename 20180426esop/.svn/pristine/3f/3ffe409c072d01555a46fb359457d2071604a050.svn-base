@@ -1,0 +1,80 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class WorkFlowFirstDto {
+
+    String taskOrderId = "";
+    String applicantNo = "";
+    String nextDealPerson = "";
+    String nodeId = "";
+    String dealTime = "";
+    String approveOpinion = "";
+    String memo = "";
+    String jiaoyi_liushui = "";
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+    public String getNextDealPerson() {
+        return nextDealPerson;
+    }
+
+    public void setNextDealPerson(String nextDealPerson) {
+        this.nextDealPerson = nextDealPerson;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getApproveOpinion() {
+        return approveOpinion;
+    }
+
+    public void setApproveOpinion(String approveOpinion) {
+        this.approveOpinion = approveOpinion;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getJiaoyi_liushui() {
+        return jiaoyi_liushui;
+    }
+
+    public void setJiaoyi_liushui(String jiaoyi_liushui) {
+        this.jiaoyi_liushui = jiaoyi_liushui;
+    }
+}

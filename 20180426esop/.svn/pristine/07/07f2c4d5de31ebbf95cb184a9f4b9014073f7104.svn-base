@@ -1,0 +1,175 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/22
+  Time: 21:48
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>集客贡献总收入</title>
+</head>
+<body class = "bg-ff">
+<div class="row">
+    <div class="col-md-2 mgl-10">
+        <select id="region_code" class="form-control">
+            <option value="">全省</option>
+            <option value = "10031">哈尔滨</option>
+            <option value = "10032">齐齐哈尔</option>
+            <option value = "10033">牡丹江</option>
+            <option value = "10034">佳木斯</option>
+            <option value = "10035">双鸭山</option>
+            <option value = "10036">七台河</option>
+            <option value = "10037">鸡西</option>
+            <option value = "10038">鹤岗</option>
+            <option value = "10039">伊春</option>
+            <option value = "10040">黑河</option>
+            <option value = "10041">绥化</option>
+            <option value = "10042">大兴安岭</option>
+            <option value = "10043">大庆</option>
+        </select>
+    </div>
+    <div class="col-sm-2">
+        <div class="input-group date form_datetime form-group" data-date-format="yyyy-mm">
+            <input readonly type="text" class="form-control" id="ledger_date" name="ledger_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+        </div>
+    </div>
+    <div class='col-sm-1'>
+        <button id="subBtn" class="btn btn-info">查询</button>
+    </div>
+    <div class='col-sm-7'></div>
+</div>
+<div id="container" style="min-width:400px;height:400px;"></div>
+</body>
+<script>
+    var chart = null;
+    var series = [];
+    var categories = [];
+    var reqData = "";
+    var region_name = "";
+    $(function(){
+        var date = new Date();
+        var currentYear = date.getFullYear();
+        var currentMonth = date.getMonth();
+        if(0<=currentMonth  && currentMonth <=9){
+            currentMonth = "0"+currentMonth;
+        }
+        reqData =currentYear+"-"+currentMonth;
+        requestData();
+    })
+    $('.form_datetime').datetimepicker({
+        format: 'yyyy-mm',
+        weekStart: 1,
+        autoclose: true,
+        startView: 3,
+        minView: 3,
+        forceParse: false,
+        language: 'zh-CN'
+    });
+
+    $("#subBtn").click(function(){
+        $("#container").empty();
+        chart = null;
+        series = [];
+        categories = [];
+        reqData = $("#ledger_date").val();
+        if(reqData==""){
+            var date = new Date();
+            var currentYear = date.getFullYear();
+            var currentMonth = date.getMonth();
+            if(0<=currentMonth  && currentMonth <=9){
+                currentMonth = "0"+currentMonth;
+            }
+            reqData =currentYear+"-"+currentMonth;
+        }
+        requestData();
+    })
+
+
+
+    function requestData() {
+        var region_code_req = $("#region_code").val();
+        $.ajax({
+            url: '/allPayIncome',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'eff_date': reqData,// 请求参数
+                'region_code' : region_code_req
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                if(data.length==0){
+                    $("#container").append("<h3 align='center'>表中数据为空</h3>");
+                    return false;
+                }
+                var data1 = [];
+                var data2 = {};
+                for (var i = 0; i < data.length; i++) {
+                    if(region_code_req==""){
+                        region_name = data[i].region_name;
+                    }else{
+                        region_name = data[i].town_name;
+                    }
+
+                    //categories.push(region_name);
+                    data1.push(parseFloat(data[0].phone_income));
+                    data1.push(parseFloat(data[0].info_income));
+                    data1.push(parseFloat(data[0].market_income));
+                }
+                data2.name = "集客贡献";
+                data2.data = data1;
+                series.push(data2);
+                getChart();
+            }
+        });
+    }
+
+    function getChart(){
+        chart = new Highcharts.Chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: '集客贡献收入'
+            },
+            /*subtitle: {
+             text: ''
+             },*/
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '收入 (元)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.2f} 元</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    colorByPoint : true
+                }
+            },
+            series: series
+        });
+    }
+
+</script>
+</html>

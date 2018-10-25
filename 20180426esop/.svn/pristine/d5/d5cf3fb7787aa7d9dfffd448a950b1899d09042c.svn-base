@@ -1,0 +1,26 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by lubinghan on 2017/6/1.
+ */
+//集团成员数量和集团重要成员数量的反参
+public class GrpStatisticsDto {
+    String membernums    ="";//成员数
+    String impMembernums ="";//重要成员数量
+
+    public String getMembernums() {
+        return membernums;
+    }
+
+    public void setMembernums(String membernums) {
+        this.membernums = membernums;
+    }
+
+    public String getImpMembernums() {
+        return impMembernums;
+    }
+
+    public void setImpMembernums(String impMembernums) {
+        this.impMembernums = impMembernums;
+    }
+}

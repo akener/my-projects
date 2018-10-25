@@ -1,0 +1,178 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <script type="text/javascript" language="javascript" src="view/cqDevelopment/elecPack/chargeGroupProdNew.js" ></script>
+    <title>发起集团产品变更</title>
+</head>
+<body class="bg-ff">
+
+<div class="main pd-10">
+
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团产品变更合同信息</span>
+            </div>
+        </div>
+
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <form id="groupDetailInfo">
+                        <table id="contractInfo" class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>合同编号</th>
+                                <td>
+                                    <input id="contract_id" name="contract_id" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                                <th>合同名称</th>
+                                <td>
+                                    <input id="contract_name" name="contract_name" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>合同描述</th>
+                                <td>
+                                    <input id="contract_desc" name="contract_desc" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团编号</th>
+                                <td>
+                                    <input id="first_party_code" name="first_party_code" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                                <th>集团名称</th>
+                                <td>
+                                    <input id="first_party" name="first_party" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团地址</th>
+                                <td>
+                                    <input id="first_party_address" name="first_party_address" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                                <th>联系人电话</th>
+                                <td>
+                                    <input id="first_party_phone" name="first_party_phone" type="text" class="input-sty04 form-ipt" readonly="readonly">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>生效方式</th>
+                                <td>
+                                    <select id="effecttype" name="effecttype">
+                                        <option selected="selected" value="2">立即</option>
+                                        <option value="3">次月</option>
+                                        <option value="4">次日</option>
+                                    </select>
+                                </td>
+                                <th>操作类型</th>
+                                <td>
+                                    <select id="optype" name="optype">
+                                        <option selected="selected" value="PCOpRec">开通</option>
+                                        <option value="PCOpMod">修改</option>
+                                        <option value="PCOpDel">关闭</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>用户编号</th>
+                                <td>
+                                    <select id="grpSubsids" name="grpSubsids" onchange="selGrpSubsids()">
+                                        <option selected="selected" value="">请选择</option>
+                                    </select>
+                                </td>
+                                <th>开户产品</th>
+                                <td>
+                                    <select id="prod_id" name="prod_id" onchange="selPrivAttr()">
+                                        <option  value="">请选择</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <table id="attrListInfo" class="table-infor-7 width-th" width="100%">
+                            <tbody id="attrList"></tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团产品开户订单信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <form id="openGroupProd">
+                        <table id="requestinfo" class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>订单标题</th>
+                                <td>
+                                    <input id="order_title" name="order_title" type="text" class="input-style10 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>订单描述</th>
+                                <td>
+                                    <textarea name="notes" id="notes" cols="60" rows="5"></textarea>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="chargeprod()" id="saveopen">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" id="product_id">
+<input type="hidden" id="product_name">
+<script>
+    /**
+     * 初始化
+     */
+    var contract_id;
+    $(document).ready(function(){
+        contract_id="${contract_id}";
+        $.post("/chargeGroupProdNewInit", { "contract_id": contract_id },
+            function(data){
+                $("#contract_id").val(data.contractInfoDto.contract_id);
+                $("#contract_name").val(data.contractInfoDto.contract_name);
+                $("#product_name").val(data.contractInfoDto.product_name);
+                $("#product_id").val(data.contractInfoDto.product_id);
+                $("#first_party_code").val(data.contractInfoDto.first_party_code);
+                $("#first_party_charge").val(data.contractInfoDto.first_party_charge);
+                $("#first_party_address").val(data.contractInfoDto.first_party_address);
+                $("#open_time").val(data.contractInfoDto.open_time);
+                $("#contract_desc").val(data.contractInfoDto.contract_desc);
+                $("#first_party_phone").val(data.contractInfoDto.first_party_phone);
+                $("#first_party").val(data.contractInfoDto.first_party);
+
+                for(var i=0;i<data.selectDtos.length;i++){
+                    var selKey = data.selectDtos[i].selKey;
+                    var selValue = data.selectDtos[i].selValue;
+                    $("#grpSubsids").append("<option value='"+selKey+"' >"+selValue+"</option>");
+                }
+            });
+        $("#contractInfo input").attr("disabled","true");
+    })
+</script>
+</body>
+</html>

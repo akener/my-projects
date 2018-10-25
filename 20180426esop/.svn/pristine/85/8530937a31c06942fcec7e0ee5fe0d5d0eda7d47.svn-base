@@ -1,0 +1,16 @@
+package com.esop.busiAnalysis.dto;
+
+/**
+ * Created by Administrator on 2017/7/4.
+ */
+public class GetCompeteIdDto {
+    String compete_id = "";
+
+    public String getCompete_id() {
+        return compete_id;
+    }
+
+    public void setCompete_id(String compete_id) {
+        this.compete_id = compete_id;
+    }
+}

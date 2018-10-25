@@ -1,0 +1,56 @@
+package com.esop.basicManagement.service;
+
+import com.esop.basicManagement.dto.PwdResetDto;
+import com.esop.common.dataBase.SqlE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Qiao on 2017/7/2.
+ */
+@Repository
+public class PwdResetService {
+    @Autowired
+    SqlE sqlE;
+
+    public PwdResetDto checkPassword(PwdResetDto parameter){
+        return (PwdResetDto)sqlE.selectM("checkPassword",parameter).get(0);
+    }
+
+    public int updatePwd(PwdResetDto parameter){
+        return sqlE.updateM("updatePwd",parameter);
+    }
+
+    public String getBossOrgCode(PwdResetDto parameter){
+        return (String)sqlE.selectM("getBossOrgCode",parameter).get(0);
+    }
+
+    public List<PwdResetDto> getLogin(PwdResetDto parameter){
+        return sqlE.selectM("getLogin",parameter);
+    }
+
+    public String getServiceName(PwdResetDto parameter){
+        return (String)sqlE.selectM("getServiceName",parameter).get(0);
+    }
+
+    public PwdResetDto getPhoneNo(PwdResetDto parameter){
+        List list = new ArrayList();
+        PwdResetDto dto = new PwdResetDto();
+        list = sqlE.selectM("getPhoneNo",parameter);
+        if(list.size()>0){
+            dto = (PwdResetDto)list.get(0);
+        }
+        return dto;
+    }
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int updatePwd(PwdResetDto parameter,Map map){
+        sqlE.insertM("sendMessageToService",map);
+        return sqlE.updateM("updatePwd",parameter);
+    }
+}

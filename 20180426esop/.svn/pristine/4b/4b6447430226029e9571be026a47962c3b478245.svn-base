@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="shellLoadDataCompany"  parameterType="String" resultType="com.esop.shellLoadFile.dto.ShellLoadDataDto" >
+        select config_id as DT_RowId,config_id,table_name,table_desc,status,file_name,data_date,table_type,date_name,date_name_time,enable_errnum,file_full_name,data_num,load_num,error_num,actual_num,to_char(start_time,'yyyy-mm-dd hh24:mi:ss'),to_char(end_time,'yyyy-mm-dd hh24:mi:ss')
+        from ep_shelldadaload_cfg where 1=1
+        <if test="config_id != ''">
+            and config_id =#{config_id}
+        </if>
+    </select>
+    <select id="insertShellLoadDataCompany"  parameterType="com.esop.shellLoadFile.dto.ShellLoadDataDto" resultType="int" >
+            insert into ep_shelldadaload_cfg (CONFIG_ID, TABLE_NAME, TABLE_DESC, STATUS, FILE_NAME, DATA_DATE, TABLE_TYPE, DATE_NAME, DATE_NAME_TIME, ENABLE_ERRNUM)
+            values(seq_sdl_id.nextval,#{table_name},#{table_desc},#{status},#{file_name},#{data_date},#{table_type},#{date_name},#{date_name_time},#{enable_errnum})
+    </select>
+    <select id="updateShellLoadDataCompany"  parameterType="com.esop.shellLoadFile.dto.ShellLoadDataDto" resultType="int" >
+            update ep_shelldadaload_cfg set config_id = #{config_id},table_name = #{table_name},table_desc = #{table_desc},status = #{status},file_name = #{file_name},data_date = #{data_date},table_type = #{table_type},date_name = #{date_name},date_name_time = #{date_name_time},enable_errnum = #{enable_errnum} where config_id=#{config_id}
+    </select>
+    <select id="deleteShellLoadDataCompany" parameterType="com.esop.shellLoadFile.dto.ShellLoadDataDto" resultType="int" >
+        DELETE FROM ep_shelldadaload_cfg WHERE config_id=#{config_id}
+    </select>
+</mapper>

@@ -1,0 +1,37 @@
+package com.esop.base.service;
+
+import com.esop.base.dto.LogisticsCompanyDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class LogisticsCompanyService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(LogisticsCompanyService.class);
+    //查询操作
+    public Result getLogisticCompanyList(LogisticsCompanyDto parameter){
+        logger.info("log4j测试----------------");
+        Result result= sqlE.selectPage("selectLogisticsCompany",parameter);
+        return result;
+    }
+    //新增操作
+    public int insert(LogisticsCompanyDto parameter){
+       return sqlE.insertM("insertLogisticsCompany",parameter);
+    }
+    //修改操作
+    public int update(LogisticsCompanyDto parameter){
+        return sqlE.insertM("updateLogisticsCompany",parameter);
+    }
+    //删除操作
+    public int delete(LogisticsCompanyDto parameter){
+        return sqlE.insertM("deleteLogisticsCompany",parameter);
+    }
+}

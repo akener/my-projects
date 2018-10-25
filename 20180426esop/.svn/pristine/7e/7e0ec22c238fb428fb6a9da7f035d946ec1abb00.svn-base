@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectBusiOppAlert"  parameterType="String" resultType="com.esop.alertClassified.dto.BusiOppAlertDto" >
+        select busiopp_code,busiopp_name,remind_content,remind_date,end_date,service_no,service_name,phone_no,curr_deal_no,curr_deal_name,curr_deal_phone,curr_deal_link,status
+        from ep_busioppremind_info where 1=1
+        <if test="landing_no != ''">
+            and service_no = #{landing_no}
+        </if>
+        and status = '1'
+    </select>
+    <select id="updateBusiOppAlertSet"  parameterType="com.esop.alertClassified.dto.BusiOppAlertDto" resultType="com.esop.alertClassified.dto.BusiOppAlertDto" >
+        update ep_busioppremind_info set status = '2' where busiopp_code=#{busiopp_code}
+    </select>
+</mapper>

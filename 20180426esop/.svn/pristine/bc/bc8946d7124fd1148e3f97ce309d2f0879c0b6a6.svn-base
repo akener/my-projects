@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.invoice.mapper.EpFundInvoiceAttachRelMapper">
+  <resultMap id="BaseResultMap" type="com.esop.invoice.model.EpFundInvoiceAttachRel">
+    <id column="rec_serial_no" jdbcType="INTEGER" property="recSerialNo" />
+    <result column="application_no" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="attach_id" jdbcType="VARCHAR" property="attachId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ep_fund_invoice_attach_rel
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.esop.invoice.model.EpFundInvoiceAttachRel">
+    <selectKey keyProperty="recSerialNo" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ep_fund_invoice_attach_rel (application_no, attach_id)
+    values (#{applicationNo,jdbcType=VARCHAR}, #{attachId,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.invoice.model.EpFundInvoiceAttachRel">
+    update ep_fund_invoice_attach_rel
+    set application_no = #{applicationNo,jdbcType=VARCHAR},
+      attach_id = #{attachId,jdbcType=VARCHAR}
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, attach_id
+    from ep_fund_invoice_attach_rel
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, attach_id
+    from ep_fund_invoice_attach_rel
+  </select>
+  <resultMap id="BaseResultMap1" type="com.esop.invoice.model.EpFundInvoiceAttachRel">
+    <id column="rec_serial_no" jdbcType="INTEGER" property="recSerialNo" />
+    <result column="application_no" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="attach_id" jdbcType="VARCHAR" property="attachId" />
+    <result column="source_file_name" jdbcType="VARCHAR" property="sourceFileName" />
+    <result column="target_file_name" jdbcType="VARCHAR" property="targetFileName" />
+  </resultMap>
+  <select id="selectByAppNo" parameterType="java.lang.String" resultMap="BaseResultMap1">
+    select t1.rec_serial_no, t1.application_no, t1.attach_id, t2.source_file_name, t2.target_file_name
+    from ep_fund_invoice_attach_rel t1, tf_attach_file_info t2
+    where t1.attach_id = t2.attach_file_id and t1.application_no = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+</mapper>

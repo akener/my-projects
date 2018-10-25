@@ -1,0 +1,1936 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.HttpMsgSend;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.PropertiesUtil;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.StringUtils;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import com.esop.workflow.dto.orderDto.OrderStartDto;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * Created by 缪毅 on 2017/12/9.
+ */
+@Repository
+public class OrderService {
+    private static Logger logger = LoggerFactory.getLogger(OrderService.class);
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    OrTemplateAttrService templateService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    @Autowired
+    PropertiesUtil propUtil;
+
+    @Value("${file_username}")
+    String username;
+    @Value("${file_tenant_name}")
+    String tenant_name;
+    @Value("${file_password}")
+    String password;
+    @Value("${file_url}")
+    String url;
+    @Value("${order_center_url}")
+    String order_center_url;
+    //容器名称
+    String contentName = "esopContent";
+    @Autowired
+    UnionContractService contractService;
+
+    /**
+     * 模糊查询出输入的集团编号和名称
+     * @param parameter
+     * @return 集团列表
+     */
+    public List selJtList(OrderDto parameter){
+        String selectTion = "";
+        selectTion = "selectOrderJt";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    /**
+     * 根据集团编号查询合同列表
+     * @return合同编号列表
+     */
+    public List selHtNoList(OrderDto parameter){
+        String selectTion = "";
+        selectTion = "selHtNoList";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    /**
+     * 根据合同编号查询产品列表
+     * @return产品列表
+     */
+    public List selProList(OrderDto parameter){
+        String selectTion = "";
+        selectTion = "selProList";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    /**
+     * 根据合同编号查询产品帐号列表
+     * @return产品列表
+     */
+    public List selAccountProList(OrderDto parameter){
+        String selectTion = "";
+        selectTion = "selAccountProList";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    /**
+     * 新增属性变更申请订单
+     * @return 0 成功 1 失败
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String addChangeGrpApplyOrder(OrderDto parameter, HttpServletRequest request){
+        String flag = "";
+
+        String request_num = System.currentTimeMillis()+"";
+        //写数据到订单附表
+        Integer template_id=10007;
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+
+            if (temp.getAttr_code().equals("grp_subs_id")){
+                dto.setAttr_value(parameter.getGrpSubsId());//集团产品编号
+            }
+            if (temp.getAttr_code().equals("attr_list")){
+                dto.setAttr_value(parameter.getAttrList().toString());//属性值
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setRequest_num(request_num);//订单号
+            sqlSessionTemplate.insert("insertOrRequestDetailInfoDto",dto);
+        }
+
+        //写数据到订单主表
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        dto1.setCreate_date(new Date().toString());
+        dto1.setAudit_date(new Date().toString());
+        dto1.setRequest_num(request_num);
+        dto1.setOrder_title(parameter.getOrderTitle());
+        dto1.setUnion_code(parameter.getJtCode());
+        dto1.setUnion_name(parameter.getJtName());
+        dto1.setNotes(parameter.getOrderDesc());
+        dto1.setRequest_template_id(template_id);
+        dto1.setState("0");
+        dto1.setOp_code("10007");
+        dto1.setSource_id(request_num);
+        sqlSessionTemplate.insert("insertOrRequestinstInfoDto",dto1);
+
+        OrderStartDto inDTO = new OrderStartDto();
+        inDTO.setBizRecordId(request_num);//业务主键
+        inDTO.setStartDept("CQ.CQ");//登录人部门
+        inDTO.setStartLoginNo("112900001");//登录人工号
+        inDTO.setStartRegion("CQ.CQ");//登录人分公司
+        inDTO.setProcTypeCode("3008");
+        inDTO.setBranchCode("CQ.CQ");
+        inDTO.setKeyValue("1");
+
+        flag = orderWorkFlowService.createOrderFlowService(inDTO, request);
+
+        return flag;
+    }
+
+    /**
+     * 查询订单详情
+     * @param reqNum 订单序号
+     * @return
+     */
+    public OrderDto selApplyOrderDetail(String reqNum){
+        return sqlSessionTemplate.selectOne("selApplyOrderDetail",reqNum);
+    }
+
+    /**
+     * 查询订单详情
+     * @param reqNum 订单序号
+     * @return
+     */
+    public OrderDto selChangeGrpOrderDetail(String reqNum){
+        return sqlSessionTemplate.selectOne("selChangeGrpOrderDetail",reqNum);
+    }
+
+    /**
+     * 修改成员管理申请订单
+     * @return 0 成功 1 失败
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String updApplyOrder(OrderDto parameter,HttpServletRequest request){
+        String flag ="";
+         /*
+         //写数据到订单附表
+        Integer template_id=10005;
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+            if (temp.getAttr_code().equals("group_id")){
+                dto.setAttr_value(parameter.getJtCode());//集团编号
+            } else if (temp.getAttr_code().equals("prod_id")){
+                dto.setAttr_value(parameter.getProId());//集团产品编码
+            } else if (temp.getAttr_code().equals("memtel_no")){
+                dto.setAttr_value(parameter.getCyNo());//成员号码
+            } else if (temp.getAttr_code().equals("add_mem_privilege")){
+                dto.setAttr_value("");//新增优惠串
+            } else if (temp.getAttr_code().equals("del_mem_privilege")){
+                dto.setAttr_value("");//删除优惠串
+            } else if (temp.getAttr_code().equals("attr")){
+                dto.setAttr_value("");//属性串
+            } else if (temp.getAttr_code().equals("pay_plan_flag")){
+                dto.setAttr_value("");//是否使用默认集团付费计划
+            } else if (temp.getAttr_code().equals("subs_name")){
+                dto.setAttr_value("");//用户号码
+            } else if (temp.getAttr_code().equals("status")){
+                dto.setAttr_value("");//号码状态
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setRequest_num(parameter.getReqNum());
+            sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        }*/
+        OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+        dto.setRequest_num(parameter.getReqNum());
+        dto.setAttr_id(1001);//属性ID
+        dto.setAttr_code("group_id");//属性code
+        dto.setAttr_value(parameter.getJtCode());//集团编号
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        dto.setAttr_id(1002);//属性ID
+        dto.setAttr_code("prod_id");//属性code
+        dto.setAttr_value(parameter.getProId());//集团产品编码
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        dto.setAttr_id(1003);//属性ID
+        dto.setAttr_code("memtel_no");//属性code
+        dto.setAttr_value(parameter.getCyNo());//成员号码
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        dto.setAttr_id(1004);//属性ID
+        dto.setAttr_code("add_mem_privilege");//属性code
+        dto.setAttr_value("privid="+parameter.getAddSxfs()+","+parameter.getMemprivilege());//新增优惠串
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        dto.setAttr_id(1005);//属性ID
+        //dto.setAttr_value("privid="+parameter.getAddSxfs()+","+parameter.getMemprivilege());//新增优惠串
+        dto.setAttr_value("privid="+parameter.getAddSxfs());//新增优惠串
+        //dto.setAttr_value("privid="+parameter.getDelsxfs()+","+parameter.getMemprivilege());//新增优惠串
+        dto.setAttr_code("del_mem_privilege");//属性code
+        dto.setAttr_value(parameter.getMemprivilege());//新增优惠ID串
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+
+         /*
+        dto.setAttr_id(1006);//属性ID
+        dto.setAttr_code("attr");//属性code
+        dto.setAttr_value(parameter.getAttr());///属性串
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        dto.setAttr_id(1007);//属性ID
+        dto.setAttr_code("pay_plan_flag");//属性code
+        dto.setAttr_value(parameter.getPayPlanFlag());//是否使用默认集团付费计划
+        sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        */
+        //修改成员
+        int menId = sqlSessionTemplate.selectOne("selCyNo",parameter);
+        parameter.setId(menId);
+
+        sqlSessionTemplate.update("updateOrderCy",parameter);
+
+        //修改数据到订单主表
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        dto1.setOrder_title(parameter.getOrderTitle());
+        dto1.setUnion_code(parameter.getJtCode());
+        dto1.setUnion_name(parameter.getJtName());
+        dto1.setNotes(parameter.getOrderDesc());
+        dto1.setModify_date(new Date().toString());
+        dto1.setRequest_num(parameter.getReqNum());
+        dto1.setState("0");
+        sqlSessionTemplate.update("updateRequestinstInfoDto",dto1);
+
+        OrderStartDto inDTO = new OrderStartDto();
+        inDTO.setBizRecordId(parameter.getReqNum());//业务主键
+        inDTO.setStartDept("CQ.CQ");//登录人部门
+        inDTO.setStartLoginNo("112900001");//登录人工号
+        inDTO.setStartRegion("CQ.CQ");//登录人分公司
+        inDTO.setProcTypeCode("3008");
+        inDTO.setBranchCode("CQ.CQ");
+        inDTO.setKeyValue("1");
+
+        return flag;
+    }
+
+    /**
+     * boss接口请求
+     * @param parameter
+     */
+    public void bossReqMem(OrderDto parameter){
+
+        //获取属性值
+        OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+        dto.setRequest_num(parameter.getReqNum());
+        dto.setAttr_id(1004);//属性ID
+        dto.setAttr_code("add_mem_privilege");//属性code
+        String value = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        parameter.setMemprivilege(value);
+        dto.setAttr_id(1005);//属性ID
+        dto.setAttr_code("del_mem_privilege");//属性code
+        value = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        parameter.setDelMemprivilege(value);
+        /*
+        parameter.setMemprivilege(value);
+        dto.setAttr_id(1006);//属性ID
+        dto.setAttr_code("attr");//属性code
+        value = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        parameter.setAttr(value);
+        dto.setAttr_id(1007);//属性ID
+        dto.setAttr_code("pay_plan_flag");//属性code
+        value = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        parameter.setPayPlanFlag(value);
+        */
+        if(parameter.getMemStatus()==1){
+            bossReqAddmem(parameter);
+        }else if (parameter.getMemStatus()==2){
+            bossReqUpdmem(parameter);
+        }else if (parameter.getMemStatus()==3){
+            bossReqDelmem(parameter);
+        }else{
+            logger.error("无效的成员状态，调用Boss接口失败");
+        }
+    }
+
+    /**
+     * bossReqAddmem请求boss增加成员
+     * @param parameter
+     */
+    private void bossReqAddmem(OrderDto parameter){
+        String token = propUtil.getBossToken(); //获取bosstoken
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("SGROUPID",parameter.getJtCode());//集团编号
+        map.put("PRODCODE",parameter.getProId());//集团产品编号
+        map.put("MEMTELNO",parameter.getCyNo());//成员号码
+        map.put("MEMPRIVILEGE",parameter.getMemprivilege());//优惠ID串 优惠ID之间以,隔开)给成员增加优惠的编码，格式为 privid1,privid2,privid3
+        map.put("ATTR",parameter.getAttr());//格式：AttrID=AttrValue 多个属性以”,”隔开 AttrID的定义见group_product_define.itemid 对于增加V网成员，属性串只需要传入短号：ShortNum=6xxxxx
+        map.put("PAYPLANFLAG",parameter.getPayPlanFlag());//是否使用默认集团付费计划	0-不使用默认集团付费计划 1-使用默认集团付费计划
+        String json = com.alibaba.fastjson.JSONObject.toJSONString(map);
+        String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                "GroupService",token,"memberMgrMemAddInner");
+        logger.info(reqIp);
+        logger.info(json);
+
+        String result = HttpMsgSend.sendHttpMsg(reqIp,json);
+        logger.info(result);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject jobject=new JSONObject(result);
+            String res_code=jobject.getString("res_code");
+            if("0".equals(res_code)){
+                logger.info("请求boss增加成员接口成功");
+                parameter.setMemStatus(0);
+                sqlSessionTemplate.update("updMemStatus",parameter);
+                saveBossLog(reqIp,json,result,"集团产品成员号码新增",parameter.getReqNum(),"true");
+            }else{
+                String errorMsg = jobject.getString("res_desc");
+                logger.error(errorMsg);
+                saveBossLog(reqIp,json,result,"集团产品成员号码新增",parameter.getReqNum(),"false");
+            }
+        }else{
+            logger.error("请求boss增加成员接口失败");
+        }
+    }
+
+    /**
+     * bossReqUpdmem请求boss修改成员号码
+     * @param parameter
+     */
+    private void bossReqUpdmem(OrderDto parameter){
+        String token = propUtil.getBossToken(); //获取bosstoken
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("SGROUPID",parameter.getJtCode());//集团编号
+        map.put("PRODCODE",parameter.getProId());//集团产品编号
+        map.put("MEMTELNO",parameter.getCyNo());//成员号码
+
+        //map.put("MEMPRIVILEGE",parameter.getMemprivilege());//优惠ID串 优惠ID之间以,隔开)给成员增加优惠的编码，格式为 privid1,privid2,privid3
+        map.put("ATTR",parameter.getAttr());//格式：AttrID=AttrValue 多个属性以”,”隔开 AttrID的定义见group_product_define.itemid 对于增加V网成员，属性串只需要传入短号：ShortNum=6xxxxx
+        map.put("PAYPLANFLAG",parameter.getPayPlanFlag());//是否使用默认集团付费计划	0-不使用默认集团付费计划 1-使用默认集团付费计划
+        map.put("ADDMEMPRIVILEGE",parameter.getMemprivilege());
+        map.put("DELMEMPRIVILEGE",parameter.getDelMemprivilege());
+
+        String json = com.alibaba.fastjson.JSONObject.toJSONString(map);
+        String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                "GroupService",token,"memberMgrMemModInner");
+        logger.info(reqIp);
+        logger.info(json);
+
+        String result = HttpMsgSend.sendHttpMsg(reqIp,json);
+        logger.info(result);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject jobject=new JSONObject(result);
+            String res_code=jobject.getString("res_code");
+            if("0".equals(res_code)){
+                logger.info("请求boss修改成员号码接口成功");
+                parameter.setMemStatus(0);
+                sqlSessionTemplate.update("updMemStatus",parameter);
+                saveBossLog(reqIp,json,result,"集团产品成员号码修改",parameter.getReqNum(),"true");
+            }else{
+                String errorMsg = jobject.getString("res_desc");
+                logger.error(errorMsg);
+                saveBossLog(reqIp,json,result,"集团产品成员号码修改",parameter.getReqNum(),"false");
+            }
+        }else{
+            logger.error("请求boss修改成员号码接口失败");
+        }
+    }
+
+    /**
+     * bossReqDelmem请求boss删除成员号码
+     * @param parameter
+     */
+    private void bossReqDelmem(OrderDto parameter){
+        String token = propUtil.getBossToken(); //获取bosstoken
+        Map<String,String> map=new HashMap<String,String>();
+        map.put("SGROUPID",parameter.getJtCode());//集团编号
+        map.put("PRODCODE",parameter.getProId());//集团产品编号
+        map.put("MEMTELNO",parameter.getCyNo());//成员号码
+        String json = com.alibaba.fastjson.JSONObject.toJSONString(map);
+        String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                "GroupService",token,"memberMgrMemDelInner");
+        logger.info(reqIp);
+        logger.info(json);
+
+        String result = HttpMsgSend.sendHttpMsg(reqIp,json);
+        logger.info(result);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject jobject=new JSONObject(result);
+            String res_code=jobject.getString("res_code");
+            if("0".equals(res_code)){
+                logger.info("请求boss删除成员号码接口成功");
+                parameter.setMemStatus(4);
+                sqlSessionTemplate.update("updMemStatus",parameter);
+                saveBossLog(reqIp,json,result,"集团产品成员号码删除",parameter.getReqNum(),"true");
+            }else{
+                String errorMsg = jobject.getString("res_desc");
+                logger.error(errorMsg);
+                saveBossLog(reqIp,json,result,"集团产品成员号码删除",parameter.getReqNum(),"false");
+            }
+        }else{
+            logger.error("请求boss删除成员号码接口失败");
+        }
+    }
+
+    /**
+     * 新增申请订单
+     * @return 0 成功 1 失败
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String addApplyOrder(OrderDto parameter, HttpServletRequest request){
+        String flag = "";
+
+        String request_num = System.currentTimeMillis()+"";
+        //写数据到订单附表
+        int memberStatus = parameter.getMemStatus();
+        Integer template_id = 10005;
+        /*
+        if(memberStatus == 1){
+            template_id=10005;
+        }else if(memberStatus==2){
+            template_id=10010;
+        }else if(memberStatus == 3){
+            template_id=10011;
+        }*/
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+
+            if (temp.getAttr_code().equals("group_id")){
+                dto.setAttr_value(parameter.getJtCode());//集团编号
+            } else if (temp.getAttr_code().equals("prod_id")){
+                dto.setAttr_value(parameter.getProId());//集团产品编码
+            } else if (temp.getAttr_code().equals("memtel_no")){
+                dto.setAttr_value(parameter.getCyNo());//成员号码
+            } else if (temp.getAttr_code().equals("add_mem_privilege")){
+                //dto.setAttr_value("privid="+parameter.getAddSxfs()+","+parameter.getMemprivilege());//新增优惠串
+                dto.setAttr_value("privid="+parameter.getAddSxfs());//新增优惠串
+            } else if (temp.getAttr_code().equals("del_mem_privilege")){
+                dto.setAttr_value("");//删除优惠串
+            } else if (temp.getAttr_code().equals("attr")){
+                dto.setAttr_value(parameter.getAttr());//属性串
+            } else if (temp.getAttr_code().equals("pay_plan_flag")){
+                dto.setAttr_value(parameter.getPayPlanFlag());//是否使用默认集团付费计划
+            } else if (temp.getAttr_code().equals("subs_name")){
+                dto.setAttr_value("");//用户号码
+            } else if (temp.getAttr_code().equals("status")){
+                dto.setAttr_value("");//号码状态
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setRequest_num(request_num);//订单号
+            sqlSessionTemplate.insert("insertOrRequestDetailInfoDto",dto);
+        }
+
+        //添加成员
+        if(memberStatus == 1){//新增
+            sqlSessionTemplate.insert("insertOrOrderCy",parameter);
+        }else{//修改 or 删除
+            int id = parameter.getId();
+            sqlSessionTemplate.update("updOrOrderCy",parameter);
+        }
+//        sqlSessionTemplate.insert("insertOrOrderCy",parameter);
+
+        //写数据到订单主表
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        dto1.setCreate_date(new Date().toString());
+        dto1.setAudit_date(new Date().toString());
+        dto1.setRequest_num(request_num);
+        if(parameter.getMemStatus()==1){
+            dto1.setOp_code("10005");
+        }else if(parameter.getMemStatus()==2){
+            dto1.setOp_code("10010");
+        }else if(parameter.getMemStatus()==3){
+            dto1.setOp_code("10011");
+        }
+        dto1.setOrder_title(parameter.getOrderTitle());
+        dto1.setUnion_code(parameter.getJtCode());
+        dto1.setUnion_name(parameter.getJtName());
+        dto1.setNotes(parameter.getOrderDesc());
+        dto1.setSource_id(String.valueOf(parameter.getId()));
+        dto1.setRequest_template_id(template_id);
+        dto1.setState("0");
+        sqlSessionTemplate.insert("insertOrRequestinstInfoDto",dto1);
+
+        OrderStartDto inDTO = new OrderStartDto();
+        inDTO.setBizRecordId(request_num);//业务主键
+        inDTO.setStartDept("CQ.CQ");//登录人部门
+        inDTO.setStartLoginNo("112900001");//登录人工号
+        inDTO.setStartRegion("CQ.CQ");//登录人分公司
+        inDTO.setProcTypeCode("3008");
+        inDTO.setBranchCode("CQ.CQ");
+        inDTO.setKeyValue("1");
+
+        flag = orderWorkFlowService.createOrderFlowService(inDTO, request);
+
+        return flag;
+    }
+    /**
+     * 修改成员管理申请订单
+     * @return 0 成功 1 失败
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String updChangeGrpApplyOrder(OrderDto parameter,HttpServletRequest request){
+        String flag ="";
+
+        //写数据到订单附表
+        Integer template_id=10007;
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+            if (temp.getAttr_code().equals("grp_subs_id")){
+                dto.setAttr_value(parameter.getGrpSubsId());//集团产品编号
+            } else if (temp.getAttr_code().equals("attr_list")){
+                dto.setAttr_value(parameter.getAttrList().toString());//属性值
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setRequest_num(parameter.getReqNum());
+            sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        }
+
+        //修改数据到订单主表
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        dto1.setOrder_title(parameter.getOrderTitle());
+        dto1.setUnion_code(parameter.getJtCode());
+        dto1.setUnion_name(parameter.getJtName());
+        dto1.setNotes(parameter.getOrderDesc());
+        dto1.setModify_date(new Date().toString());
+        dto1.setRequest_num(parameter.getReqNum());
+        sqlSessionTemplate.update("updateRequestinstInfoDto",dto1);
+
+        OrderStartDto inDTO = new OrderStartDto();
+        inDTO.setBizRecordId(parameter.getReqNum());//业务主键
+        inDTO.setStartDept("CQ.CQ");//登录人部门
+        inDTO.setStartLoginNo("112900001");//登录人工号
+        inDTO.setStartRegion("CQ.CQ");//登录人分公司
+        inDTO.setProcTypeCode("3008");
+        inDTO.setBranchCode("CQ.CQ");
+        inDTO.setKeyValue("1");
+
+        flag = orderWorkFlowService.createOrderFlowService(inDTO, request);
+
+        return flag;
+    }
+
+    /**
+     * 修改本地营销申请订单
+     * @return 0 成功 1 失败
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String updChangeActivitiesDiscount(OrderDto parameter,HttpServletRequest request){
+        String flag ="";
+
+        //写数据到订单附表
+        Integer template_id=10012;
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+            if (temp.getAttr_code().equals("attach_file_id")){//附件id
+                dto.setAttr_value(String.valueOf(parameter.getAttach_file_id()));
+            }else if (temp.getAttr_code().equals("feetype")){//赠送话费返费周期
+                dto.setAttr_value(parameter.getFeetype());
+            }else if (temp.getAttr_code().equals("paytime")){//赠送话费到账时间类型
+                dto.setAttr_value(parameter.getPaytime());
+            }else if (temp.getAttr_code().equals("effecttime")){//赠送话费有效期限
+                dto.setAttr_value(parameter.getEffecttime());
+            }else if (temp.getAttr_code().equals("reason")){//赠送话费原因
+                dto.setAttr_value(parameter.getReason());
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setRequest_num(parameter.getReqNum());
+            sqlSessionTemplate.update("updateRequestDetailInfoDto",dto);
+        }
+
+        //修改数据到订单主表
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        dto1.setOrder_title(parameter.getOrderTitle());
+        dto1.setUnion_code(parameter.getJtCode());
+        dto1.setUnion_name(parameter.getJtName());
+        dto1.setNotes(parameter.getOrderDesc());
+        dto1.setModify_date(new Date().toString());
+        dto1.setRequest_num(parameter.getReqNum());
+        sqlSessionTemplate.update("updateRequestinstInfoDto",dto1);
+
+        OrderStartDto inDTO = new OrderStartDto();
+        inDTO.setBizRecordId(parameter.getReqNum());//业务主键
+        inDTO.setStartDept("CQ.CQ");//登录人部门
+        inDTO.setStartLoginNo("112900001");//登录人工号
+        inDTO.setStartRegion("CQ.CQ");//登录人分公司
+        inDTO.setProcTypeCode("3008");
+        inDTO.setBranchCode("CQ.CQ");
+        inDTO.setKeyValue("1");
+
+//        flag = orderWorkFlowService.createOrderFlowService(inDTO, request);
+        flag = "0";
+
+        return flag;
+    }
+
+
+    /**
+     * 请求Boss属性变更接口
+     * @param parameter
+     */
+    public void bossReqChangeGrpSubsAtt(OrderDto parameter){
+        OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+        dto.setRequest_num(parameter.getReqNum());
+        dto.setAttr_id(1055);//属性ID
+        dto.setAttr_code("grp_subs_id");//属性code
+        String grpsubsid = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        dto.setAttr_id(1065);//属性ID
+        dto.setAttr_code("attr_list");//属性code
+        String attrlist = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        String token = propUtil.getBossToken(); //获取bosstoken
+        JSONObject obj = new JSONObject();
+        obj.put("GRPSUBSID",grpsubsid);//集团用户编号
+        JSONArray arr = new JSONArray(attrlist);
+        obj.put("ATTRLIST",arr);
+        String json = obj.toString();
+        String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                "UserService",token,"grpGrpChangeGrpSubsAttrNetShop");
+        logger.info(reqIp);
+        logger.info(json);
+
+        String result = HttpMsgSend.sendHttpMsg(reqIp,json);
+        logger.info(result);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject jobject=new JSONObject(result);
+            String res_code=jobject.getString("res_code");
+            if("0".equals(res_code)){
+                logger.info("请求boss集团属性变更接口成功");
+                parameter.setMemStatus(0);
+                sqlSessionTemplate.update("updMemStatus",parameter);
+                saveBossLog(reqIp,json,result,"集团产品属性变更",parameter.getReqNum(),"true");
+            }else{
+                String errorMsg = jobject.getString("res_desc");
+                logger.error(errorMsg);
+                saveBossLog(reqIp,json,result,"集团产品属性变更",parameter.getReqNum(),"false");
+            }
+        }else{
+            logger.error("请求boss集团属性变更接口失败");
+        }
+    }
+
+
+    /**
+     * 获取分公司合同编号
+     * @param id
+     * @return 重移集合+分公司拼音简称+年份+4位序号
+     */
+    @Transactional(rollbackFor = Exception.class,isolation=Isolation.SERIALIZABLE)
+    public  String getContractNo(String id){
+        StringBuilder contractNo = new StringBuilder();
+        String sx = sqlSessionTemplate.selectOne("getJTsx",id); //查询分公司的拼音缩写
+        if(sx==null||sx.trim().length()==0){
+            return contractNo.toString();
+        }
+        contractNo.append("重移集合");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy"); //获取当前年份
+        String  yyyy = sdf.format(new Date());
+        Map param = new HashMap();
+        param.put("year",yyyy);
+        param.put("id",id);
+
+        String contractNoXh = sqlSessionTemplate.selectOne("getContractNoSeq",param);//查询分公司的合同序号
+        if(contractNoXh==null||contractNoXh.trim().length()==0){
+            sqlSessionTemplate.insert("addContractNoSeq",param);
+            contractNo.append(sx).append(yyyy).append("0001");
+        }else{
+            int xh =Integer.parseInt(contractNoXh)+1;
+            param.put("xh",String.valueOf(xh));
+            sqlSessionTemplate.update("updContractNoSeq",param);
+            contractNo.append(sx).append(yyyy).append(getFormatTotal(xh));
+        }
+        return contractNo.toString();
+    }
+
+    /**
+     * 合同流水号规则
+     * @param id
+     * @return CQMC+分公司编码（譬如城一CY）+年份+6位序号（如000001）
+     */
+    @Transactional(rollbackFor = Exception.class,isolation=Isolation.SERIALIZABLE)
+    public  String getContractSeq(String id){
+        StringBuilder contractSeq = new StringBuilder();
+        String sx = sqlSessionTemplate.selectOne("getJTsx",id); //查询分公司的拼音缩写
+        if(sx==null||sx.trim().length()==0){
+            return contractSeq.toString();
+        }
+        contractSeq.append("CQMC");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy"); //获取当前年份
+        String  yyyy = sdf.format(new Date());
+        Map param = new HashMap();
+        param.put("year",yyyy);
+        param.put("id",id);
+
+        String contractNoXh = sqlSessionTemplate.selectOne("getContractSeq",param);//查询序列号
+        if(contractNoXh==null||contractNoXh.trim().length()==0){
+            sqlSessionTemplate.insert("addContractSeq",param);
+            contractSeq.append(sx).append(yyyy).append("000001");
+        }else{
+            int xh =Integer.parseInt(contractNoXh)+1;
+            param.put("xh",String.valueOf(xh));
+            sqlSessionTemplate.update("updContractSeq",param);
+            contractSeq.append(sx).append(yyyy).append(getFormatTotal6(xh));
+        }
+        return contractSeq.toString();
+    }
+
+    /**
+     * 转换为4位数的序号
+     * @param contractNoXh
+     * @return
+     */
+    private String getFormatTotal(int contractNoXh) {
+        StringBuilder xh = new StringBuilder();
+        if(contractNoXh<10 && contractNoXh > 0){
+            xh.append("000").append(contractNoXh);
+        }else if(contractNoXh<100 && contractNoXh >=10){
+            xh.append("00").append(contractNoXh);
+        }else if(contractNoXh<1000 && contractNoXh >=100){
+            xh.append("0").append(contractNoXh);
+        }else{
+            xh.append(contractNoXh);
+        }
+        return xh.toString();
+    }
+
+    /**
+     * 转换为6位数的序号
+     * @param contractNoXh
+     * @return
+     */
+    private String getFormatTotal6(int contractNoXh) {
+        StringBuilder xh = new StringBuilder();
+        if(contractNoXh<10 && contractNoXh > 0){
+            xh.append("00000").append(contractNoXh);
+        }else if(contractNoXh<100 && contractNoXh >=10){
+            xh.append("0000").append(contractNoXh);
+        }else if(contractNoXh<1000 && contractNoXh >=100){
+            xh.append("000").append(contractNoXh);
+        }else if(contractNoXh<10000 && contractNoXh >=1000){
+            xh.append("00").append(contractNoXh);
+        }else if(contractNoXh<100000 && contractNoXh >=10000){
+            xh.append("0").append(contractNoXh);
+        }else{
+            xh.append(contractNoXh);
+        }
+        return xh.toString();
+    }
+
+    /**
+     * 获取合同详情
+     * @param param
+     * @return
+     */
+    public  OrderDto selContractDetail(OrderDto param){
+        return sqlSessionTemplate.selectOne("selContractDetail",param);
+    }
+
+    /**
+     * 记录调用boss记录日志
+     * @param reqUrl 请求地址
+     * @param reqStr 请求数据串
+     * @param respStr 返回数据串
+     * @param opType 操作类型
+     * @param orderId 订单号
+     * @param result 调用Boss接口 true 成功 false 失败
+     */
+    public void saveBossLog(String reqUrl,String reqStr,String respStr,String opType,String orderId,String result){
+        Map param = new HashMap();
+        param.put("reqUrl",reqUrl);
+        param.put("reqStr",reqStr);
+        param.put("respStr",respStr);
+        param.put("opType",opType);
+        param.put("orderId",orderId);
+        param.put("result",result);
+        sqlSessionTemplate.insert("saveBossLog",param);
+    }
+
+    /**
+     * 查询产品是否超量
+     * @param proId
+     * @return
+     */
+    public Map selIsCl(String proId){
+        Map map = new HashMap();
+        map.put("code","9");
+        map.put("msg","查询是否超量出错");
+
+        String result = sqlSessionTemplate.selectOne("selIsCl",proId);
+        if("0".equals(result)){
+            map.put("code","1");
+            map.put("msg","产品资费已超量，请选择其他资费");
+        }else{
+            map.put("code","0");
+            map.put("msg","查询成功");
+        }
+        return map;
+    }
+
+    /**
+     * 新增合同详情
+     * @param template_id
+     */
+    public void saveContractDetail(int template_id){
+        List<OrTemplateAttrDto> templates= sqlSessionTemplate.selectList("selectContractTemplateAttrById",template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            ContractDetailInfoDto dto = new ContractDetailInfoDto();
+
+            if (temp.getAttr_code().equals("add_co")){
+                dto.setAttr_value("11");//测试属性1
+            } else if (temp.getAttr_code().equals("add_do")){
+                dto.setAttr_value("222");//测试属性2
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setContract_id("2222");//合同号
+            sqlSessionTemplate.insert("insertContractDetailInfo",dto);
+        }
+    }
+
+    /**
+     * 修改合同详情
+     * @param template_id
+     */
+    public void updContractDetail(int template_id) {
+        List<OrTemplateAttrDto> templates = sqlSessionTemplate.selectList("selectContractTemplateAttrById", template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            ContractDetailInfoDto dto = new ContractDetailInfoDto();
+
+            if (temp.getAttr_code().equals("add_co")){
+                dto.setAttr_value("444");//测试属性1
+            } else if (temp.getAttr_code().equals("add_do")){
+                dto.setAttr_value("5555");//测试属性2
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setContract_id("2222");//合同号
+            sqlSessionTemplate.insert("updContractDetailInfo",dto);
+        }
+    }
+
+    /**
+     * 新增本地营销活动订单
+     * @param parameter
+     * @param request
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String addActivitiesDiscountOrder(OrderDto parameter, HttpServletRequest request){
+        String flag = "";
+
+        String request_num = System.currentTimeMillis()+"";
+        //写数据到订单附表
+        Integer template_id=10012;
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates) {
+            OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+
+            if (temp.getAttr_code().equals("attach_file_id")){
+                dto.setAttr_value(String.valueOf(parameter.getAttach_file_id()));//附件id
+            } else if (temp.getAttr_code().equals("feetype")){
+                dto.setAttr_value(parameter.getFeetype());//赠送话费返费周期
+            } else if (temp.getAttr_code().equals("paytime")){
+                dto.setAttr_value(parameter.getPaytime());//赠送话费到账时间类型
+            } else if (temp.getAttr_code().equals("effecttime")){
+                dto.setAttr_value(parameter.getEffecttime());//赠送话费有效期限
+            } else if (temp.getAttr_code().equals("reason")){
+                dto.setAttr_value(parameter.getReason());//赠送话费原因
+            }
+            dto.setAttr_id(temp.getAttr_id());//属性ID
+            dto.setAttr_code(temp.getAttr_code());//属性code
+            dto.setRequest_num(request_num);//订单号
+            sqlSessionTemplate.insert("insertOrRequestDetailInfoDto",dto);
+        }
+
+        //写数据到订单主表
+        OrRequestinstInfoDto dto1=new OrRequestinstInfoDto();
+        dto1.setCreate_date(new Date().toString());
+        dto1.setAudit_date(new Date().toString());
+        dto1.setRequest_num(request_num);
+        dto1.setOrder_title(parameter.getOrderTitle());
+        dto1.setUnion_code(parameter.getJtCode());
+        dto1.setUnion_name(parameter.getJtName());
+        dto1.setNotes(parameter.getOrderDesc());
+        dto1.setRequest_template_id(template_id);
+        dto1.setState("0");
+        dto1.setOp_code("10012");
+        dto1.setSource_id(request_num);
+        sqlSessionTemplate.insert("insertOrRequestinstInfoDto",dto1);
+
+        OrderStartDto inDTO = new OrderStartDto();
+        inDTO.setBizRecordId(request_num);//业务主键
+        inDTO.setStartDept("CQ.CQ");//登录人部门
+        inDTO.setStartLoginNo("112900001");//登录人工号
+        inDTO.setStartRegion("CQ.CQ");//登录人分公司
+        inDTO.setProcTypeCode("3008");
+        inDTO.setBranchCode("CQ.CQ");
+        inDTO.setKeyValue("1");
+
+        flag = orderWorkFlowService.createOrderFlowService(inDTO, request);
+
+        return flag;
+    }
+
+    /**
+     * 调用boss请求本地营销活动优惠充值
+     * @param parameter
+     */
+    public void bossReqActivitiesDiscount(OrderDto parameter){
+        //获取属性值
+        OrRequestDetailInfoDto dto = new OrRequestDetailInfoDto();
+        dto.setRequest_num(parameter.getReqNum());
+        dto.setAttr_id(1100);//属性ID
+        dto.setAttr_code("fileName");//属性code
+        String filename = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        dto.setAttr_id(1102);//属性ID
+        dto.setAttr_code("feetype");//属性code
+        String feetype  = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        dto.setAttr_id(1103);//属性ID
+        dto.setAttr_code("paytime");//属性code
+        String paytime  = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        dto.setAttr_id(1104);//属性ID
+        dto.setAttr_code("effecttime");//属性code
+        String effecttime  = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        dto.setAttr_id(1105);//属性ID
+        dto.setAttr_code("reason");//属性code
+        String reason  = sqlSessionTemplate.selectOne("selRequestDetailInfoDtoValue",dto);
+        JSONObject obj = new JSONObject();
+        obj.put("Operid","b30test1");
+        obj.put("Orgid","CQ.CQ.C1");
+        obj.put("Filename","yyy.xls");
+        obj.put("Feetype",feetype);
+        obj.put("Paytime",paytime);
+        obj.put("Effecttime",effecttime);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd"); //获取当前年份
+        obj.put("Createdate",sdf.format(new Date()));
+        obj.put("Reason",reason);
+        String json = obj.toString();
+        String token = propUtil.getBossToken(); //获取bosstoken
+        String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                "UserOrderService",token,"batchAddLocalGroup");
+        logger.info(reqIp);
+        logger.info(json);
+
+        String result = HttpMsgSend.sendHttpMsg(reqIp,json);
+        logger.info(result);
+        if(!StringUtils.isEmpty(result)){
+            JSONObject jobject=new JSONObject(result);
+            String res_code = jobject.getString("res_code");
+            if("0".equals(res_code)){
+                logger.info("请求boss本地营销活动优惠充值接口成功");
+                parameter.setMemStatus(0);
+                saveBossLog(reqIp,json,result,"本地营销活动优惠充值",parameter.getReqNum(),"true");
+            }else{
+                String errorMsg = jobject.getString("res_desc");
+                logger.error(errorMsg);
+                saveBossLog(reqIp,json,result,"本地营销活动优惠充值",parameter.getReqNum(),"false");
+            }
+        }else{
+            logger.error("请求boss本地营销活动优惠充值接口失败");
+        }
+    }
+
+    /**
+     * 文件上传到对象服务器
+     * @param file
+     * @return
+     */
+    public Map uploadFile(MultipartFile file){
+        Map map = new HashMap();
+        map.put("code","1");
+        map.put("msg","上传文件失败");
+
+        long fileSize = file.getSize();
+        if(fileSize>0) {
+            /*
+            //校验文件大小
+            double size = file.getSize()/1000;
+            if(size > 10*1024) {//10M大小
+                map.put("code","2");
+                map.put("msg","上传文件失败,文件过大");
+                return map;
+            }
+            */
+
+            String fileName = file.getOriginalFilename();
+            int index = fileName.lastIndexOf(".");
+            String suffixname = "";
+            if(index > 0){
+                suffixname=fileName.substring(index);//后缀名
+            }
+            //文件格式判断
+            if(!".xls".equals(suffixname)&&!".xlsx".equals(suffixname)&&!".doc".equals(suffixname)
+                    &&!".docx".equals(suffixname)&&!".txt".equals(suffixname)
+                    &&!".gif".equals(suffixname)&&!".jpg".equals(suffixname)
+                    &&!".rar".equals(suffixname)&&!".png".equals(suffixname)
+                    &&!".pdf".equals(suffixname)){
+                map.put("code","2");
+                map.put("msg","上传文件失败,文件格式错误");
+                return map;
+            }
+            logger.info("流上传文件到swift uploadFile");
+            //认证信息
+            JSONObject objectVO = new JSONObject();
+            objectVO.put("tenant_name", tenant_name);
+            objectVO.put("username", username);
+            objectVO.put("password", password);
+
+            String newFileName = StringUtils.getSerialNo(25)+suffixname;
+            objectVO.put("name", newFileName);
+
+            //新建容器ContainerVO对象
+            createContainer(contentName);
+
+            JSONObject containerVO = new JSONObject();
+            containerVO.put("name", contentName);
+            objectVO.put("containerVO", containerVO);
+            InputStream in = null;
+            try {
+                in = file.getInputStream();
+            } catch (IOException e) {
+                return map;
+            }
+            HttpClient client = new DefaultHttpClient();
+            String uploadUrl = url + "openstack/swift/object/upload/inputStream";
+            HttpPost post = new HttpPost(uploadUrl);
+            String response = "";
+            try {
+                post.addHeader("Content-Type", "application/octet-stream");
+                String clazzToJson = objectVO.toString();
+                post.setHeader("objectVO", clazzToJson);
+                InputStreamEntity re = new InputStreamEntity(in, fileSize);
+                post.setEntity(re);
+                HttpResponse res = client.execute(post);
+                int statusCode = res.getStatusLine().getStatusCode();
+                logger.info("Post " + uploadUrl + " Data " + clazzToJson + " ResultCode : " + statusCode+" size : "+ fileSize);
+                // 判断返回编码是否为200
+                if (statusCode != 200 && statusCode != 201) {
+                    throw new Exception("Post " + uploadUrl + "Error!Response Code " + statusCode);
+                }
+                HttpEntity entity = res.getEntity();
+                response = EntityUtils.toString(entity, "UTF-8");
+                logger.info("流上传文件到swift uploadFile return:" + response);
+                if ("Success".equalsIgnoreCase(response)) {
+                    logger.info("流上传文件到swift成功 container");
+
+
+                    OrderDto odDto = new OrderDto();
+                    odDto.setFileName(fileName);
+                    odDto.setNewFileName(newFileName);
+
+                    //记录附件表
+                    sqlSessionTemplate.insert("savetfattachfileinfo",odDto);
+                    map.put("code", "0");
+                    map.put("msg", "上传文件成功");
+                    map.put("attach_file_id",odDto.getAttach_file_id());
+                    map.put("newFileName",newFileName);
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            } finally {
+                post.releaseConnection();
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 文件上传到对象服务器
+     * @param file
+     * @return
+     */
+    public String uploadFile2(MultipartFile file){
+        String result = "1|上传文件失败";
+
+        long fileSize = file.getSize();
+        if(fileSize>0) {
+            /*
+            //校验文件大小
+            double size = file.getSize()/1000;
+            if(size > 10*1024) {//10M大小
+                map.put("code","2");
+                map.put("msg","上传文件失败,文件过大");
+                return map;
+            }
+            */
+
+            String fileName= file.getOriginalFilename();
+            String []fileName2 = fileName.split("\\\\");
+            if(fileName.length()>0){
+                fileName=fileName2[fileName2.length-1];
+            }
+            int index = fileName.lastIndexOf(".");
+            String suffixname = "";
+            if(index > 0){
+                suffixname=fileName.substring(index);//后缀名
+
+                suffixname = suffixname.toLowerCase();
+
+            }
+            //文件格式判断
+            if(!".xls".equals(suffixname)&&!".xlsx".equals(suffixname)
+                    &&!".doc".equals(suffixname)
+                    &&!".docx".equals(suffixname)
+                    &&!".txt".equals(suffixname)
+                    &&!".gif".equals(suffixname)
+                    &&!".jpg".equals(suffixname)
+                    &&!".rar".equals(suffixname)
+                    &&!".png".equals(suffixname)
+                    &&!".pdf".equals(suffixname)){
+                result = "2|上传文件失败,文件格式错误";
+                return result;
+            }
+            logger.info("流上传文件到swift uploadFile");
+            //认证信息
+            JSONObject objectVO = new JSONObject();
+            objectVO.put("tenant_name", tenant_name);
+            objectVO.put("username", username);
+            objectVO.put("password", password);
+
+            String newFileName = StringUtils.getSerialNo(25)+suffixname;
+            objectVO.put("name", newFileName);
+
+            //新建容器ContainerVO对象
+            createContainer(contentName);
+
+            JSONObject containerVO = new JSONObject();
+            containerVO.put("name", contentName);
+            objectVO.put("containerVO", containerVO);
+            InputStream in = null;
+            try {
+                in = file.getInputStream();
+            } catch (IOException e) {
+                logger.info(e.getMessage());
+                return result;
+            }
+            HttpClient client = new DefaultHttpClient();
+            String uploadUrl = url + "openstack/swift/object/upload/inputStream";
+            HttpPost post = new HttpPost(uploadUrl);
+            String response = "";
+            try {
+                post.addHeader("Content-Type", "application/octet-stream");
+                String clazzToJson = objectVO.toString();
+                post.setHeader("objectVO", clazzToJson);
+                InputStreamEntity re = new InputStreamEntity(in, fileSize);
+                post.setEntity(re);
+                HttpResponse res = client.execute(post);
+                int statusCode = res.getStatusLine().getStatusCode();
+                logger.info("Post " + uploadUrl + " Data " + clazzToJson + " ResultCode : " + statusCode+" size : "+ fileSize);
+                // 判断返回编码是否为200
+                if (statusCode != 200 && statusCode != 201) {
+                    throw new Exception("Post " + uploadUrl + "Error!Response Code " + statusCode);
+                }
+                HttpEntity entity = res.getEntity();
+                response = EntityUtils.toString(entity, "UTF-8");
+                logger.info("流上传文件到swift uploadFile return:" + response);
+                if ("Success".equalsIgnoreCase(response)) {
+                    logger.info("流上传文件到swift成功 container");
+
+
+                    OrderDto odDto = new OrderDto();
+                    odDto.setFileName(fileName);
+                    odDto.setNewFileName(newFileName);
+
+                    //记录附件表
+                    sqlSessionTemplate.insert("savetfattachfileinfo",odDto);
+                    result = "0|上传文件成功|"+ odDto.getAttach_file_id()+"|"+newFileName;
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            } finally {
+                post.releaseConnection();
+            }
+        }else
+        {
+            result = "1|上传文件失败,文件为空";
+        }
+        return result;
+    }
+
+    /**
+     * 从文件服务器下载文件
+     * @param attach_file_id 附件id
+     * @param response
+     */
+    public void downloadFile(String attach_file_id, HttpServletResponse response){
+        OrderDto dto = sqlSessionTemplate.selectOne("seltfattachfileinfo",attach_file_id);
+
+        JSONObject reqJson = new JSONObject();
+        reqJson.put("tenant_name", tenant_name);
+        reqJson.put("username", username);
+        reqJson.put("password", password);
+        reqJson.put("name", dto.getNewFileName());
+
+        JSONObject containerVO = new JSONObject();
+        containerVO.put("name",contentName);
+        reqJson.put("containerVO",containerVO);
+
+        String jsonStr = reqJson.toString();
+        logger.info("下载文件：入参"+jsonStr);
+        InputStream in = null;
+        try {
+            HttpClient client = new DefaultHttpClient();
+            String downloadUrl = url + "openstack/swift/object/download/inputStream";
+            HttpPost post = new HttpPost(downloadUrl);
+            post.setHeader("Content-Type", "application/json");
+            StringEntity se = new StringEntity(jsonStr, "UTF-8");
+            post.setEntity(se);
+            HttpResponse resInter = client.execute(post);
+            int statusCode = resInter.getStatusLine().getStatusCode();
+            if (statusCode != 200 && statusCode != 201) {
+                throw new RuntimeException("Post " + downloadUrl + "Error!Response Code " + statusCode);
+            }
+            long fileLength = 0;
+            if (statusCode == 200 || statusCode == 201) {
+                HttpEntity entity = resInter.getEntity();
+                fileLength = entity.getContentLength();
+                in = entity.getContent();
+                logger.info("下载文件大小：" + fileLength);
+            }
+            response.reset();
+            response.setContentType("application/x-msdownload");
+            response.addHeader("Content-Disposition","attachment; filename=\"" + URLEncoder.encode(dto.getFileName(),"utf-8") + "\"");
+            response.setContentLength((int) fileLength);
+            if (fileLength != 0) {
+                byte[] buf = new byte[4096];
+                ServletOutputStream servletOS = response.getOutputStream();
+                int readLength;
+                while (((readLength = in.read(buf)) != -1)) {
+                    servletOS.write(buf, 0, readLength);
+                }
+                servletOS.flush();
+                servletOS.close();
+            }
+            in.close();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            if(in != null) {
+                try {
+                    in.close();
+                } catch (Exception e2) {
+                    logger.error(e2.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * 创建容器
+     * @param containnerName 容器名
+     * @return
+     */
+    public void createContainer(String containnerName) {
+        //认证信息
+        JSONObject KeyStoneVO = new JSONObject();
+        KeyStoneVO.put("tenant_name", tenant_name);
+        KeyStoneVO.put("username", username);
+        KeyStoneVO.put("password", password);
+
+        //新建容器ContainerVO对象
+        JSONObject containerVO = new JSONObject();
+        containerVO.put("keystonevo", KeyStoneVO);
+        containerVO.put("name", containnerName);
+        String newUrl = url + "openstack/swift/container/create";
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(newUrl);
+        String response = "";
+        try {
+            post.addHeader("Content-Type", "application/json;charset=UTF-8");
+            post.setHeader("Accept", "application/json");
+            post.setHeader("Content-Type", "application/json;charset=UTF-8");
+            String clazzToJson = containerVO.toString();
+            post.setHeader("containerVO", clazzToJson);
+            // 转码,防止中文乱码
+            StringEntity s = new StringEntity(clazzToJson, "UTF-8");
+            post.setEntity(s);
+            HttpResponse res = client.execute(post);
+            int statusCode = res.getStatusLine().getStatusCode();
+            logger.info("createContainer Post " + newUrl + " Data " + clazzToJson + " ResultCode : " + statusCode);
+            // 判断返回编码是否为200
+            if (statusCode != 200 && statusCode != 201) {
+                throw new Exception("createContainer Post " + newUrl + "Error!Response Code " + statusCode);
+            }
+            HttpEntity entity = res.getEntity();
+            response = EntityUtils.toString(entity, "UTF-8");
+            logger.info("createContainer result "+response);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        } finally {
+            post.releaseConnection();
+        }
+    }
+
+    /**
+     * 获取资费折扣信息
+     * @param chargeId
+     * @return
+     */
+    public List getZkList(String chargeId){
+        String zk = sqlSessionTemplate.selectOne("getZkList",chargeId);
+        List List = new ArrayList();
+        if(zk!=null) {
+            String[] zkArr = zk.split("\\$");
+            int len = zkArr.length;
+            SelectDto dto = null;
+            for (int i = 0; i < len; i++) {
+                dto = new SelectDto();
+                String[] zkValue = zkArr[i].split("~");
+                dto.setSelKey(zkValue[1] + "%");
+                dto.setSelValue(zkValue[0]);
+                List.add(dto);
+            }
+        }
+        return List;
+    }
+
+    /**
+     * 集团产品开户
+     * @param instDto
+     * @param contractdto
+     * @param
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String openGroupProdNewSave(OrRequestinstInfoDto instDto, SeNewContractInfoDto contractdto,HttpServletRequest request){
+        String resultStr = "0";
+        String nowTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        //获取参数
+        Map<String,Object> map =new HashMap<>();
+        String contract_code=contractdto.getContract_id();
+        String prod_id=contractdto.getProduct_id();
+        String link_man=contractdto.getFirst_party_phone();
+        String group_id=contractdto.getFirst_party_code();
+        //  String group_id="230353986807";//测试用
+        String orderId = instDto.getRequest_num();
+        String product_name=contractdto.getProduct_name();
+        String union_code=contractdto.getFirst_party_code();
+        String uinon_name=contractdto.getFirst_party();
+
+        String request_num = System.currentTimeMillis() + "";
+
+        map.put("contract_code",contract_code);
+        map.put("prod_id",prod_id);
+        map.put("link_man",link_man);
+        map.put("group_id",group_id);
+        map.put("prod_name",product_name);
+        map.put("pay_fee_acc_name",product_name);
+        map.put("add_prod_id",contractdto.getChargeIds());
+        JSONArray attrList = new JSONArray();
+        String subsProdAttrsList = "";
+        JSONObject obj = null;
+        StringBuilder subsProdAttrs = new StringBuilder();
+        if(prod_id.equals("pp.jtzx.zghlwzxjnew")||prod_id.equals("pp.jtzx.zgqyzxjnew")
+                ||prod_id.equals("pp.jtzx.zglgxjnew")){
+            if(contractdto.getChargeIds().equals("gl_sj_zxfy")){
+                if(prod_id.equals("pp.jtzx.zghlwzxjnew")){
+                    subsProdAttrs.append("gl.jtzx.hlwzx.new").append("|").append(contractdto.getSubs_prod_attr_list());
+                }else if(prod_id.equals("pp.jtzx.zgqyzxjnew")){
+                    subsProdAttrs.append("gl.jtzx.qyzx.new").append("|").append(contractdto.getSubs_prod_attr_list());
+                }else if(prod_id.equals("pp.jtzx.zglgxjnew")){
+                    subsProdAttrs.append("gl.jtzx.lgx.new").append("|").append(contractdto.getSubs_prod_attr_list());
+                }
+                subsProdAttrs.append(";").append(contractdto.getChargeIds()).append("|").append("FJ_zxfy=").append(contractdto.getGl_sj_zxfy());
+                subsProdAttrsList = subsProdAttrs.toString();
+                map.put("subs_prod_attr_list", subsProdAttrsList);//增值产品包括优惠附加属性增值产品和优惠字符串（包括优惠附加属性），格式：产品、优惠、优惠附加属性以|号分隔，多个优惠附加属性以,号分隔,多个产品之间以;号分隔。例如prodid|privid|key1=xxx,key2=xxx;
+            }else{
+                if(prod_id.equals("pp.jtzx.zghlwzxjnew")){
+                    subsProdAttrs.append("gl.jtzx.hlwzx.new").append("|").append(contractdto.getSubs_prod_attr_list());
+                }else if(prod_id.equals("pp.jtzx.zgqyzxjnew")){
+                    subsProdAttrs.append("gl.jtzx.qyzx.new").append("|").append(contractdto.getSubs_prod_attr_list());
+                }else if(prod_id.equals("pp.jtzx.zglgxjnew")){
+                    subsProdAttrs.append("gl.jtzx.lgx.new").append("|").append(contractdto.getSubs_prod_attr_list());
+                }
+                if(!contractdto.getChargeIds().equals("gl.jtzx.qyzx.new")&&!contractdto.getChargeIds().equals("gl.jtzx.lgx.new")
+                        &&!contractdto.getChargeIds().equals("gl.jtzx.hlwzx.new")){
+                    subsProdAttrs.append(";").append(contractdto.getChargeIds()).append("|");
+                }
+
+                subsProdAttrsList = subsProdAttrs.toString();
+                map.put("subs_prod_attr_list", subsProdAttrsList);//增值产品包括优惠附加属性增值产品和优惠字符串（包括优惠附加属性），格式：产品、优惠、优惠附加属性以|号分隔，多个优惠附加属性以,号分隔,多个产品之间以;号分隔。例如prodid|privid|key1=xxx,key2=xxx;
+            }
+        }else{
+            if(!StringUtils.isEmpty(contractdto.getSubs_prod_attr_list())) {
+                subsProdAttrs.append(contractdto.getChargeIds()).append("|").append(contractdto.getSubs_prod_attr_list());
+                subsProdAttrsList = subsProdAttrs.toString();
+                map.put("subs_prod_attr_list", subsProdAttrsList);//增值产品包括优惠附加属性增值产品和优惠字符串（包括优惠附加属性），格式：产品、优惠、优惠附加属性以|号分隔，多个优惠附加属性以,号分隔,多个产品之间以;号分隔。例如prodid|privid|key1=xxx,key2=xxx;
+            }else{
+                subsProdAttrsList = contractdto.getChargeIds()+"|";
+                map.put("subs_prod_attr_list", contractdto.getChargeIds());
+            }
+        }
+
+        if(!StringUtils.isEmpty(contractdto.getBak3())) {
+            String[] attrArray = contractdto.getBak3().split(",");
+            int len = attrArray.length;
+            for (int i = 0; i < len; i++) {
+                String[] item = attrArray[i].split("=");
+                obj = new JSONObject();
+                obj.put(item[0], item[1]);
+                attrList.put(obj);
+            }
+        }
+
+        JSONObject orderJson = new JSONObject();//订单中心请求
+        orderJson.put("opAccept",StringUtils.getSerialNo(18));//流水
+        orderJson.put("opCode","m256");
+        orderJson.put("opNote","");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //获取当前年份
+        orderJson.put("opTime",sdf.format(new Date()));
+        orderJson.put("orderId", orderId);
+        orderJson.put("orderName","");
+
+       /* String login_no = (String) request.getSession().getAttribute("login_no");//工号
+        String org_id = (String) request.getSession().getAttribute("org_id");//组织机构ID*/
+        String login_no = instDto.getLogin_no();
+        String org_id = instDto.getOrg_id();
+
+
+        orderJson.put("opLogin",login_no);//登录工号
+        orderJson.put("orgId",org_id);//登录工号组织机构ID
+
+        //orderJson.put("opLogin","112900001");//登录工号
+        //orderJson.put("orgId","CQ.CQ");//登录工号组织机构ID
+        orderJson.put("requestNum",request_num);
+        orderJson.put("tenancyCode","011");//固定值
+
+        JSONObject orderDetail=new JSONObject();
+        orderDetail.put("contract_id",contract_code);
+        orderDetail.put("contract_name",contractdto.getContract_name());//合同名称
+        orderDetail.put("contract_desc",contractdto.getContract_desc());//合同描述
+        orderDetail.put("group_id",group_id);//集团编号
+        orderDetail.put("group_name",uinon_name);//集团名称
+        orderDetail.put("group_address",contractdto.getFirst_party_address());//集团地址
+        orderDetail.put("prod_name",contractdto.getProd_name());//开户产品
+        orderDetail.put("link_phone",link_man);//联系人电话
+        orderDetail.put("order_title",instDto.getOrder_title());//订单标题
+        orderDetail.put("order_notes",instDto.getNotes());//备注
+        orderDetail.put("attrList",attrList);
+        orderJson.put("orderDetail",orderDetail);
+
+        //boss请求串
+        String subsId = instDto.getSubsId();
+        JSONObject jsonObject=new JSONObject();
+        JSONArray jsonArray=new JSONArray();
+        jsonObject.put("CUSTID","");
+        jsonObject.put("PRODID",prod_id);
+        jsonObject.put("LINKMAN","");
+        jsonObject.put("CONTRACTCODE",contract_code);
+        jsonObject.put("GROUPID",group_id);
+        jsonObject.put("PAYFEEACC","");
+        //jsonObject.put("PAYFEEACCNAME",product_name);
+        jsonObject.put("GRPSUBSNAME","");
+        jsonObject.put("ATTRLIST","");
+        jsonObject.put("GROUPSUBSID", subsId);
+        /*
+        String ATTRLIST= "test";//测试，此处应该为jsonarray
+        JSONObject jsonObject1=new JSONObject();//ATTRLIST用crset存放集团产品属性键值
+        JSONArray jsonArray1=new JSONArray();
+        jsonObject1.put("KEYID",map.get("KEYID"));
+        jsonObject1.put("KEYVALUE",map.get("KEYVALUE"));
+        jsonArray1.put(0,jsonObject1);
+        jsonObject.put("ATTRLIST",jsonArray1);
+        */
+        jsonObject.put("SUBSPRIVATTRLIST",subsProdAttrsList);
+        jsonObject.put("ISCUSTMGRAUDT","");
+        jsonObject.put("SUBSPRODATTRLIST","");
+        orderJson.put("orderText",jsonObject);
+
+        String reqJson = orderJson.toString();
+        logger.info("---订单中心创建订单请求---");
+        logger.info(reqJson);
+        OrderCreateSvcProxy proxy = new OrderCreateSvcProxy();
+        proxy.setEndpoint(order_center_url);
+        try {
+            String result = proxy.doCreateOrderComm(reqJson);
+            logger.info("---订单中心返回---");
+            logger.info(result);
+            if (result != null && result.trim().length() > 0) {
+                JSONObject resultObj = new JSONObject(result);
+                String errCd = resultObj.getString("errCd");
+                if ("000000".equals(errCd)) {
+                    saveBossLog(order_center_url, reqJson, result, "订单中心创建订单", request_num, "true");
+
+                    //写数据到订单附表
+                    Integer template_id=10001;
+                    List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+                    for (OrTemplateAttrDto temp:templates){
+                        OrRequestDetailInfoDto dto=new OrRequestDetailInfoDto();
+                        dto.setAttr_code(temp.getAttr_code());
+                        dto.setAttr_value(map.get(temp.getAttr_code())+"");
+                        dto.setAttr_id(temp.getAttr_id());
+                        dto.setRequest_num(request_num);
+                        sqlSessionTemplate.insert("insertOrRequestDetailInfoDto",dto);
+                    }
+
+                    //写数据到订单主表
+                    instDto.setRequest_num(request_num);
+                    instDto.setRequest_template_id(template_id);
+                    instDto.setCreate_date(nowTime);
+                    instDto.setModify_date(nowTime);
+                    instDto.setOp_code(template_id+"");
+                    instDto.setState("0");
+                    instDto.setSource_id(request_num);
+                    instDto.setState_date(nowTime);
+                    instDto.setUnion_code(union_code);
+                    instDto.setUnion_name(uinon_name);
+                    //存入建设工单order_no
+                    sqlSessionTemplate.insert("insertOrRequestinstInfoDto",instDto);
+
+                    resultStr = "1";
+                } else {
+                    saveBossLog(order_center_url, reqJson, result, "订单中心创建订单", request_num, "false");
+                    String errMsg = resultObj.getString("errMsg");
+                    logger.error(errMsg);
+                }
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+        }
+        return resultStr;
+    }
+
+    /**
+     * 获取产品附加属性
+     * @param prod_id
+     * @return
+     */
+    public List selPrivAttrList(String prod_id){
+        List list = sqlSessionTemplate.selectList("selPrivAttrList",prod_id);
+        return list;
+    }
+
+    /**
+     * 订单中心创建订单返回
+     * @param msg
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String doCreateOrderRsp(String msg){
+        JSONObject jsonResponse=new JSONObject();
+        jsonResponse.put("status","1");
+        jsonResponse.put("desc","成功");
+        try{
+            JSONObject req=new JSONObject(msg);
+            String requestNum = req.getString("requestNum");
+            String accep_result = req.getString("accep_result");
+            String grpsubsid = req.getString("grpsubsid");
+            String grpacctid = req.getString("grpacctid");
+            /*
+            try {
+                 grpsubsid = req.getString("grpsubsid");
+                 grpacctid = req.getString("grpacctid");
+            }catch (Exception e){}
+            */
+            if(StringUtils.isEmpty(requestNum)||StringUtils.isEmpty(accep_result)
+                    ||StringUtils.isEmpty(grpsubsid)||StringUtils.isEmpty(grpacctid)){
+                jsonResponse.put("status","0");
+                jsonResponse.put("desc","请求参数错误");
+                return jsonResponse.toString();
+            }
+            if(StringUtils.isEmpty(grpsubsid)||StringUtils.isEmpty(grpacctid)){//为空
+                if(accep_result.equals("1")) {
+                    grpsubsid = sqlSessionTemplate.selectOne("selGrpsubsidByRequestNum", requestNum);
+                    if(!StringUtils.isEmpty(grpsubsid)){
+                        SeContractAccountInfoDto accountInfo = new SeContractAccountInfoDto();
+                        accountInfo.setGrp_subsid(grpsubsid);
+                        String attrList= sqlSessionTemplate.selectOne("selAttrListByRequestNumBg", requestNum);
+                        if(!StringUtils.isEmpty(attrList)) {
+                            accountInfo.setAttrList(attrList);
+                        }else{
+                            accountInfo.setAttrList("");
+                        }
+                        //更新帐号属性值
+                        sqlSessionTemplate.update("updgrpsubsidaccountInfo",accountInfo);
+                    }
+                    //更新订单状态
+                    sqlSessionTemplate.update("updOrderStatus",requestNum);
+                }
+                saveBossLog("", msg, jsonResponse.toString(), "订单中心受理返回--产品变更", requestNum, "true");
+            }else{
+                if(accep_result.equals("1")) {
+                    String contrcat_id = sqlSessionTemplate.selectOne("selContrcatidByRequestNum", requestNum);
+                    if(!StringUtils.isEmpty(contrcat_id)){
+                        SeNewContractInfoDto contractdto = contractService.getOneSeNewContractInfo(contrcat_id);
+                        SeContractAccountInfoDto accountInfo = new SeContractAccountInfoDto();
+                        accountInfo.setAccount_code(grpacctid);
+                        //accountInfo.setAccount_name(contractdto.getProduct_name());
+                        //accountInfo.setGrp_subsname(contractdto.getProduct_name());
+                        accountInfo.setGrp_subsid(grpsubsid);
+                        accountInfo.setContract_id(contrcat_id);
+                        accountInfo.setPay_cycle(contractdto.getPay_cycle());//从合同获取缴费周期
+                        accountInfo.setState("1");
+                        String attrList= sqlSessionTemplate.selectOne("selAttrListByRequestNum", requestNum);
+                        if(!StringUtils.isEmpty(attrList)) {
+                            accountInfo.setAttrList(attrList);
+                        }else{
+                            accountInfo.setAttrList("");
+                        }
+                        contractService.insertOneContractAccountInfo(accountInfo);
+                        //更新订单状态
+                        sqlSessionTemplate.update("updOrderStatus",requestNum);
+                        //更新建设工单状态为已开通计费为2
+                        sqlSessionTemplate.update("updateApplyPublicInfo", requestNum);
+
+                    }else{
+                        jsonResponse.put("status","0");
+                        jsonResponse.put("desc","订单请求流水错误");
+                    }
+                }
+                saveBossLog("",msg,jsonResponse.toString(),"订单中心受理返回--产品开通",requestNum,"true");
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            jsonResponse.put("status","0");
+            jsonResponse.put("desc","调用失败");
+            saveBossLog("",msg,jsonResponse.toString(),"订单中心受理返回","","false");
+        }
+        return jsonResponse.toString();
+    }
+
+    /**
+     * 获取帐号信息
+     * @param contrcat_id
+     * @return
+     */
+    public List<SelectDto> selectDtos(String contrcat_id){
+        return sqlSessionTemplate.selectList("selectGrpSubsidList",contrcat_id);
+    }
+
+    /**
+     * 查询帐号信息
+     * @param grpSubsids
+     * @return
+     */
+    public Map selGrpSubSidsDetail(String grpSubsids){
+        Map map = new HashMap();
+        SeContractAccountInfoDto dto = sqlSessionTemplate.selectOne("selGrpSubSidsAccount",grpSubsids);
+        String yyAttrList = dto.getAttrList();
+        map.put("yyAttrList",yyAttrList);
+        if(!StringUtils.isEmpty(yyAttrList)){
+            String item[] = yyAttrList.split("\\|");
+            if(item!=null){
+                if(item.length>=2){
+                    List selList = selPrivAttrList(item[1]);
+                    map.put("selPrivAttrList",selList);
+                }else{
+                    map.put("selPrivAttrList","");
+                }
+            }else{
+                map.put("selPrivAttrList","");
+            }
+        }else{
+            map.put("selPrivAttrList","");
+        }
+        SeContractChargesInfo reqcharges = new SeContractChargesInfo();
+        reqcharges.setContract_id(dto.getContract_id());
+        List<SeContractChargesInfo> chargesInfos = contractService.selectProdList(reqcharges);
+        map.put("chargesInfos", chargesInfos);
+        return map;
+    }
+
+
+    /**
+     * 集团产品变更
+     * @param instDto
+     * @param contractdto
+     * @param
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public String chargeGroupProdNewSave(OrRequestinstInfoDto instDto, SeNewContractInfoDto contractdto){
+        String resultStr = "0";
+        String orderId = instDto.getRequest_num();
+        String nowTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        //获取参数
+        Map<String,Object> map =new HashMap<>();
+        String contract_code=contractdto.getContract_id();
+        String prod_id=contractdto.getProduct_id();
+        String link_man=contractdto.getFirst_party_phone();
+        // String group_id="230353986807";//测试用
+        String group_id=contractdto.getFirst_party_code();
+        String request_num=new Date().getTime()+"";//待生成
+        String product_name=contractdto.getProduct_name();
+        String union_code=contractdto.getFirst_party_code();
+        String uinon_name=contractdto.getFirst_party();
+
+        map.put("region","CQ.CQ");
+        map.put("access_type","");
+        map.put("effect_type",contractdto.getEffecttype());
+        map.put("op_type",contractdto.getOptype());
+        map.put("prod_id",prod_id);
+        map.put("grp_subs_id", contractdto.getGrp_subs_id());
+
+        String subsProdAttrsList = "";
+        String bossProdAttrsList = "";
+        if(!StringUtils.isEmpty(contractdto.getSubs_prod_attr_list())) {
+            StringBuilder subsProdAttrs = new StringBuilder();
+            subsProdAttrs.append(prod_id).append("|").append(contractdto.getChargeIds()).append("|").append(contractdto.getSubs_prod_attr_list());
+            subsProdAttrsList = subsProdAttrs.toString();
+            bossProdAttrsList = contractdto.getChargeIds()+"|"+contractdto.getSubs_prod_attr_list();
+            map.put("attr_para", subsProdAttrsList);//增值产品包括优惠附加属性增值产品和优惠字符串（包括优惠附加属性），格式：产品、优惠、优惠附加属性以|号分隔，多个优惠附加属性以,号分隔,多个产品之间以;号分隔。例如prodid|privid|key1=xxx,key2=xxx;
+        }else{
+            bossProdAttrsList = contractdto.getChargeIds();
+            map.put("attr_para", prod_id+"|"+contractdto.getChargeIds());
+        }
+        JSONArray attrList = new JSONArray();
+        JSONObject obj = null;
+        if (!StringUtils.isEmpty(contractdto.getBak3())) {
+            String[] attrArray = contractdto.getBak3().split(",");
+            int len = attrArray.length;
+            for (int i = 0; i < len; i++) {
+                String[] item = attrArray[i].split("=");
+                obj = new JSONObject();
+                obj.put(item[0], item[1]);
+                attrList.put(obj);
+            }
+        }
+        //请求boss参数
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("REGION", "230");
+        jsonObject.put("GRPSUBSID",contractdto.getGrp_subs_id());
+        jsonObject.put("ACCESSTYPE","bsacAopenTestChn");//写死access_type
+        JSONArray RECPRODLIST=new JSONArray();//产品列表	列值：PRODID, EFFECTTYPE, OPTYPE, ATTRPAR
+        JSONObject jsonObject1=new JSONObject();
+        jsonObject1.put("PRODID",prod_id);
+        jsonObject1.put("EFFECTTYPE", contractdto.getEffecttype());
+        jsonObject1.put("OPTYPE", "PCOpMod");
+        jsonObject1.put("ATTRPARA",bossProdAttrsList);//默认写空数据
+        RECPRODLIST.put(0,jsonObject1);
+        jsonObject.put("RECPRODLIST",RECPRODLIST);
+        String reqJson = jsonObject.toString();
+
+        JSONObject orderJson = new JSONObject();//订单中心请求
+        orderJson.put("opAccept", StringUtils.getSerialNo(18));//流水
+        //TODO 需要修改
+        orderJson.put("opCode", "m256");
+
+        orderJson.put("opNote", "");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //获取当前年份
+        orderJson.put("opTime", sdf.format(new Date()));
+        orderJson.put("orderId", orderId);
+        orderJson.put("orderName", "");
+
+        String login_no = instDto.getLogin_no();
+        String org_id = instDto.getOrg_id();
+        orderJson.put("opLogin", login_no);//登录工号
+        orderJson.put("orgId", org_id);//登录工号组织机构ID
+        orderJson.put("requestNum", request_num);
+        orderJson.put("tenancyCode", "011");//固定值
+
+        JSONObject orderDetail = new JSONObject();
+        orderDetail.put("contract_id", contract_code);
+        orderDetail.put("contract_name", contractdto.getContract_name());//合同名称
+        orderDetail.put("contract_desc", contractdto.getContract_desc());//合同描述
+        orderDetail.put("group_id", group_id);//集团编号
+        orderDetail.put("group_name", uinon_name);//集团名称
+        orderDetail.put("group_address", contractdto.getFirst_party_address());//集团地址
+        orderDetail.put("prod_name", contractdto.getProd_name());//开户产品
+        orderDetail.put("link_phone", link_man);//联系人电话
+        orderDetail.put("order_title", instDto.getOrder_title());//订单标题
+        orderDetail.put("order_notes", instDto.getNotes());//备注
+        orderDetail.put("attrList", attrList);
+        orderJson.put("orderDetail", orderDetail);
+
+        orderJson.put("orderText", jsonObject);
+
+        String reqJsonStr = orderJson.toString();
+        logger.info("请求订单中心变更产品====");
+        logger.info(reqJsonStr);
+
+        //写数据到订单附表
+        Integer template_id=10004;
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates){
+            OrRequestDetailInfoDto dto=new OrRequestDetailInfoDto();
+            dto.setAttr_code(temp.getAttr_code());
+            dto.setAttr_value(map.get(temp.getAttr_code())+"");
+            dto.setAttr_id(temp.getAttr_id());
+            dto.setRequest_num(request_num);
+            sqlSessionTemplate.insert("insertOrRequestDetailInfoDto",dto);
+        }
+
+        //写数据到订单主表
+        instDto.setRequest_num(request_num);
+        instDto.setRequest_template_id(template_id);
+        instDto.setCreate_date(nowTime);
+        instDto.setModify_date(nowTime);
+        instDto.setOp_code(template_id+"");
+        instDto.setState("0");
+        instDto.setSource_id(request_num);
+        instDto.setState_date(nowTime);
+        instDto.setUnion_code(union_code);
+        instDto.setUnion_name(uinon_name);
+        sqlSessionTemplate.insert("insertOrRequestinstInfoDto",instDto);
+
+        resultStr = "1";
+        return resultStr;
+    }
+
+    /**
+     * 向页面输出数据
+     * @param response
+     * @param msg
+     */
+    public void sendMsg(HttpServletResponse response,String msg) {
+        // 设置浏览器禁用缓存
+        response.setHeader("pragma", "no-cache");
+        response.setHeader("cache-control", "no-cache");
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out;
+        try {
+            out = response.getWriter();
+            out.print(msg);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    * 通过商机号查询所有的建设单里面的ordernumber
+    * @param seOpporApplypublicInfo
+    * */
+    public List<SeOpporApplypublicInfo> getOrderByOppor(SeOpporApplypublicInfo seOpporApplypublicInfo) {
+        return sqlSessionTemplate.selectList("getOrderByOppor", seOpporApplypublicInfo);
+    }
+
+    /**
+     * 删除文件
+     * @param fileName
+     * @return
+     */
+    public  Map deleteObject( String fileName) {
+
+
+        Map map = new HashMap();
+        map.put("code","1");
+        map.put("msg","删除文件失败");
+
+        JSONObject objectVO = new JSONObject();
+        objectVO.put("tenant_name", tenant_name);
+        objectVO.put("username", username);
+        objectVO.put("password", password);
+        objectVO.put("name", fileName);
+        // 新建容器ContainerVO对象
+        JSONObject containerVO = new JSONObject();
+        containerVO.put("name", contentName);
+        objectVO.put("containerVO", containerVO);
+
+        String uploadUrl  = url  + "openstack/swift/object/deleteByObject";
+        CloseableHttpClient client = HttpClients.createDefault();
+        HttpDelete delete = new HttpDelete(uploadUrl);
+        String response = "";
+        try {
+            delete.setHeader("Accept", "application/json");
+            delete.setHeader("Content-Type", "application/json;charset=" + "UTF-8");
+            String clazzToJson = objectVO.toString();
+            delete.setHeader("objectVO", objectVO.toString());
+
+            CloseableHttpResponse res = client.execute(delete);
+            int statusCode = res.getStatusLine().getStatusCode();
+            //System.out.print("Post " + url + " Data " + clazzToJson + " ResultCode : " + statusCode);
+            // 判断返回编码是否为200
+            if (statusCode != 200 && statusCode != 201) {
+                throw new Exception("Post " + url + "Error!Response Code " + statusCode);
+            }
+            HttpEntity entity = res.getEntity();
+            response = EntityUtils.toString(entity, "UTF-8");
+
+            if ("Success".equalsIgnoreCase(response)) {
+                logger.info("删除文件成功");
+
+                map.put("code","0");
+                map.put("msg","删除文件成功");
+
+            }
+
+        } catch (Exception e) {
+            System.out.print("删除对象"  + "/" + fileName + "失败，异常原因：" + e.getMessage());
+        } finally {
+            delete.releaseConnection();
+        }
+        return map;
+    }
+}

@@ -1,0 +1,452 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>人员统计</title>
+</head>
+<body class="bg-ff">
+<input type="hidden" id="org_code" value="${group_id}">
+<!-- 提示信息 -->
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="alertInfo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">详细信息</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row col-12">
+                        <div class="pd-20 pos-rel">
+                            <div class="active-cost-box" >
+                                <table id="personInfo" class="cost-table" cellspacing="0" width="90%">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">员工编号</th>
+                                        <th class="text-center">姓名</th>
+                                    </tr>
+                                    </thead>
+                                    <tfoot>
+                                    <%--<tr class="text-center">
+                                        <th class="text-center">员工编号</th>
+                                        <th class="text-center">姓名</th>
+                                    </tr>--%>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="fh_bt" class="modal-footer">
+                    <button type="button" class="ui-btn mgr-10" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main pd-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box overh">
+            <div class="form-inline">
+                <select id="region_code" class="form-control selector_region">
+                    <option value = "">全省</option>
+                    <option value = "10031">哈尔滨</option>
+                    <option value = "10032">齐齐哈尔</option>
+                    <option value = "10033">牡丹江</option>
+                    <option value = "10034">佳木斯</option>
+                    <option value = "10035">双鸭山</option>
+                    <option value = "10036">七台河</option>
+                    <option value = "10037">鸡西</option>
+                    <option value = "10038">鹤岗</option>
+                    <option value = "10039">伊春</option>
+                    <option value = "10040">黑河</option>
+                    <option value = "10041">绥化</option>
+                    <option value = "10042">大兴安岭</option>
+                    <option value = "10043">大庆</option>
+                </select>
+                <button id="subBtn" class="btn btn-info">查询</button>
+            </div>
+            <div id="container" style="min-width:400px;height:400px;"></div>
+        </div>
+    </div>
+</body>
+<script>
+    var chart = null;
+    var series = [];
+    var categories = [];
+    var reqData = "";
+    var region_name = "";
+    var staTitle = "全省";
+    var req_town_code = "";
+    var req_person_role = "";
+    var region_code = "";
+    var group_id = "";
+    var group_level = "";
+    $(document).ready(function () {
+        group_id = $("#org_code").val();
+        $.ajax({
+            url: '/selectGroupLevel',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'group_id': $("#org_code").val(),
+            },
+            success: function (data) { // 接口调用成功回调函数
+                group_level = data[0].denorm_level;
+                if(group_level=="0"){
+                    $("#region_code").find("option[value='']").attr("selected", true);
+                    $("#region_code").attr("disabled","disabled");
+                    reqData = $("#region_code").val();
+                    staTitle = $("#region_code option:selected").text();
+                    requestData();
+                }else if(group_level=="1"){
+                    $("#region_code").find("option[value='" +group_id+ "']").attr("selected", true);
+                    $("#region_code").attr("disabled","disabled");
+                    reqData = $("#region_code").val();
+                    staTitle = $("#region_code option:selected").text();
+                    requestData()
+                }else if(group_level=="2"){
+                    $("#modal_text").text("没有权限");
+                    $("#modalInfo").modal('show');
+                    $("#subBtn").hide();
+                    $("#region_code").hide();
+                    return false;
+                }
+            }
+        });
+    });
+
+    $("#subBtn").click(function(){
+        chart = null;
+        series = [];
+        categories = [];
+        reqData = $("#region_code").val();
+        staTitle = $("#region_code option:selected").text();
+        requestData();
+    })
+
+
+
+    function requestData() {
+        reqData = $("#region_code").val();
+        $.ajax({
+            url: '/personnelStatistics',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'region_code': reqData// 请求参数
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                if(data.length==0){
+                    $("#modal_text").text("没有数据");
+                    $("#modalInfo").modal('show');
+                    return false;
+                }
+                var data1 = [];
+                var data2 = {};
+                var data3 = {};
+                for (var i = 0; i < data.length; i++) {
+                    categories.push(data[i].person_role);
+                    //data1.push(parseInt(data[i].amount));
+                    data3.y = parseInt(data[i].amount);
+                    if(reqData==""){
+                        data3.name = data[i].person_role;
+                        data3.region_code = reqData;
+                        //data3.url = "/psp?person_role="+data[i].person_role;
+                    }else{
+                        data3.name = data[i].person_role;
+                        data3.region_code = reqData;
+                        //data3.url = "/psc?person_role="+data[i].person_role+"&region_code="+reqData;
+                    }
+
+                    data1.push(data3);
+                    data3 = {};
+                }
+                data2.name = "人员统计";
+                data2.data = data1;
+                series.push(data2);
+                getChart();
+            }
+        });
+    }
+
+    function getChart(){
+        chart = new Highcharts.Chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: staTitle+'人员统计'
+            },
+            credits: {
+                enabled:false
+            },
+            /*subtitle: {
+             text: ''
+             },*/
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '人员统计（人）'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y} 人</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    colorByPoint : true
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                //在当前页面跳转
+                                $("#container").empty();
+                                person_role = this.options.name;
+                                region_code = this.options.region_code;
+                                if(region_code==""||region_code==null){
+                                    requestDataProvince();
+                                }else{
+                                    requestDataCity();
+                                }
+                                //window.open(this.options.url);
+                            }
+                        }
+                    }
+                }
+            },
+            series: series
+        });
+    }
+
+    function requestDataProvince() {
+        $.ajax({
+            url: '/getCountByRole',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'person_role': person_role// 请求参数
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                var data1 = [];
+                var data2 = {};
+                series = [];
+                categories = [];
+                for (var i = 0; i < data.length; i++) {
+                    categories.push(data[i].region_name);
+                    data1.push(parseInt(data[i].amount));
+                }
+                data2.name = "人员统计";
+                data2.data = data1;
+                series.push(data2);
+                getChartProvince();
+            }
+        });
+    }
+
+    function getChartProvince(){
+        chart = new Highcharts.Chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: "各地市"+person_role+'统计'
+            },
+            credits: {
+                enabled:false
+            },
+            /*subtitle: {
+             text: ''
+             },*/
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '人数（人）'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y} 人</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    colorByPoint : true
+                }
+            },
+            series: series
+        });
+    }
+
+
+    //获取各区县人员分布
+    function requestDataCity() {
+        $.ajax({
+            url: '/getTownRole',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'person_role': person_role,// 请求参数
+                'region_code': region_code,
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                series = [];
+                categories = [];
+                var data1 = [];
+                var data2 = {};
+                var data3 = {};
+                for (var i = 0; i < data.length; i++) {
+                    categories.push(data[i].town_name);
+                    // data1.push(parseInt(data[i].amount));
+                    data3.y = parseInt(data[i].amount);
+                    data3.url = "/esop/psi?town_code="+data[i].town_code+"&person_role="+person_role;
+                    data3.town_code = data[i].town_code;
+                    data3.person_role = person_role;
+                    data1.push(data3);
+                    data3 = {};
+                }
+                data2.name = "人员统计";
+                data2.data = data1;
+                series.push(data2);
+                getChartCity();
+            }
+        });
+    }
+
+    function getChartCity(){
+        chart = new Highcharts.Chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: person_role+'统计'
+            },
+            credits: {
+                enabled:false
+            },
+            /*subtitle: {
+             text: ''
+             },*/
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '人数（人）'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y} 人</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    colorByPoint : true
+                },series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                //在当前页面跳转
+                                //window.location.href = this.options.url;
+                                req_town_code = this.options.town_code;
+                                req_person_role = this.options.person_role;
+                                getTable();
+                                $("#alertInfo").modal('show')
+                            }
+                        }
+                    }
+                }
+            },
+            series: series
+        });
+    }
+    //获取人员详细信息
+    function getTable() {
+        table = $('#personInfo').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            destroy: true,
+            //"iDisplayLength": 15,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/getTownPersonList",
+                type:"POST",
+                data:{
+                    "town_code":req_town_code,
+                    "person_role" :req_person_role
+                }
+            },
+            columns: [
+                { data: "emp_code" },
+                { data: "name" }
+            ],
+            select: true,
+            buttons: [
+                /*{ extend: "create", editor: editor},
+                 { extend: "edit",   editor: editor},
+                 { extend: "remove", editor: editor}*/
+            ]
+        } );
+        /*editor.on('submitSuccess',function ( e, type ) {
+         alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+         } );*/
+    }
+</script>
+</html>

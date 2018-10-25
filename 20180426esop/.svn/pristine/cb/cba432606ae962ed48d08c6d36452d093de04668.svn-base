@@ -1,0 +1,77 @@
+package com.esop.cust.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cust.dto.GrpInterfaceParameterDto;
+import com.esop.cust.dto.ReturnVisitDto;
+import com.esop.cust.dto.SignInDto;
+import com.esop.cust.dto.UploadFileDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/7/4.
+ */
+//签到service
+@Repository
+public class SignInService {
+    @Autowired
+    SqlE sqlE;
+    //查询集团
+    public List qryUnitName(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("qryUnitName",param);
+    }
+    //签到、保存客户侧经纬度
+    @Transactional
+    public int updateVisitReminder(SignInDto param){
+        System.out.println("   :"+param.getUnit_id());
+        System.out.println("   :"+param.getReturn_date());
+        System.out.println("   "+ param.getService_no());
+        System.out.println("  "+ param.getSignIn_addr());
+        System.out.println("  "+param.getSignIn_latitude());
+        System.out.println(" "+param.getSignIn_longitude());
+        List<SignInDto> list =   sqlE.selectM("qrySignInId");
+        if(list.size()>0){
+            param.setId(list.get(0).getId());
+            return sqlE.updateM("updateVisitReminder",param)&sqlE.insertM("saveGnote",param);
+        }else {
+            System.out.println("-----------未能获取将保存客户侧经纬度记录的唯一id-------------");
+            return  0;
+        }
+    }
+    //查询签到信息
+    public List qrySignIn(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("qrySignIn",param);
+    }
+
+    //查询走访的集团的信息
+    public List qryUnitInfo(GrpInterfaceParameterDto param){
+        if(param.getVisit_type().equals("0")){
+            return  sqlE.selectM("qryUnitInfo",param);
+        }else if(param.getVisit_type().equals("1")){
+            return  sqlE.selectM("qryVisitedUnitInfo",param);//查询未拜访的集团
+        }else{
+            return  sqlE.selectM("qryVisitUnitInfo",param);//查询已拜访的集团
+        }
+    }
+    //查询走访集团的集团类别和类别编码
+    public List qryWonerCode(){
+        return  sqlE.selectM("qryWonerCode");
+    }
+    //查询联系人职务和姓名
+    public List  qryContacts(GrpInterfaceParameterDto param){
+        return  sqlE.selectM("qryContacts",param);
+    }
+    //录入走访集团信息
+    public int insertDgrpreturninfo(ReturnVisitDto param){
+       List<ReturnVisitDto> list =  sqlE.selectM("qryReturnInfoId");
+       if(list.size()>0){
+            param.setReturn_info_id(list.get(0).getReturn_info_id());
+            return  sqlE.insertM("insertDgrpreturninfo",param);
+       }else {
+            return  -1;
+       }
+    }
+}

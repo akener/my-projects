@@ -1,0 +1,124 @@
+package com.esop.workbench.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.AmountPaymentDto;
+import com.esop.workbench.service.AmountPaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by liuxiao on 2017/6/19.
+ */
+@RestController
+public class AmountPaymentController {
+    @Autowired
+    AmountPaymentService amountPaymentService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    //查询量酬情况排名
+    @RequestMapping(value = "/getAmountPaymentRank")
+    public Result getAmountPaymentRank(AmountPaymentDto amountPaymentDto, HttpServletRequest request, boolean flag) {
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        amountPaymentDto.setPage(page);
+        String region_code = request.getParameter("region_code");
+        String town_code = request.getParameter("town_code");
+        String amout_expire = request.getParameter("amout_expire");
+        amountPaymentDto.setAmout_expire(amout_expire);
+        amountPaymentDto.setRegion_code(region_code);
+        amountPaymentDto.setTown_code(town_code);
+        result = amountPaymentService.getAmountPaymentList(amountPaymentDto);
+        return result;
+    }
+    //量酬成本展示
+    @RequestMapping(value = "/getAmountPaymentCost")
+    public Result getAmountPaymentCost(AmountPaymentDto amountPaymentDto, HttpServletRequest request, boolean flag) {
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        amountPaymentDto.setPage(page);
+        String region_code = request.getParameter("region_code");
+        String town_code = request.getParameter("town_code");
+        String amout_expire = request.getParameter("amout_expire");
+        String op_time = request.getParameter("op_time");
+        amountPaymentDto.setAmout_expire(amout_expire);
+        amountPaymentDto.setRegion_code(region_code);
+        amountPaymentDto.setTown_code(town_code);
+        amountPaymentDto.setOp_time(op_time);
+        System.out.println("region_code="+region_code+"&"+"town_code="+town_code+"&"+"amout_expire="+amout_expire);
+        result = amountPaymentService.getAmountPaymentCost(amountPaymentDto);
+        return result;
+    }
+    //录入量酬成本
+    @RequestMapping(value = "/addAmountPayment")
+    public int addAmountPayment(AmountPaymentDto amountPaymentDto, HttpServletRequest request, boolean flag){
+        String region_code = request.getParameter("region_code");
+        String region_name = request.getParameter("region_name");
+        String ampay_year_live = request.getParameter("ampay_year_live");
+        String op_time = request.getParameter("op_time");
+        amountPaymentDto.setOp_time(op_time);
+        amountPaymentDto.setRegion_code(region_code);
+        amountPaymentDto.setRegion_name(region_name);
+        amountPaymentDto.setAmpay_year_live(ampay_year_live);
+        int count = amountPaymentService.selectCount(amountPaymentDto);
+        System.out.println("++++++++++++"+count);
+        int num = 0;
+        if(count==0){
+            num = amountPaymentService.addAmountPayment(amountPaymentDto);
+        }else if(count==1){
+            num = 6666;
+        }
+        return num;
+    }
+    //展示量酬成本上限
+    @RequestMapping(value = "/getAllAmountPayment")
+    public Result getAllAmountPayment(AmountPaymentDto amountPaymentDto, HttpServletRequest request, boolean flag) {
+        System.out.println("+++++++++++++++++++++++++测试123");
+        Enumeration en = request.getParameterNames();
+        while (en.hasMoreElements()) {
+            String paramName = (String) en.nextElement();
+            //System.out.println(paramName + " = " + request.getParameter(paramName));
+        }
+        String option = request.getParameter("action")==null?"":request.getParameter("action");
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        amountPaymentDto.setPage(page);
+        result = amountPaymentService.getAllAmountPayment(amountPaymentDto);
+        return result;
+    }
+    //修改全年量酬成本上限
+    @RequestMapping(value = "/updateAmountCost")
+    public int updateAmountCost(AmountPaymentDto amountPaymentDto, HttpServletRequest request){
+        String region_name = request.getParameter("region_name");
+        String ampay_year_live = request.getParameter("ampay_year_live");
+        String op_time = request.getParameter("op_time");
+        amountPaymentDto.setAmpay_year_live(ampay_year_live);
+        amountPaymentDto.setRegion_name(region_name);
+        amountPaymentDto.setOp_time(op_time);
+        System.out.println(region_name+"&"+ampay_year_live+"&"+op_time);
+        int num = 0;
+        num = amountPaymentService.updateAmountCost(amountPaymentDto);
+        System.out.println("________________num="+num);
+        return num;
+    }
+}

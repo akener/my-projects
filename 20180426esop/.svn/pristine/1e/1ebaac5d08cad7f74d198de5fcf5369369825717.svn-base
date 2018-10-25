@@ -1,0 +1,16 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtAssigneeFilterCfg;
+import java.util.List;
+
+public interface CtAssigneeFilterCfgMapper {
+    int deleteByPrimaryKey(String filterId);
+
+    int insert(CtAssigneeFilterCfg record);
+
+    CtAssigneeFilterCfg selectByPrimaryKey(String filterId);
+
+    List<CtAssigneeFilterCfg> selectAll();
+
+    int updateByPrimaryKey(CtAssigneeFilterCfg record);
+}

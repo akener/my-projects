@@ -1,0 +1,114 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+public class SeContractAccountInfoDto extends BaseDto {
+    private String id;
+    private String contract_id;
+    private String pack_no;
+    private String account_code;
+    private String account_name;
+    private String grp_subsid;
+    private String grp_subsname;
+    private String pay_cycle;
+    private String state;
+    private String bak1;
+    private String bak2;
+    private String attrList;
+
+    public String getAttrList() {
+        return attrList;
+    }
+
+    public void setAttrList(String attrList) {
+        this.attrList = attrList;
+    }
+
+    public String getGrp_subsname() {
+        return grp_subsname;
+    }
+
+    public void setGrp_subsname(String grp_subsname) {
+        this.grp_subsname = grp_subsname;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getPack_no() {
+        return pack_no;
+    }
+
+    public void setPack_no(String pack_no) {
+        this.pack_no = pack_no;
+    }
+
+    public String getAccount_code() {
+        return account_code;
+    }
+
+    public void setAccount_code(String account_code) {
+        this.account_code = account_code;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
+    }
+
+    public String getGrp_subsid() {
+        return grp_subsid;
+    }
+
+    public void setGrp_subsid(String grp_subsid) {
+        this.grp_subsid = grp_subsid;
+    }
+
+    public String getPay_cycle() {
+        return pay_cycle;
+    }
+
+    public void setPay_cycle(String pay_cycle) {
+        this.pay_cycle = pay_cycle;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1;
+    }
+
+    public String getBak2() {
+        return bak2;
+    }
+
+    public void setBak2(String bak2) {
+        this.bak2 = bak2;
+    }
+}

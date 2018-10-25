@@ -1,0 +1,904 @@
+package com.esop.visitInfo.dto;
+
+/**
+ * Created by subt on 2017/6/10 0010.
+ * 勘查、资费、资源
+ */
+public class ProspectingPostageDto {
+    String work_type                    ="";//工单类型
+    String customer_name                ="";//客户名称
+    String customer_address             ="";//客户地址
+    String business_attribute           ="";//业务属性
+    String relevant_licenses            ="";//相关证照
+    String grop_id                      ="";//集团编码
+    String account_manager              ="";//客户经理
+    String manager_phone                ="";//联系电话（客户经理）
+    String manager_mail                 ="";//联系邮箱（客户经理）
+    String undertake_unit               ="";//承接单位
+    String undertake_address            ="";//承接地点
+    String undertake_man                ="";//接口人（承接方）
+    String undertake_phone              ="";//联系电话（承接方）
+    String prt_result_start_time        ="";//勘查结果预占开始时间
+    String prt_result_end_time          ="";//勘查结果预占结束时间
+    String ut_result_start_time         ="";//勘查结果预占开始时间(承接方填写)
+    String ut_result_end_time           ="";//勘查结果预占结束时间(承接方填写)
+    //资费流程
+    String total_amount                 ="";//总金额
+    String payment_type                 ="";//付费类型
+    String payment_method               ="";//付费方式
+    String charging_start_time          ="";//预计计费开始时间
+    String comprehensive                ="";//综合自评
+    String approval_result              ="";//审批结果
+    //资费流程（新增）
+    String need_feedback_form           ="";//需要反馈给客户的调研表格
+    String need_feedback_form_save      ="";//需要反馈给客户的调研表格附件保存文件名称
+    String need_feedback_form_file      ="";//需要反馈给客户的调研表格附件可见名称
+    String construction_time            ="";//施工交付时间
+    String customer_time                ="";//客户进场时间
+    String agreement_amount             ="";//协议金额
+    String payment_type_new             ="";//付费类型(新增)
+    String payment_method_new           ="";//付费方式(新增)
+    String charging_start_time_new      ="";//预计计费开始时间(新增)
+    String price_basis                   ="";//价格审批依据
+    String price_basis_result           ="";//价格审批依据审核结果
+    String construction_apply           ="";//是否准许发起施工申请并进入施工阶段
+    //资源流程（回收）
+    String contract_money_recovery      ="";//回收后合同金额
+    String payment_type_recovery        ="";//付费类型（回收）
+    String payment_method_recovery      ="";//付费方式（回收）
+    String charging_end_time            ="";//预计计费停止时间
+    String grop_audit                    ="";//集团客户部审核
+    String undertake_audit              ="";//承接方审核
+    //上传附件
+    String other_prospecting_needs      ="";//其他勘查需求
+    String other_prospecting_needs_save  ="";//其他勘查需求附件保存文件名称
+    String other_prospecting_needs_file  ="";//其他勘查需求附件可见名称
+    String create_date                      ="";//创建时间
+    String update_date                      ="";//修改时间
+    //机架
+    String water_door_frame_ha              ="";//哈南水冷前门机架（5kw）
+    String heat_backplane_frame_fiveha      ="";//哈南热管背板机架（5kw）
+    String heat_backplane_frame_sevenha     ="";//哈南热管背板机架（7kw）
+    String heat_backplane_frame_tenha       ="";//哈南热管背板机架（10kw）
+    String precision_air_frame_jin          ="";//进乡精密空调机架（3kw）
+    //互联网接入
+    String dry_bandwidth_ha                 ="";//哈南国干带宽
+    String province_bandwidth_ha            ="";//哈南省干带宽
+    String bandwidth_jin                    ="";//进乡带宽
+    //哈南公有云
+    String cpu_ha                           ="";//CPU
+    String memory_ha                        ="";//内存
+    String read_write_storage_ha            ="";//读写型存储
+    String data_storage_ha                  ="";//数据型存储
+    String backups_storage_ha               ="";//备份型存储
+    String operating_system_ha              ="";//操作系统
+    String ip_ha                            ="";//IP
+    String port_ha                          ="";//端口
+    //进乡公有云
+    String cpu_jin                          ="";//CPU
+    String memory_jin                       ="";//内存
+    String read_write_storage_jin           ="";//读写型存储
+    String data_storage_jin                 ="";//数据型存储
+    String backups_storage_jin              ="";//备份型存储
+    String operating_system_jin             ="";//操作系统
+    String ip_jin                           ="";//IP
+    String port_jin                         ="";//端口
+    //增值服务
+    String load_balancing                   ="";//负载均衡
+    String firewall                         ="";//防火墙
+    String network_service                  ="";//网管服务
+    String flow_cleaning                    ="";//流量清洗
+    String system_monitoring                ="";//系统监测
+    String flow_monitoring                  ="";//流量监测
+    String domain_name_resolution           ="";//域名解析
+    String multi_line_access                ="";//多线接入
+    String customized_transformation        ="";//定制化改造
+    String safety_reinforcement             ="";//安全加固
+    String risk_assessment                  ="";//风险评估
+    String system_integration_implement     ="";//系统集成与实施
+    String depth_substitution               ="";//深度代维
+    String service_consulting               ="";//服务咨询
+    String vpn_access                       ="";//VPN接入
+    //综合配套
+    String office                           ="";//办公室
+    String station                          ="";//工位
+    String conference_room                  ="";//会议室
+
+    public String getWater_door_frame_ha() {
+        return water_door_frame_ha;
+    }
+
+    public void setWater_door_frame_ha(String water_door_frame_ha) {
+        this.water_door_frame_ha = water_door_frame_ha;
+    }
+
+    public String getHeat_backplane_frame_fiveha() {
+        return heat_backplane_frame_fiveha;
+    }
+
+    public void setHeat_backplane_frame_fiveha(String heat_backplane_frame_fiveha) {
+        this.heat_backplane_frame_fiveha = heat_backplane_frame_fiveha;
+    }
+
+    public String getHeat_backplane_frame_sevenha() {
+        return heat_backplane_frame_sevenha;
+    }
+
+    public void setHeat_backplane_frame_sevenha(String heat_backplane_frame_sevenha) {
+        this.heat_backplane_frame_sevenha = heat_backplane_frame_sevenha;
+    }
+
+    public String getHeat_backplane_frame_tenha() {
+        return heat_backplane_frame_tenha;
+    }
+
+    public void setHeat_backplane_frame_tenha(String heat_backplane_frame_tenha) {
+        this.heat_backplane_frame_tenha = heat_backplane_frame_tenha;
+    }
+
+    public String getPrecision_air_frame_jin() {
+        return precision_air_frame_jin;
+    }
+
+    public void setPrecision_air_frame_jin(String precision_air_frame_jin) {
+        this.precision_air_frame_jin = precision_air_frame_jin;
+    }
+
+    public String getDry_bandwidth_ha() {
+        return dry_bandwidth_ha;
+    }
+
+    public void setDry_bandwidth_ha(String dry_bandwidth_ha) {
+        this.dry_bandwidth_ha = dry_bandwidth_ha;
+    }
+
+    public String getProvince_bandwidth_ha() {
+        return province_bandwidth_ha;
+    }
+
+    public void setProvince_bandwidth_ha(String province_bandwidth_ha) {
+        this.province_bandwidth_ha = province_bandwidth_ha;
+    }
+
+    public String getBandwidth_jin() {
+        return bandwidth_jin;
+    }
+
+    public void setBandwidth_jin(String bandwidth_jin) {
+        this.bandwidth_jin = bandwidth_jin;
+    }
+
+    public String getCpu_ha() {
+        return cpu_ha;
+    }
+
+    public void setCpu_ha(String cpu_ha) {
+        this.cpu_ha = cpu_ha;
+    }
+
+    public String getMemory_ha() {
+        return memory_ha;
+    }
+
+    public void setMemory_ha(String memory_ha) {
+        this.memory_ha = memory_ha;
+    }
+
+    public String getRead_write_storage_ha() {
+        return read_write_storage_ha;
+    }
+
+    public void setRead_write_storage_ha(String read_write_storage_ha) {
+        this.read_write_storage_ha = read_write_storage_ha;
+    }
+
+    public String getData_storage_ha() {
+        return data_storage_ha;
+    }
+
+    public void setData_storage_ha(String data_storage_ha) {
+        this.data_storage_ha = data_storage_ha;
+    }
+
+    public String getBackups_storage_ha() {
+        return backups_storage_ha;
+    }
+
+    public void setBackups_storage_ha(String backups_storage_ha) {
+        this.backups_storage_ha = backups_storage_ha;
+    }
+
+    public String getOperating_system_ha() {
+        return operating_system_ha;
+    }
+
+    public void setOperating_system_ha(String operating_system_ha) {
+        this.operating_system_ha = operating_system_ha;
+    }
+
+    public String getIp_ha() {
+        return ip_ha;
+    }
+
+    public void setIp_ha(String ip_ha) {
+        this.ip_ha = ip_ha;
+    }
+
+    public String getPort_ha() {
+        return port_ha;
+    }
+
+    public void setPort_ha(String port_ha) {
+        this.port_ha = port_ha;
+    }
+
+    public String getCpu_jin() {
+        return cpu_jin;
+    }
+
+    public void setCpu_jin(String cpu_jin) {
+        this.cpu_jin = cpu_jin;
+    }
+
+    public String getMemory_jin() {
+        return memory_jin;
+    }
+
+    public void setMemory_jin(String memory_jin) {
+        this.memory_jin = memory_jin;
+    }
+
+    public String getRead_write_storage_jin() {
+        return read_write_storage_jin;
+    }
+
+    public void setRead_write_storage_jin(String read_write_storage_jin) {
+        this.read_write_storage_jin = read_write_storage_jin;
+    }
+
+    public String getData_storage_jin() {
+        return data_storage_jin;
+    }
+
+    public void setData_storage_jin(String data_storage_jin) {
+        this.data_storage_jin = data_storage_jin;
+    }
+
+    public String getBackups_storage_jin() {
+        return backups_storage_jin;
+    }
+
+    public void setBackups_storage_jin(String backups_storage_jin) {
+        this.backups_storage_jin = backups_storage_jin;
+    }
+
+    public String getOperating_system_jin() {
+        return operating_system_jin;
+    }
+
+    public void setOperating_system_jin(String operating_system_jin) {
+        this.operating_system_jin = operating_system_jin;
+    }
+
+    public String getIp_jin() {
+        return ip_jin;
+    }
+
+    public void setIp_jin(String ip_jin) {
+        this.ip_jin = ip_jin;
+    }
+
+    public String getPort_jin() {
+        return port_jin;
+    }
+
+    public void setPort_jin(String port_jin) {
+        this.port_jin = port_jin;
+    }
+
+    public String getLoad_balancing() {
+        return load_balancing;
+    }
+
+    public void setLoad_balancing(String load_balancing) {
+        this.load_balancing = load_balancing;
+    }
+
+    public String getFirewall() {
+        return firewall;
+    }
+
+    public void setFirewall(String firewall) {
+        this.firewall = firewall;
+    }
+
+    public String getNetwork_service() {
+        return network_service;
+    }
+
+    public void setNetwork_service(String network_service) {
+        this.network_service = network_service;
+    }
+
+    public String getFlow_cleaning() {
+        return flow_cleaning;
+    }
+
+    public void setFlow_cleaning(String flow_cleaning) {
+        this.flow_cleaning = flow_cleaning;
+    }
+
+    public String getSystem_monitoring() {
+        return system_monitoring;
+    }
+
+    public void setSystem_monitoring(String system_monitoring) {
+        this.system_monitoring = system_monitoring;
+    }
+
+    public String getFlow_monitoring() {
+        return flow_monitoring;
+    }
+
+    public void setFlow_monitoring(String flow_monitoring) {
+        this.flow_monitoring = flow_monitoring;
+    }
+
+    public String getDomain_name_resolution() {
+        return domain_name_resolution;
+    }
+
+    public void setDomain_name_resolution(String domain_name_resolution) {
+        this.domain_name_resolution = domain_name_resolution;
+    }
+
+    public String getMulti_line_access() {
+        return multi_line_access;
+    }
+
+    public void setMulti_line_access(String multi_line_access) {
+        this.multi_line_access = multi_line_access;
+    }
+
+    public String getCustomized_transformation() {
+        return customized_transformation;
+    }
+
+    public void setCustomized_transformation(String customized_transformation) {
+        this.customized_transformation = customized_transformation;
+    }
+
+    public String getSafety_reinforcement() {
+        return safety_reinforcement;
+    }
+
+    public void setSafety_reinforcement(String safety_reinforcement) {
+        this.safety_reinforcement = safety_reinforcement;
+    }
+
+    public String getRisk_assessment() {
+        return risk_assessment;
+    }
+
+    public void setRisk_assessment(String risk_assessment) {
+        this.risk_assessment = risk_assessment;
+    }
+
+    public String getSystem_integration_implement() {
+        return system_integration_implement;
+    }
+
+    public void setSystem_integration_implement(String system_integration_implement) {
+        this.system_integration_implement = system_integration_implement;
+    }
+
+    public String getDepth_substitution() {
+        return depth_substitution;
+    }
+
+    public void setDepth_substitution(String depth_substitution) {
+        this.depth_substitution = depth_substitution;
+    }
+
+    public String getService_consulting() {
+        return service_consulting;
+    }
+
+    public void setService_consulting(String service_consulting) {
+        this.service_consulting = service_consulting;
+    }
+
+    public String getVpn_access() {
+        return vpn_access;
+    }
+
+    public void setVpn_access(String vpn_access) {
+        this.vpn_access = vpn_access;
+    }
+
+    public String getOffice() {
+        return office;
+    }
+
+    public void setOffice(String office) {
+        this.office = office;
+    }
+
+    public String getStation() {
+        return station;
+    }
+
+    public void setStation(String station) {
+        this.station = station;
+    }
+
+    public String getConference_room() {
+        return conference_room;
+    }
+
+    public void setConference_room(String conference_room) {
+        this.conference_room = conference_room;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(String update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getWork_type() {
+        return work_type;
+    }
+
+    public void setWork_type(String work_type) {
+        this.work_type = work_type;
+    }
+
+    public String getCustomer_name() {
+        return customer_name;
+    }
+
+    public void setCustomer_name(String customer_name) {
+        this.customer_name = customer_name;
+    }
+
+    public String getCustomer_address() {
+        return customer_address;
+    }
+
+    public void setCustomer_address(String customer_address) {
+        this.customer_address = customer_address;
+    }
+
+    public String getBusiness_attribute() {
+        return business_attribute;
+    }
+
+    public void setBusiness_attribute(String business_attribute) {
+        this.business_attribute = business_attribute;
+    }
+
+    public String getRelevant_licenses() {
+        return relevant_licenses;
+    }
+
+    public void setRelevant_licenses(String relevant_licenses) {
+        this.relevant_licenses = relevant_licenses;
+    }
+
+    public String getGrop_id() {
+        return grop_id;
+    }
+
+    public void setGrop_id(String grop_id) {
+        this.grop_id = grop_id;
+    }
+
+    public String getAccount_manager() {
+        return account_manager;
+    }
+
+    public void setAccount_manager(String account_manager) {
+        this.account_manager = account_manager;
+    }
+
+    public String getManager_phone() {
+        return manager_phone;
+    }
+
+    public void setManager_phone(String manager_phone) {
+        this.manager_phone = manager_phone;
+    }
+
+    public String getManager_mail() {
+        return manager_mail;
+    }
+
+    public void setManager_mail(String manager_mail) {
+        this.manager_mail = manager_mail;
+    }
+
+    public String getUndertake_unit() {
+        return undertake_unit;
+    }
+
+    public void setUndertake_unit(String undertake_unit) {
+        this.undertake_unit = undertake_unit;
+    }
+
+    public String getUndertake_address() {
+        return undertake_address;
+    }
+
+    public void setUndertake_address(String undertake_address) {
+        this.undertake_address = undertake_address;
+    }
+
+    public String getUndertake_man() {
+        return undertake_man;
+    }
+
+    public void setUndertake_man(String undertake_man) {
+        this.undertake_man = undertake_man;
+    }
+
+    public String getUndertake_phone() {
+        return undertake_phone;
+    }
+
+    public void setUndertake_phone(String undertake_phone) {
+        this.undertake_phone = undertake_phone;
+    }
+
+    public String getPrt_result_start_time() {
+        return prt_result_start_time;
+    }
+
+    public void setPrt_result_start_time(String prt_result_start_time) {
+        this.prt_result_start_time = prt_result_start_time;
+    }
+
+    public String getPrt_result_end_time() {
+        return prt_result_end_time;
+    }
+
+    public void setPrt_result_end_time(String prt_result_end_time) {
+        this.prt_result_end_time = prt_result_end_time;
+    }
+
+    public String getUt_result_start_time() {
+        return ut_result_start_time;
+    }
+
+    public void setUt_result_start_time(String ut_result_start_time) {
+        this.ut_result_start_time = ut_result_start_time;
+    }
+
+    public String getUt_result_end_time() {
+        return ut_result_end_time;
+    }
+
+    public void setUt_result_end_time(String ut_result_end_time) {
+        this.ut_result_end_time = ut_result_end_time;
+    }
+
+    public String getTotal_amount() {
+        return total_amount;
+    }
+
+    public void setTotal_amount(String total_amount) {
+        this.total_amount = total_amount;
+    }
+
+    public String getPayment_type() {
+        return payment_type;
+    }
+
+    public void setPayment_type(String payment_type) {
+        this.payment_type = payment_type;
+    }
+
+    public String getPayment_method() {
+        return payment_method;
+    }
+
+    public void setPayment_method(String payment_method) {
+        this.payment_method = payment_method;
+    }
+
+    public String getCharging_start_time() {
+        return charging_start_time;
+    }
+
+    public void setCharging_start_time(String charging_start_time) {
+        this.charging_start_time = charging_start_time;
+    }
+
+    public String getComprehensive() {
+        return comprehensive;
+    }
+
+    public void setComprehensive(String comprehensive) {
+        this.comprehensive = comprehensive;
+    }
+
+    public String getApproval_result() {
+        return approval_result;
+    }
+
+    public void setApproval_result(String approval_result) {
+        this.approval_result = approval_result;
+    }
+
+    public String getNeed_feedback_form() {
+        return need_feedback_form;
+    }
+
+    public void setNeed_feedback_form(String need_feedback_form) {
+        this.need_feedback_form = need_feedback_form;
+    }
+
+    public String getConstruction_time() {
+        return construction_time;
+    }
+
+    public void setConstruction_time(String construction_time) {
+        this.construction_time = construction_time;
+    }
+
+    public String getCustomer_time() {
+        return customer_time;
+    }
+
+    public void setCustomer_time(String customer_time) {
+        this.customer_time = customer_time;
+    }
+
+    public String getAgreement_amount() {
+        return agreement_amount;
+    }
+
+    public void setAgreement_amount(String agreement_amount) {
+        this.agreement_amount = agreement_amount;
+    }
+
+    public String getPayment_type_new() {
+        return payment_type_new;
+    }
+
+    public void setPayment_type_new(String payment_type_new) {
+        this.payment_type_new = payment_type_new;
+    }
+
+    public String getPayment_method_new() {
+        return payment_method_new;
+    }
+
+    public void setPayment_method_new(String payment_method_new) {
+        this.payment_method_new = payment_method_new;
+    }
+
+    public String getCharging_start_time_new() {
+        return charging_start_time_new;
+    }
+
+    public void setCharging_start_time_new(String charging_start_time_new) {
+        this.charging_start_time_new = charging_start_time_new;
+    }
+
+    public String getPrice_basis() {
+        return price_basis;
+    }
+
+    public void setPrice_basis(String price_basis) {
+        this.price_basis = price_basis;
+    }
+
+    public String getPrice_basis_result() {
+        return price_basis_result;
+    }
+
+    public void setPrice_basis_result(String price_basis_result) {
+        this.price_basis_result = price_basis_result;
+    }
+
+    public String getConstruction_apply() {
+        return construction_apply;
+    }
+
+    public void setConstruction_apply(String construction_apply) {
+        this.construction_apply = construction_apply;
+    }
+
+    public String getContract_money_recovery() {
+        return contract_money_recovery;
+    }
+
+    public void setContract_money_recovery(String contract_money_recovery) {
+        this.contract_money_recovery = contract_money_recovery;
+    }
+
+    public String getPayment_type_recovery() {
+        return payment_type_recovery;
+    }
+
+    public void setPayment_type_recovery(String payment_type_recovery) {
+        this.payment_type_recovery = payment_type_recovery;
+    }
+
+    public String getPayment_method_recovery() {
+        return payment_method_recovery;
+    }
+
+    public void setPayment_method_recovery(String payment_method_recovery) {
+        this.payment_method_recovery = payment_method_recovery;
+    }
+
+    public String getCharging_end_time() {
+        return charging_end_time;
+    }
+
+    public void setCharging_end_time(String charging_end_time) {
+        this.charging_end_time = charging_end_time;
+    }
+
+    public String getGrop_audit() {
+        return grop_audit;
+    }
+
+    public void setGrop_audit(String grop_audit) {
+        this.grop_audit = grop_audit;
+    }
+
+    public String getUndertake_audit() {
+        return undertake_audit;
+    }
+
+    public void setUndertake_audit(String undertake_audit) {
+        this.undertake_audit = undertake_audit;
+    }
+
+    public String getNeed_feedback_form_save() {
+        return need_feedback_form_save;
+    }
+
+    public void setNeed_feedback_form_save(String need_feedback_form_save) {
+        this.need_feedback_form_save = need_feedback_form_save;
+    }
+
+    public String getNeed_feedback_form_file() {
+        return need_feedback_form_file;
+    }
+
+    public void setNeed_feedback_form_file(String need_feedback_form_file) {
+        this.need_feedback_form_file = need_feedback_form_file;
+    }
+
+    public String getOther_prospecting_needs() {
+        return other_prospecting_needs;
+    }
+
+    public void setOther_prospecting_needs(String other_prospecting_needs) {
+        this.other_prospecting_needs = other_prospecting_needs;
+    }
+
+    public String getOther_prospecting_needs_save() {
+        return other_prospecting_needs_save;
+    }
+
+    public void setOther_prospecting_needs_save(String other_prospecting_needs_save) {
+        this.other_prospecting_needs_save = other_prospecting_needs_save;
+    }
+
+    public String getOther_prospecting_needs_file() {
+        return other_prospecting_needs_file;
+    }
+
+    public void setOther_prospecting_needs_file(String other_prospecting_needs_file) {
+        this.other_prospecting_needs_file = other_prospecting_needs_file;
+    }
+
+    @Override
+    public String toString() {
+        return "ProspectingPostageDto{" +
+                "work_type='" + work_type + '\'' +
+                ", customer_name='" + customer_name + '\'' +
+                ", customer_address='" + customer_address + '\'' +
+                ", business_attribute='" + business_attribute + '\'' +
+                ", relevant_licenses='" + relevant_licenses + '\'' +
+                ", grop_id='" + grop_id + '\'' +
+                ", account_manager='" + account_manager + '\'' +
+                ", manager_phone='" + manager_phone + '\'' +
+                ", manager_mail='" + manager_mail + '\'' +
+                ", undertake_unit='" + undertake_unit + '\'' +
+                ", undertake_address='" + undertake_address + '\'' +
+                ", undertake_man='" + undertake_man + '\'' +
+                ", undertake_phone='" + undertake_phone + '\'' +
+                ", prt_result_start_time='" + prt_result_start_time + '\'' +
+                ", prt_result_end_time='" + prt_result_end_time + '\'' +
+                ", ut_result_start_time='" + ut_result_start_time + '\'' +
+                ", ut_result_end_time='" + ut_result_end_time + '\'' +
+                ", total_amount='" + total_amount + '\'' +
+                ", payment_type='" + payment_type + '\'' +
+                ", payment_method='" + payment_method + '\'' +
+                ", charging_start_time='" + charging_start_time + '\'' +
+                ", comprehensive='" + comprehensive + '\'' +
+                ", approval_result='" + approval_result + '\'' +
+                ", need_feedback_form='" + need_feedback_form + '\'' +
+                ", need_feedback_form_save='" + need_feedback_form_save + '\'' +
+                ", need_feedback_form_file='" + need_feedback_form_file + '\'' +
+                ", construction_time='" + construction_time + '\'' +
+                ", customer_time='" + customer_time + '\'' +
+                ", agreement_amount='" + agreement_amount + '\'' +
+                ", payment_type_new='" + payment_type_new + '\'' +
+                ", payment_method_new='" + payment_method_new + '\'' +
+                ", charging_start_time_new='" + charging_start_time_new + '\'' +
+                ", price_basis='" + price_basis + '\'' +
+                ", price_basis_result='" + price_basis_result + '\'' +
+                ", construction_apply='" + construction_apply + '\'' +
+                ", contract_money_recovery='" + contract_money_recovery + '\'' +
+                ", payment_type_recovery='" + payment_type_recovery + '\'' +
+                ", payment_method_recovery='" + payment_method_recovery + '\'' +
+                ", charging_end_time='" + charging_end_time + '\'' +
+                ", grop_audit='" + grop_audit + '\'' +
+                ", undertake_audit='" + undertake_audit + '\'' +
+                ", other_prospecting_needs='" + other_prospecting_needs + '\'' +
+                ", other_prospecting_needs_save='" + other_prospecting_needs_save + '\'' +
+                ", other_prospecting_needs_file='" + other_prospecting_needs_file + '\'' +
+                ", create_date='" + create_date + '\'' +
+                ", update_date='" + update_date + '\'' +
+                ", water_door_frame_ha='" + water_door_frame_ha + '\'' +
+                ", heat_backplane_frame_fiveha='" + heat_backplane_frame_fiveha + '\'' +
+                ", heat_backplane_frame_sevenha='" + heat_backplane_frame_sevenha + '\'' +
+                ", heat_backplane_frame_tenha='" + heat_backplane_frame_tenha + '\'' +
+                ", precision_air_frame_jin='" + precision_air_frame_jin + '\'' +
+                ", dry_bandwidth_ha='" + dry_bandwidth_ha + '\'' +
+                ", province_bandwidth_ha='" + province_bandwidth_ha + '\'' +
+                ", bandwidth_jin='" + bandwidth_jin + '\'' +
+                ", cpu_ha='" + cpu_ha + '\'' +
+                ", memory_ha='" + memory_ha + '\'' +
+                ", read_write_storage_ha='" + read_write_storage_ha + '\'' +
+                ", data_storage_ha='" + data_storage_ha + '\'' +
+                ", backups_storage_ha='" + backups_storage_ha + '\'' +
+                ", operating_system_ha='" + operating_system_ha + '\'' +
+                ", ip_ha='" + ip_ha + '\'' +
+                ", port_ha='" + port_ha + '\'' +
+                ", cpu_jin='" + cpu_jin + '\'' +
+                ", memory_jin='" + memory_jin + '\'' +
+                ", read_write_storage_jin='" + read_write_storage_jin + '\'' +
+                ", data_storage_jin='" + data_storage_jin + '\'' +
+                ", backups_storage_jin='" + backups_storage_jin + '\'' +
+                ", operating_system_jin='" + operating_system_jin + '\'' +
+                ", ip_jin='" + ip_jin + '\'' +
+                ", port_jin='" + port_jin + '\'' +
+                ", load_balancing='" + load_balancing + '\'' +
+                ", firewall='" + firewall + '\'' +
+                ", network_service='" + network_service + '\'' +
+                ", flow_cleaning='" + flow_cleaning + '\'' +
+                ", system_monitoring='" + system_monitoring + '\'' +
+                ", flow_monitoring='" + flow_monitoring + '\'' +
+                ", domain_name_resolution='" + domain_name_resolution + '\'' +
+                ", multi_line_access='" + multi_line_access + '\'' +
+                ", customized_transformation='" + customized_transformation + '\'' +
+                ", safety_reinforcement='" + safety_reinforcement + '\'' +
+                ", risk_assessment='" + risk_assessment + '\'' +
+                ", system_integration_implement='" + system_integration_implement + '\'' +
+                ", depth_substitution='" + depth_substitution + '\'' +
+                ", service_consulting='" + service_consulting + '\'' +
+                ", vpn_access='" + vpn_access + '\'' +
+                ", office='" + office + '\'' +
+                ", station='" + station + '\'' +
+                ", conference_room='" + conference_room + '\'' +
+                '}';
+    }
+}

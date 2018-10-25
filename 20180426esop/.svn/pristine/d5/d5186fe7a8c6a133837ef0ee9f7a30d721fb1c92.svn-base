@@ -1,0 +1,241 @@
+package com.esop.workflow.controller;
+
+import com.esop.workflow.dto.GetFirstStepsOutDTO;
+import com.esop.workflow.dto.orderDto.ExportParam;
+import com.esop.workflow.dto.orderDto.OrderStartDto;
+import com.esop.workflow.model.CtTaskInstInfo;
+import com.esop.workflow.service.OrderWorkFlowService;
+import com.esop.workflow.service.WorkFlowService;
+import com.esop.workflow.vo.Assignee;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Field;
+import java.util.List;
+
+@RestController
+@RequestMapping(value = "orderflow")
+public class OrderFlowController {
+
+
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+
+    @Autowired
+    WorkFlowService workFlowService;
+
+
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+
+    /**
+     * 电子订单流程发起
+     *
+     * @param inDTO 入参
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/createOrderFlow", method = RequestMethod.POST)
+    public String createOrderFlow(OrderStartDto inDTO, HttpServletRequest httpServletRequest) {
+
+        //业务逻辑处理代码
+
+
+
+
+        //发起流程所需要的参数类
+      /*  OrderStartDto odt=new OrderStartDto();
+
+        odt.setBizRecordId("999");
+       // odt.setAssignee("jk001");
+        odt.setStartDept("CQ.CQ");
+        odt.setStartLoginNo("112900001");
+        odt.setStartRegion("CQ.CQ");*/
+
+        String flag = orderWorkFlowService.createOrderFlowService(inDTO, httpServletRequest);
+
+        return flag;
+
+    }
+
+
+    /**
+     * 电子订单加载下一环节
+     *
+     * @param
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/getNextSteps", method = RequestMethod.POST)
+    public GetFirstStepsOutDTO getNextSteps(CtTaskInstInfo dto, HttpServletRequest httpServletRequest) {
+
+        GetFirstStepsOutDTO outDTO=orderWorkFlowService.getNextStepService(dto, httpServletRequest);
+
+        return  outDTO;
+
+
+    }
+
+
+    /**
+     * 电子订单提交
+     *
+     * @param dto 入参
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/submitTask", method = RequestMethod.POST)
+    public String submitTask(CtTaskInstInfo dto,HttpServletRequest httpServletRequest) {
+
+
+        String flag = orderWorkFlowService.submitTaskService(dto,httpServletRequest);
+
+
+
+        return flag;
+
+    }
+
+
+
+    /**
+     * 电子订单流程查询
+     *
+     * @param procInstId
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/getTrance", method = RequestMethod.POST)
+    public List getWorkFlowTrance(String procInstId) {
+
+
+        List list = orderWorkFlowService.getWorkFlowTrance(procInstId);
+
+
+
+        return list;
+
+    }
+
+    /**
+     * 流程轨迹查询
+     *
+     * @param bizRecordId
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/getTranceByBizRecordId", method = RequestMethod.POST)
+    public List getWorkFlowTranceByBizRecordId(String bizRecordId) {
+        List list = orderWorkFlowService.getWorkFlowTranceByBizRecordId(bizRecordId);
+        return list;
+    }
+
+    /**
+     * 导出功能
+     *
+     * @param
+     * @return 提示
+     */
+
+    @RequestMapping(value = "/Export", method = RequestMethod.POST)
+    public String getExport(ExportParam ee, HttpServletResponse response) {
+
+
+        String message="0";
+/*
+       ExportParam ee=new ExportParam ();
+
+       ee.setClassName("com.esop.order.dto.OrderDto");
+       ee.setKey("jtCode,label");
+       ee.setValue("230030002599,重庆市国人医疗器械有限公司");
+       ee.setSelectId("selectTestLWJ");
+       ee.setTableHead("名字,编码");
+       ee.setMethods("getLabel,getJtCode");*/
+
+
+        try {
+
+
+
+            String[] tableHeader = ee.getTableHead().split(",");
+            String[] methods = ee.getMethods().split(",");
+            String[] key = ee.getKey().split(",");
+            String[] value = ee.getValue().split(",");
+            List list = null;
+
+            String selectTion = ee.getSelectId();
+            if("".equals(ee.getClassName()))
+            {
+                list=sqlSessionTemplate.selectList(selectTion,null);
+
+            }
+            else if("String".equals(ee.getClassName())) {
+                list=sqlSessionTemplate.selectList(selectTion,ee.getValue());
+
+            }
+            else
+            {
+                Class clazz = Class.forName(ee.getClassName());
+                Object p = clazz.newInstance();
+                for (int i = 0; i < key.length; i++) {
+                    Field f1 = clazz.getDeclaredField(key[i]);
+                    f1.setAccessible(true);//设置是否可以操作私有属性
+                    f1.set(p, value[i]);
+                    // System.out.println(f1.get(p));
+                }
+
+                list=sqlSessionTemplate.selectList(selectTion,p);
+            }
+
+
+
+
+            // String[] tableHeader = {"处理人","时间"};
+            //String[] methods = {"getLabel", "getValue"};
+            orderWorkFlowService.getExport(tableHeader, methods, list, response);
+
+
+
+        }catch (Exception e)
+        {
+            message="1";
+
+            System.out.println(e.getMessage());
+            return message;
+        }
+        return message;
+    }
+
+
+    /**
+     * 协审分派获取下一步处理人
+     *
+     * @param dto
+     * @return 流程环节信息
+     */
+    @RequestMapping(value = "/assist", method = RequestMethod.POST)
+    public List getAssistPerson(Assignee dto) {
+
+        List list = orderWorkFlowService.getAssistPerson(dto);
+        return list;
+    }
+
+    /**
+     * 协审分派提交
+     *
+     * @param dto
+     * @return 流程环节信息
+     */
+
+
+    @RequestMapping(value = "/submitAssist", method = RequestMethod.POST)
+    public  String taskHelp(CtTaskInstInfo dto) {
+
+        String flag=orderWorkFlowService.taskHelp(dto);
+        return flag;
+    }
+
+
+
+}

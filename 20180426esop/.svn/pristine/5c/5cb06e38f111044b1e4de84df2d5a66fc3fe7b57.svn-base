@@ -1,0 +1,82 @@
+package com.esop.workflow.dto.orderDto;
+
+public class OrderStartDto {
+
+    private String bizRecordId;
+    private String startDept;
+    private String startLoginNo;
+    private String startRegion;
+
+    private String procTypeCode;
+    private String branchCode;
+    private String keyValue;
+    private String actionId;
+
+
+    public String getActionId() {
+        return actionId;
+    }
+
+    public void setActionId(String actionId) {
+        this.actionId = actionId;
+    }
+
+
+    public String getProcTypeCode() {
+        return procTypeCode;
+    }
+
+    public void setProcTypeCode(String procTypeCode) {
+        this.procTypeCode = procTypeCode;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public String getBizRecordId() {
+        return bizRecordId;
+    }
+
+    public void setBizRecordId(String bizRecordId) {
+        this.bizRecordId = bizRecordId;
+    }
+
+    public String getStartDept() {
+        return startDept;
+    }
+
+    public void setStartDept(String startDept) {
+        this.startDept = startDept;
+    }
+
+    public String getStartLoginNo() {
+        return startLoginNo;
+    }
+
+    public void setStartLoginNo(String startLoginNo) {
+        this.startLoginNo = startLoginNo;
+    }
+
+    public String getStartRegion() {
+        return startRegion;
+    }
+
+    public void setStartRegion(String startRegion) {
+        this.startRegion = startRegion;
+    }
+
+
+}

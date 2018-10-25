@@ -1,0 +1,379 @@
+$(document).ready(function() {
+    create_no="112900001";
+    create_name="思特奇员工"
+    order_title="集团缴费联系人";
+    region_code="CQ.CQ";
+    seq_relation_info="1111111111";
+    important = "MemberSort03";
+    role_type = "MemberSort0305";
+    contract_id="10002";
+
+    loadFirstSteps();
+    selectAccountInfo();
+    selectGroupContact();
+    /*    $('.form_datetime').datetimepicker({
+     language:  'zh-CN',
+     weekStart: 1,
+     todayBtn:  1,
+     autoclose: 1,
+     todayHighlight: 1,
+     startView: 2,
+     minView: 2,
+     forceParse: 0,
+     showMeridian: 1,
+     pickerPosition: "bottom-left"
+     });*/
+} );
+function addGroupContact() {
+    window.open('/esop/newAddGroup');
+    /* $("#link_man2").val();
+     $("#mobile_no2").val();
+     $("#address2").val();
+     $("#id_number2").val();
+     $("#email2").val();
+     $("#union_name2").val();
+     $("#union_code2").val();
+     $("#account_code2").val();
+     $.ajax({
+     type: "post",
+     url: "/selectSeNewContractInfoDto",
+     data: {
+     "contract_id":contract_id,
+     },
+     success: function (data) {
+     $("#link_man2").val(data.first_contacts_name);
+     $("#mobile_no2").val(data.first_contacts_phone);
+     $("#address2").val(data.first_contacts_address);
+     $("#id_number2").val(data.first_contacts_id_card);
+     $("#email2").val(data.first_contacts_email);
+     $("#union_name2").val(data.first_party);
+     $("#union_code2").val(data.first_party_code);
+
+     },
+     error: function (data) {
+     alert("请求超时，请重试");
+     }
+     })*/
+
+    // $("#alertGroupContact").modal('show');
+}
+function selectAccountInfo() {
+    $("#account_name2").empty();
+    $("#account_code2").empty();
+    $.ajax({
+        type: "post",
+        url: "/selectSeAccountInfoDto2",
+        data: {
+            "contract_id":contract_id,
+        },
+        success: function (data) {
+            $("#account_name2").append("<option value='-1'>--请选择--</option>");
+            $.each(data, function (index, item) {
+                var id = data[index].id;
+                var account_code=data[index].account_code;
+                $("#account_name2").append("<option value='"+account_code+"' >"+data[index].account_name+"</option>");
+                $("#account_account2").val(account_code);
+            });
+
+        },
+        error: function (data) {
+            alert("请求超时，请重试");
+        }
+    });
+
+}
+
+function accountCodeValue(account_code) {
+    $("#account_code2").empty();
+    $("#account_code2").val(account_code);
+}
+
+
+function selectGroupContact(){
+    table =  $('#contactInfo').DataTable({
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax: {
+            url: "/selectGroupPayContacter",
+            type: "POST",
+            "data": {
+                order_title:order_title,
+                op_code:"1",
+                create_name:create_name,
+                create_no:create_no,
+                region_code: $("#region_code").val(),
+                union_name: $("#union_name").val(),
+                union_code: $("#union_code").val(),
+                account_name: $("#account_name").val(),
+                account_code: $("#account_code").val(),
+                link_man: $("#link_man").val(),
+                mobile_no: $("#mobile_no").val()
+            }
+        },
+        columns: [
+            {
+                data: "id"
+            },
+            {data: "region_code"},
+            {data: "union_name"},
+            {data: "union_code"},
+            {data: "create_name"},
+            {data: "link_man"},
+            {data: "mobile_no"},
+            {data: "address"},
+            {data: "account_name"},
+            {data: "account_code"},
+            { data: "id",
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    return data = "<button type='button' style='width: 60px' onclick='showContact(" + row.id + ")' name='" + row.id + "'>删除</button>"+
+                        "<button  type='button'   style='width: 60px' onclick='showContact1(" + row.id + ")' name='" + row.id + "'>修改</button>";
+                }
+            }
+
+        ],
+        select: true,
+        buttons: [
+
+        ]
+    })
+}
+
+function showContact1 (id) {
+
+    //$("#alertContactInfo1").modal('show');
+    $.ajax({
+        type: "post",
+        url: "/selectGroupPayContacterInfo",
+        data: {
+            "id":id,
+        },
+        success: function (data) {
+            $("#id3").val(id);
+            $("#email3").val(data.email);
+            $("#link_man3").val(data.link_man);
+            $("#mobile_no3").val(data.mobile_no);
+            $("#address3").val(data.address);
+            $("#id_number3").val(data.id_number);
+            $("#union_name3").val(data.union_name);
+            $("#union_code3").val(data.union_code);
+            $("#account_name3").val(data.account_name);
+            $("#account_code3").val(data.account_code);
+            $("#next_deal3").val("产品经理");
+            $("#next_dealName3").val("思特奇员工");
+        },
+        error: function (data) {
+            alert("请求超时，请重试");
+        }
+    })
+}
+
+function showContact (id) {
+    window.open("/esop/selectGroupPayContacterInfo?id="+id);
+    /*    $("#alertContactInfo").modal('show');*/
+    /* $.ajax({
+     type: "post",
+     url: "/selectGroupPayContacterInfo",
+     data: {
+     "id":id,
+     },
+     success: function (data) {
+     $("#id1").val(id);
+     $("#email1").val(data.email);
+     $("#link_man1").val(data.link_man);
+     $("#mobile_no1").val(data.mobile_no);
+     $("#address1").val(data.address);
+     $("#id_number1").val(data.id_number);
+     $("#union_name1").val(data.union_name);
+     $("#union_code1").val(data.union_code);
+     $("#account_name1").val(data.account_name);
+     $("#account_code1").val(data.account_code);
+
+     },
+     error: function (data) {
+     alert("请求超时，请重试");
+     }
+     })*/
+}
+
+function saveGroupContact(){
+    $.ajax({
+        url: "/addGroupPayContacter",
+        type: "post",
+        "data": {
+            "contract_id":contract_id,
+            "important":important,
+            "role_type":role_type,
+            "create_name":create_name,
+            "create_no":create_no,
+            "order_title":order_title,
+            "op_code":"2",
+            "region_code":region_code,
+            "address":$("#address2").val(),
+            "email":$("#email2").val(),
+            "link_man": $("#link_man2").val(),
+            "mobile_no" :$("#mobile_no2").val(),
+            "id_number"   : $("#id_number2").val(),
+            "union_name" :	$("#union_name2").val(),
+            "union_code":	$("#union_code2").val(),
+            "account_name"  :	$("#account_name2   option:selected").text(),
+            "account_code":   $("#account_code2").val()
+        },
+        success: function (result) {
+
+            if(result == "1"){
+                alert("保存成功！！！");
+            }else{
+                //alert(result.info);
+            }
+        },
+        error: function () {
+            alert("保存失败！！！");
+        }
+    });
+}
+
+function  deleteGroupContact() {
+    id=$("#id1").val();
+    $.ajax({
+        url: "/checkDeleteContacter",
+        type: "post",
+        "data": {
+            "id":id,
+            "bizRecordId":id,
+            "startDept":region_code,
+            "startLoginNo":"112900001",
+            "ASSIGNEE_1":$("#ASSIGNEE_1").val(),
+            "startRegion":region_code,
+            "procTypeCode":"3008",
+            "keyValue":"1",
+            "branchCode":"CQ.CQ",
+
+            "contract_id":id,
+            "op_code":"0",
+            "order_title":"删除集团缴费联系人",
+            "union_code":$("#union_code1").val(),
+            "union_name":$("#union_name1").val(),
+            "create_no":create_no,
+            "create_name":create_name,
+            "depert_id":region_code,
+            "region_code":region_code,
+            "request_num":"113",
+
+        },
+        success: function (result) {
+            if(result == "1"){
+                alert("删除流程启动成功！！！");
+            }
+        },
+        error: function () {
+            alert("删除流程启动成功！！！");
+        }
+    });
+}
+function updateGroupContact() {
+    id=$("#id3").val();
+    $.ajax({
+        url: "/updateGroupPayContacter",
+        type: "post",
+        "data": {
+            "create_name":create_name,
+            "create_no":create_no,
+            "order_title":order_title,
+            "region_code":region_code,
+            "seq_relation_info":seq_relation_info,
+            "op_code":"3",
+            "id":id,
+            "link_man": $("#link_man3").val(),
+            "mobile_no" :$("#mobile_no3").val(),
+            "id_number"   : $("#id_number3").val(),
+            "address"   : $("#address3").val(),
+            "union_name" :	$("#union_name3").val(),
+            "union_code":	$("#union_code3").val(),
+            "account_name"  :	$("#account_name3").val(),
+            "account_code":   $("#account_code3").val()
+        },
+        success: function (result) {
+            if(result == "1"){
+                alert("修改成功！！！");
+            }
+        },
+        error: function () {
+            alert("修改失败！！！");
+        }
+    });
+}
+function checkUpdateGroupContact() {
+    $.ajax({
+        url: "/selectGroupPayContacterInfo",
+        type: "post",
+        "data": {
+            "id":"2",
+        },
+        success: function (data) {
+            $("#email4").val(data.email);
+            $("#link_man4").val(data.link_man);
+            $("#mobile_no4").val(data.mobile_no);
+            $("#address4").val(data.address);
+            $("#id_number4").val(data.id_number);
+            $("#union_name4").val(data.union_name);
+            $("#union_code4").val(data.union_code);
+            $("#account_name4").val(data.account_name);
+            $("#account_code4").val(data.account_code);
+
+        },
+
+    });
+}
+function getRemark4() {
+    $("#remark4").removeAttr();
+
+    idea=$("#idea4 option:selected").val();
+    if(idea=="1"){
+        idea="同意";
+    }else{
+        idea="退回";
+    }
+    $("#remark4").html(idea);
+}
+function loadFirstSteps() {
+    $.ajax({
+        type: 'POST',
+        url: '/workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+        },
+        success: loadFirstStepsHandler
+    });
+}
+
+function loadFirstStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    var stepList = data.stepList[0];
+    $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+    //  alert(stepList.ctProcStepRel.stepName);
+    // $('#next_stepName').text(stepList.ctProcStepRel.stepName);
+
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+
+        $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+
+    }
+
+}
+
+

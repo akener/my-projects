@@ -1,0 +1,76 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**区县实体
+ * Created by lilei on 2017/7/10
+ */
+public class GroupMsgDto extends BaseDto{
+
+    private String DT_RowId ="";
+    private String group_id="";
+    private String group_name="";
+    private String denorm_level="";
+    private String parent_group_id="";
+    private String have_child="";//有无节点
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getDenorm_level() {
+        return denorm_level;
+    }
+
+    public void setDenorm_level(String denorm_level) {
+        this.denorm_level = denorm_level;
+    }
+
+    public String getParent_group_id() {
+        return parent_group_id;
+    }
+
+    public void setParent_group_id(String parent_group_id) {
+        this.parent_group_id = parent_group_id;
+    }
+
+    public String getHave_child() {
+        return have_child;
+    }
+
+    public void setHave_child(String have_child) {
+        this.have_child = have_child;
+    }
+
+    @Override
+    public String toString() {
+        return "GroupMsgDto{" +
+                "DT_RowId='" + DT_RowId + '\'' +
+                ", group_id='" + group_id + '\'' +
+                ", group_name='" + group_name + '\'' +
+                ", denorm_level='" + denorm_level + '\'' +
+                ", parent_group_id='" + parent_group_id + '\'' +
+                ", have_child='" + have_child + '\'' +
+                '}';
+    }
+}

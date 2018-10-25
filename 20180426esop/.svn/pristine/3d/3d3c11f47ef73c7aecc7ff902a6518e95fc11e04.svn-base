@@ -1,0 +1,128 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>预打发票>>增值税电子发票>>实收>>发票开具申请</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="active-cost-box tc" style="text-align: center;margin-left: auto; margin-right: auto; margin-top: 10px;">
+    <div class="row-tab">
+        <table id="table-choose" class="cost-table rev-tabs" width="100%; ">
+            <tbody>
+            <tr>
+                <th>选择</th>
+                <th>账期</th>
+                <th>欠费金额</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    $(document).ready(function () {
+        loadGrpAcctArrears();
+    });
+
+    //查询缴费账期
+    function loadGrpAcctArrears() {
+        var grpacctid = getQueryString("groupAccountId");
+        var minbillcycle = getQueryString("minbillcycle");//最小账期
+        //通过账号校验在途的账期
+        var start_period="";
+        var end_period="";
+        var end;
+        var end_time;
+        $.ajax({
+            type: 'POST',
+            async:false,
+            url: ' <%=ctxPath %>/invoice/selectAcctPeriod',
+            dataType: 'json',
+            data: {"groupAccountId": grpacctid,"arrearsAccountPeriod":minbillcycle},
+            success: function (data) {
+                end_time=data;
+               /* if(isNotNull(data)){
+                    start_period=data.startAccountPeriod;
+                    end_period=data.endAccountPeriod;
+                    end=end_period.split('-');
+                    end_time=new Date(end[0],parseInt(end[1],10)-1);
+                }*/
+                grpQryGrpAccBillNetShop(grpacctid,minbillcycle,end_time);
+            }
+        })
+    }
+
+
+
+    function grpQryGrpAccBillNetShop(grpacctid,minbillcycle,end_time){
+        var nowdate=new Date().format("yyyyMM");//账期过滤当前月
+        <!--集团账号-->
+        var url = 'UserService';
+        var method = "grpQryGrpAccBillNetShop";
+        var param = {};
+        param['ACCTID'] = grpacctid;
+        param['TYPE'] = "1";
+        /*param['SCYCLE'] = "200401";*/
+        param['SCYCLE'] = minbillcycle;
+        param['ECYCLE'] = new Date().format("yyyyMM");
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {url: url, method: method, param: JSON.stringify(param), connectTimeout: 10000, readTimeOut: 30000},
+            dataType: 'json',
+            success: function (data) {
+                var res_code = data.res_code;
+                if (res_code == "0") {
+                    var FEEINFO = data.result.FEEINFO;
+                    if (isNotNull(FEEINFO)) {
+                        for (var i = 0; i < FEEINFO.length; i++) {
+                            var feeinfo = FEEINFO[i];
+                            if(feeinfo.CYCLE==nowdate) continue;//账期过滤当前月
+                            if(isNotNull(end_time)){
+                                /*if(new Date(feeinfo.CYCLE.substring(0,4),parseInt(feeinfo.CYCLE.substring(4,6),10)-1)<=end_time) continue;*/
+                                if(end_time.indexOf(feeinfo.CYCLE)!=-1){
+                                    continue;
+                                }
+                            }
+                            var Html = "<tr>" +
+                                "<td>" +
+                                "   <input name=\"fecheck\" type=\"checkbox\" class=\"chbox-ipt\"/>\n" +
+                                "</td>\n" +
+                                "<td>" + feeinfo.CYCLE + "</td>\n" +
+                                "<td>" + feeinfo.ShouldPay + "</td>\n"
+                            "</tr>";
+                            if (feeinfo.ShouldPay != "0.00") {
+                                $("#table-choose tr:last").after(Html);
+                            }
+                        }
+
+
+
+                        $('input:checkbox').each(function (index, domEle) {
+                            if(index==0){
+                                $(this).attr('checked', true);
+                            }else{
+                                $(this).attr('disabled', 'disabled');
+                            }
+                            $(this).bind('click', function () {
+                                if ($(this).is(':checked')) {
+                                    $("input[name='fecheck']:lt(" + index + ")").prop("checked", true);
+                                } else {
+                                    $("input[name='fecheck']:gt(" + index + ")").removeAttr("checked");
+                                }
+                            });
+                        });
+                    }
+                } else {
+                    var res_desc = data.res_desc;
+                    // console.log(res_desc);
+                }
+            }
+        });
+    }
+</script>
+</html>

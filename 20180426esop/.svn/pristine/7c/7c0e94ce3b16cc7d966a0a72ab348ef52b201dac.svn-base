@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyChangeDto">
+    <select id="groupMoneyChange" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyChangeDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupMoneyChangeDto" >
+        select * from( SELECT
+        b.name,
+        c.business_center,
+        a.group_id,
+        a.group_name,
+        d.login_name,
+        a.request_type,
+        a.request_id,
+        a.recorded_money,
+        a.rebate_money,
+        a.occupy_money,
+        a.freeze_money,
+        a.balance_money,
+        a.usable_money,
+        case a.notes when 'null' then '' else a.notes END as notes,
+        e.login_name login_name2,
+        a.shenqing_riqi
+        from
+        se_group_money_change_info a LEFT join se_contract_qddw b on substring(a.org_id,1,8)=b.id
+        LEFT join se_business_center c on a.hangye_zhongxin=c.center_code
+        left join bs_systemuser_info d on a.group_manager=d.staff_code
+        left join bs_systemuser_info e on a.zhangwu_yuan=e.staff_code
+        where 1=1
+        <if test="org_id != '' and org_id !=null">
+            and substring(a.org_id,1,8) = #{org_id}
+        </if>
+        <if test="hangye_zhongxin != '' and hangye_zhongxin !=null and hangye_zhongxin !='null' ">
+            and a.hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(a.chaxun_riqi,'%Y-%m-%d') = #{chaxun_riqi}
+        </if>
+        union ALL
+        select
+        '总计','','','','','','',sum(recorded_money),sum(rebate_money),sum(occupy_money),sum(freeze_money),sum(balance_money),sum(usable_money),'','',''
+        FROM se_group_money_change_info
+        where 1=1
+        <if test="org_id != '' and org_id !=null">
+            and substring(org_id,1,8) = #{org_id}
+        </if>
+        <if test="hangye_zhongxin != '' and hangye_zhongxin !=null and hangye_zhongxin !='null' ">
+            and hangye_zhongxin = #{hangye_zhongxin}
+        </if>
+        <if test="chaxun_riqi != '' and chaxun_riqi !=null">
+            and date_format(chaxun_riqi,'%Y-%m-%d') = #{chaxun_riqi}
+        </if>)a
+        order by    a.shenqing_riqi  desc
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

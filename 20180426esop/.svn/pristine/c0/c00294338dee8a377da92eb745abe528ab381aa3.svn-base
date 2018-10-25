@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtProcPropertyCfgMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtProcPropertyCfg">
+    <result column="proc_id" jdbcType="VARCHAR" property="procId" />
+    <result column="proc_name_ch" jdbcType="VARCHAR" property="procNameCh" />
+    <result column="param_key" jdbcType="VARCHAR" property="paramKey" />
+    <result column="param_name" jdbcType="VARCHAR" property="paramName" />
+    <result column="condi_flag" jdbcType="CHAR" property="condiFlag" />
+    <result column="component_type" jdbcType="CHAR" property="componentType" />
+    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+  </resultMap>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtProcPropertyCfg">
+    insert into ct_proc_property_cfg (proc_id, proc_name_ch, param_key, 
+      param_name, condi_flag, component_type, 
+      param_type)
+    values (#{procId,jdbcType=VARCHAR}, #{procNameCh,jdbcType=VARCHAR}, #{paramKey,jdbcType=VARCHAR}, 
+      #{paramName,jdbcType=VARCHAR}, #{condiFlag,jdbcType=CHAR}, #{componentType,jdbcType=CHAR}, 
+      #{paramType,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select proc_id, proc_name_ch, param_key, param_name, condi_flag, component_type, 
+    param_type
+    from ct_proc_property_cfg
+  </select>
+  <select id="selectByProcId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select proc_id, proc_name_ch, param_key, param_name, condi_flag, component_type,
+    param_type
+    from ct_proc_property_cfg
+    where proc_id = #{procId,jdbcType=VARCHAR}
+  </select>
+</mapper>

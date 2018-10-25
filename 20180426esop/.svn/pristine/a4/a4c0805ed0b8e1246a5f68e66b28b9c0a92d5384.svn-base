@@ -1,0 +1,748 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+import java.util.Date;
+
+public class GroupPayContacterDto extends BaseDto {
+    private String id;
+    private String link_man;
+    private String mobile_no;
+    private String address;
+    private String id_number;
+    private String email;
+    private String union_name;
+    private String union_code;
+    private String account_name;
+    private String account_code;
+    private String region_code;
+    private String contract_id;
+    private String create_name;
+    private String create_no;
+    private String create_time;
+    private String modify_time;
+    private String state;//是否传给BOSS状态0未传，1传
+    private String seq_relation_info;
+    private String important;
+    private String role_type;
+    private String valid;//有效性Y正常N删除/无效C修改
+    private String bpm_state;//流程状态'0'为未进入流程，'1'为进入流程 即为看不见
+    private String del_up_state;//用来判断进入的是删除还是修改流程 0为删除  1为修改
+    private String bak1;
+    private String bak2;
+
+    //detail
+    private Integer detail_id;
+    private String detail_request_num;
+    private Integer detail_attr_id;
+    private String detail_attr_code;
+    private String attr_value;
+    private String other_char;
+    private String detail_notes;
+
+    //instInfo
+    private Long sequence_num;
+    private Integer request_template_id;
+    private String request_num;
+    private String op_code;
+    private String order_title;
+    private String inst_union_code;
+    private String inst_union_name;
+    private String inst_create_no;
+    private String pay_create_name;
+    private String create_date;
+    private String modify_no;
+    private String modify_date;
+    private String manage_grade;
+    private String invali_date;
+    private String eff_date;
+    private String audit_no;
+    private String audit_date;
+    private String oper_no;
+    private String inst_state;
+    private String state_date;
+    private String finish_date;
+    private String depert_id;
+    private String inst_region_code;
+    private String notes;
+    private String source_id;
+
+    //OrTemplateAttr
+    private Integer template_id;
+    private Integer attr_id;
+    private String attr_name;
+    private String default_value;
+    private String is_must;
+    private String is_visible;
+    private String show_type;
+    private String template_type_id;
+    private String attr_code;
+    private String bak;
+    private String attr_desc;
+
+    //SeElePack
+
+    private Date op_time;
+    private String result;
+    private String op_type;
+    private String wo_no;
+    private String req_xml;
+    private String resp_xml;
+
+    //流程发起
+    private String bizRecordId;
+    private String startDept;
+    private String startLoginNo;
+    private String startRegion;
+    private String procTypeCode;
+    private String branchCode;
+    private String keyValue;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getLink_man() {
+        return link_man;
+    }
+
+    public void setLink_man(String link_man) {
+        this.link_man = link_man;
+    }
+
+    public String getMobile_no() {
+        return mobile_no;
+    }
+
+    public void setMobile_no(String mobile_no) {
+        this.mobile_no = mobile_no;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getId_number() {
+        return id_number;
+    }
+
+    public void setId_number(String id_number) {
+        this.id_number = id_number;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUnion_name() {
+        return union_name;
+    }
+
+    public void setUnion_name(String union_name) {
+        this.union_name = union_name;
+    }
+
+    public String getUnion_code() {
+        return union_code;
+    }
+
+    public void setUnion_code(String union_code) {
+        this.union_code = union_code;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
+    }
+
+    public String getAccount_code() {
+        return account_code;
+    }
+
+    public void setAccount_code(String account_code) {
+        this.account_code = account_code;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getCreate_name() {
+        return create_name;
+    }
+
+    public void setCreate_name(String create_name) {
+        this.create_name = create_name;
+    }
+
+    public String getCreate_no() {
+        return create_no;
+    }
+
+    public void setCreate_no(String create_no) {
+        this.create_no = create_no;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getModify_time() {
+        return modify_time;
+    }
+
+    public void setModify_time(String modify_time) {
+        this.modify_time = modify_time;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getSeq_relation_info() {
+        return seq_relation_info;
+    }
+
+    public void setSeq_relation_info(String seq_relation_info) {
+        this.seq_relation_info = seq_relation_info;
+    }
+
+    public String getImportant() {
+        return important;
+    }
+
+    public void setImportant(String important) {
+        this.important = important;
+    }
+
+    public String getRole_type() {
+        return role_type;
+    }
+
+    public void setRole_type(String role_type) {
+        this.role_type = role_type;
+    }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+
+    public String getBpm_state() {
+        return bpm_state;
+    }
+
+    public void setBpm_state(String bpm_state) {
+        this.bpm_state = bpm_state;
+    }
+
+    public String getDel_up_state() {
+        return del_up_state;
+    }
+
+    public void setDel_up_state(String del_up_state) {
+        this.del_up_state = del_up_state;
+    }
+
+    public String getBak1() {
+        return bak1;
+    }
+
+    public void setBak1(String bak1) {
+        this.bak1 = bak1;
+    }
+
+    public String getBak2() {
+        return bak2;
+    }
+
+    public void setBak2(String bak2) {
+        this.bak2 = bak2;
+    }
+
+    public Integer getDetail_id() {
+        return detail_id;
+    }
+
+    public void setDetail_id(Integer detail_id) {
+        this.detail_id = detail_id;
+    }
+
+    public String getDetail_request_num() {
+        return detail_request_num;
+    }
+
+    public void setDetail_request_num(String detail_request_num) {
+        this.detail_request_num = detail_request_num;
+    }
+
+    public Integer getDetail_attr_id() {
+        return detail_attr_id;
+    }
+
+    public void setDetail_attr_id(Integer detail_attr_id) {
+        this.detail_attr_id = detail_attr_id;
+    }
+
+    public String getDetail_attr_code() {
+        return detail_attr_code;
+    }
+
+    public void setDetail_attr_code(String detail_attr_code) {
+        this.detail_attr_code = detail_attr_code;
+    }
+
+    public String getAttr_value() {
+        return attr_value;
+    }
+
+    public void setAttr_value(String attr_value) {
+        this.attr_value = attr_value;
+    }
+
+    public String getOther_char() {
+        return other_char;
+    }
+
+    public void setOther_char(String other_char) {
+        this.other_char = other_char;
+    }
+
+    public String getDetail_notes() {
+        return detail_notes;
+    }
+
+    public void setDetail_notes(String detail_notes) {
+        this.detail_notes = detail_notes;
+    }
+
+    public Long getSequence_num() {
+        return sequence_num;
+    }
+
+    public void setSequence_num(Long sequence_num) {
+        this.sequence_num = sequence_num;
+    }
+
+    public Integer getRequest_template_id() {
+        return request_template_id;
+    }
+
+    public void setRequest_template_id(Integer request_template_id) {
+        this.request_template_id = request_template_id;
+    }
+
+    public String getRequest_num() {
+        return request_num;
+    }
+
+    public void setRequest_num(String request_num) {
+        this.request_num = request_num;
+    }
+
+    public String getOp_code() {
+        return op_code;
+    }
+
+    public void setOp_code(String op_code) {
+        this.op_code = op_code;
+    }
+
+    public String getOrder_title() {
+        return order_title;
+    }
+
+    public void setOrder_title(String order_title) {
+        this.order_title = order_title;
+    }
+
+    public String getInst_union_code() {
+        return inst_union_code;
+    }
+
+    public void setInst_union_code(String inst_union_code) {
+        this.inst_union_code = inst_union_code;
+    }
+
+    public String getInst_union_name() {
+        return inst_union_name;
+    }
+
+    public void setInst_union_name(String inst_union_name) {
+        this.inst_union_name = inst_union_name;
+    }
+
+    public String getInst_create_no() {
+        return inst_create_no;
+    }
+
+    public void setInst_create_no(String inst_create_no) {
+        this.inst_create_no = inst_create_no;
+    }
+
+    public String getPay_create_name() {
+        return pay_create_name;
+    }
+
+    public void setPay_create_name(String pay_create_name) {
+        this.pay_create_name = pay_create_name;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getModify_no() {
+        return modify_no;
+    }
+
+    public void setModify_no(String modify_no) {
+        this.modify_no = modify_no;
+    }
+
+    public String getModify_date() {
+        return modify_date;
+    }
+
+    public void setModify_date(String modify_date) {
+        this.modify_date = modify_date;
+    }
+
+    public String getManage_grade() {
+        return manage_grade;
+    }
+
+    public void setManage_grade(String manage_grade) {
+        this.manage_grade = manage_grade;
+    }
+
+    public String getInvali_date() {
+        return invali_date;
+    }
+
+    public void setInvali_date(String invali_date) {
+        this.invali_date = invali_date;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+
+    public String getAudit_no() {
+        return audit_no;
+    }
+
+    public void setAudit_no(String audit_no) {
+        this.audit_no = audit_no;
+    }
+
+    public String getAudit_date() {
+        return audit_date;
+    }
+
+    public void setAudit_date(String audit_date) {
+        this.audit_date = audit_date;
+    }
+
+    public String getOper_no() {
+        return oper_no;
+    }
+
+    public void setOper_no(String oper_no) {
+        this.oper_no = oper_no;
+    }
+
+    public String getInst_state() {
+        return inst_state;
+    }
+
+    public void setInst_state(String inst_state) {
+        this.inst_state = inst_state;
+    }
+
+    public String getState_date() {
+        return state_date;
+    }
+
+    public void setState_date(String state_date) {
+        this.state_date = state_date;
+    }
+
+    public String getFinish_date() {
+        return finish_date;
+    }
+
+    public void setFinish_date(String finish_date) {
+        this.finish_date = finish_date;
+    }
+
+    public String getDepert_id() {
+        return depert_id;
+    }
+
+    public void setDepert_id(String depert_id) {
+        this.depert_id = depert_id;
+    }
+
+    public String getInst_region_code() {
+        return inst_region_code;
+    }
+
+    public void setInst_region_code(String inst_region_code) {
+        this.inst_region_code = inst_region_code;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getSource_id() {
+        return source_id;
+    }
+
+    public void setSource_id(String source_id) {
+        this.source_id = source_id;
+    }
+
+    public Integer getTemplate_id() {
+        return template_id;
+    }
+
+    public void setTemplate_id(Integer template_id) {
+        this.template_id = template_id;
+    }
+
+    public Integer getAttr_id() {
+        return attr_id;
+    }
+
+    public void setAttr_id(Integer attr_id) {
+        this.attr_id = attr_id;
+    }
+
+    public String getAttr_name() {
+        return attr_name;
+    }
+
+    public void setAttr_name(String attr_name) {
+        this.attr_name = attr_name;
+    }
+
+    public String getDefault_value() {
+        return default_value;
+    }
+
+    public void setDefault_value(String default_value) {
+        this.default_value = default_value;
+    }
+
+    public String getIs_must() {
+        return is_must;
+    }
+
+    public void setIs_must(String is_must) {
+        this.is_must = is_must;
+    }
+
+    public String getIs_visible() {
+        return is_visible;
+    }
+
+    public void setIs_visible(String is_visible) {
+        this.is_visible = is_visible;
+    }
+
+    public String getShow_type() {
+        return show_type;
+    }
+
+    public void setShow_type(String show_type) {
+        this.show_type = show_type;
+    }
+
+    public String getTemplate_type_id() {
+        return template_type_id;
+    }
+
+    public void setTemplate_type_id(String template_type_id) {
+        this.template_type_id = template_type_id;
+    }
+
+    public String getAttr_code() {
+        return attr_code;
+    }
+
+    public void setAttr_code(String attr_code) {
+        this.attr_code = attr_code;
+    }
+
+    public String getBak() {
+        return bak;
+    }
+
+    public void setBak(String bak) {
+        this.bak = bak;
+    }
+
+    public String getAttr_desc() {
+        return attr_desc;
+    }
+
+    public void setAttr_desc(String attr_desc) {
+        this.attr_desc = attr_desc;
+    }
+
+    public Date getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(Date op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getOp_type() {
+        return op_type;
+    }
+
+    public void setOp_type(String op_type) {
+        this.op_type = op_type;
+    }
+
+    public String getWo_no() {
+        return wo_no;
+    }
+
+    public void setWo_no(String wo_no) {
+        this.wo_no = wo_no;
+    }
+
+    public String getReq_xml() {
+        return req_xml;
+    }
+
+    public void setReq_xml(String req_xml) {
+        this.req_xml = req_xml;
+    }
+
+    public String getResp_xml() {
+        return resp_xml;
+    }
+
+    public void setResp_xml(String resp_xml) {
+        this.resp_xml = resp_xml;
+    }
+
+    public String getBizRecordId() {
+        return bizRecordId;
+    }
+
+    public void setBizRecordId(String bizRecordId) {
+        this.bizRecordId = bizRecordId;
+    }
+
+    public String getStartDept() {
+        return startDept;
+    }
+
+    public void setStartDept(String startDept) {
+        this.startDept = startDept;
+    }
+
+    public String getStartLoginNo() {
+        return startLoginNo;
+    }
+
+    public void setStartLoginNo(String startLoginNo) {
+        this.startLoginNo = startLoginNo;
+    }
+
+    public String getStartRegion() {
+        return startRegion;
+    }
+
+    public void setStartRegion(String startRegion) {
+        this.startRegion = startRegion;
+    }
+
+    public String getProcTypeCode() {
+        return procTypeCode;
+    }
+
+    public void setProcTypeCode(String procTypeCode) {
+        this.procTypeCode = procTypeCode;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+    }
+}

@@ -1,0 +1,27 @@
+#bot_box {
+    position: absolute;
+    border: 1px solid #d8d8d8;
+    background: #fff;
+    width: 30%;
+    line-height: 34px;
+    border-radius: 3px;
+    color: #000;
+    margin-left: 10px;
+    z-index: 2;
+    display: none;
+}
+
+#bot_box ul{
+    display: block;
+    overflow: hidden;
+    white-space:nowrap;
+}
+
+#bot_box ul li {
+    display: inline-block;
+    list-style: none;
+}
+
+#bot_box ul:hover {
+    background: #BCBCBC;
+}

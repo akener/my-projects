@@ -1,0 +1,37 @@
+<%@ page contentType="text/html; charset=UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>upload</title>
+    <script type="text/javascript" src="/esop/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+    <script type="text/javascript">
+        $(function(){ //使用文档加载函数
+            $("#submit").bind("click",function(){ //给提交按钮绑定点击事件
+                $("#upload-form").ajaxSubmit({ //重点：使用ajaxSubmit()提交表单。
+                    url:"${pageContext.request.contextPath}/fileUpload",
+                    type:"post", //提交的类型必需是post，
+                    dateType:"json",
+                    success:function(data){
+                        alert(data); //如果提交成果就会打印true
+                    },
+                    error:function(data){
+                        alert("error:"+data);
+                    }
+                });
+            })
+        })
+    </script>
+</head>
+
+<body style="text-align: center;">
+<form id="upload-form" method="post" enctype="multipart/form-data">
+    <!-- enctype必需是"multipart/form-data"-->
+    文件名：<input type="text" name="related_id"/><br><br>
+    选择文件：<input type="file" name="file"/><br><br>
+    <!-- 文件域的name必需和controller中的MultipartFile multipartFile对象名一样-->
+    <input type="button" value="提交" id="submit">
+</form>
+</body>
+</html>

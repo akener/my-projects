@@ -1,0 +1,478 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
+            GroupInformationQuery();
+        } );
+        function GroupInformationQuery() {
+            $.ajax({
+                type: "get",
+                url: "/thisGroupInformation",
+                data:{
+                    region_code:$("#region_code").val()
+                },
+                cache: false,
+                success: function (result) {
+                    city_data = "";
+                    //拼接json数据集字符串
+                    $.each(result, function (i, field) {
+                        $("#new_date").val(field.eff_date);
+                        city_data += "<tr class='tr-data'>";
+                        city_data += "<th style='border-top:0px'>" + field.eff_date + "</th>";
+                        city_data += "<td>" + field.grp_num + "</td>";
+                        city_data += "<td>" + field.group_income + "</td>";
+                        city_data += "<td>" + field.import_member_amout + "</td>";
+                        city_data += "<td>" + field.group_person_amout + "</td>";
+                        city_data += "<td>" + field.information_income + "</td>";
+                        city_data += "<td>" + field.product_amout + "</td>";
+                        city_data += "<td>" + field.product_income + "</td>";
+                        city_data += "<td>" + field.product_member_amout + "</td>";
+                        city_data += "</tr>";
+                    });
+                    $("#grp_inf_list").empty();
+                    $("#grp_inf_list").append(city_data);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //获取数据源信息-等级
+        //////////////////////////////////////////////////////////////////////
+        function GetseriesValue_dj() {
+            $.ajax({
+                type: "get",
+                url: "thisGroupInformationLevel",
+                cache: false,
+                success: function (result) {
+                    data_xAxis = "";
+                    data_series = "{name: '集团个数',data: [";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        data_xAxis += "'"+field.group_type+"类',";
+                        data_series += "{y:" + field.grp_num_level + ",url:'"+field.group_type+"'},";
+                    });
+                    //去除最后一个字符
+                    data_series=data_series.substring(0, data_series.length - 1);
+                    data_series += "]}";
+                    data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                    $("#fh_bt_vl").removeAttr("onclick");
+                    $("#fh_bt_vl").attr("onclick","GetseriesValue_dj();");
+                    GetData_dj(data_xAxis,data_series);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        };
+
+        //绑定获取数据信息操作
+        //////////////////////////////////////////////////////////////////////
+        function GetData_dj(data_xAxis,data_series) {
+            $('#container').highcharts({
+                chart: {
+                    type: 'column',
+                    renderTo: 'container',
+                    options: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                colors: ['#3296fa'],
+                title: {
+                    text: $("#new_date").val()+'集团等级分布'
+                },
+                xAxis: {
+                    categories: eval("[" + data_xAxis + "]"),
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '集团等级分布情况 (个)'
+                    },
+                    labels: {
+                        format: '{value}',
+                        style: {
+                            color: '#000'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span>',
+                    pointFormat: '<span style="font-size:10px">集团数: {point.y:f}个</span>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    },
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function () {
+                                    //在当前页面跳转
+                                    GetseriesValue_dj_detail(this.options.url);
+                                }
+                            }
+                        }
+                    }
+                },
+                series: eval("[" + data_series + "]")  //获取数据源操作信息
+            });
+        }
+
+        //获取数据源信息
+        //////////////////////////////////////////////////////////////////////
+        function GetseriesValue_dj_detail(group_type) {
+            $.ajax({
+                type: "get",
+                url: "thisGroupInformationLevelRegion",
+                data:{
+                    group_type:group_type
+                },
+                cache: false,
+                success: function (result) {
+                    data_xAxis = "";
+                    data_series = "{name: '集团个数',data: [";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        data_xAxis += "'"+field.region_name+"',";
+                        data_series += "{y:" + field.grp_num_level +"},";
+                    });
+                    //去除最后一个字符
+                    data_series=data_series.substring(0, data_series.length - 1);
+                    data_series += "]}";
+                    data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                    GetData_dj_detail(data_xAxis,data_series,group_type);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        };
+
+        //绑定获取数据信息操作
+        //////////////////////////////////////////////////////////////////////
+        function GetData_dj_detail(data_xAxis,data_series,group_type) {
+            $('#container').highcharts({
+                chart: {
+                    type: 'column',
+                    renderTo: 'container',
+                    options: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                colors: ['#3296fa'],
+                title: {
+                    text: $("#new_date").val()+group_type+'类集团等级分布'
+                },
+                xAxis: {
+                    categories: eval("[" + data_xAxis + "]"),
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '各地市'+group_type+'类集团等级分布情况 (个)'
+                    },
+                    labels: {
+                        format: '{value}',
+                        style: {
+                            color: '#000'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span>',
+                    pointFormat: '<span style="font-size:10px">'+group_type+'类集团数: {point.y:f}个</span>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: eval("[" + data_series + "]")  //获取数据源操作信息
+            });
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //获取数据源信息-地市
+        //////////////////////////////////////////////////////////////////////
+        function GetseriesValue_ds() {
+            $.ajax({
+                type: "get",
+                url: "thisGroupInformationRegion",
+                cache: false,
+                success: function (result) {
+                    data_xAxis = "";
+                    data_series = "{name: '集团个数',data: [";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        data_xAxis += "'"+field.region_name+"',";
+                        data_series += "{y:" + field.grp_num + ",url:'"+field.region_code+"'},";
+                    });
+                    //去除最后一个字符
+                    data_series=data_series.substring(0, data_series.length - 1);
+                    data_series += "]}";
+                    data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                    $("#fh_bt_vl").removeAttr("onclick");
+                    $("#fh_bt_vl").attr("onclick","GetseriesValue_ds();");
+                    GetData_ds(data_xAxis,data_series);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        };
+
+        //绑定获取数据信息操作
+        //////////////////////////////////////////////////////////////////////
+        function GetData_ds(data_xAxis,data_series) {
+            $('#container').highcharts({
+                chart: {
+                    type: 'column',
+                    renderTo: 'container',
+                    options: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                colors: ['#f7a35c'],
+                title: {
+                    text: $("#new_date").val()+'集团地市分布'
+                },
+                xAxis: {
+                    categories: eval("[" + data_xAxis + "]"),
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '集团地市分布情况 (个)'
+                    },
+                    labels: {
+                        format: '{value}',
+                        style: {
+                            color: '#000'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span>',
+                    pointFormat: '<span style="font-size:10px">集团数: {point.y:f}个</span>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    },
+                    series: {
+                        cursor: 'pointer',
+                        point: {
+                            events: {
+                                click: function () {
+                                    //在当前页面跳转
+                                    GetseriesValue_ds_detail(this.options.url);
+                                }
+                            }
+                        }
+                    }
+                },
+                series: eval("[" + data_series + "]")  //获取数据源操作信息
+            });
+        }
+
+        //获取数据源信息
+        //////////////////////////////////////////////////////////////////////
+        function GetseriesValue_ds_detail(region_code) {
+
+            $.ajax({
+                type: "get",
+                url: "thisGroupInformationRegion",
+                data:{
+                    region_code:region_code
+                },
+                cache: false,
+                success: function (result) {
+                    data_xAxis = "";
+                    data_series = "{name: '集团个数',data: [";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        data_xAxis += "'"+field.group_type+"',";
+                        data_series += "{y:" + field.grp_num +"},";
+                    });
+                    //去除最后一个字符
+                    data_series=data_series.substring(0, data_series.length - 1);
+                    data_series += "]}";
+                    data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                    GetData_ds_detail(data_xAxis,data_series);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        };
+
+        //绑定获取数据信息操作
+        //////////////////////////////////////////////////////////////////////
+        function GetData_ds_detail(data_xAxis,data_series) {
+            $('#container').highcharts({
+                chart: {
+                    type: 'column',
+                    renderTo: 'container',
+                    options: {
+                        enabled: true,
+                        alpha: 15,
+                        beta: 15,
+                        depth: 50,
+                        viewDistance: 25
+                    }
+                },
+                colors: ['#f7a35c'],
+                title: {
+                    text: $("#new_date").val()+'集团地市等级分布'
+                },
+                xAxis: {
+                    categories: eval("[" + data_xAxis + "]"),
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '集团分布情况 (个)'
+                    },
+					labels: {
+                        format: '{value}',
+                        style: {
+                            color: '#000'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span>',
+                    pointFormat: '<span style="font-size:10px">集团数: {point.y:f}个</span>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: eval("[" + data_series + "]")  //获取数据源操作信息
+            });
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        function backup(){
+            window.history.forward();
+        }
+	</script>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+	<div class="work-order-box overh">
+		<div class="row col-12 bg-white">
+			<div class="market-name-box pdlr-10 clearfix">
+				<span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团信息</span>
+			</div>
+		</div>
+		<input id="new_date" type="hidden" value="" readonly="readonly"/>
+		<div class="row col-12">
+			<div class="pd-20 pos-rel">
+				<div class="active-cost-box" >
+					<table class="cost-table" width="100%;">
+						<tbody>
+						<tr>
+							<th>月份</th>
+							<th>集团总数</th>
+							<th>集团收入</th>
+							<th>重要成员数</th>
+							<th>集团人数</th>
+							<th>信息化收入</th>
+							<th>信息化产品数</th>
+							<th>信息化产品收入</th>
+							<th>信息化产品成员数</th>
+						</tr>
+						</tbody>
+						<tbody id="grp_inf_list">
+						</tbody>
+					</table>
+					<div class="row mgt-30">
+						<div class="btn-box pdb-20">
+							<button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="GetseriesValue_dj()">
+								查看等级分布
+							</button>
+							<button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="GetseriesValue_ds()">
+								查看地市分布
+							</button>
+						</div>
+					</div>
+
+					<!-- Modal -->
+					<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+						<div class="modal-dialog modal-lg" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+									<h4 class="modal-title" id="myModalLabel">分布图</h4>
+								</div>
+								<div class="modal-body">
+									<div id="container"></div>
+								</div>
+								<div id="fh_bt" class="modal-footer">
+									<button type="button" class="ui-btn mgr-10" id="fh_bt_vl" onClick="">返回上一页</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+package com.esop.hello;
+
+/**
+ * Created by wangbl on 2017/3/25.
+ */
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet(urlPatterns="/sss/sss/UniServletJL", description="Servlet的说明")
+public class UniServlet extends HttpServlet {
+
+    private static final long serialVersionUID = 8946258064217428883L;
+
+    // public static final String JLServiceUrl = DevConfigProperties.getConfigParam("JLServiceUrl");
+    //String JLServiceUrl="http://10.149.85.32:51000/esbWS/rest/";
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        doPost(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+
+        String requestParam = req.getParameter("param");
+        String method = req.getParameter("intr");
+        String callback = req.getParameter("callback");
+        System.out.println("method==========="+method);
+        String content="";
+        try {
+            content = invokeService(callback,method,requestParam);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // 设置headers参数"Content-Type", "text/xml;charset=UTF-8"
+        String fullContentType = "application/x-javascript;charset=UTF-8";
+        resp.setContentType(fullContentType);
+        resp.setHeader("Pragma", "No-cache");
+        resp.setHeader("Cache-Control", "no-cache");
+        resp.setDateHeader("Expires", 0);
+
+        PrintWriter writer = resp.getWriter();
+        writer.write(content);
+        writer.flush();
+        writer.close();
+    }
+
+    public String invokeService(String callback,String method,String param) throws Exception{
+        System.out.println("已访问------------");
+        String result="{id=1233,name=testjspn}";
+        System.out.println("出参结果125-----------"+callback+"('"+result+"')");
+        //callback="dec";
+        return callback+"('"+result+"')";
+    }
+
+}

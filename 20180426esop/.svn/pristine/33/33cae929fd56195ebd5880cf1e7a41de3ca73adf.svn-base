@@ -1,0 +1,27 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/6/28.
+ */
+//查询集团类别和重要成员的级别的出参
+public class EntTypeDto {
+    String ent_type = "";//集团类别
+    String ent_name = "";//类别名
+
+
+    public String getEnt_type() {
+        return ent_type;
+    }
+
+    public void setEnt_type(String ent_type) {
+        this.ent_type = ent_type;
+    }
+
+    public String getEnt_name() {
+        return ent_name;
+    }
+
+    public void setEnt_name(String ent_name) {
+        this.ent_name = ent_name;
+    }
+}

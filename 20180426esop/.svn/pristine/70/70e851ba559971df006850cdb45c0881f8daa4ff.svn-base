@@ -1,0 +1,338 @@
+package com.esop.invoice.dto;
+
+import com.esop.common.page.BaseDto;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
+/**
+ * Created by MaiBenBen on 2017/12/27.
+ * 表  ep_inv_preprint_app_info
+ */
+
+public class InvPreprintDTO  extends BaseDto {
+
+    private  String  rec_serial_no ; //记录流水号
+    private  String  application_no; //申请单编号
+    private  String  branch_no;//组织机构编号（分公司）
+    private  String  branch_name;//组织机构名称（分公司）
+    private  String  industry_center_no;//行业中心编号
+    private  String  industry_center_name;//行业中心名称
+    private  String  group_id;//集团单位编码
+    private  String  group_name;//集团单位名称
+    private  String  invoice_type;//发票类型（1-增值税电子发票、2-增值税专用发票）
+    private  String  invoice_mode;//发票模式（1-实收、2-月结
+    private  String  print_mode;//打印方式（1-一般、2-合打、3-分打）
+    private  String  is_red;//是否冲红（1-作废或冲红，2-开具）
+    private  String  invoice_sum_value;//预打总金额
+    private  String  start_account_period;//开始账期
+    private  String  end_account_period;//'结束账期'
+    private  String  push_method;//'推送方式（1-推送电子邮箱、2-推送电话号码）'
+    private  String  push_email;//'推送电子邮箱'
+    private  String  push_phone;//'推送电话号码'
+    private  String  invoice_spe_model;//'发票规格型号'
+    private  String  invoice_unit;//'发票单位'
+    private  String  invoice_number;//'发票数量'
+    private  String  bank_sub_account;//'银行回款子账号'
+    private  String  bank_sub_account_bank;//'银行回款子账号开户行'
+    private  String  remarks;//'备注/作废原因/冲红原因'
+    private  String  applicant_esop_no;//'申请人ESOP工号'
+    private  String  applicant_boss_no;//'申请人BOSS工号'
+    private  String  applicant_name;//'申请人姓名'
+    private  String  payee_name;//'收款人'
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date application_time;//'申请时间'
+    private  String  work_state;//'申请单状态（0-驳回、1-审批中、2-待开票、3-待回款、4-已回款、5-已冲红、6-已作废）'
+    private  String  original_application_no;//'冲红：原申请单编号'
+    private  String  red_way;//'冲红方式（1-全部冲红，2-部分冲红）'
+    private  String start_login_no ;//登录人工号
+    private  String starttime;//开始时间
+    private  String endtime;//结束时间
+    private String new_application_time;//'申请时间'
+
+    public void setNew_application_time(String new_application_time) {
+        this.new_application_time = new_application_time;
+    }
+    public String getNew_application_time() {
+        return new_application_time;
+    }
+    public String getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
+    }
+
+    public String getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
+    }
+
+    public String getStart_login_no() {
+        return start_login_no;
+    }
+
+    public void setStart_login_no(String start_login_no) {
+        this.start_login_no = start_login_no;
+    }
+
+    public String getRec_serial_no() {
+        return rec_serial_no;
+    }
+
+    public void setRec_serial_no(String rec_serial_no) {
+        this.rec_serial_no = rec_serial_no;
+    }
+
+    public String getApplication_no() {
+        return application_no;
+    }
+
+    public void setApplication_no(String application_no) {
+        this.application_no = application_no;
+    }
+
+    public String getBranch_no() {
+        return branch_no;
+    }
+
+    public void setBranch_no(String branch_no) {
+        this.branch_no = branch_no;
+    }
+
+    public String getBranch_name() {
+        return branch_name;
+    }
+
+    public void setBranch_name(String branch_name) {
+        this.branch_name = branch_name;
+    }
+
+    public String getIndustry_center_no() {
+        return industry_center_no;
+    }
+
+    public void setIndustry_center_no(String industry_center_no) {
+        this.industry_center_no = industry_center_no;
+    }
+
+    public String getIndustry_center_name() {
+        return industry_center_name;
+    }
+
+    public void setIndustry_center_name(String industry_center_name) {
+        this.industry_center_name = industry_center_name;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getInvoice_type() {
+        return invoice_type;
+    }
+
+    public void setInvoice_type(String invoice_type) {
+        this.invoice_type = invoice_type;
+    }
+
+    public String getInvoice_mode() {
+        return invoice_mode;
+    }
+
+    public void setInvoice_mode(String invoice_mode) {
+        this.invoice_mode = invoice_mode;
+    }
+
+    public String getPrint_mode() {
+        return print_mode;
+    }
+
+    public void setPrint_mode(String print_mode) {
+        this.print_mode = print_mode;
+    }
+
+    public String getIs_red() {
+        return is_red;
+    }
+
+    public void setIs_red(String is_red) {
+        this.is_red = is_red;
+    }
+
+    public String getInvoice_sum_value() {
+        return invoice_sum_value;
+    }
+
+    public void setInvoice_sum_value(String invoice_sum_value) {
+        this.invoice_sum_value = invoice_sum_value;
+    }
+
+    public String getStart_account_period() {
+        return start_account_period;
+    }
+
+    public void setStart_account_period(String start_account_period) {
+        this.start_account_period = start_account_period;
+    }
+
+    public String getEnd_account_period() {
+        return end_account_period;
+    }
+
+    public void setEnd_account_period(String end_account_period) {
+        this.end_account_period = end_account_period;
+    }
+
+    public String getPush_method() {
+        return push_method;
+    }
+
+    public void setPush_method(String push_method) {
+        this.push_method = push_method;
+    }
+
+    public String getPush_email() {
+        return push_email;
+    }
+
+    public void setPush_email(String push_email) {
+        this.push_email = push_email;
+    }
+
+    public String getPush_phone() {
+        return push_phone;
+    }
+
+    public void setPush_phone(String push_phone) {
+        this.push_phone = push_phone;
+    }
+
+    public String getInvoice_spe_model() {
+        return invoice_spe_model;
+    }
+
+    public void setInvoice_spe_model(String invoice_spe_model) {
+        this.invoice_spe_model = invoice_spe_model;
+    }
+
+    public String getInvoice_unit() {
+        return invoice_unit;
+    }
+
+    public void setInvoice_unit(String invoice_unit) {
+        this.invoice_unit = invoice_unit;
+    }
+
+    public String getInvoice_number() {
+        return invoice_number;
+    }
+
+    public void setInvoice_number(String invoice_number) {
+        this.invoice_number = invoice_number;
+    }
+
+    public String getBank_sub_account() {
+        return bank_sub_account;
+    }
+
+    public void setBank_sub_account(String bank_sub_account) {
+        this.bank_sub_account = bank_sub_account;
+    }
+
+    public String getBank_sub_account_bank() {
+        return bank_sub_account_bank;
+    }
+
+    public void setBank_sub_account_bank(String bank_sub_account_bank) {
+        this.bank_sub_account_bank = bank_sub_account_bank;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getApplicant_esop_no() {
+        return applicant_esop_no;
+    }
+
+    public void setApplicant_esop_no(String applicant_esop_no) {
+        this.applicant_esop_no = applicant_esop_no;
+    }
+
+    public String getApplicant_boss_no() {
+        return applicant_boss_no;
+    }
+
+    public void setApplicant_boss_no(String applicant_boss_no) {
+        this.applicant_boss_no = applicant_boss_no;
+    }
+
+    public String getApplicant_name() {
+        return applicant_name;
+    }
+
+    public void setApplicant_name(String applicant_name) {
+        this.applicant_name = applicant_name;
+    }
+
+    public String getPayee_name() {
+        return payee_name;
+    }
+
+    public void setPayee_name(String payee_name) {
+        this.payee_name = payee_name;
+    }
+
+    public Date getApplication_time() {
+        return application_time;
+    }
+
+    public void setApplication_time(Date application_time) {
+        this.application_time = application_time;
+    }
+
+    public String getWork_state() {
+        return work_state;
+    }
+
+    public void setWork_state(String work_state) {
+        this.work_state = work_state;
+    }
+
+    public String getOriginal_application_no() {
+        return original_application_no;
+    }
+
+    public void setOriginal_application_no(String original_application_no) {
+        this.original_application_no = original_application_no;
+    }
+
+    public String getRed_way() {
+        return red_way;
+    }
+
+    public void setRed_way(String red_way) {
+        this.red_way = red_way;
+    }
+}

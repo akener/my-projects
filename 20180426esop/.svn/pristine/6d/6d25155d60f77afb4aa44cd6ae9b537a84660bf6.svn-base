@@ -1,0 +1,782 @@
+<%@ page pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<head>
+
+    <%--<link rel="stylesheet" href="/esop/static/hlj/css/zTreeStyle/list.css">--%>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+           // alert("111");
+             // VisitInformationQuery();
+                 VisitContentQry();
+            getxiangqing();
+            //时间控件
+            $('.form_datetime').datetimepicker({
+                language:  'zh-CN',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0,
+                showMeridian: 1,
+                pickerPosition: "bottom-left"
+            });
+        });
+       //查询基本数据
+        function VisitInformationQuery(){
+            $.ajax({
+                type: "post",
+                url: "/getProcessApply",
+                data:{
+                    //"grop_id":"qwe"
+                    "grop_id":$("#unit_code").val()
+                },
+                success: function (result) {
+//                    遍历json
+                  $.each(result.info,function(i,filed){
+                      informationshow(filed);
+                  });
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+
+        }
+        //基本信息展示
+        function informationshow(result){
+            $("#visit_Unit").val(result.visit_unit);
+            $("#unit_code").val(result.grop_id);
+            $("#visit_place").val(result.visit_address);
+            $("#visit_per_cnt").val(result.visit_number);
+            $("#vitit_time").val(result.visit_date);
+            $("#escort_person").val(result.grop_escort_people);
+            $("#inferface_person").val(result.interface_man);
+            $("#telphone").val(result.connection_phone);
+            $("#height_class").val(result.hv_distribution_room );
+            $("#low_class").val(result.lv_distribution_room  );
+            $("#beam_class").val(result.engine_room);
+            $("#battery_class").val(result.power_battery_room);
+            $("#air_class").val(result.precision_air);
+            $("#second_room").val(result.commercial_tworoom);
+            $("#five_room").val(result.commercial_fiveroom);
+            $("#six_room").val(result.commercial_sixroom);
+            $("#store_room").val(result.storage_room);
+            $("#control_room").val(result.focus_monitor_hall);
+            $("#station").val(result.station);
+            $("#dining_room").val(result.canteen);
+            $("#requert").val(result.special_needs);
+            $("#welcome").val(result.large_screen_greeting);
+            $("#amout").val(result.boardroom_number);
+            $("#capacity").val(result.capacity);
+            $("#projector").val(result.projector_curtain);
+            $("#name_tag").val(result.famous_brand);
+            $("#chairperson").val(result.rostrum);
+            $("#microphone").val(result.microphone);
+            $("#waiter").val(result.mineral_water);
+            $("#teawaitre").val(result.tea_water);
+            $("#paper").val(result.paper_pen);
+            $("#count").val(result.car_number);
+            $("#car_color").val(result.models_colour);
+            $("#carno").val(result.plate_num);
+            $("#desk").val(result.table_number);
+            $("#eatery").val(result.canteen_number);
+            $("#custer").val(result.grop_audit)
+
+
+        }
+
+        // 获取承接方填写信息
+        function  VisitContentQry(){
+            $.ajax({
+                type: "post",
+                url: "/getProcessUndertake",
+                dataType:'json',
+                data:{
+                    //"grop_id":"111111"
+                    "grop_id":$("#unit_code").val()
+                },
+                success: function (result) {
+                    city_data = "";
+                    //拼接json数据集字符串
+                    $.each(result.info,function(i,filed){
+                        chengjiefang(filed);
+                    });
+
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        //获取承接方填写
+        function chengjiefang(result){
+            $("#height_1").val(result.hv_distribution_room );
+            $("#low_1").val(result.lv_distribution_room );
+            $("#beam_1").val(result.engine_room);
+            $("#battery_1").val(result.power_battery_room);
+            $("#air_1").val(result.precision_air);
+            $("#second_1").val(result.commercial_tworoom);
+            $("#five_1").val(result.commercial_fiveroom);
+            $("#six_1").val(result.commercial_sixroom);
+            $("#storeroom_1").val(result.storage_room);
+            $("#control_1").val(result.focus_monitor_hall);
+            $("#station_1").val(result.station);
+            $("#dining_room_1").val(result.canteen);
+            $("#requert1").val(result.special_needs);
+            $("#welcome1").val(result.large_screen_greeting);
+            $("#amout_1").val(result.boardroom_number);
+            $("#capacity_1").val(result.capacity);
+            $("#projector_1").val(result.projector_curtain);
+            $("#name_tag1").val(result.famous_brand);
+            $("#chairperson1").val(result.rostrum);
+            $("#microphone1").val(result.microphone);
+            $("#waiter1").val(result.mineral_water);
+            $("#teawaitre1").val(result.tea_water);
+            $("#paper1").val(result.paper_pen);
+            $("#count1").val(result.car_number);
+            $("#car_color1").val(result.models_colour);
+            $("#carno1").val(result.plate_num);
+            $("#desk1").val(result.table_number);
+            $("#eatery1").val(result.canteen_number);
+            $("#undertake").val(result.undertake_unit);
+            $("#undertake_place").val(result.undertake_address);
+            $("#inter_person").val(result.undertake_man);
+            $("#inter_phone").val(result.undertake_phone);
+            $("#custer").val(result.grop_audit);
+            $("#user").val(result.undertake_audit)
+        }
+        //获取详情
+        function getxiangqing(){
+            $.ajax({
+                type: "post",
+                url: "/getProDetail",
+                data:{
+                    //"grop_id":"000000"
+                    "grop_id":$("#unit_code").val()
+                },
+                success: function (result) {
+                    city_data = "";
+                    //拼接json数据集字符串
+
+                    $.each(result.info,function(i,filed){
+
+                        xiangqing(filed);
+                    });
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        function xiangqing(result){
+            $("#height_2").val(result.hv_distribution_room );
+            $("#low_2").val(result.lv_distribution_room );
+            $("#beam_2").val(result.engine_room);
+            $("#battery_2").val(result.power_battery_room);
+            $("#air_2").val(result.precision_air);
+            $("#second_2").val(result.commercial_tworoom);
+            $("#five_2").val(result.commercial_fiveroom);
+            $("#six_2").val(result.commercial_sixroom);
+            $("#storeroom_2").val(result.storage_room);
+            $("#control_2").val(result.focus_monitor_hall);
+            $("#station_2").val(result.station);
+            $("#dining_room_2").val(result.canteen);
+            $("#requert2").val(result.special_needs);
+            $("#welcome2").val(result.large_screen_greeting);
+            $("#amout_2").val(result.boardroom_number);
+            $("#capacity_2").val(result.capacity);
+            $("#projector_2").val(result.projector_curtain);
+            $("#name_tag2").val(result.famous_brand);
+            $("#chairperson2").val(result.rostrum);
+            $("#microphone2").val(result.microphone);
+            $("#waiter2").val(result.mineral_water);
+            $("#teawaitre2").val(result.tea_water);
+            $("#paper2").val(result.paper_pen);
+            $("#count2").val(result.car_number);
+            $("#car_color2").val(result.models_colour);
+            $("#carno2").val(result.plate_num);
+            $("#desk2").val(result.table_number);
+            $("#eatery2").val(result.canteen_number);
+        }
+
+  //提交参观内容接待要求
+   function Getbwosinfo(){
+       checkinfo();
+            //判断是否是只读
+           $.ajax({
+               type: "post",
+               url: "/getProcessInfoTest",
+               data: {
+                  "visit_unit":	$("#visit_Unit").val(),
+                   "grop_id" :	$("#unit_code").val(),
+                   "visit_address"   :	$("#visit_place").val(),
+                   "visit_number" :	$("#visit_per_cnt").val(),
+                   "visit_date":	$("#vitit_time").val(),
+                   "grop_escort_people"  :	$("#escort_person").val(),
+                   "interface_man":   $("#inferface_person").val(),
+                   "connection_phone" :	$("#telphone").val( ),
+                   "hv_distribution_room" :	$("#height_class").val(),
+                   "lv_distribution_room":	$("#low_class").val( ),
+                   "engine_room" : $("#beam_class").val(),
+                   "power_battery_room"  :	$("#battery_class").val(),
+                   "precision_air"  :	$("#air_class").val(),
+                   "commercial_tworoom"  :	$("#second_room").val(),
+                   "commercial_fiveroom" :	$("#five_room").val(),
+                   "commercial_sixroom"  :	$("#six_room").val(),
+                   "storage_room"   :	 $("#store_room").val(),
+                   "focus_monitor_hall"  :	$("#control_room").val(),
+                   "station"   :	 $("#station").val(),
+                   "canteen"   :	$("#dining_room").val(),
+                   "special_needs"  :	$("#requert").val(),
+                   "large_screen_greeting":	$("#welcome").val(),
+                   "boardroom_number":	$("#amout").val(),
+                   "capacity"  :	 $("#capacity").val(),
+                   "projector_curtain"   : $("#projector").val(),
+                   "famous_brand"   :	 $("#name_tag").val(),
+                   "rostrum"   :	$("#chairperson").val(),
+                   "microphone":	$("#microphone").val(),
+                   "mineral_water"  :	 $("#waiter").val(),
+                   "tea_water" :	$("#teawaitre").val(),
+                   "paper_pen" :	  $("#paper").val(),
+                   "car_number":	$("#count").val(),
+                   "models_colour"  :	$("#car_color").val(),
+                   "plate_num" :	$("#carno").val(),
+                   "table_number"   :	$("#desk").val(),
+                   "canteen_number" :	$("#eatery").val(),
+                    "grop_audit"   : $("#custer").val()
+              },
+               success: function (result) {
+                   city_data = "";
+                   //alert(result.info);
+                   //拼接json数据集字符串
+                   if(result.info == "操作成功！"){
+                       getoa();
+                   }else{
+                       alert(result.info);
+                   }
+               },
+               error: function () {
+                   alert("请求超时，请重试！");
+               }
+           });
+       }
+       //查看信息
+        function queryinfo(){
+            VisitInformationQuery();
+            VisitContentQry();
+            getxiangqing();
+            $("#example").find("input,textarea,select").attr("disabled", "disabled");
+        }
+       //数据检测//telphone
+        // 验证手机号
+        function checkinfo(){
+            //alert("111111");
+            var phone = document.getElementById("telphone").value;
+            if(!(/^1[34578]\d{9}$/.test(phone))){
+                alert("手机号码有误，请重填");
+                return false;
+            }
+            return true;
+
+        }
+        //存入oa
+        function getoa(){
+            $.ajax({
+                type: "post",
+                url: "/visitInfoOa",
+                data:{
+                    //"grop_id":"qwe"
+                    "grop_id":$("#unit_code").val()
+                },
+                success: function (result) {
+                    city_data = "";
+                    //拼接json数据集字符串
+                    alert(result.info);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        function setinfo(){
+            location.reload();
+        }
+    </script>
+
+</head>
+
+<!--<hr />-->
+<body>
+<table id="example" class="cost-table" style="border-collapse:separate;empty-cells:show"
+        cellspacing="0px" width="900" align="center" bgcolor="white">
+    <thead>
+    <tr>
+        <th class="text-center" colspan="6">
+            参观流程表单（进乡）
+        </th></tr>
+    <tr>
+        <th class="text-center" >参观单位</th>
+        <th class="text-center">
+         <input type="text"  id="visit_Unit" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">集团编码</th>
+        <th class="text-center">
+            <input type="text"  id="unit_code" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">参观人数</th>
+        <th class="text-center">
+            <input type="text"  id="visit_per_cnt" value="" style="width:100%; height:100%;"/>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center">接口人</th>
+        <th class="text-center">
+            <input type="text"  id="inferface_person" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">联系电话</th>
+        <th class="text-center">
+            <input type="text"  id="telphone" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">参观时间</th>
+        <th class="text-center" >
+            <div class="col-sm-2">
+                <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                    <input readonly class="form-control" style="width:120px"  id="vitit_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                </div>
+            </div>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center" >参观地点</th>
+        <th class="text-center" colspan="5">
+             <input type="text"  id="visit_place" value="" style="width:100%; height:100%;"/>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center">集团客户部陪同人员</th>
+        <th class="text-center" colspan="5">
+            <input type="text"  id="escort_person" value="" style="width:100%; height:100%;"/>
+        </th>
+
+    </tr>
+
+    <tr>
+        <th class="text-center" rowspan="3">承接方填写</th>
+            <tr>
+                 <th class="text-center"> 承接单位</th>
+                 <th class="text-center">
+                     <input type="text" disabled="disabled" id="undertake" value="" style="width:100%; height:100%;"/>
+                 </th>
+        <th class="text-center"> 接口人</th>
+        <th class="text-center">
+            <input type="text" disabled="disabled" id="inter_person" value="" style="width:100%; height:100%;"/>
+        </th>
+                <th class="text-center"></th>
+            </tr>
+            <tr>
+                <th class="text-center"> 承接地点</th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="undertake_place" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">联系电话</th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="inter_phone" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center"></th>
+            </tr>
+    </tr>
+    <tr>
+        <th class="text-center"></th>
+        <th class="text-center"></th>
+        <th class="text-center"></th>
+        <th class="text-center">申请方填写</th>
+        <th class="text-center">承接方填写</th>
+        <th class="text-center">详情</th>
+    </tr>
+    <tr>
+        <th class="text-center" rowspan="18">参观内容</th>
+        <th class="text-center" rowspan="5">电力系统</th>
+                   <tr >
+                        <th class="text-center">高压配电室</th>
+                        <th class="text-center">
+                            <input type="text"  id="height_class" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="height_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="height_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                   </tr>
+                    <tr >
+                        <th class="text-center">低压配电室</th>
+                        <th class="text-center">
+                            <input type="text"  id="low_class" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="low_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="low_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                    </tr>
+                    <tr >
+                        <th class="text-center">油机室</th>
+                        <th class="text-center">
+                            <input type="text"  id="beam_class" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="beam_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="beam_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                    </tr>
+                    <tr >
+                        <th class="text-center">电力电池室</th>
+                        <th class="text-center">
+                            <input type="text"  id="battery_class" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="battery_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="battery_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                    </tr>
+            <th class="text-center" rowspan="2" >制冷系统</th>
+                 <tr>
+                     <th class="text-center">精密空调</th>
+                     <th class="text-center">
+                         <input type="text"  id="air_class" value="" style="width:100%; height:100%;"/>
+                     </th>
+                     <th class="text-center">
+                         <input type="text" disabled="disabled" id="air_1" value="" style="width:100%; height:100%;"/>
+                     </th>
+                     <th class="text-center">
+                         <input type="text" disabled="disabled" id="air_2" value="" style="width:100%; height:100%;"/>
+                     </th>
+                 </tr>
+            <th class="text-center" rowspan="4" >机房区域</th>
+                <tr>
+                    <th class="text-center">2楼商用机房</th>
+                    <th class="text-center">
+                        <input type="text"  id="second_room" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="second_1" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="second_2" value="" style="width:100%; height:100%;"/>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center">5楼商用机房</th>
+                    <th class="text-center">
+                        <input type="text"  id="five_room" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="five_1" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="five_2" value="" style="width:100%; height:100%;"/>
+                    </th>
+                </tr>
+                <tr>
+                    <th class="text-center">6楼商用机房</th>
+                    <th class="text-center">
+                        <input type="text"  id="six_room" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled"  id="six_1" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="six_2" value="" style="width:100%; height:100%;"/>
+                    </th>
+                </tr>
+          <th class="text-center" rowspan="2" >存放区域</th>
+              <tr>
+                  <th class="text-center">库房</th>
+                  <th class="text-center">
+                      <input type="text"  id="store_room" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="storeroom_1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="storeroom_2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+         <th class="text-center" rowspan="4" >生活及运维区域</th>
+                    <tr>
+                        <th class="text-center">集中监控大厅</th>
+                        <th class="text-center">
+                            <input type="text"  id="control_room" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="control_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="control_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">工位</th>
+                        <th class="text-center">
+                            <input type="text"  id="station" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="station_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="station_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">食堂</th>
+                        <th class="text-center">
+                            <input type="text"  id="dining_room" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="dining_room_1" value="" style="width:100%; height:100%;"/>
+                        </th>
+                        <th class="text-center">
+                            <input type="text" disabled="disabled" id="dining_room_2" value="" style="width:100%; height:100%;"/>
+                        </th>
+                    </tr>
+            <th class="text-center"  >特殊需求</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="requert" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center">
+                <input type="text" disabled="disabled" id="requert1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center">
+                <input type="text" disabled="disabled" id="requert2" value="" style="width:100%; height:100%;"/>
+            </th>
+
+    </tr>
+    <tr>
+        <th class="text-center" rowspan="19" >接待要求</th>
+        <th class="text-center" rowspan="2" >大屏幕欢迎辞</th>
+            <tr>
+                <th class="text-center" colspan="2">
+                    <input type="text"  id="welcome" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="welcome1" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="welcome2" value="" style="width:100%; height:100%;"/>
+                </th>
+            </tr>
+        <th class="text-center" rowspan="10" >会议室</th>
+              <tr>
+                    <th class="text-center" >数量</th>
+                    <th class="text-center">
+                        <input type="text"  id="amout" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="amout_1" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="amout_2" value="" style="width:100%; height:100%;"/>
+                    </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >容量</th>
+                  <th class="text-center">
+                      <input type="text"  id="capacity" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="capacity_1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="capacity_2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >投影仪及幕布</th>
+                  <th class="text-center">
+                      <input type="text"  id="projector" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="projector_1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="projector_2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >名牌</th>
+                  <th class="text-center">
+                      <input type="text"  id="name_tag" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="name_tag1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="name_tag2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >主席台</th>
+                  <th class="text-center">
+                      <input type="text"  id="chairperson" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="chairperson1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="chairperson2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >麦克风</th>
+                  <th class="text-center">
+                      <input type="text"  id="microphone" value="" style="width:100%; height:100%;"/></th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="microphone1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="microphone2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >矿泉水</th>
+                  <th class="text-center">
+                      <input type="text"  id="waiter" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="waiter1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="waiter2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >茶水</th>
+                  <th class="text-center">
+                      <input type="text"  id="teawaitre" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="teawaitre1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="teawaitre2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+              <tr>
+                  <th class="text-center"  >纸笔</th>
+                  <th class="text-center">
+                      <input type="text"  id="paper" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="paper1" value="" style="width:100%; height:100%;"/>
+                  </th>
+                  <th class="text-center">
+                      <input type="text" disabled="disabled" id="paper2" value="" style="width:100%; height:100%;"/>
+                  </th>
+              </tr>
+        <th class="text-center" rowspan="4" >车辆进出入</th>
+            <tr>
+                <th class="text-center"  >数量</th>
+                <th class="text-center">
+                    <input type="text"  id="count" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="count1" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="count2" value="" style="width:100%; height:100%;"/>
+                </th>
+            </tr>
+            <tr>
+                <th class="text-center"  >车型及颜色</th>
+                <th class="text-center">
+                    <input type="text"  id="car_color" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="car_color1" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="car_color2" value="" style="width:100%; height:100%;"/>
+                </th>
+            </tr>
+            <tr>
+                <th class="text-center"  >车牌号码</th>
+                <th class="text-center">
+                    <input type="text"  id="carno" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="carno1" value="" style="width:100%; height:100%;"/>
+                </th>
+                <th class="text-center">
+                    <input type="text" disabled="disabled" id="carno2" value="" style="width:100%; height:100%;"/>
+                </th>
+            </tr>
+        <th class="text-center" rowspan="3" >餐饮</th>
+                <tr>
+                    <th class="text-center"  >桌餐</th>
+                    <th class="text-center">
+                        <input type="text"  id="desk" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled" id="desk1" value="" style="width:100%; height:100%;"/>
+                    </th>
+                    <th class="text-center">
+                        <input type="text" disabled="disabled"  id="desk2" value="" style="width:100%; height:100%;"/>
+                    </th>
+                </tr>
+               <tr>
+                   <th class="text-center"  >食堂</th>
+                   <th class="text-center">
+                       <input type="text"  id="eatery" value="" style="width:100%; height:100%;"/>
+                   </th>
+                   <th class="text-center">
+                       <input type="text" disabled="disabled" id="eatery1" value="" style="width:100%; height:100%;"/>
+                   </th>
+                   <th class="text-center">
+                       <input type="text" disabled="disabled" id="eatery2" value="" style="width:100%; height:100%;"/>
+                   </th>
+               </tr>
+        </tr>
+      <tr>
+          <th class="text-center">集团客户部审核</th>
+          <th class="text-center" colspan="2">
+              <input type="text"   id="custer" value="" style="width:100%; height:100%;"/>
+          </th>
+          <th class="text-center">承接方审核</th>
+          <th class="text-center" colspan="2">
+              <input type="text" disabled="disabled" id="user" value="" style="width:100%; height:100%;"/>
+          </th>
+      </tr>
+
+    <tr>
+        <th  class="text-center"  colspan="6" >
+        <button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="Getbwosinfo()">
+            提交
+        </button>
+        <%--<button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="setinfo()">--%>
+            <%--修改--%>
+        <%--</button>--%>
+        <%--<button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="queryinfo()">--%>
+            <%--查看--%>
+        <%--</button>--%>
+        </th>
+    </tr>
+    </thead>
+    <tfoot>
+
+    </tfoot>
+</table>
+</body>
+</html>

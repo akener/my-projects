@@ -1,0 +1,102 @@
+package com.esop.cust.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cust.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.ArrayList;
+
+/**
+ * Created by Administrator on 2017/6/1.
+ */
+@Repository
+public class KpiService {
+    @Autowired
+    SqlE sqlE;
+    //统付收入统计
+    public List<UnitPayStatisticsDto> getUnitPayStaticInfo(KpiStatisParameterDto param){
+        return sqlE.selectM("unitPayStatistics", param);
+    }
+    //信息化收入统计
+    public List<InfomationIncomeStaticDto> getInfomationIncomeInfo(KpiStatisParameterDto param){
+        return sqlE.selectM("infomationIncomeStatic", param);
+    }
+    //4G发展用户数
+    public List<UserAmoutStatisDto> user4GStatistic(KpiStatisParameterDto param){
+        return sqlE.selectM("user4GStatistic",param);
+    }
+    //宽带（家庭宽带+集团宽带）总数
+    public List<WidthStatisDto> widthStatis(WidthStatisParamDto param){
+        /*WidthStatisDto widthDto = new WidthStatisDto();
+        List list= sqlE.selectM("widthStatis", param);
+        if(list.size()!=0) {
+            widthDto = (WidthStatisDto)list.get(0);
+        }
+        return widthDto;*/
+        return sqlE.selectM("widthStatis", param);
+    }
+    //集团ab类保有率
+    public List<UnitABRetentionRateDto> unitAbRetentionRate(KpiStatisParameterDto param){
+        return sqlE.selectM("unitAbRetentionRate", param);
+    }
+    //新签约
+    public List<NewUnitSignDto> getUnitSign(KpiStatisParameterDto param){
+        /*NewUnitSignDto unitSignDto = new NewUnitSignDto();
+        List list = sqlE.selectM("getUnitSign", param);
+        if(list.size() != 0){
+            unitSignDto = (NewUnitSignDto)list.get(0);
+        }
+        return unitSignDto;*/
+        return sqlE.selectM("getUnitSign", param);
+    }
+    //当月业务办理量
+    public List<BusiDealInfoTempDto> getBusDealInfo(KpiStatisParameterDto param){
+        /*BusDealInfoDto busDealDto = new BusDealInfoDto();
+        List list = sqlE.selectM("getBusDealInfo", param);
+        if(list.size() != 0){
+            busDealDto = (BusDealInfoDto)list.get(0);
+        }
+        return busDealDto;*/
+        return sqlE.selectM("getBusDealInfo", param);
+    }
+    //绩效统计
+    public List<PerformanceInfoDto> getPerformanceInfo(PerformanceParamDto param){
+        /*PerformanceInfoDto performanceDto = new PerformanceInfoDto();
+        List list = sqlE.selectM("getPerformanceInfo", param);
+        if(list.size() != 0){
+            performanceDto = (PerformanceInfoDto)list.get(0);
+        }
+        return performanceDto;*/
+        return sqlE.selectM("getPerformanceInfo", param);
+    }
+    //量酬报表
+    public List<AmoutPaymentInfoDto> getAmoutPaymentInfo(AmoutPaymentParamDto param){
+        return  sqlE.selectM("getAmoutPaymentInfo",param);
+
+
+    }
+    //我的集团成员级产品成员数
+    public List<GrpPrcRoleNoInfoDto> getPrcRoleNoInfo(GrpPrcRoleNoParamDto param){
+        return sqlE.selectM("getGrpPrcRoleNoInfo", param);
+    }
+    //我的集团4G成员数、平均dou、平均arpu
+    public List<GrpWebMemberDto> getWebMemberInfo(GrpInterfaceParameterDto param){
+        /*GrpWebMemberDto webMemberDto = new GrpWebMemberDto();
+        List list = sqlE.selectM("getWebMemberInfo",param);
+        if(list.size() != 0){
+            webMemberDto = (GrpWebMemberDto) list.get(0);
+        }
+        return webMemberDto;*/
+        return sqlE.selectM("getWebMemberInfo",param);
+    }
+    public List<PcKpiInfoDto> getPcKpiInfo(PcKpiInfoParamDto param){
+        return sqlE.selectM("getKpiInfo",param);
+    }
+
+    //绩效表中获取考核名称
+    public List<PerformanceInfoDto> getExamineName(PerformanceParamDto param){
+        return sqlE.selectM("getExamineName",param);
+    }
+}

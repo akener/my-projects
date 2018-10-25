@@ -1,0 +1,80 @@
+$(document).ready(function(){
+    create_no="112900001";
+    create_name="思特奇员工"
+    order_title="集团缴费联系人";
+    region_code="CQ.CQ";
+    seq_relation_info="1111111111";
+    important = "MemberSort03";
+    role_type = "MemberSort0305";
+    contract_id="10002";
+    selectGroupContact();
+});
+function addGroupContact() {
+    window.open('/esop/newAddGroup');
+}
+
+function selectGroupContact(){
+    table =  $('#contactInfo').DataTable({
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        "bSort":false,
+        ajax: {
+            url: "/selectGroupPayContacter",
+            type: "POST",
+            "data": {
+                order_title:order_title,
+                op_code:"1",
+                create_name:create_name,
+                create_no:create_no,
+                region_code: $("#region_code").val(),
+                union_name: $("#union_name").val(),
+                union_code: $("#union_code").val(),
+                account_name: $("#account_name").val(),
+                account_code: $("#account_code").val(),
+                link_man: $("#link_man").val(),
+                mobile_no: $("#mobile_no").val()
+            }
+        },
+        columns: [
+            {
+                data: "id"
+            },
+            {data: "region_code"},
+            {data: "union_name"},
+            {data: "union_code"},
+            {data: "create_name"},
+            {data: "link_man"},
+            {data: "mobile_no"},
+            {data: "address"},
+            {data: "account_name"},
+            {data: "account_code"},
+            { data: "id",
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    return data = "<button type='button' style='width: 60px' onclick='showContact(" + row.id + ")' name='" + row.id + "'>删除</button>"+
+                        "<button  type='button'   style='width: 60px' onclick='showContact1(" + row.id + ")' name='" + row.id + "'>修改</button>";
+                }
+            }
+        ],
+        select: true,
+        buttons: [
+
+        ]
+    })
+}
+
+function showContact1 (id) {
+    window.open("/esop/selectGroupPayContacterInfo3?id="+id);
+}
+
+function showContact (id) {
+    window.open("/esop/selectGroupPayContacterInfo?id="+id);
+}

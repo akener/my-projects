@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <!--查询成员绩效分布情况-->
+    <select id="selectEmployeeLevelDistribution"  parameterType="String" resultType="com.esop.workbench.dto.PerformanceSituationDto" >
+        select count(employee_level) levelCount,employee_level
+        from ep_performance_info
+        where 1 = 1
+        and employee_level is not null
+        <if test="region_code != ''">
+            and region_code =#{region_code}
+        </if>
+        <if test="examine_name != ''">
+            and examine_name =#{examine_name}
+        </if>
+        group by employee_level
+    </select>
+
+    <!--查询考核名称-->
+    <select id="selecExamineName"  parameterType="String" resultType="com.esop.workbench.dto.PerformanceSituationDto" >
+        select examine_name
+        from ep_performance_info
+        where 1 = 1
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        <if test="town_code != ''">
+            and town_code = #{town_code}
+        </if>
+        group by examine_name
+    </select>
+
+    <!--查询区县绩效详情-->
+    <select id="selectPerformanceDetailsBy"  parameterType="String" resultType="com.esop.workbench.dto.PerformanceSituationDto" >
+        select emp_code,employee_name,employee_grade,employee_level
+        from ep_performance_info
+        where 1=1
+        <if test="region_code !='' ">
+            and region_code = #{region_code}
+        </if>
+        <if test="town_code !='' ">
+            and town_code = #{town_code}
+        </if>
+        <if test="examine_name !='' ">
+            and examine_name = #{examine_name}
+        </if>
+        and employee_level is not null
+    </select>
+</mapper>

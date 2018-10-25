@@ -1,0 +1,50 @@
+package com.esop.basicManagement.service;
+
+import com.esop.basicManagement.dto.RoleManegementDto;
+import com.esop.basicManagement.dto.RoleTreeDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Qiao on 2017/6/30.
+ */
+@Repository
+public class RoleManagementService {
+    @Autowired
+    SqlE sqlE;
+
+    //角色列表查询
+    public Result getRoleInfoList(RoleManegementDto parameter){
+        Result res = sqlE.selectPage("getRoleInfoList",parameter);
+        return res;
+    }
+    //角色树
+    public List parentRoleTree(RoleTreeDto parameter){
+        return sqlE.selectM("parentRoleTree",parameter);
+    }
+    //获取角色id
+    public String getNextRoleCode(RoleManegementDto parameter){
+        return (String)sqlE.selectM("getNextRoleCode",parameter).get(0);
+    }
+    //新增角色信息
+    public int insertRoleInfo(RoleManegementDto parameter){
+        return sqlE.insertM("insertRoleInfo",parameter);
+    }
+
+    //角色树
+    public List childRoleTree(RoleTreeDto parameter){
+        return sqlE.selectM("childRoleTree",parameter);
+    }
+    //查角色信息
+    public RoleManegementDto getRoleInfoByRoleCode(RoleManegementDto parameter){
+        return (RoleManegementDto)sqlE.selectM("getRoleInfoByRoleCode",parameter).get(0);
+    }
+    //修改角色
+    public int updateRoleInfo(RoleManegementDto parameter){
+        return sqlE.updateM("updateRoleInfo",parameter);
+    }
+}

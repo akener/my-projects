@@ -1,0 +1,18 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.model.CtTaskTakeMsgInfo;
+import java.util.List;
+
+public interface CtTaskTakeMsgInfoMapper {
+    int deleteByPrimaryKey(String msgId);
+
+    int insert(CtTaskTakeMsgInfo record);
+
+    void insertTaskTakeMsg(CtTaskTakeMsgInfo record);
+
+    CtTaskTakeMsgInfo selectByPrimaryKey(String msgId);
+
+    List<CtTaskTakeMsgInfo> selectAll();
+
+    int updateByPrimaryKey(CtTaskTakeMsgInfo record);
+}

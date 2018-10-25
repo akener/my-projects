@@ -1,0 +1,378 @@
+// JavaScript Document
+$(function() {
+    //工单起草四模块切换 S
+    tab($(".bomc-block-title li"), $(".bomc-block-list"), "bomc-block-this", ".bomc-block-title li");
+    //工单起草四模块切换 E
+
+    placeholder_all(); //placeholder 兼容
+
+    tab($(".work-order-classify li"), $(".work-order-all"), "order-classsify-this", ".work-order-classify li"); //我的工单tab切换
+
+    // 全景流程文字截取 S
+    for (var i = 0; i < $(".flow-complete").length; i++) {
+        var length2 = $(".flow-complete").eq(i).html();
+        if (length2.length > 6) {
+            $(".flow-complete").eq(i).html(length2.slice(0, 6) + "...");
+        }
+    }
+    for (var i = 0; i < $(".flow-process").length; i++) {
+        var length2 = $(".flow-process").eq(i).html();
+        if (length2.length > 6) {
+            $(".flow-process").eq(i).html(length2.slice(0, 6) + "...");
+        }
+    }
+    for (var i = 0; i < $(".flow-unexecuted").length; i++) {
+        var length2 = $(".flow-unexecuted").eq(i).html();
+        if (length2.length > 6) {
+            $(".flow-unexecuted").eq(i).html(length2.slice(0, 6) + "...");
+        }
+    }
+    // 全景流程文字截取 E
+    // table隔行变色 S
+    $(".work-order-table").each(function() {
+            $(this).find("tr:even").css("background", "#eff8fe");
+            $(this).find("tr:eq(0)").css("background", "#fff");
+        })
+        // table隔行变色 E
+        /*工单起草-基本信息 S*/
+        //点击收缩展开
+    $(".active-list-title").click(function() {
+            var active_content = $(this).next(".active-list-content");
+            if (active_content.is(":visible")) {
+                $(this).find("span").removeClass("active-slide-down").addClass("active-slide-up");
+                $(this).next(".active-list-content").slideUp();
+            } else {
+                $(this).find("span").removeClass("active-slide-up").addClass("active-slide-down");
+                $(this).next(".active-list-content").slideDown();
+            }
+        })
+        /*工单起草-基本信息 E*/
+    ui_type(); //工单搜索-搜索类型
+    key_word_list(); //搜索关键字下拉列表
+})
+
+function ui_type() {
+    // 显示下拉列表
+    $(".work-search-type").click(function() {
+            $(this).children("ul").slideDown(200);
+        })
+        // 鼠标离开类型框，下拉列表消失
+    $(".work-search-type").hover(function() {
+
+        }, function() {
+            $(this).children("ul").hide();
+        })
+        // 选中元素
+    $(".work-search-type ul li").click(function() {
+            var index = $(this).index(".work-search-type ul li");
+            $(this).parent().siblings("span").html($(".work-search-type ul li").eq(index).html());
+            $(this).parent().hide();
+        })
+        // // 搜索类型截取
+    if ($(".work-search-type span").html() && $(".work-search-type span").html().length > 8) {
+        $(".work-search-type span").html($(".work-search-type span").html().slice(0, 8) + "...");
+    }
+}
+// 搜索关键字下拉列表
+function key_word_list() {
+    //聚焦是显示下拉列表
+    $(".input-keyword").focus(function() {
+            $(this).siblings("ul").slideDown(200);
+        }).blur(function() {
+            $(this).siblings("ul").hide();
+        })
+        // 划过列表某一项即显示到搜索关键字框中
+    $(".work-search-keyword ul li").hover(function() {
+        var hover_key = $(this).html();
+        $(".input-keyword").val(hover_key);
+    })
+}
+// tab效果
+function tab(obj1, obj2, obj3, obj4) {
+    obj1.click(function() {
+        var index = $(this).index(obj4);
+        $(this).addClass(obj3).siblings().removeClass(obj3);
+        obj2.eq(index).show().siblings().hide();
+    })
+}
+// placeholder兼容
+function placeholder_all() {
+    var doc = document,
+        inputs = doc.getElementsByTagName('input'),
+        supportPlaceholder = 'placeholder' in doc.createElement('input'),
+
+        placeholder = function(input) {
+            var text = input.getAttribute('placeholder'),
+                defaultValue = input.defaultValue;
+            if (defaultValue == '') {
+                input.value = text
+            }
+            input.onfocus = function() {
+                if (input.value === text) {
+                    this.value = ''
+                }
+            };
+            input.onblur = function() {
+                if (input.value === '') {
+                    this.value = text
+                }
+            }
+        };
+
+    if (!supportPlaceholder) {
+        for (var i = 0, len = inputs.length; i < len; i++) {
+            var input = inputs[i],
+                text = input.getAttribute('placeholder');
+            if (input.type === 'text' && text) {
+                placeholder(input)
+            }
+        }
+    }
+}
+//流程步骤交互效果
+$(function() {
+
+        $(".flow-box li").click(function() {
+            $(this).addClass("on").siblings("li").removeClass("on");
+            $(this).siblings("li").children("span").removeClass("on")
+            $(this).children("span").addClass("on");
+        });
+    })
+
+
+    //流程页面引入
+$(function() {
+        $("#flow-one").click(function() {
+            $(".js-iframe-box").load('整体信息.html');
+        });
+        $("#flow-two").click(function() {
+            $(".js-iframe-box").load('具体档次.html');
+        })
+        $("#flow-three").click(function() {
+            $(".js-iframe-box").load('用户群.html');
+        })
+        $("#flow-four").click(function() {
+            $(".js-iframe-box").load('用户需要做什么.html');
+        })
+        $("#flow-five").click(function() {
+            $(".js-iframe-box").load('移动公司做什么.html');
+        })
+        $("#flow-six").click(function() {
+            $(".js-iframe-box").load('共同约定.html');
+        })
+        $("#flow-seven").click(function() {
+            $(".js-iframe-box").load('预览.html');
+        })
+
+    })
+    //上传文件删除
+$(function() {
+        $(".change-file span").click(function() {
+            $(this).addClass("on").siblings("span").removeClass("on");
+            $(this).children("img").show();
+            $(this).siblings("span").children("img").hide();
+
+        })
+        $(".change-file span img").click(function() {
+            $(this).parent("span").hide();
+        })
+    })
+    //全网客户、目标客户切换
+$(function() {
+        $("#target").click(function() {
+            $(".target-main").show();
+            $(".full-main").hide();
+
+        })
+        $("#full-cus").click(function() {
+            $(".target-main").hide();
+            $(".full-main").show();
+        })
+    })
+    //用户群列表信息居中、交互
+$(function() {
+        var n = $(".user-flock-list li").length;
+        $(".js-headline-box span").hide();
+        $(".user-flock-list").css({
+            width: (n * 122) + 'px'
+        });
+        $(".user-flock-list li").toggle(function() {
+            var num = $(this).index();
+            $(this).css({
+                borderColor: '#8eb904',
+                color: '#8eb904'
+            })
+            $(this).children(".img-green").show();
+            $(this).children(".img-gruy").hide();
+            $(".js-project-content").show();
+            $(".js-project-headline").show();
+            $(".js-headline-box").show();
+            $(".js-headline-box span").eq(num).show().addClass("on").siblings("span").removeClass("on");
+            $(".js-project-main").eq(num).show().siblings(".js-project-main").hide();
+        }, function() {
+            var num = $(this).index();
+            var spanNum = $(".js-headline-box span").length;
+            $(this).css({
+                borderColor: '#e7e7e7',
+                color: '#333'
+            })
+            $(this).children(".img-green").hide();
+            $(this).children(".img-gruy").show();
+            $(".js-headline-box span").eq(num).removeClass("on").hide();
+            $(".js-project-main").eq(num).hide();
+            $(".js-headline-box span:visible").first().addClass("on").siblings("span").removeClass("on");
+            var hideNum = $(".js-headline-box span:hidden").length;
+            if (hideNum == spanNum) {
+                $(".js-project-content").hide();
+            };
+        })
+        $(".tab-exercise span").click(function() {
+            $(this).addClass("on").siblings("span").removeClass("on");
+            var tabNum = $(this).index();
+            $(".js-project-main").eq(tabNum).show().siblings(".js-project-main").hide();
+        })
+    })
+    //区域选择tab切换
+$(function() {
+        $(".change-box button").click(function() {
+            $(this).addClass("on").siblings("button").removeClass("on")
+        })
+		
+    })
+    //输入营销活动时必须选择一个档次
+$(function() {
+
+        $("#grade-name-input").click(function() {
+            var llll = $(".project-box li");
+            if (llll.hasClass("on")) {
+
+            } else {
+                $(".shadow").show();
+                $(".js-tc-box1").show();
+            }
+
+
+        })
+    })
+    //档次选择
+$(function() {
+        $(".project-box li").click(function() {
+            $(this).addClass("on").siblings("li").removeClass("on");
+        })
+		
+    })
+    //整体信息自适应
+function iFrameHeight1() {
+    var ifm = document.getElementById("iframepage1");
+    var subWeb = document.frames ? document.frames["iframepage1"].document : ifm.contentDocument;
+    if (ifm != null && subWeb != null) {
+        ifm.height = subWeb.body.scrollHeight;
+        ifm.width = subWeb.body.scrollWidth;
+    }
+}
+//弹出框确定、取消、关闭
+$(function() {
+        $("#js-quit1").click(function() {
+            $(this).parents(".js-tc-box1").hide();
+            $(".shadow").hide();
+        })
+        $("#js-sure1").click(function() {
+            $(this).parents(".js-tc-box1").hide();
+            $(".shadow").hide();
+        })
+        $("#js-off1").click(function() {
+            $(this).parents(".js-tc-box1").hide();
+            $(".shadow").hide();
+        })
+    })
+    //删除档次
+$(function() {
+        $(".project-box li button.delete").click(function() {
+            var projectThis = $(this).parents("li");
+            $(".js-tc-box2").show();
+            $(".shadow").show();
+            $("#js-sure2").click(function() {
+
+                projectThis.remove();
+
+                $(this).parents(".js-tc-box2").hide();
+                $(".shadow").hide();
+            })
+        })
+        $("#js-quit2").click(function() {
+            $(this).parents(".js-tc-box2").hide();
+            $(".shadow").hide();
+        })
+
+        $("#js-off2").click(function() {
+            $(this).parents(".js-tc-box2").hide();
+            $(".shadow").hide();
+        })
+    })
+    //保存成功
+$(function() {
+    $("#js-trorage").click(function() {
+        $(".js-tc-box3").show();
+        $(".shadow").show();
+    });
+    $("#js-quit3").click(function() {
+        $(this).parents(".js-tc-box3").hide();
+        $(".shadow").hide();
+    })
+    $("#js-sure3").click(function() {
+        $(this).parents(".js-tc-box3").hide();
+        $(".shadow").hide();
+    })
+    $("#js-off3").click(function() {
+        $(this).parents(".js-tc-box3").hide();
+        $(".shadow").hide();
+    })
+})
+$(function() {
+        for (var i = 0; i < $(".pop-up-main .node-style01").length; i++) {
+            var length2 = $(".pop-up-main .node-style01").eq(i).html();
+            if (length2.length > 40) {
+                $(".pop-up-main .node-style01").eq(i).html(length2.slice(0, 40) + "...");
+            }
+        };
+        for (var i = 0; i < $(".pop-up-main .node-style02").length; i++) {
+            var length2 = $(".pop-up-main .node-style02").eq(i).html();
+            if (length2.length > 44) {
+                $(".pop-up-main .node-style02").eq(i).html(length2.slice(0, 42) + "...");
+            }
+        };
+        for (var i = 0; i < $(".pop-up-main .node-style03").length; i++) {
+            var length2 = $(".pop-up-main .node-style03").eq(i).html();
+            if (length2.length > 40) {
+                $(".pop-up-main .node-style03").eq(i).html(length2.slice(0, 40) + "...");
+            }
+        };
+    })
+    /*地市tab切换*/
+$(function() {
+    window.onload = function() {
+        var $li = $('.list-city li');
+        var $ul = $('.tabs-pane');
+        $li.click(function() {
+            $li.removeClass();
+            var $t = $(this).index();
+            $(this).addClass('on');
+            $ul.css('display', 'none');
+            $ul.eq($t).css('display', 'block');
+        })
+    }
+});
+//系统管理交互效果
+$(function() {
+		$(".system-list>li").hover(function() {
+            $(this).addClass("on").siblings("li").removeClass("on");
+        });
+		var n = $(".system-list>li").length;
+		var oWidth = n * 212;
+		if(oWidth >= 1200){
+			oWidth = 1060;
+		}
+        $(".system-list").css({
+            width: oWidth + 'px'
+        });
+    })

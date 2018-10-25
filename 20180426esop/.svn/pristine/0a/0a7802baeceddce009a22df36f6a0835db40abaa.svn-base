@@ -1,0 +1,105 @@
+package com.esop.workflow.dto;
+
+import com.esop.workflow.vo.Param;
+
+public class StartProcInstInDTO {
+    private String resourceName;
+    private String initialAction;
+    private Param[] params;
+    private String procTypeCode;
+    private String bizRecordId;
+    private String startLoginNo;
+    private String startDept;
+    private String startRegion;
+    private String procId;
+    private String procNameCh;
+    private String flag;
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public void setResourceName(String resourceName) {
+        this.resourceName = resourceName;
+    }
+
+    public String getInitialAction() {
+        return initialAction;
+    }
+
+    public void setInitialAction(String initialAction) {
+        this.initialAction = initialAction;
+    }
+
+    public Param[] getParams() {
+        return params;
+    }
+
+    public void setParams(Param[] params) {
+        this.params = params;
+    }
+
+    public String getProcTypeCode() {
+        return procTypeCode;
+    }
+
+    public void setProcTypeCode(String procTypeCode) {
+        this.procTypeCode = procTypeCode;
+    }
+
+    public String getBizRecordId() {
+        return bizRecordId;
+    }
+
+    public void setBizRecordId(String bizRecordId) {
+        this.bizRecordId = bizRecordId;
+    }
+
+    public String getStartLoginNo() {
+        return startLoginNo;
+    }
+
+    public void setStartLoginNo(String startLoginNo) {
+        this.startLoginNo = startLoginNo;
+    }
+
+    public String getStartDept() {
+        return startDept;
+    }
+
+    public void setStartDept(String startDept) {
+        this.startDept = startDept;
+    }
+
+    public String getStartRegion() {
+        return startRegion;
+    }
+
+    public void setStartRegion(String startRegion) {
+        this.startRegion = startRegion;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameCh() {
+        return procNameCh;
+    }
+
+    public void setProcNameCh(String procNameCh) {
+        this.procNameCh = procNameCh;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+}

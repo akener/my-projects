@@ -1,0 +1,26 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/21.
+ */
+public class PcKpiInfoParamDto {
+    String landing_no= "";//客户经理编码
+/*    String login_name = "";*///客户经理名称
+    String eff_date = "";
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

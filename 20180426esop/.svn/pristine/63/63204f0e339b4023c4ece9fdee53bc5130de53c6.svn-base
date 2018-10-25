@@ -1,0 +1,261 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto;
+import com.esop.cqDevelopment.capitalManage.service.GroupMoneyRecordedService;
+import com.esop.workflow.service.OrderWorkFlowService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class GroupMoneyRecordedRc {
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    GroupMoneyRecordedService groupMoneyRecordedService;
+    @Autowired
+    OrderWorkFlowService orderWorkFlowService;
+    private static Logger logger = Logger.getLogger(GroupMoneyRecordedRc.class);
+
+    Result result=new Result();
+    //银行交易明细查询
+    @RequestMapping(value="/groupMoneyRecorded")
+    public Result getBankDealInfoRC(GroupMoneyRecordedDto groupMoneyRecordedDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyRecordedDto> list= groupMoneyRecordedService.groupMoneyRecordedSvc(groupMoneyRecordedDto);
+        try{
+            for(GroupMoneyRecordedDto dto:list){
+                String ruzhang_jine=dto.getRuzhang_jine();
+                BigDecimal bigDecimal=new BigDecimal(ruzhang_jine);
+                BigDecimal fenmu=new BigDecimal(100);
+                dto.setRuzhang_jine_yuan(bigDecimal.divide(fenmu).toString());
+            }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+    @RequestMapping(value="/groupMoneyAllRecorded")
+    public Result groupMoneyAllRecorded(GroupMoneyRecordedDto groupMoneyRecordedDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyRecordedDto> list= groupMoneyRecordedService.selectGroupMoneyAllRecorded(groupMoneyRecordedDto);
+        try{
+            for(GroupMoneyRecordedDto dto:list){
+                String ruzhang_jine=dto.getRuzhang_jine();
+                BigDecimal bigDecimal=new BigDecimal(ruzhang_jine);
+                BigDecimal fenmu=new BigDecimal(100);
+                dto.setRuzhang_jine_yuan(bigDecimal.divide(fenmu).toString());
+            }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+
+    //银行交易明细查询
+    @RequestMapping(value="/groupMoneyMonthRecorded")
+    public Result groupMoneyMonthRecorded(GroupMoneyRecordedDto groupMoneyRecordedDto, HttpServletRequest request, boolean flag){
+        List<GroupMoneyRecordedDto> list= groupMoneyRecordedService.groupMoneyMonthRecordedSvc(groupMoneyRecordedDto);
+        try{
+            for(GroupMoneyRecordedDto dto:list){
+                String ruzhang_jine=dto.getRuzhang_jine();
+                BigDecimal bigDecimal=new BigDecimal(ruzhang_jine);
+                BigDecimal fenmu=new BigDecimal(100);
+                dto.setRuzhang_jine_yuan(bigDecimal.divide(fenmu).toString());
+            }
+        }catch (Exception e){
+
+        }
+        result.setRecordsFiltered(list.size());
+        result.setRecordsTotal(list.size());
+        result.setDraw(0);
+        result.setData(list);
+        return result;
+    }
+    @RequestMapping(value="/jiheruzhang")
+    public int jiheruzhang(GroupMoneyRecordedDto groupMoneyRecordedDto, HttpServletRequest request, boolean flag){
+        int i=0;
+        logger.info("============开始查询当天是否稽核过");
+        String audit_status=groupMoneyRecordedService.selectJihe(groupMoneyRecordedDto);
+        if("0".equals(audit_status)){
+            groupMoneyRecordedService.jiheruzhang(groupMoneyRecordedDto);
+            i=1;
+        }else if("1".equals(audit_status)){
+            i=2;
+        }else if("2".equals(audit_status)){
+            i=3;
+        }else{
+            i=999;
+        }
+        return i;
+    }
+    @RequestMapping(value="/bohuiruzhang")
+    public int bohuiruzhang(String shenqing_danhao_list){
+        Date date=new Date();
+        String now=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+        String [] shenqing_danhao_list2=shenqing_danhao_list.split(",");
+        GroupMoneyRecordedDto groupMoneyRecordedDto=new GroupMoneyRecordedDto();
+        int l=1;
+        for(int i=0;i<shenqing_danhao_list2.length;i++){
+            String[] shenqing_danhao1=shenqing_danhao_list2[i].split(";");
+            String shenqing_danhao=shenqing_danhao1[0];
+            String jihe_ren=shenqing_danhao1[1];
+            String jihe_shijian=now;
+            groupMoneyRecordedDto.setShenqing_danhao(shenqing_danhao);
+            groupMoneyRecordedDto.setJihe_ren(jihe_ren);
+            groupMoneyRecordedDto.setJihe_shijian(jihe_shijian);
+            l= groupMoneyRecordedService.bohuiruzhang(groupMoneyRecordedDto);
+        }
+
+        return l;
+    }
+
+    @RequestMapping(value="/selectOrgId")
+    public List getOrgId(){
+        List  list= groupMoneyRecordedService.getOrgIdService();
+        return list;
+    }
+    //银行交易明细查询
+    @RequestMapping(value="/selectBusinessCenterCode")
+    public List selectBusinessCenter(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        List  list= groupMoneyRecordedService.getBusinessCenter(groupMoneyRecordedDto);
+        return list;
+    }
+
+    @RequestMapping(value="/expertMoneyRecorded")
+    public String expertApprove(GroupMoneyRecordedDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","操作日期","集团编号","集团名称","客户经理","申请类型","申请单号","入账金额（元）","账务员","入账备注","对方账号","对方户名","到账日期","到账账号","到账户名","唯一标识码","申请日期","稽核状态","稽核时间","稽核人"};
+        String[] methods = {"getName","getBusiness_center","getCaozuo_riqi","getJituan_bianhao","getJituan_mingcheng", "getLogin_name", "getShenqing_leixin", "getShenqing_danhao","getRuzhang_jine_yuan","getLogin_name2","getRuzhang_beizhu","getDuifang_zhanghao","getDuifang_huming","getDaozhang_riqi","getDaozhang_zhanghao","getDaozhang_huming","getWeiyibiaoshima","getShenqing_riqi","getIs_jihe_zhongwen","getJihe_shijian","getLogin_name3"};
+
+        List<GroupMoneyRecordedDto> reslist=  groupMoneyRecordedService.groupMoneyRecordedSvc(parameter);
+        try{
+        for(GroupMoneyRecordedDto dto:reslist){
+            String ruzhang_jine=dto.getRuzhang_jine();
+            BigDecimal bigDecimal=new BigDecimal(ruzhang_jine);
+            BigDecimal fenmu=new BigDecimal(100);
+            dto.setRuzhang_jine_yuan(bigDecimal.divide(fenmu).toString());
+        }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金入账日报表(清单报表)";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"时间："+now};
+            String[] footer={"制表人：系统自动制表","稽核人："+reslist.get(reslist.size()-1).getLogin_name3()};
+        orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+
+    @RequestMapping(value="/expertMoneyAllRecorded")
+    public String expertMoneyAllRecorded(GroupMoneyRecordedDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"报表日期","分公司","行业中心","入账总金额","日报稽核状态","稽核人员","稽核时间"};
+        String[] methods = {"getChaxun_riqi","getName","getBusiness_center","getRuzhang_jine_yuan","getIs_jihe_zhongwen", "getLogin_name", "getJihe_shijian"};
+
+        List<GroupMoneyRecordedDto> reslist=  groupMoneyRecordedService.selectGroupMoneyAllRecorded(parameter);
+        try{
+            for(GroupMoneyRecordedDto dto:reslist){
+                String ruzhang_jine=dto.getRuzhang_jine();
+                BigDecimal bigDecimal=new BigDecimal(ruzhang_jine);
+                BigDecimal fenmu=new BigDecimal(100);
+                dto.setRuzhang_jine_yuan(bigDecimal.divide(fenmu).toString());
+            }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+            String now2 =parameter.getChaxun_riqi2();
+
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金入账汇总报表";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"起始查询日期："+now,"终止查询日期："+now2};
+            String[] footer={};
+            orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+    @RequestMapping(value="/expertMoneyMonthRecorded")
+    public String expertMoneyMonthRecorded(GroupMoneyRecordedDto parameter, HttpServletResponse response){
+        String message="1";
+        String[] tableHeader = {"分公司","行业中心","账期","入账集团编号","入账集团名称","入账金额（元）"};
+        String[] methods = {"getName","getBusiness_center","getCaozuo_riqi","getJituan_bianhao","getJituan_mingcheng","getRuzhang_jine_yuan"};
+
+        List<GroupMoneyRecordedDto> reslist=  groupMoneyRecordedService.groupMoneyMonthRecordedSvc(parameter);
+        try{
+            for(GroupMoneyRecordedDto dto:reslist){
+                String ruzhang_jine=dto.getRuzhang_jine();
+                BigDecimal bigDecimal=new BigDecimal(ruzhang_jine);
+                BigDecimal fenmu=new BigDecimal(100);
+                dto.setRuzhang_jine_yuan(bigDecimal.divide(fenmu).toString());
+            }
+        }catch (Exception e){
+
+        }
+        try {
+            String now =parameter.getChaxun_riqi();
+            String business_center=parameter.getBusiness_center();
+            if("null".equals(business_center)){
+                business_center="";
+            }
+            String title="集团资金入账月报表";
+            String[] str={"分公司："+parameter.getGroup_pay_name(),"行业中心："+business_center.trim(),"时间："+now};
+            String[] footer={};//"制表人：系统自动制表","稽核人："+reslist.get(0).getLogin_name3()};
+            orderWorkFlowService.getExportAddTitle(title,str,footer,tableHeader, methods,reslist ,response);
+        }catch (Exception e){
+            e.printStackTrace();
+            message="0";
+        }
+        return message;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

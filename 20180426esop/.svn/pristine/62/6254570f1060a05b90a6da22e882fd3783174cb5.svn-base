@@ -1,0 +1,180 @@
+package com.esop.menus.dto;
+
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by yanhao on 17/6/2.
+ */
+public class GroupInformationDto extends BaseDto{
+
+    String eff_date = "";
+    String grp_num = "";
+    String group_income = "";
+    String import_member_amout = "";
+    String group_person_amout = "";
+    String information_income = "";
+    String product_amout = "";
+    String product_income = "";
+    String product_member_amout = "";
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+
+    public void setGrp_num(String grp_num) {
+        this.grp_num = grp_num;
+    }
+
+    public void setGroup_income(String group_income) {
+        this.group_income = group_income;
+    }
+
+    public void setImport_member_amout(String import_member_amout) {
+        this.import_member_amout = import_member_amout;
+    }
+
+    public void setGroup_person_amout(String group_person_amout) {
+        this.group_person_amout = group_person_amout;
+    }
+
+    public void setInformation_income(String information_income) {
+        this.information_income = information_income;
+    }
+
+    public void setProduct_amout(String product_amout) {
+        this.product_amout = product_amout;
+    }
+
+    public void setProduct_income(String product_income) {
+        this.product_income = product_income;
+    }
+
+    public void setProduct_member_amout(String product_member_amout) {
+        this.product_member_amout = product_member_amout;
+    }
+
+
+    public String getGrp_num() {
+        return grp_num;
+    }
+
+    public String getGroup_income() {
+        return group_income;
+    }
+
+    public String getImport_member_amout() {
+        return import_member_amout;
+    }
+
+    public String getGroup_person_amout() {
+        return group_person_amout;
+    }
+
+    public String getInformation_income() {
+        return information_income;
+    }
+
+    public String getProduct_amout() {
+        return product_amout;
+    }
+
+    public String getProduct_income() {
+        return product_income;
+    }
+
+    public String getProduct_member_amout() {
+        return product_member_amout;
+    }
+
+
+    String region_code = "";
+    String region_name = "";
+    String town_code = "";
+    String town_name = "";
+    String manager_no = "";
+    String manager_name = "";
+    String group_encode = "";
+    String group_type = "";
+    String grp_num_level = "";
+
+
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public void setGroup_encode(String group_encode) {
+        this.group_encode = group_encode;
+    }
+
+    public void setGroup_type(String group_type) {
+        this.group_type = group_type;
+    }
+
+    public void setGrp_num_level(String grp_num_level) {
+        this.grp_num_level = grp_num_level;
+    }
+
+
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public String getGroup_encode() {
+        return group_encode;
+    }
+
+    public String getGroup_type() {
+        return group_type;
+    }
+
+    public String getGrp_num_level() {
+        return grp_num_level;
+    }
+}

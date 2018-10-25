@@ -1,0 +1,198 @@
+/*
+buildscript {
+    ext {
+        springBootVersion = '1.5.3.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+*/
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE")
+        //classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.4.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+
+war {
+    baseName = 'esop-service-spring'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+    mybatisGenerator
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    //compile 'org.springframework:spring-context:4.3.9.RELEASE'
+    //增加对jsp支持
+    compile("org.springframework.boot:spring-boot-starter-tomcat")
+    //如果不引入这个包会导致通过Controller访问返回的jsp页面变成下载文件,如果需要将程序部署到weblogic不能引入这个包
+    compile("org.apache.tomcat.embed:tomcat-embed-jasper")
+    compile("javax.servlet:jstl")
+    //增加对jsp支持
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '1.4.3.RELEASE'
+    compile 'org.jasypt:jasypt-spring31:1.9.2'
+    compile group: 'org.json', name: 'json', version: '20160810'
+    compile('org.springframework:spring-jdbc')
+    compile('org.springframework:spring-test')
+    compile "org.springframework.boot:spring-boot-starter-logging"
+    compile "org.springframework.boot:spring-boot-starter-log4j2"
+    //compile('com.zaxxer:HikariCP-java7:2.4.11')
+    compile('com.zaxxer:HikariCP:2.7.1')
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
+    compile('org.mybatis:mybatis:3.4.1')
+    compile('org.mybatis:mybatis-spring:1.3.0')
+    compile('mysql:mysql-connector-java:5.1.36')
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+   // compile 'org.apache.poi:poi:3.14'
+    compile group: 'com.google.guava', name: 'guava', version: '19.0'
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile('org.webjars:jquery:1.12.4') //加载jquery版本
+    //通过axis实现webservice接口
+    compile group: 'org.apache.axis', name: 'axis', version: '1.4'
+    compile group: 'commons-discovery', name: 'commons-discovery', version: '0.5'
+    compile group: 'javax.xml', name: 'jaxrpc-api', version: '1.1'
+    compile group: 'wsdl4j', name: 'wsdl4j', version: '1.5.1'
+    compile group: 'org.spockframework', name: 'spock-spring', version: '1.0-groovy-2.4'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.1'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.1'
+    compile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.1'
+    compile group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '2.6.0'
+    //增加excel导入包
+    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
+
+    //通过axis实现webservice接口
+    //okhttp
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    //json转xml
+    //compile group: 'com.fasterxml.jackson.jaxrs', name: 'jackson-jaxrs-json-provider', version: '2.8.8'
+    //解决返回xml格式结果
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.8.8'
+    //json工具类
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.31'
+    //weblogic部署使用
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+    //xml解析
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
+    //webservice服务
+    /*compile group: 'org.apache.axis2', name: 'axis2-kernel', version: '1.7.5'
+    compile group: 'org.apache.axis2', name: 'axis2-adb', version: '1.7.5'
+    compile group: 'org.apache.axis2', name: 'axis2-transport-local', version: '1.7.5'
+    compile group: 'org.apache.axis2', name: 'axis2-transport-http', version: '1.7.5'*/
+    //文件上传下载
+    //compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.2'
+    //compile group: 'org.projectlombok', name: 'lombok', version: '1.16.16'
+    //compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
+    /*
+    compile group: 'javax.mail', name: 'mail', version: '1.4.7'
+    compile group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.5'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+    compile group: 'org.apache.httpcomponents', name: 'httpcore-nio', version: '4.4.5'
+    compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.2'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.6.Final'
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.5.0'
+    compile group: 'com.squareup.okhttp', name: 'okhttp', version: '2.7.5'
+    compile group: 'com.rometools', name: 'rome', version: '1.7.0'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.7'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.8.5'
+    compile group: 'com.google.protobuf', name: 'protobuf-java', version: '3.1.0'
+    compile group: 'com.googlecode.protobuf-java-format', name: 'protobuf-java-format', version: '1.4'
+    compile group: 'org.springframework', name: 'spring-oxm', version: '4.3.5.RELEASE'
+    compile group: 'burlap', name: 'burlap', version: '2.1.7'
+    compile group: 'com.caucho', name: 'hessian', version: '4.0.7'
+    compile group: 'javax.faces', name: 'jsf-api', version: '2.1'
+    compile group: 'javax.portlet', name: 'portlet-api', version: '3.0.0'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.3.2'
+    compile group: 'javax.servlet.jsp', name: 'javax.servlet.jsp-api', version: '2.3.1'
+    compile group: 'javax.servlet', name: 'jstl', version: '1.2'
+    compile group: 'org.webjars', name: 'webjars-locator', version: '0.32'
+    compile group: 'org.apache.poi', name: 'poi', version: '3.15'
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.25-incubating'
+    compile group: 'com.lowagie', name: 'itext', version: '4.2.1'
+    compile group: 'net.sourceforge.jexcelapi', name: 'jxl', version: '2.6.12'
+    compile group: 'org.springframework', name: 'spring-context', version: '4.3.5.RELEASE'
+    compile group: 'org.apache.tiles', name: 'tiles-jsp', version: '2.2.2'
+    compile group: 'org.apache.velocity', name: 'velocity', version: '1.7'
+    compile group: 'org.apache.tiles', name: 'tiles-core', version: '3.0.7'
+    compile group: 'org.apache.tiles', name: 'tiles-el', version: '3.0.7'
+    compile group: 'org.apache.tiles', name: 'tiles-servlet', version: '2.2.2'
+    compile group: 'org.apache.tiles', name: 'tiles-extras', version: '2.2.2'
+    compile group: 'org.apache.tiles', name: 'tiles-request-servlet', version: '1.0.6'
+    compile group: 'net.sf.jasperreports', name: 'jasperreports', version: '4.0.0'
+    compile group: 'org.freemarker', name: 'freemarker', version: '2.3.23'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    compile group: 'org.springframework', name: 'spring-context-support', version: '4.3.5.RELEASE'
+    */
+    //weblogic部署使用
+    compile group: 'com.sun.jersey.contribs', name: 'jersey-spring', version: '1.19'
+    compile files('libs/ojdbc6.jar')
+    compile files('libs/upload_bill.jar')
+
+    compile files('libs/iText-2.1.7.jar')
+    compile files('libs/itext-rtf-2.1.7.jar')
+    compile files('libs/iTextAsian.jar')
+    //   compile fies('libs/freemarker.jar')
+    compile files('libs/poi-3.17.jar')
+    compile files('libs/poi-examples-3.17.jar')
+    compile files('libs/poi-excelant-3.17.jar')
+    compile files('libs/poi-ooxml-3.17.jar')
+    compile files('libs/poi-ooxml-schemas-3.17.jar')
+    compile files('libs/poi-scratchpad-3.17.jar')
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('com.jayway.jsonpath:json-path')
+    //weblogic部署使用
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    //xml转json
+    compile files('libs/staxon-1.3.jar')
+    compile files('libs/BPMInvoker4.0.jar')
+    compile group: 'jaxen', name: 'jaxen', version: '1.1.6'
+    compile group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.1.1'
+
+    mybatisGenerator 'org.mybatis.generator:mybatis-generator-core:1.3.5'
+    mybatisGenerator 'mysql:mysql-connector-java:5.1.44'
+    mybatisGenerator 'tk.mybatis:mapper:3.4.4'
+}
+
+task mybatisGenerate << {
+    ant.properties['targetProject'] = projectDir.path
+    ant.properties['src_main_java'] = sourceSets.main.java.srcDirs[0].path
+    ant.properties['src_main_resources'] = sourceSets.main.resources.srcDirs[0].path
+    ant.taskdef(
+            name: 'mbgenerator',
+            classname: 'org.mybatis.generator.ant.GeneratorAntTask',
+            classpath: configurations.mybatisGenerator.asPath
+    )
+    ant.mbgenerator(overwrite: true, configfile: 'src/main/resources/scripts/generatorConfig.xml', verbose: true) {
+        propertyset {
+            propertyref(name: 'targetProject')
+            propertyref(name: 'src_main_java')
+            propertyref(name: 'src_main_resources')
+        }
+    }
+}

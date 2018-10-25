@@ -1,0 +1,67 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+public class UnionInfoDto {
+    private String id;
+    private String name;
+    private String levelId;
+    private String suoxie;
+    private String fullName;
+    private String areaCode;
+    private String valid;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(String levelId) {
+        this.levelId = levelId;
+    }
+
+    public String getSuoxie() {
+        return suoxie;
+    }
+
+    public void setSuoxie(String suoxie) {
+        this.suoxie = suoxie;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+}

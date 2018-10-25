@@ -1,0 +1,961 @@
+var arr1=new Array();
+
+$(function(){
+
+    document.getElementById("haveBossNo").style.display = "";
+    document.getElementById("haveBossNo1").style.display = "";
+    /*document.getElementById("noBossNo").style.display = "none";
+    document.getElementById("noBossNo1").style.display = "none";*/
+    //跨省
+    $("#grpusertype1").attr("disabled",true);
+    $("#grp_staff_number1").attr("disabled",true);
+    $("#need_remind1").attr("disabled",true);
+    $("#checkboxgrprolecode1").attr("disabled",true);
+    $("#grpusertype2").attr("disabled",true);
+    $("#grp_staff_number2").attr("disabled",true);
+    $("#need_remind2").attr("disabled",true);
+    $("#checkboxgrprolecode2").attr("disabled",true);
+    $("#grpusertype4").attr("disabled",true);
+    $("#grp_staff_number4").attr("disabled",true);
+    $("#need_remind4").attr("disabled",true);
+    $("#checkboxgrprolecode4").attr("disabled",true);
+    $("#checkboxgintertype4").attr("disabled",true);
+    //添加按钮
+    $("#add_button").attr("disabled",true);
+    $("#add_boss_button").attr("disabled",true);
+    $("#login_no44").attr("disabled",true);
+
+
+    //修改页 身份证号码
+    //修改页 营业专属工号
+    //修改页 OA工号
+    //修改页 员工编号
+    $("#id_card_no2").attr("disabled",true);
+    $("#busi_boss_no2").attr("disabled",true);
+    $("#oa_login_no2").attr("disabled",true);
+    $("#mis_no2").attr("disabled",true);
+    //修改按钮
+    $("#up_button").attr("disabled",true);
+
+    //RegionQuery();
+    //RightQuery();
+    resetAll();
+
+});
+
+//选择增加方式 已有BOSS工号或者无BOSS工号
+function chooseAddType(type) {
+    if('1'==type){
+        document.getElementById("haveBossNo").style.display = "";
+        document.getElementById("haveBossNo1").style.display = "";
+        /*document.getElementById("noBossNo").style.display = "none";
+        document.getElementById("noBossNo1").style.display = "none";*/
+        $("input:radio[name='optionsRadios1']").eq(0).attr("checked",true);
+        $("input:radio[name='optionsRadios2']").eq(0).attr("checked",false);
+        resetAll();
+    }else if('2'==type){
+        document.getElementById("haveBossNo").style.display = "none";
+        document.getElementById("haveBossNo1").style.display = "none";
+        /*document.getElementById("noBossNo").style.display = "";
+        document.getElementById("noBossNo1").style.display = "";*/
+        $("input:radio[name='optionsRadios1']").eq(0).attr("checked",false);
+        $("input:radio[name='optionsRadios2']").eq(0).attr("checked",true);
+        resetAll();
+    }
+}
+
+//获取地市
+function RegionQuery() {
+    $.ajax({
+        type: "get",
+        url: "doBusiRegionRM",
+        cache: false,
+        async: false,
+        success: function (result) {
+            region_data = "<option value=''>全省</option>";
+            $.each(result, function (i, field) {
+                //拼接json数据集字符串
+                region_data += "<option value='" + field.region_code + "' ";
+                region_data += ">" + field.region_name + "</option>";
+            });
+            $("#region_code1").empty();
+            $("#region_code1").append(region_data);
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    });
+}
+
+//获取区县
+function TownQuery() {
+    var region_cd = $("#region_code1").val();
+    var region_1 = region_cd.split(",");
+    var region_2 = region_1[0];
+
+    if ($("#region_code1").val() != "") {
+        $.ajax({
+            type: "get",
+            url: "doBusiTwonRM",
+            data: {
+                region_code: region_2
+            },
+            cache: false,
+            success: function (result) {
+                city_data = "<option value=''>全市</option>";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    city_data += "<option value='" + field.district_code + "' ";
+                    city_data += ">" + field.district_name + "</option>";
+                });
+                $("#town_code1").empty();
+                $("#town_code1").append(city_data);
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    } else {
+        $("#town_code1").empty();
+        $("#office_code1").empty();
+    }
+}
+
+//获取营业厅
+function OfficeQuery() {
+    var region_cd = $("#region_code1").val();
+    var region_1 = region_cd.split(",");
+    var region_2 = region_1[0];
+
+    var town_cd = $("#town_code1").val();
+    var town_1 = town_cd.split(",");
+    var town_2 = town_1[0];
+    $("#office_code1").empty();
+    if (($("#region_code1").val() != "")&&($("#town_code1").val() != "")) {
+            $.ajax({
+                type: "get",
+                url: "doBusiOfficeRM",
+                data: {
+                    region_code: region_2,
+                    town_code: town_2
+                },
+                cache: false,
+                success: function (result) {
+                    city_data = "<option value=''>全营业厅</option>";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        city_data += "<option value='" + field.town_code + "' ";
+                        city_data += ">" + field.office_name + "</option>";
+                    });
+                    $("#office_code1").empty();
+                    $("#office_code1").append(city_data);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+    } else {
+        $("#office_code1").empty();
+    }
+}
+
+//获取工号
+function LoginQuery() {
+    //alert(noList);
+    var bossLoginType = $("#boss_login_type").val();
+    if(bossLoginType==1){
+        if (($("#region_code1").val() != "")&&($("#town_code1").val() != "")&&($("#office_code1").val() != "")) {
+
+            var region_cd = $("#region_code1").val();
+            var region_1 = region_cd.split(",");
+            var region_2 = region_1[1];
+
+            var town_cd = $("#town_code1").val();
+            var town_1 = town_cd.split(",");
+            var town_2 = town_1[1];
+
+            var office_cd = $("#office_code1").val();
+            var office_1 = office_cd.split(",");
+            var office_2 = office_1[1];
+
+            var noList = region_2+town_2+office_2;
+
+            $.ajax({
+                type: "get",
+                url: "doBusiOfficeLoginRM",
+                data: {
+                    region_code: $("#region_code1").val(),
+                    town_code: $("#town_code1").val(),
+                    office_code: $("#office_code1").val()
+                },
+                cache: false,
+                success: function (result) {
+                    var login_no_max = result[0].login_no;
+                    if(login_no_max=="" || login_no_max==null){
+                        if(noList.length==1){
+                            login_no_max=noList+"00000";
+                        }else{
+                            login_no_max=noList+"00";
+                        }
+                    }
+                    var changeNo = login_no_max.substring(4,6);
+                    if(changeNo=="zz")
+                    {
+                        alert("该营业厅工号已满，不能自动生成。请进行手工输入！注意：工号长度共6位且前4位不允许变更！");
+                        return;
+                    }
+                    var remainNo = login_no_max.substring(0,4);
+                    var newMaxNo = StrAdd(1,changeNo,1);
+                    var newNo = remainNo + newMaxNo;
+                    $("#login_no1").val(newNo);
+                    $("#add_button").removeAttr("disabled");
+                }
+            });
+        } else {
+            alert("请选择地市、区县、营业厅");
+        }
+    } else if(bossLoginType==3) {
+        var region_cd = $("#region_code1").val();
+        var region_1 = "";
+        var region_2 = "";
+        var group_tp = "";
+        if(region_cd!=""&&region_cd!=null){
+            region_1 = region_cd.split(",");
+            region_2 = region_1[2];
+            group_tp = region_2;
+        }
+
+        var town_cd = $("#town_code1").val();
+        var town_1 = "";
+        var town_2 = "";
+        if(town_cd!=""&&town_cd!=null){
+            town_1 = town_cd.split(",");
+            town_2 = town_1[2];
+            group_tp = town_2;
+        }
+
+        var office_cd = $("#office_code1").val();
+        var office_1 = "";
+        var office_2 = "";
+        if(office_cd!=""&&office_cd!=null){
+            office_1 = office_cd.split(",");
+            office_2 = office_1[2];
+            group_tp = office_2;
+        }
+
+        //var noList = region_2+town_2+office_2;
+
+        //alert(noList);
+        //alert(group_tp);
+
+        $.ajax({
+            type: "get",
+            url: "getBossBusiLogin",
+            data: {
+                group_id: group_tp
+            },
+            cache: false,
+            success: function (result) {
+                var login_no_busi_boss = result[0].login_no;
+                //alert(login_no_busi_boss);
+                if(result.length>0){
+                    $("#login_no1").val(login_no_busi_boss);
+                    $("#add_button").removeAttr("disabled");
+                }else{
+                    bootStrapAlert('工号生成失败！');
+                }
+            }
+        });
+    }
+}
+
+//获取BOSS角色权限
+function RightQuery() {
+    $.ajax({
+        type: "get",
+        url: "doBusiRightRM",
+        cache: false,
+        async: false,
+        success: function (result) {
+            var right_data;
+            $.each(result, function (i, field) {
+                //拼接json数据集字符串
+                right_data += "<option value='" + field.right_code + "' ";
+                right_data += ">" + field.right_name + "</option>";
+            });
+            $("#right_code1").append(right_data);
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    });
+}
+
+//获取营业工号现有最大值+1(ASCII)
+function StrAdd(AddType, SrcStr, Value)
+{
+    //AddType 0值加1， 1:模加1
+    var BaseStr ="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    var S = "";
+    var CurPos = 0, PrePos = 0, SrcLen=0,BaseLen=0, Index=0;
+    var isCarry = 0;
+
+    SrcLen= SrcStr.length;
+    BaseLen=BaseStr.length;
+    isCarry = Value % BaseLen;
+
+    for(CurPos = SrcLen - 1; CurPos >= 0; CurPos --)
+    {
+        if (isCarry != 0)
+        {
+            Index = BaseStr.indexOf(SrcStr.charAt(CurPos)) + isCarry;
+            if (Index < -1)
+            {
+                return "";
+            }
+            if (Index > BaseLen - 1)
+            {
+                isCarry = 1;
+                S = BaseStr.charAt(Index - BaseLen) + S;
+            }
+            else
+            {
+                isCarry = 0;
+                S = SrcStr.substring(0, CurPos) + BaseStr.charAt(Index) + S;
+                break;
+            }
+            if (CurPos == 0 && AddType == 0)
+                S = BaseStr.charAt(0) + S;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    return S;
+}
+
+//内容特殊字符校验
+var haveSpe = function (str){
+    var comp="\\><\'\"&#";
+    var aChar="";
+    for(var i=0;i<str.length;i++){
+        aChar=str.charAt(i);
+        if(comp.indexOf(aChar)!=-1)
+            return false;
+    }
+    return true;
+};
+
+//alert
+var bootStrapAlert = function (msg){
+    $('#alertLabelInfo').html(msg);
+    $('#operationAlertInfo').modal('show');
+}
+
+//电话校验
+function check_phone_no1(phone_no) {
+    var reg = new RegExp("^[0-9]*$");
+    if(phone_no.length!=11){
+        bootStrapAlert('联系电话应为11位!');
+        return false;
+    }else if(haveSpe(phone_no)==false){
+        bootStrapAlert('esop工号不能包含特殊字符！');
+        return false;
+    }else if(!reg.test(phone_no)){
+        bootStrapAlert('请输入数字!');
+        return false;
+    }
+}
+
+//boss工号类型切换
+function bossLoginTypeChoose(type) {
+    if('1'==type){
+        document.getElementById("check_boss_no1").style.display = "none";
+        resetAdd();
+    }else if('3'==type){
+        document.getElementById("check_boss_no1").style.display = "";
+        resetAdd();
+    }
+}
+
+//身份证校验
+function check_id_card_no1() {
+    var id_card_no = $("#id_card_no1").val();
+    if ($.trim(id_card_no) == ""){
+        bootStrapAlert('身份证号码不能为空！');
+        return false;
+    }else if(id_card_no.length!=18){
+        bootStrapAlert('身份证号码应为18位！');
+        return false;
+    }else if(haveSpe(id_card_no)==false){
+        bootStrapAlert('身份证号码不能包含特殊字符！');
+        return false;
+    }
+    $.ajax({
+        type: "POST",
+        url: "basicManagement",
+        data:{
+            id_card_no:id_card_no
+        },
+        cache: false,
+        success: function (data) {
+            if(data==0){
+                bootStrapAlert('验证成功');
+                $("#id_card_no1_check").val("1");
+            }else{
+                bootStrapAlert('身份证号码已存在');
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+}
+
+//营业专属工号校验
+function check_busi_boss_no1() {
+    var id_card_no = $("#busi_boss_no1").val();
+    if ($.trim(id_card_no) == ""){
+        bootStrapAlert('营业专属工号不能为空！');
+        return false;
+    }else if(id_card_no.length!=6){
+        bootStrapAlert('营业专属工号应为6位！');
+        return false;
+    }else if(haveSpe(id_card_no)==false){
+        bootStrapAlert('营业专属工号不能包含特殊字符！');
+        return false;
+    }
+    $.ajax({
+        type: "POST",
+        url: "basicManagement",
+        data:{
+            busi_boss_no:id_card_no
+        },
+        cache: false,
+        success: function (data) {
+            if(data==0){
+                bootStrapAlert('验证成功');
+                $("#busi_boss_no1_check").val("1");
+            }else{
+                bootStrapAlert('营业专属工号已存在');
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+}
+
+//OA工号校验
+function check_oa_login_no1() {
+    var id_card_no = $("#oa_login_no1").val();
+    if ($.trim(id_card_no) == ""){
+        bootStrapAlert('OA工号不能为空！');
+        return false;
+    }else if(id_card_no.length.length > 20){
+        bootStrapAlert('OA工号最长为20位！');
+        return false;
+    }else if(haveSpe(id_card_no)==false){
+        bootStrapAlert('OA工号不能包含特殊字符！');
+        return false;
+    }
+    $.ajax({
+        type: "POST",
+        url: "basicManagement",
+        data:{
+            oa_login_no:id_card_no
+        },
+        cache: false,
+        success: function (data) {
+            if(data==0){
+                bootStrapAlert('验证成功');
+                $("#oa_login_no1_check").val("1");
+            }else{
+                bootStrapAlert('OA工号已存在');
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+}
+
+//MIS工号校验
+function check_mis_no1() {
+    var reg = new RegExp("^[0-9]*$");
+    var id_card_no = $("#mis_no1").val();
+    if ($.trim(id_card_no) == ""){
+        bootStrapAlert('员工编号不能为空！');
+        return false;
+    }else if(id_card_no.length > 10){
+        bootStrapAlert('员工编号最长为10位！');
+        return false;
+    }else if(haveSpe(id_card_no)==false){
+        bootStrapAlert('员工编号不能包含特殊字符！');
+        return false;
+    }else if(!reg.test(id_card_no)){
+        bootStrapAlert('请输入数字!');
+        return false;
+    }
+    $.ajax({
+        type: "POST",
+        url: "basicManagement",
+        data:{
+            mis_no:id_card_no
+        },
+        cache: false,
+        success: function (data) {
+            if(data==0){
+                bootStrapAlert('验证成功');
+                $("#mis_no1_check").val("1");
+            }else{
+                bootStrapAlert('工号已存在');
+            }
+        },
+        error: function () {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+}
+
+//跨省业务判断
+var bindIpChange = function (swich){
+    if('1'==swich){        //增加跨省业务处理
+        if($("#is_grp_staff1").val() == 'N'){
+
+            $("#grp_staff_number1").attr("disabled",true);
+            $("#need_remind1").attr("disabled",true);
+            $("#checkboxgrprolecode1").attr("disabled",true);
+            $("#grpusertype1").attr("disabled",true);
+
+        }else{
+            $("#grp_staff_number1").removeAttr("disabled");
+            $("#grp_staff_number1").attr("readOnly","readOnly");
+            $("#need_remind1").removeAttr("disabled");
+            $("#grpusertype1").removeAttr("disabled");
+            $("#checkboxgrprolecode1").removeAttr("disabled");
+            var tempEsopNo = $("#login_no1").val();
+            if(tempEsopNo!=null&&tempEsopNo!=''){
+                $("#grp_staff_number1").val('451'+tempEsopNo);
+            }
+            $("#grp_staff_number1").attr("disabled",false);
+        }
+    }else if('2'==swich){
+        if($("#is_grp_staff2").val() == 'N'){
+
+            $("#grp_staff_number2").attr("disabled",true);
+            $("#need_remind2").attr("disabled",true);
+            $("#checkboxgrprolecode2").attr("disabled",true);
+            $("#grpusertype2").attr("disabled",true);
+
+        }else{
+            $("#grp_staff_number2").removeAttr("disabled");
+            $("#grp_staff_number2").attr("readOnly","readOnly");
+            $("#need_remind2").removeAttr("disabled");
+            $("#grpusertype2").removeAttr("disabled");
+            $("#checkboxgrprolecode2").removeAttr("disabled");
+            var tempEsopNo2 = $("#login_no2").val();
+            if(tempEsopNo2!=null&&tempEsopNo2!=''){
+                $("#grp_staff_number2").val('451'+tempEsopNo2);
+            }
+            $("#grp_staff_number2").attr("disabled",false);
+        }
+    }else if('4'==swich){
+        if($("#is_grp_staff4").val() == 'N'){
+
+            $("#grp_staff_number4").attr("disabled",true);
+            $("#need_remind4").attr("disabled",true);
+            $("#checkboxgrprolecode4").attr("disabled",true);
+            $("#grpusertype4").attr("disabled",true);
+
+        }else{
+            $("#grp_staff_number4").removeAttr("disabled");
+            $("#grp_staff_number4").attr("readOnly","readOnly");
+            $("#need_remind4").removeAttr("disabled");
+            $("#grpusertype4").removeAttr("disabled");
+            $("#checkboxgrprolecode4").removeAttr("disabled");
+            var tempEsopNo = $("#login_no4").val();
+            if(tempEsopNo!=null&&tempEsopNo!=''){
+                $("#grp_staff_number4").val('451'+tempEsopNo);
+            }
+            $("#grp_staff_number4").attr("disabled",false);
+        }
+    }
+}
+
+//获取组织树&角色树
+var chooseloginGroup1 = function (swich){
+    if('group'==swich){
+        var region_cd = $("#region_code1").val();
+        var region_1 = region_cd.split(",");
+        var region_2 = region_1[0];
+        if(region_2==null||region_2==""){
+            bootStrapAlert('请先选择地市(BOSS)！');
+            return false;
+        }
+        var url="/esop/zzs?type=group&org_code="+region_2;
+        var ret = window.showModalDialog(url,
+            '',
+            'dialogWidth:220px;dialogHeight:400px;center:1');
+        if(ret!=undefined){
+            var data=ret.split("$");
+            $("#group_id1").val(data[0]);
+            $("#group_name1").val(data[1]);
+        }
+    }else if('role'==swich){
+        var url="/esop/zzs?type=role";
+        var ret = window.showModalDialog(url,
+            '',
+            'dialogWidth:220px;dialogHeight:400px;center:1');
+        if(ret!=undefined){
+            var data=ret.split("$");
+            $("#role_code1").val(data[0]);
+            $("#role_name1").val(data[1]);
+        }
+    }else if('bossRole'==swich){
+        var url="/esop/zzs?type=bossRole";
+        var ret = window.showModalDialog(url,
+            '',
+            'dialogWidth:220px;dialogHeight:400px;center:1');
+        if(ret!=undefined){
+            var data=ret.split("$");
+            $("#boss_role_code1").val(data[0]);
+            $("#boss_role_name1").val(data[1]);
+        }
+    }else if('bossGroup'==swich){
+        var url="/esop/zzs?type=bossGroup";
+        var ret = window.showModalDialog(url,
+            '',
+            'dialogWidth:220px;dialogHeight:400px;center:1');
+        if(ret!=undefined){
+            var data=ret.split("$");
+            $("#boss_role_code1").val(data[0]);
+            $("#boss_role_name1").val(data[1]);
+        }
+    }
+};
+
+function comm_add() {
+    var region_cd = $("#region_code1").val();
+    var region_1 = "";
+    var region_2 = "";
+    if(region_cd!=""&&region_cd!=null){
+        region_1 = region_cd.split(",");
+        region_2 = region_1[0];
+    }
+
+    var town_cd = $("#town_code1").val();
+    var town_1 = "";
+    var town_2 = "";
+    if(town_cd!=""&&town_cd!=null){
+        town_1 = town_cd.split(",");
+        town_2 = town_1[0];
+    }
+
+    var office_cd = $("#office_code1").val();
+    var office_1 = "";
+    var office_2 = "";
+    if(office_cd!=""&&office_cd!=null){
+        office_1 = office_cd.split(",");
+        office_2 = office_1[0];
+    }
+
+    var login_no = $("#login_no1").val();
+    var login_name = $("#login_name1").val();
+    var phone_no = $("#phone_no1").val();
+    var id_card_no = $("#id_card_no1").val();
+    var busi_boss_no = $("#busi_boss_no1").val();
+    var oa_login_no = $("#oa_login_no1").val();
+    var mis_no = $("#mis_no1").val();
+    var id_card_no1_check = $("#id_card_no1_check").val();
+    var busi_boss_no1_check = $("#busi_boss_no1_check").val();
+    var oa_login_no1_check = $("#oa_login_no1_check").val();
+    var mis_no1_check = $("#mis_no1_check").val();
+    var vilid_flag = $("#vilid_flag1").val();
+    var password = $("#password1").val();
+    var password_check = $("#password11").val();
+    var is_grp_staff = $("#is_grp_staff1").val();
+    var grpusertype = $("#grpusertype1").val();
+    var grp_staff_number = $("#grp_staff_number1").val();
+    var need_remind = $("#need_remind1").val();
+    var role_code = $("#role_code1").val();
+    var group_id = $("#group_id1").val();
+    var work_area = $("#work_area1").val();
+    //总部用户角色
+    var checkedInfo = new Array();
+    checkedInfo = $('input[name="grp_role_code_1"]:checked');
+    var grp_role_code = "";
+    for(var i=0;i<checkedInfo.length;i++){
+        if(i!=0){
+            grp_role_code += ",";
+        }
+        grp_role_code += checkedInfo[i].value;
+    }
+    var boss_role_code = $("#boss_role_code1").val();
+    var right_code = $("#right_code1").val();
+
+    var oa_no = $("#oa_no1").val();
+    var oa_title = $("#oa_title1").val();
+    var is_lc = $("#is_lc1").val();
+    var apply_no = $("#apply_no").val();
+
+    var inter_type1 = "";
+    if(arr1.length >0){
+        inter_type1 = arr1.join(",");
+    }
+
+    //校验是否验证
+    if(id_card_no1_check != 1){
+        bootStrapAlert('请填写并验证身份证号码！');
+        return false;
+    }
+    if(busi_boss_no1_check != 1){
+        bootStrapAlert('请填写并验证营业专属工号！');
+        return false;
+    }
+    if(oa_login_no1_check != 1){
+        bootStrapAlert('请填写并验证OA工号！');
+        return false;
+    }
+    if(mis_no1_check != 1){
+        bootStrapAlert('请填写并验证员工编号！');
+        return false;
+    }
+
+    //校验是否为空
+    if ("" == login_no) {
+        bootStrapAlert('请填写ESOP工号！');
+        return false;
+    }
+    if ("" == login_name) {
+        bootStrapAlert('请填写ESOP工号名称！');
+        return false;
+    }
+    if ("" == phone_no) {
+        bootStrapAlert('请填写联系电话！');
+        return false;
+    }
+    if(phone_no.length!=11){
+        bootStrapAlert('联系电话应为11位!');
+        return false;
+    }
+    if ("" == id_card_no) {
+        bootStrapAlert('请填写身份证号码！');
+        return false;
+    }
+    if ("" == busi_boss_no) {
+        bootStrapAlert('请填写营业专属工号！');
+        return false;
+    }
+    if ("" == oa_login_no) {
+        bootStrapAlert('请填写OA工号！');
+        return false;
+    }
+    if ("" == oa_no){
+        bootStrapAlert('请填写OA编号！');
+        return false;
+    }
+    if ("" == oa_title){
+        bootStrapAlert('请填写OA标题！');
+        return false;
+    }
+    if ("" == mis_no) {
+        bootStrapAlert('请填写员工编号！');
+        return false;
+    }
+    if ("" == password) {
+        bootStrapAlert('请输入密码！');
+        return false;
+    }
+    if ("" == password_check) {
+        bootStrapAlert('请输入确认密码！');
+        return false;
+    }
+    if (password != password_check) {
+        bootStrapAlert('两次输入的密码不一致！');
+        return false;
+    }
+    if ("Y" == is_grp_staff) {
+        if (0 == checkedInfo.length) {
+            bootStrapAlert('请选择总部用户角色！');
+            return false;
+        }
+    }
+    if ("" == role_code) {
+        bootStrapAlert('请设置ESOP角色！');
+        return false;
+    }
+    if ("" == group_id) {
+        bootStrapAlert('请选择部门！');
+        return false;
+    }
+    if ("" == boss_role_code) {
+        bootStrapAlert('请设置BOSS角色！');
+        return false;
+    }
+    if(arr1.length == 0){
+        bootStrapAlert('请选择接口人类型！');
+        return false;
+    }
+
+    $.ajax({
+        type: "POST",
+        //url: "basicManagementAdd",
+        url:"insertLoginMsgMid",
+        data:{
+            login_no:login_no,
+            login_name:login_name,
+            password:password,
+            contract_phone:phone_no,
+            id_card_no:id_card_no,
+            busi_boss_no:busi_boss_no,
+            oa_login_no:oa_login_no,
+            mis_no:mis_no,
+            vilid_flag:vilid_flag,
+            is_grp_staff4:is_grp_staff,
+            grpusertype:grpusertype,
+            grp_staff_number4:grp_staff_number,
+            need_remind:need_remind,
+            grp_role_code:grp_role_code,
+            role_code:role_code,
+            group_id:group_id,
+            work_area:work_area,
+            busido_region:region_2,
+            busido_town:town_2,
+            office_town:office_2,
+            boss_role_code:boss_role_code,
+            right_code:right_code,
+            oa_no:oa_no,
+            oa_title:oa_title,
+            is_lc:is_lc,
+            has_boss:"1",
+            apply_no:apply_no,
+            inter_type:inter_type1
+        },
+        success: function (data) {
+            $("#add_button").attr("disabled",true);
+            var resultMsg=data.result;
+            bootStrapAlert(resultMsg);
+            resetAll();
+            /*if(data==1){
+                bootStrapAlert('添加成功');
+                resetAdd();
+            }else if(data==9990){
+                bootStrapAlert('系统错误，请联系系统管理员！');
+            }else if(data==9991){
+                bootStrapAlert('获取操作工号营业密码失败！');
+            }else if(data==9992){
+                bootStrapAlert('同步营业工号信息失败！');
+            }else if(data==9993){
+                bootStrapAlert('ESOP工号数据插入失败！');
+            }else if(data==9994){
+                bootStrapAlert('查询工号信息失败！');
+            }else if(data==9995){
+                bootStrapAlert('不能修改自己的工号！');
+            }else if(data==9996){
+                bootStrapAlert('客户经理信息数据插入失败！');
+            }else if(data==9997){
+                bootStrapAlert('4A同步失败！');
+            }else{
+                bootStrapAlert('系统错误，请联系系统管理员！');
+            }*/
+        },
+        error: function (data) {
+            bootStrapAlert('请求超时，请重试！');
+        }
+    });
+
+}
+
+function resetAdd() {
+    $("#login_no1").removeAttr("disabled");
+    $("#login_no1").val("");
+    $("#login_name1").val("");
+    $("#phone_no1").val("");
+    $("#id_card_no1").val("");
+    $("#busi_boss_no1").val("");
+    $("#oa_login_no1").val("");
+    $("#mis_no1").val("");
+    $("#id_card_no1_check").val("0");
+    $("#busi_boss_no1_check").val("0");
+    $("#oa_login_no1_check").val("0");
+    $("#mis_no1_check").val("0");
+    $("#password1").val("");
+    $("#password11").val("");
+    $("#is_grp_staff1").val("N");
+    $("#grpusertype1").val("2");
+    $("#grp_staff_number1").val("");
+    $("#need_remind1").val("1");
+    $("#role_code1").val("");
+    $("#role_name1").val("");
+    $("#group_id1").val("");
+    $("#group_name1").val("");
+    $("#work_area1").val("1");
+    $("#boss_role_code1").val("");
+    $("#boss_role_name1").val("");
+    $("#grp_role_code1").attr("checked",false);
+    $("#grp_role_code2").attr("checked",false);
+    $("#grp_role_code3").attr("checked",false);
+    $("#grp_role_code4").attr("checked",false);
+    $("#grp_role_code5").attr("checked",false);
+    $("#checkboxgintertype1").attr("disabled",true);
+    $("#grp_role_code_1").attr("disabled",true);
+
+    $("#inter_type1_1").attr("checked",false);
+    $("#inter_type1_2").attr("checked",false);
+    $("#inter_type1_3").attr("checked",false);
+    $("#inter_type1_4").attr("checked",false);
+    $("#inter_type1_5").attr("checked",false);
+    $("#inter_type1_6").attr("checked",false);
+    $("#inter_type1_7").attr("checked",false);
+
+
+    //RegionQuery();
+
+    $("#town_code1").val("");
+    $("#town_code1").empty();
+    $("#office_code1").val("");
+    $("#office_code1").empty();
+
+    $("#boss_group_name1").val("");
+    $("#boss_group_code1").val("");
+    $("#mgr_boss_no1").val("");
+
+    $("#add_button").attr("disabled",true);
+}
+
+function set1(obj){
+    if(!obj.checked){
+        $("#checkboxgintertype1").attr("disabled",true);
+    }else{
+        $("#checkboxgintertype1").attr("disabled",false);
+    }
+}
+function check1(obj){
+    if(!obj.checked){
+        obj.removeAttribute("checked");
+        removeByValue(arr1,$(obj).val());
+        //alert(arr1.join(","));
+    }else{
+        obj.setAttribute("checked","checked");
+        arr1.push($(obj).val());
+        //alert(arr1.join(","));
+    }
+}
+function removeByValue(arr, val) {
+    for(var i=0; i<arr.length; i++) {
+        if(arr1[i] == val) {
+            arr1.splice(i, 1);
+            break;
+        }
+    }
+}
+
+function resetAll(){
+    resetAdd();
+    resetUpdate();
+    resetQry();
+    resetBossAdd();
+}

@@ -1,0 +1,89 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>预打发票>>预打发票流程审批</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <!--审批意见-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>审批意见</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table id="" class="table-infor-7" width="100%">
+                        <tbody id="tb-approval">
+                        <tr>
+                            <th>审批意见：</th>
+                            <td colspan="3">
+                                <input id="procInstId" type="hidden">
+                                <input id="procId" type="hidden">
+                                <input id="procNameEn" type="hidden">
+                                <input id="taskInstId" type="hidden">
+                                <input id="taskId" type="hidden">
+                                <input id="stepId" type="hidden">
+                                <input id="bizRecordId" type="hidden">
+                                <input id="regionId" type="hidden">
+                                <input id="assignee" type="hidden">
+                                <input id="assigneeName" type="hidden">
+                                <select id="isPass" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">同意</option>
+                                    <option value="0">不同意</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注：</th>
+                            <td colspan="3">
+                                <textarea id="dealRemarks" rows="3" class="ui-text form-ctrl" style="width:60%;"></textarea>
+                            </td>
+                        </tr>
+                        <tr style="background-color:#ededed;">
+                            <th>下一环节：</th>
+                            <td>
+                                <input type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>下一环节处理人：</th>
+                            <td>
+                                <input type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <%--<button class="ui-btn mgr-10">提交</button>--%>
+                            <input id="btnSumit" class="ui-btn mgr-10" value="提交"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#procInstId').val(getQueryString("procInstId"));
+        $('#procId').val(getQueryString("procId"));
+        $('#procNameEn').val(getQueryString("procNameEn"));
+        $('#taskInstId').val(getQueryString("taskInstId"));
+        $('#taskId').val(getQueryString("taskId"));
+        $('#stepId').val(getQueryString("stepId"));
+        $('#bizRecordId').val(getQueryString("bizRecordId"));
+        $('#regionId').val("<%=root_org_id %>");
+        $('#assignee').val("<%=login_no %>");//工号
+        $('#assigneeName').val("<%=login_name %>");
+    });
+</script>
+</html>

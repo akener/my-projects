@@ -1,0 +1,170 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Shinelon
+  Date: 2017/7/31
+  Time: 20:25
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%--<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>--%>
+<head>
+
+    <link rel="icon" href="./favicon.ico">
+    <title>长流程业务</title>
+
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="/esop/static/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/esop/static/css/ionicons.min.css">
+    <link rel="stylesheet" href="/esop/static/css/AdminLTE.css">
+    <link rel="stylesheet" href="/esop/static/css/skins/skin-blue.min.css">
+    <link rel="stylesheet" href="/esop/static/css/font-awesome.css">
+    <link rel="stylesheet" href="/esop/static/jstree/css/style.min.css">
+    <link rel="stylesheet" href="/esop/static/css/dataTables.tableTools.css">
+    <link rel="stylesheet" href="/esop/static/css/hall.css">
+
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/select.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="/esop/static/css/editor.dataTables.min.css">
+</head>
+<body>
+
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">${title}</h3>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Horizontal Form -->
+            <div class="box">
+                <div class="form-horizontal">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <%--<label class="col-sm-3 control-label">工单主题</label>--%>
+                            <%--<div class="col-sm-2">--%>
+                                <%--<input type="text" class="form-control" id="title" readonly="true">--%>
+                            <%--</div>--%>
+                                <label class="col-sm-3 control-label">要求完成时间</label>
+                                <div class="col-sm-2">
+                                    <input type="text" class="form-control" id="finishTime" readonly="true">
+                                </div>
+                            <label class="col-sm-3 control-label">工单类型</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="type" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">集团客户编号</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="groupNumber" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">集团客户名称</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="groupName" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">环节名称</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="annualName" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">环节状态</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="annualStatus" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">接单人</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="person" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">接单人联系电话</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="phone" readonly="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">环节开始时间</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="startTime" readonly="true">
+                            </div>
+
+                            <label class="col-sm-3 control-label">环节结束时间</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="endTime" readonly="true">
+                            </div>
+                        </div>
+                        <%--<div class="form-group">--%>
+                            <%--<label class="col-sm-3 control-label">要求完成时间</label>--%>
+                            <%--<div class="col-sm-2">--%>
+                                <%--<input type="text" class="form-control" id="finishTime" readonly="true">--%>
+                            <%--</div>--%>
+                        <%--</div>--%>
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-info pull-right" id="back">返回</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" language="javascript" class="init">
+        var title="${title}";
+        var WO_NO="${WO_NO}";
+//        alert("title="+title);
+//        alert("WO_NO="+WO_NO);
+        $.ajax({
+            type:'post',
+            url:'selectOrderStateWorksheet2',
+            data:{
+                title:title,
+            }
+        }).then(function (data) {
+            console.log(data);
+            var result=data.opDetail.recordInfo.fieldInfo;
+            console.log("result的长度="+result.length);
+            console.log("result="+result);
+            for (var i=0;i<result.length;i++){
+                var fieldContent= result[i].fieldContent;
+                console.log("fieldContent="+fieldContent);
+                $("#title").val(result[0].fieldContent);
+                $("#type").val(result[1].fieldContent);
+                $("#groupNumber").val(result[2].fieldContent);
+                $("#groupName").val(result[3].fieldContent);
+                $("#annualName").val(result[4].fieldContent);
+                $("#annualStatus").val(result[5].fieldContent);
+                $("#person").val(result[6].fieldContent);
+                $("#phone").val(result[7].fieldContent);
+                $("#startTime").val(result[8].fieldContent);
+                $("#endTime").val(result[9].fieldContent);
+                $("#finishTime").val(result[10].fieldContent);
+            }
+        });
+
+        <%--function back(){--%>
+            <%--alert("${WO_NO}");--%>
+            <%--location.href="business2?WO_NO="+"${WO_NO}";--%>
+        <%--}--%>
+
+    //返回
+    $("#back").click(function(){
+        <%--alert("${WO_NO}");--%>
+        location.href="business2?WO_NO="+"${WO_NO}"+"&&title?="+"${title}";
+    });
+
+
+
+</script>
+</html>

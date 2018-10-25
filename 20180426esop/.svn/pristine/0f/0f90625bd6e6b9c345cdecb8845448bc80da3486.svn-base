@@ -1,0 +1,405 @@
+package com.esop.workflow.model;
+
+import java.util.Date;
+
+public class CtElecWoBaseInfo {
+    private String woNo;
+
+    private String woTitle;
+
+    private String priority;
+
+    private String status;
+
+    private String sendLoginNo;
+
+    private String sendLoginName;
+
+    private String receiveLoginNo;
+
+    private String receiveLoginName;
+
+    private Date sendTime;
+
+    private Date completeTime;
+
+    private Date recantTime;
+
+    private Date sendPhone;
+
+    private String remarks;
+
+    private Date planCompleteTime;
+
+    private Date firstBackTime;
+
+    private String woTypeCode;
+
+    private String dispatchTypeCode;
+
+    private String unionCode;
+
+    private String unionName;
+
+    private String unionLinkMan;
+
+    private String linkPhone;
+
+    private String serviceNo;
+
+    private String serviceName;
+
+    private String overTimeFlag;
+
+    private String dealLevel;
+
+    private String deptId;
+
+    private String deptName;
+
+    private String regionId;
+
+    private String regionName;
+
+    private String unionLevel;
+
+    private String scale;
+
+    private String personNum;
+
+    private String statusCode;
+
+    private String custAddr;
+
+    private String unionProd;
+
+    private String price;
+
+    private String discountprice;
+
+    private String chargemode;
+
+    private String chargecycle;
+
+    private String emosNo;
+
+    public String getWoNo() {
+        return woNo;
+    }
+
+    public void setWoNo(String woNo) {
+        this.woNo = woNo;
+    }
+
+    public String getWoTitle() {
+        return woTitle;
+    }
+
+    public void setWoTitle(String woTitle) {
+        this.woTitle = woTitle;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getSendLoginNo() {
+        return sendLoginNo;
+    }
+
+    public void setSendLoginNo(String sendLoginNo) {
+        this.sendLoginNo = sendLoginNo;
+    }
+
+    public String getSendLoginName() {
+        return sendLoginName;
+    }
+
+    public void setSendLoginName(String sendLoginName) {
+        this.sendLoginName = sendLoginName;
+    }
+
+    public String getReceiveLoginNo() {
+        return receiveLoginNo;
+    }
+
+    public void setReceiveLoginNo(String receiveLoginNo) {
+        this.receiveLoginNo = receiveLoginNo;
+    }
+
+    public String getReceiveLoginName() {
+        return receiveLoginName;
+    }
+
+    public void setReceiveLoginName(String receiveLoginName) {
+        this.receiveLoginName = receiveLoginName;
+    }
+
+    public Date getSendTime() {
+        return sendTime;
+    }
+
+    public void setSendTime(Date sendTime) {
+        this.sendTime = sendTime;
+    }
+
+    public Date getCompleteTime() {
+        return completeTime;
+    }
+
+    public void setCompleteTime(Date completeTime) {
+        this.completeTime = completeTime;
+    }
+
+    public Date getRecantTime() {
+        return recantTime;
+    }
+
+    public void setRecantTime(Date recantTime) {
+        this.recantTime = recantTime;
+    }
+
+    public Date getSendPhone() {
+        return sendPhone;
+    }
+
+    public void setSendPhone(Date sendPhone) {
+        this.sendPhone = sendPhone;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public Date getPlanCompleteTime() {
+        return planCompleteTime;
+    }
+
+    public void setPlanCompleteTime(Date planCompleteTime) {
+        this.planCompleteTime = planCompleteTime;
+    }
+
+    public Date getFirstBackTime() {
+        return firstBackTime;
+    }
+
+    public void setFirstBackTime(Date firstBackTime) {
+        this.firstBackTime = firstBackTime;
+    }
+
+    public String getWoTypeCode() {
+        return woTypeCode;
+    }
+
+    public void setWoTypeCode(String woTypeCode) {
+        this.woTypeCode = woTypeCode;
+    }
+
+    public String getDispatchTypeCode() {
+        return dispatchTypeCode;
+    }
+
+    public void setDispatchTypeCode(String dispatchTypeCode) {
+        this.dispatchTypeCode = dispatchTypeCode;
+    }
+
+    public String getUnionCode() {
+        return unionCode;
+    }
+
+    public void setUnionCode(String unionCode) {
+        this.unionCode = unionCode;
+    }
+
+    public String getUnionName() {
+        return unionName;
+    }
+
+    public void setUnionName(String unionName) {
+        this.unionName = unionName;
+    }
+
+    public String getUnionLinkMan() {
+        return unionLinkMan;
+    }
+
+    public void setUnionLinkMan(String unionLinkMan) {
+        this.unionLinkMan = unionLinkMan;
+    }
+
+    public String getLinkPhone() {
+        return linkPhone;
+    }
+
+    public void setLinkPhone(String linkPhone) {
+        this.linkPhone = linkPhone;
+    }
+
+    public String getServiceNo() {
+        return serviceNo;
+    }
+
+    public void setServiceNo(String serviceNo) {
+        this.serviceNo = serviceNo;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getOverTimeFlag() {
+        return overTimeFlag;
+    }
+
+    public void setOverTimeFlag(String overTimeFlag) {
+        this.overTimeFlag = overTimeFlag;
+    }
+
+    public String getDealLevel() {
+        return dealLevel;
+    }
+
+    public void setDealLevel(String dealLevel) {
+        this.dealLevel = dealLevel;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
+    }
+
+    public String getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(String regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getRegionName() {
+        return regionName;
+    }
+
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
+    }
+
+    public String getUnionLevel() {
+        return unionLevel;
+    }
+
+    public void setUnionLevel(String unionLevel) {
+        this.unionLevel = unionLevel;
+    }
+
+    public String getScale() {
+        return scale;
+    }
+
+    public void setScale(String scale) {
+        this.scale = scale;
+    }
+
+    public String getPersonNum() {
+        return personNum;
+    }
+
+    public void setPersonNum(String personNum) {
+        this.personNum = personNum;
+    }
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getCustAddr() {
+        return custAddr;
+    }
+
+    public void setCustAddr(String custAddr) {
+        this.custAddr = custAddr;
+    }
+
+    public String getUnionProd() {
+        return unionProd;
+    }
+
+    public void setUnionProd(String unionProd) {
+        this.unionProd = unionProd;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getDiscountprice() {
+        return discountprice;
+    }
+
+    public void setDiscountprice(String discountprice) {
+        this.discountprice = discountprice;
+    }
+
+    public String getChargemode() {
+        return chargemode;
+    }
+
+    public void setChargemode(String chargemode) {
+        this.chargemode = chargemode;
+    }
+
+    public String getChargecycle() {
+        return chargecycle;
+    }
+
+    public void setChargecycle(String chargecycle) {
+        this.chargecycle = chargecycle;
+    }
+
+    public String getEmosNo() {
+        return emosNo;
+    }
+
+    public void setEmosNo(String emosNo) {
+        this.emosNo = emosNo;
+    }
+}

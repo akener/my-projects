@@ -1,0 +1,62 @@
+package com.esop.alertClassified.service;
+
+import com.esop.alertClassified.dto.AccountAlertServiceCallingDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class AccountAlertServiceCallingService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    public List importMemberBIList(AccountAlertServiceCallingDto parameter){
+        List list;
+        String selectTion = "";
+        selectTion = "selectImportMemberBIList";
+        list = sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public List<AccountAlertServiceCallingDto> importMemberListByServiceNo(AccountAlertServiceCallingDto parameter){
+        List<AccountAlertServiceCallingDto> list;
+        String selectTion = "";
+        selectTion = "selectImportMemberListByServiceNo";
+
+        list = sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+    //app端接口流量预警
+    public Result flowWarning(AccountAlertServiceCallingDto paramete){
+        System.out.println(paramete.getPage().getPageNumber()+"    --"+paramete.getPage().getPageRecords()+paramete.getPage().getRecordsTotal()+"    "+paramete.getPage().getOrder_column());
+        System.out.println(paramete.getLanding_no());
+
+        Result rs = sqlE.selectPage("qryImportMemberListByServiceNo",paramete);
+        return  rs;
+    }
+    //查询话费阈值、流量阈值
+    public List<AccountAlertServiceCallingDto> selectImportMemberThresholdValue(AccountAlertServiceCallingDto parameter){
+        List<AccountAlertServiceCallingDto> list;
+        String selectTion = "";
+        selectTion = "selectImportMemberThresholdValue";
+        list = sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //查询欠费预警阈值
+    public List<AccountAlertServiceCallingDto> selectThresholdValue_qf(AccountAlertServiceCallingDto parameter){
+        List<AccountAlertServiceCallingDto> list;
+        String selectTion = "";
+        selectTion = "selectThresholdValue_qf";
+        list = sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

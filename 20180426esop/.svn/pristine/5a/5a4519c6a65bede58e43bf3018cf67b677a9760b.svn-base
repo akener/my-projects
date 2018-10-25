@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.UnionMemberInfo">
+
+    <select id="getContractCloumByOpporNo" resultType="com.esop.cqDevelopment.elecPack.dto.SeOpporUserBusinessInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeOpporUserBusinessInfo">
+        SELECT
+            c.*
+        FROM
+            se_oppor_applypublic_info a,
+            se_oppor_info b,
+            se_oppor_userbusiness_info c
+        WHERE
+            a.oppor_no = b.oppor_no
+        AND a.order_id = c.order_id
+        AND b.oppor_no = #{opporNo}
+        AND a.spe_type_id = #{spe_type_id}
+    </select>
+
+
+    <select id="selSeOpporNo" resultType="com.esop.cqDevelopment.elecPack.dto.SeOpporInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeOpporInfo">
+        SELECT
+            a.group_name AS unionName,
+            a.group_code AS unionCode,
+            a.oppor_no AS opporNo,
+            a.link_man AS linkMan
+        from
+        se_oppor_info a
+        WHERE 1 = 1
+        <if test="unionCode != null and unionCode != ''">
+          AND a.group_code like '%${unionCode}%'
+        </if>
+        <if test="unionName != null and unionName != ''">
+          AND a.group_name like '%${unionName}%'
+        </if>
+        AND a.oppor_no is not null
+    </select>
+
+
+
+    <select id="selAttrValue" parameterType="com.esop.cqDevelopment.elecPack.dto.QueryAttrVo" resultType="string">
+        select attr_value from or_request_detail_info where attr_id = #{attrId} and attr_code = #{attrCode} and request_num = #{reqNum}
+    </select>
+
+    <select id="selActivitiesDetail" resultType="com.esop.cqDevelopment.elecPack.dto.OrderDto" parameterType="string">
+        SELECT
+            a.union_name AS jtName,
+            a.union_code AS jtCode,
+            a.order_title AS orderTitle,
+            a.notes AS orderDesc
+        FROM
+            or_requestinst_info a
+        WHERE
+        a.request_num = #{reqNum}
+    </select>
+
+
+    <select id="selectContracJt" parameterType="com.esop.cqDevelopment.elecPack.dto.OrderDto" resultType="com.esop.cqDevelopment.elecPack.dto.OrderDto">
+        SELECT union_code as label,union_code as value,union_code as jtCode,union_name as jtName FROM ct_union_info where union_code like concat(concat('%',#{term}),'%')
+    </select>
+
+    <!-- 按条件搜索成员信息-->
+    <select id="getMemberList" parameterType="com.esop.cqDevelopment.elecPack.dto.GroupInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.UnionMemberInfo" >
+        SELECT
+            e.id,
+            e.men_code,
+            e.mem_telno,
+            e.men_name,
+            a.union_code,
+            a.union_name,
+            d.add_prod_code,
+            d.add_prod_name,
+            e.mem_status AS memStatus
+        from
+            ct_union_info a,
+            se_contract_info b,
+            se_contract_charges c,
+            se_product_charge_info d,
+            se_union_member_info e
+        WHERE a.union_code = b.firstway_code
+            AND c.contract_id = b.contract_id
+            AND c.product_charge_id = d.id
+            AND d.add_prod_code = e.prod_code
+            AND e.mem_status IN (0,1,2)
+
+        <if test="serviceNo != null and serviceNo != ''">
+            AND a.service_no = #{serviceNo}
+        </if>
+
+        <if test="union_name != null and union_name != ''">
+            AND a.union_name LIKE '%${union_name}%'
+        </if>
+        <if test="union_code != null and union_code != ''">
+            AND a.union_code LIKE '%${union_code}%'
+        </if>
+        <if test="product_code != null and product_code != ''">
+            AND d.add_prod_code LIKE '%${product_code}%'
+        </if>
+        <if test="product_name != null and product_name != ''">
+            AND d.add_prod_name LIKE '%${product_name}%'
+        </if>
+
+    </select>
+
+    <!-- 更新成员信息-->
+    <update id="updateMemberTel" parameterType="com.esop.cqDevelopment.elecPack.dto.MemberInfoDto">
+        UPDATE se_union_member_info SET mem_telno = #{memberNewTel} WHERE id = #{id} AND union_code = #{unionCode} AND prod_code = #{prodCode}
+    </update>
+
+    <!-- 增加成员信息-->
+    <insert id="addMemberInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.UnionMemberInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO se_union_member_info (union_code,union_name,prod_code,mem_telno,men_name,oper_date)
+         VALUES
+         (#{union_code},#{union_name},#{prod_code},#{mem_telno},#{men_name},SYSDATE())
+    </insert>
+
+    <!-- 删除成员信息-->
+    <delete id="deleteMemberInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.UnionMemberInfo">
+        DELETE FROM se_union_member_info WHERE id = #{id}
+    </delete>
+
+    <!-- 根据id查询成员信息-->
+    <select id="getMemberInfoById" parameterType="string" resultType="com.esop.cqDevelopment.elecPack.dto.MemberInfoSelectDto">
+        SELECT
+          a.id,
+          a.men_name AS memberName,
+          a.mem_telno AS memberTel,
+          a.union_name AS unionName,
+          a.union_code AS unionCode,
+          b.add_prod_name AS prodName,
+          a.prod_code AS prodCode
+        FROM
+          se_union_member_info a,
+          se_product_charge_info b
+        WHERE a.prod_code = b.prod_code
+          AND a.id = #{id}
+    </select>
+
+    <!-- 根据集团编码查询集团信息-->
+    <select id="selProdList" resultType="com.esop.cqDevelopment.elecPack.dto.GroupInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.GroupInfoDto">
+        SELECT
+          a.union_code,
+          a.union_name,
+          d.add_prod_code AS product_code,
+          d.add_prod_name AS product_name
+        FROM
+          ct_union_info a,
+          se_contract_info b,
+          se_contract_charges c,
+          se_product_charge_info d
+        WHERE a.union_code = b.firstway_code
+          AND c.contract_id = b.contract_id
+          AND c.product_code = d.add_prod_code
+          AND a.union_code = #{union_code}
+    </select>
+
+    <!-- 根据id查询成员信息-->
+    <select id="getMemberInfoByIdUpd" parameterType="string" resultType="com.esop.cqDevelopment.elecPack.dto.OrderDto">
+        SELECT
+          a.union_name AS jtName,
+          a.union_code AS jtCode,
+          a.contract_id AS htNo,
+          b.add_prod_name AS proName,
+          b.add_prod_code AS proId,
+          a.men_name AS cyName,
+          a.mem_telno AS cyNo,
+          a.id,
+          a.mem_status AS memStatus
+      FROM se_union_member_info a ,se_product_charge_info b
+          WHERE b.add_prod_code = a.prod_code AND a.id=#{id}
+    </select>
+</mapper>

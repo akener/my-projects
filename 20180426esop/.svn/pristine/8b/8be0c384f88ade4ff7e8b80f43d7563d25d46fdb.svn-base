@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <select id="insertOPLog"  parameterType="com.esop.common.opLog.OPLogDto" resultType="int" >
+        insert into opLog(login_no,url,ip,opDetails,param,opDate)
+        values( #{login_no},#{url},#{ip},#{opDetails},#{param},#{opDate})
+    </select>
+</mapper>

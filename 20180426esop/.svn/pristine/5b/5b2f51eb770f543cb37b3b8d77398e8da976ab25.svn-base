@@ -1,0 +1,57 @@
+package com.esop.workOrderInfo.dto;
+
+import java.util.Date;
+
+/**
+ * @Description:
+ * @Date: Created by yuansp on 2017/6/13.
+ * @Modify by:
+ */
+public class MsgDto {
+    private String service_no = "";//客户经理工号
+    private String login_no = "";//操作工号
+    private Date send_time = null;//发送时间
+    private String parameter = "";//发送短信参数
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public Date getSend_time() {
+        return send_time;
+    }
+
+    public void setSend_time(Date send_time) {
+        this.send_time = send_time;
+    }
+
+    public String getParameter() {
+        return parameter;
+    }
+
+    public void setParameter(String parameter) {
+        this.parameter = parameter;
+    }
+
+    @Override
+    public String toString() {
+        return "MsgDto{" +
+                "service_no='" + service_no + '\'' +
+                ", login_no='" + login_no + '\'' +
+                ", send_time=" + send_time +
+                ", parameter='" + parameter + '\'' +
+                '}';
+    }
+}

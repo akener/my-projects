@@ -1,0 +1,128 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/16
+  Time: 17:42
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<html>
+<head>
+    <title>行业拓展专项行动</title>
+</head>
+<body>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" >
+        <div class="active-cost-box" >
+            <table id="epTradeEx" class="cost-table"  width="100%" >
+                <thead>
+                <th rowspan="3" class="text-center">日期</th>
+                <th rowspan="3" class="text-center">地市</th>
+                <th colspan="15" class="text-center">行业拓展专项行动</th>
+                <th colspan="13" class="text-center">其中医疗行业行动</th>
+                </tr>
+                <tr>
+                    <th colspan="5" class="text-center">宽带完成进度</th>
+                    <th colspan="5" class="text-center">4G完成进度</th>
+                    <th colspan="5" class="text-center">新建集团完成进度</th>
+                    <th colspan="4" class="text-center">宽带完成进度</th>
+                    <th colspan="4" class="text-center">4G完成进度</th>
+                    <th colspan="5" class="text-center">新建集团完成进度</th>
+                </tr>
+                <tr>
+                    <th class="text-center">日新增宽带</th>
+                    <th class="text-center">月新增宽带</th>
+                    <th class="text-center">活动累计新增宽带</th>
+                    <th class="text-center">6月份目标值</th>
+                    <th class="text-center">完成进度</th>
+                    <th class="text-center">日新增4G</th>
+                    <th class="text-center">月新增4G</th>
+                    <th class="text-center">活动累计新增4G</th>
+                    <th class="text-center">6月份目标值</th>
+                    <th class="text-center">6月份完成进度</th>
+                    <th class="text-center">日新建集团</th>
+                    <th class="text-center">月新建集团</th>
+                    <th class="text-center">活动累计新建集团</th>
+                    <th class="text-center">6月份目标值</th>
+                    <th class="text-center">月份完成进度</th>
+                    <th class="text-center">日新增宽带</th>
+                    <th class="text-center">活动累计新增宽带</th>
+                    <th class="text-center">目标值</th>
+                    <th class="text-center">完成进度</th>
+                    <th class="text-center">日新增4G</th>
+                    <th class="text-center">活动累计新增4G</th>
+                    <th class="text-center">目标值</th>
+                    <th class="text-center">6月份完成进度</th>
+                    <th class="text-center">日新建集团</th>
+                    <th class="text-center">月新建集团</th>
+                    <th class="text-center">活动累计新建集团</th>
+                    <th class="text-center">目标值</th>
+                    <th class="text-center">月份完成进度</th>
+                </thead>
+            </table>
+        </div></div></div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+
+    $(document).ready(function() {
+        $.ajax({
+            type: 'POST',
+            url: '/epTradeMedicine',
+            cache : false,
+            success : function(data) {
+                if(data.length > 0) {
+                    for(var i=0; i<data.length; i++){
+                        var trStr = "";
+                        trStr+="<tr>";
+                        if(i==0){
+                            trStr += "<td rowspan=" + data.length + ">" + data[0].cur_time + "</td>"
+                        }
+                        trStr +=
+                            "<td>" + data[i].region_name + "</td>" +
+                            "<td>" + data[i].ex_wid_day_inc + "</td>" +
+                            "<td>" + data[i].ex_wid_mon_inc + "</td>" +
+                            "<td>" + data[i].ex_wid_total_inc + "</td>" +
+                            "<td>" + data[i].ex_wid_goal + "</td>" +
+                            "<td>" + data[i].ex_wid_comp_rate + "</td>" +
+                            "<td>" + data[i].ex_day_inc + "</td>" +
+                            "<td>" + data[i].ex_mon_inc + "</td>" +
+                            "<td>" + data[i].ex_total_inc + "</td>" +
+                            "<td>" + data[i].ex_goal + "</td>" +
+                            "<td>" + data[i].ex_comp_rate + "</td>" +
+                            "<td>" + data[i].ex_unit_day_inc + "</td>" +
+                            "<td>" + data[i].ex_unit_mon_inc + "</td>" +
+                            "<td>" + data[i].ex_unit_total_inc + "</td>" +
+                            "<td>" + data[i].ex_unit_goal + "</td>" +
+                            "<td>" + data[i].ex_unit_comp_rate + "</td>" +
+                            "<td>" + data[i].md_wid_day_inc + "</td>" +
+                            /*                            "<td>" + data[i].md_wid_mon_inc + "</td>" +*/
+                            "<td>" + data[i].md_wid_total_inc + "</td>" +
+                            "<td>" + data[i].md_wid_goal + "</td>" +
+                            "<td>" + data[i].md_wid_comp_rate + "</td>" +
+                            "<td>" + data[i].md_day_inc + "</td>" +
+                            /* "<td>" + data[i].md_mon_inc + "</td>" +*/
+                            "<td>" + data[i].md_wid_inc + "</td>" +
+                            "<td>" + data[i].md_goal + "</td>" +
+                            "<td>" + data[i].md_comp_rate + "</td>" +
+                            "<td>" + data[i].md_unit_day_inc + "</td>" +
+                            "<td>" + data[i].md_unit_mon_inc + "</td>" +
+                            "<td>" + data[i].md_unit_total_inc + "</td>" +
+                            "<td>" + data[i].md_unit_goal + "</td>" +
+                            "<td>" + data[i].md_unit_comp_rate + "</td>" +
+                            "</tr>"
+                        $("#epTradeEx").append(trStr);
+                    }
+                }
+                // $("#initElement").val(resp);
+            },
+            error:function(resp){
+                alert("查询数据失败");
+            }
+        });
+    })
+</script>
+</html>

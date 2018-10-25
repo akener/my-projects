@@ -1,0 +1,70 @@
+package com.esop.base.controller;
+
+import com.esop.base.dto.ParamDto;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 2017/1/23.
+ */
+
+@RestController
+public class InvokeServiceJsonController {
+    @Value("${ServiceUrl}")
+    private String ServiceUrl;
+
+    //@CrossOrigin(origins = "*",methods = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping("/invokeServiceJson")
+    public ParamDto invokeService(ParamDto paramDto) {
+        System.out.println("ServiceUrl="+ServiceUrl);
+        try{
+            URL wsUrl = new URL(ServiceUrl+paramDto.getServiceName());
+            HttpURLConnection conn = (HttpURLConnection) wsUrl.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+
+            OutputStream os = conn.getOutputStream();
+            os.write(paramDto.getParam().getBytes("utf8"));
+
+            InputStream is = conn.getInputStream();
+            byte[] b = new byte[1024];
+            int len = 0;
+            String resp = "";
+            while((len = is.read(b)) != -1){
+                String ss = new String(b,0,len,"UTF-8");
+                resp += ss;
+            }
+            System.out.println("出参-----------"+resp);
+            paramDto.setResult(resp);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return paramDto;
+    }
+    @RequestMapping("/invokeService1")
+    public Map<String, Object> invokeService1(String name) {
+        System.out.println("ServiceUrl="+ServiceUrl);
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("Name", "Tom");
+        jsonObject1.put("age", "11");
+        JSONObject json1 = new JSONObject(
+                "{'ROOT': {'BODY': {'END_TIME': '','INPUT_VALUE': '20904518526','QUERY_TYPE': '1','START_TIME': '','pageNum':"+
+                        "'1','pageSize': '10'},'HEADER': {'CHANNEL_ID': '11','DB_ID': 'A1','KEEP_LIVE': '100.109.222.158',"+
+                        "'PARENT_CALL_ID': 'DAB1B0E351B53D0BBD25A9EF9CE0974D','PHONE_NO': '','POOL_ID': '2','PROVINCE_GROUP': 'BJ',"+
+                        "'REGION_NO': '','ROUTING': {'ROUTE_KEY': '14','ROUTE_VALUE': 'xxxx30'},"+
+                        "'TRACE_ID': '11*20220112171807*5718*abgj30*88888'},'RESULT': {}}}");
+        return json1.toMap();
+    }
+}

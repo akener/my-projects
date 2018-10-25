@@ -1,0 +1,26 @@
+package com.esop.cqDevelopment.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class ServiceTestDto {
+    String biz_op_code = "";
+    String biz_op_name = "";
+
+    public String getBiz_op_code() {
+        return biz_op_code;
+    }
+
+    public void setBiz_op_code(String biz_op_code) {
+        this.biz_op_code = biz_op_code;
+    }
+
+    public String getBiz_op_name() {
+        return biz_op_name;
+    }
+
+    public void setBiz_op_name(String biz_op_name) {
+        this.biz_op_name = biz_op_name;
+    }
+}

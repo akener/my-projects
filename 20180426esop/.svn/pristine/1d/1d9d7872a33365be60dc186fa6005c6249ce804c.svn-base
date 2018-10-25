@@ -1,0 +1,979 @@
+package com.esop.cqDevelopment.refund.controller.CallBossServiceUtils;
+
+import com.esop.cqDevelopment.elecPack.controller.PostJsonUtil;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.GetBossToken;
+import com.esop.cqDevelopment.refund.dto.BankDealRequestParamDto;
+import com.esop.invoice.service.PrePrintInvoiceService;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Map;
+
+/**
+ * Created by admin on 2017/12/5.
+ */
+@EnableTransactionManagement
+@Controller
+public class CallBossServiceUtils {
+    @Autowired
+    GetBossToken getBossToken;
+    @Autowired
+    PrePrintInvoiceService prePrintInvoiceService;
+    private static Logger logger =  LoggerFactory.getLogger(CallBossServiceUtils.class);
+    @Value("${serviceHuaWei}")
+    private String serviceHuaWei;
+    //集团客户信息查询接口
+    @RequestMapping(value="/getGroupCustomerInfoByGroupId")
+    public String getGroupCustomerInfoByGroupId(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpQryGrpCustBaseInfoESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String groupid=map.get("group_id")+"";
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPID",groupid);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        if(result !=null && !result.equals("")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + result);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + result);
+        }
+        // 记录操作日志
+        return result;
+    }
+    //集团账户查询接口
+    @RequestMapping(value="/getGroupAccountInfoByGroupAcctid")
+    public String getGroupAccountInfoByGroupAcctid(Map<String,Object> map){
+        String url=serviceHuaWei+"/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpQryGrpAcctBaseInfoESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String GROUPACCTID=map.get("group_acctid")+"";
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPACCTID",GROUPACCTID);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        if(result !=null && !result.equals("")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + result);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + result);
+        }
+        return result;
+    }
+    //根据集团客户名称模糊查询集团
+    @RequestMapping(value="/getGroupInfoByCustomerName")
+    public String getGroupInfoByCustomerName(Map<String,Object> map){
+        String url=serviceHuaWei+"/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpQryGroupidByGroupnameESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String GROUPNAME=map.get("GROUPNAME")+"";
+        String ISQRYCOUNT=map.get("ISQRYCOUNT")+"";
+        String PAGES=map.get("PAGES")+"";
+        String PAGERECS=map.get("PAGERECS")+"";
+        String CUSTMGR=map.get("CUSTMGR")+"";
+
+        //组装报文请求接口   {"PAGES":"2","CUSTMGR":"","GROUPNAME":"重庆","SQRYCOUNT":"2","PAGERECS":"12"}
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPNAME",GROUPNAME);
+        jsonObject.put("ISQRYCOUNT",ISQRYCOUNT);
+        jsonObject.put("PAGES",PAGES);
+        jsonObject.put("PAGERECS",PAGERECS);
+        jsonObject.put("CUSTMGR",CUSTMGR);
+
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        if(result !=null && !result.equals("")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + result);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + result);
+        }
+        return result;
+    }
+   //银行明细交易信息接口
+    @RequestMapping(value="/getBankDealDetailInfo")
+    public String getBankDealDetailInfo(BankDealRequestParamDto param){
+        String url=serviceHuaWei + "/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpQryTradeDetailStatusESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        logger.info("【调用Boss 服务URL地址】>>>>>>>>>>>>>" + url);
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("OPERTYPE",param.getOPERTYPE());
+        jsonObject.put("ISQRYCOUNT",param.getISQRYCOUNT());
+        jsonObject.put("PAGES",param.getPAGES());
+        jsonObject.put("PAGERECS",param.getPAGERECS());
+        jsonObject.put("STARTTRADEDATE",param.getSTARTTRADEDATE());
+        jsonObject.put("ENDTRADEDATE",param.getENDTRADEDATE());
+        jsonObject.put("AREAID",param.getAREAID());
+        jsonObject.put("ENTERORG",param.getENTERORG());
+        jsonObject.put("CUSTMGR",param.getCUSTMGR());
+        jsonObject.put("QRYTYPE",param.getQRYTYPE());
+        jsonObject.put("FEE",param.getFEE());
+        jsonObject.put("CLAIMOID",param.getCLAIMOID());
+        jsonObject.put("GRPCUSTID",param.getGRPCUSTID());
+        jsonObject.put("ACCOUNTCLERK",param.getACCOUNTCLERK());
+        jsonObject.put("STARTAPPLYDATE",param.getSTARTAPPLYDATE());
+        jsonObject.put("ENDAPPLYDATE",param.getENDAPPLYDATE());
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        com.alibaba.fastjson.JSONObject obj= com.alibaba.fastjson.JSONObject.parseObject(result);
+        String code = (String)obj.get("res_code");//返回码
+        String desc = (String)obj.get("res_desc");//返回信息
+        if(code.equals("0")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + desc);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + desc);
+        }
+        // 记录操作日志
+        return result;
+    }
+    //银行明细交易信息总记录数接口
+    @RequestMapping(value="/getBankDealDetailInfoTotalNum")
+    public String getBankDealDetailInfoTotalNum(BankDealRequestParamDto param){
+        String url=serviceHuaWei + "/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpQryTradeDetailStatusESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        logger.info("【调用Boss 服务URL地址】>>>>>>>>>>>>>" + url);
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("OPERTYPE",param.getOPERTYPE());
+        jsonObject.put("ISQRYCOUNT","1");
+        jsonObject.put("PAGES",param.getPAGES());
+        jsonObject.put("PAGERECS",param.getPAGERECS());
+        jsonObject.put("STARTTRADEDATE",param.getSTARTTRADEDATE());
+        jsonObject.put("ENDTRADEDATE",param.getENDTRADEDATE());
+        jsonObject.put("AREAID",param.getAREAID());
+        jsonObject.put("ENTERORG",param.getENTERORG());
+        jsonObject.put("CUSTMGR",param.getCUSTMGR());
+        jsonObject.put("QRYTYPE",param.getQRYTYPE());
+        jsonObject.put("FEE",param.getFEE());
+        jsonObject.put("CLAIMOID",param.getCLAIMOID());
+        jsonObject.put("GRPCUSTID",param.getGRPCUSTID());
+        jsonObject.put("ACCOUNTCLERK",param.getACCOUNTCLERK());
+        jsonObject.put("STARTAPPLYDATE",param.getSTARTAPPLYDATE());
+        jsonObject.put("ENDAPPLYDATE",param.getENDAPPLYDATE());
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        com.alibaba.fastjson.JSONObject obj= com.alibaba.fastjson.JSONObject.parseObject(result);
+        String code = (String)obj.get("res_code");//返回码
+        String desc = (String)obj.get("res_desc");//返回信息
+        if(code.equals("0")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + desc);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + desc);
+        }
+        return result;
+    }
+    //集团资金账户查询接口
+    @RequestMapping(value="/getGroupCapitalInfo")
+    public String getGroupCapitalInfo(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserQryService";
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpGroupFundAccountQryESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        logger.info("【调用Boss 服务URL地址】>>>>>>>>>>>>>" + url);
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPID",map.get("GROUPID"));
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            String orderid = "ZJZHCX_"+map.get("GROUPID");
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        com.alibaba.fastjson.JSONObject obj= com.alibaba.fastjson.JSONObject.parseObject(result);
+        String code = (String)obj.get("res_code");//返回码
+        String desc = (String)obj.get("res_desc");//返回信息
+        if(code.equals("0")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + desc);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + desc);
+        }
+        return result;
+    }
+    //资金核销接口
+    @RequestMapping(value="/getVerifyInfo")
+    public String getVerifyInfo(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpGroupFundAccountVerifyESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        logger.info("【调用Boss 服务URL地址】>>>>>>>>>>>>>" + url);
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("BANKFORMNUM",map.get("BANKFORMNUM"));
+        jsonObject.put("OPTYPE",map.get("OPTYPE"));
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+      /*  if(result !=null && !result.equals("")){
+            com.alibaba.fastjson.JSONObject obj= com.alibaba.fastjson.JSONObject.parseObject(result);//获取jsonobject对象
+            String res_code = (String)obj.get("res_code");
+            if(res_code.equals("0")){
+                logger.info("调用接口成功！>>>>>>>>>>>>" + result);
+            }else{
+                logger.info("调用接口失败！>>>>>>>>>>>>" + result);
+            }
+        }*/
+        return result;
+    }
+    //历史短款记录查询接口
+    @RequestMapping(value="/getHisShortInfo")
+    public String getHisShortInfo(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpQryGrpHisShortAgeFeeESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        logger.info("【调用Boss 服务URL地址】>>>>>>>>>>>>>" + url);
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPID",map.get("GROUPID"));
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        com.alibaba.fastjson.JSONObject obj= com.alibaba.fastjson.JSONObject.parseObject(result);//获取jsonobject对象
+        String code = (String)obj.get("res_code");//返回码
+        String desc = (String)obj.get("res_desc");//返回信息
+        if(code.equals("0")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + desc);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + desc);
+        }
+        return result;
+    }
+
+    //资金入账返撤接口
+    @RequestMapping(value="/getReturnOrCallBackCapital")
+    public String getReturnOrCallBackCapital(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpGroupFundAccountReturnESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+
+        //获取请求参数
+        String ORDERID=map.get("ORDERID")+"";
+        String BANKFORMNUM=map.get("BANKFORMNUM")+"";
+        String GROUPID=map.get("GROUPID")+"";
+        String OPTYPE=map.get("OPTYPE")+"";
+        String APPLYOPERID=map.get("APPLYOPERID")+"";
+        String REASON=map.get("REASON")+"";
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("ORDERID",ORDERID);
+        jsonObject.put("BANKFORMNUM",BANKFORMNUM);
+        jsonObject.put("GROUPID",GROUPID);
+        jsonObject.put("OPTYPE",OPTYPE);
+        jsonObject.put("APPLYOPERID",APPLYOPERID);
+        jsonObject.put("REASON",REASON);
+        logger.info("入账反撤组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        String orderId  = "RZFCTB_" +ORDERID;//简称+集团编号
+        try {
+            prePrintInvoiceService.saveCrmLog(orderId,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        return result;
+    }
+    //资金入账回退接口
+    @RequestMapping(value="/getCallBackCapital")
+    public String getCallBackCapital(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpGrpFundRollBackESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String GROUPID=map.get("GROUPID")+"";
+        String OPERFEE=map.get("OPERFEE")+"";
+        String APPLYOPERID=map.get("APPLYOPERID")+"";
+        String REASON=map.get("REASON")+"";
+        String ORDERID=map.get("ORDERID")+"";
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPID",GROUPID);
+        jsonObject.put("OPERFEE",OPERFEE);
+        jsonObject.put("APPLYOPERID",APPLYOPERID);
+        jsonObject.put("REASON",REASON);
+        jsonObject.put("ORDERID",ORDERID);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        //记录调用CRM接口信息
+        try {
+            prePrintInvoiceService.saveCrmLog(ORDERID,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        return result;
+    }
+    //资金调账处理接口
+    @RequestMapping(value="/getGrpGroupFundAccountAdjustESOP")
+    public String getGrpGroupFundAccountAdjustESOP(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpGroupFundAccountAdjustESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+
+        //获取请求参数
+        String ORDERID=map.get("ORDERID")+"";
+        String SRCGROUPID=map.get("SRCGROUPID")+"";
+        String DESGROUPID=map.get("DESGROUPID")+"";
+        String ADJUSTFEE=map.get("ADJUSTFEE")+"";
+        String ADJUSTOPID=map.get("ADJUSTOPID")+"";
+        String ADJUSTREASON=map.get("ADJUSTREASON")+"";
+        String ADJUSTREMARKS=map.get("ADJUSTREMARKS")+"";
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("ORDERID",ORDERID);
+        jsonObject.put("SRCGROUPID",SRCGROUPID);
+        jsonObject.put("DESGROUPID",DESGROUPID);
+        jsonObject.put("ADJUSTFEE",ADJUSTFEE);
+        jsonObject.put("ADJUSTOPID",ADJUSTOPID);
+        jsonObject.put("ADJUSTREASON",ADJUSTREASON);
+        jsonObject.put("ADJUSTREMARKS",ADJUSTREMARKS);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String orderid = String.valueOf(map.get("ORDERID"));
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        return result;
+    }
+
+    //发票查询接口
+    @RequestMapping(value="/getInvoiceInfo")
+    public String getInvoiceInfo(Map<String,Object> map){
+        String url=" ";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+
+        //获取请求参数
+        String GROUPID=map.get("GROUPID")+"";
+        String GROUPACCTID=map.get("GROUPACCTID")+"";
+        String BEGINDATE=map.get("BEGINDATE")+"";
+        String ENDDATE=map.get("ENDDATE")+"";
+
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPID",GROUPID);
+        jsonObject.put("GROUPACCTID",GROUPACCTID);
+        jsonObject.put("BEGINDATE",BEGINDATE);
+        jsonObject.put("ENDDATE",ENDDATE);
+
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        // 记录操作日志
+        return result;
+    }
+    //合同查询接口
+    @RequestMapping(value="/getCompactInfo")
+    public String getCompactInfo(Map<String,Object> map){
+        String url=" ";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String GROUPID=map.get("GROUPID")+"";
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("GROUPID",GROUPID);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        // 记录操作日志
+        return result;
+    }
+
+    //资金占用和释放接口
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @RequestMapping(value = "/changeGroupFundAccountStatus")
+    public String changeGroupFundAccountStatus(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpGroupFundAccountDealESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("ORDERID",map.get("ORDERID"));
+        jsonObject.put("GROUPID",map.get("GROUPID"));
+        jsonObject.put("OPERTYPE",map.get("OPERTYPE"));
+        jsonObject.put("OPERFEE",map.get("OPERFEE"));
+        jsonObject.put("APPLYOPERID",map.get("APPLYOPERID"));
+
+        String orderid = String.valueOf(map.get("ORDERID"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        org.json.JSONObject object = new org.json.JSONObject(result);
+        String res_code = object.getString("res_code");
+        String res_desc = object.getString("res_desc");
+        if(res_code.equals("0")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+res_desc);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+res_desc);
+        }
+        return result;
+    }
+    //业务工单同步接口（历史短款冲销）
+    @RequestMapping(value = "/getGrpFundAccountUserFlowESOP")
+    public String getGrpFundAccountUserFlowESOP(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+        String method = "grpFundAccountUseFlowESOP";//调用方法
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("OrderID",map.get("OrderID"));
+        jsonObject.put("RecType","GrpFundHisWalletReverse");
+        jsonObject.put("AreaID",map.get("AreaID"));
+        jsonObject.put("ApplyOpID",map.get("ApplyOpID"));
+        jsonObject.put("TradeCenterID",map.get("TradeCenterID"));
+        jsonObject.put("GroupID",map.get("GroupID"));
+        jsonObject.put("GroupName",map.get("GroupName"));
+        jsonObject.put("GroupAcctID",map.get("GroupAcctID"));
+        jsonObject.put("GroupAcctName",map.get("GroupAcctName"));
+        jsonObject.put("ShortFeeSeq",map.get("SHORTFEESEQ"));
+        jsonObject.put("FreezeFee",map.get("FreezeFee"));
+        jsonObject.put("ApplyFee",map.get("ApplyFee"));
+        jsonObject.put("ApplyDate",map.get("ApplyDate"));
+        jsonObject.put("Note",map.get("Note"));
+        String orderid = String.valueOf(map.get("OrderID"));
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+
+        return result;
+    }
+    //业务工单同步接口（集团缴费）
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @RequestMapping(value = "/syncFundAccountUserFlowGroupCharge")
+    public String syncFundAccountUserFlowGroupCharge(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpFundAccountUseFlowESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("OrderID",map.get("OrderID"));
+        jsonObject.put("RecType","GrpFundGroupCharge");
+        jsonObject.put("AreaID",map.get("AreaID"));
+        jsonObject.put("ApplyOpID",map.get("ApplyOpID"));
+        jsonObject.put("TradeCenterID",map.get("TradeCenterID"));
+        jsonObject.put("GroupID",map.get("GroupID"));
+        jsonObject.put("GroupName",map.get("GroupName"));
+        jsonObject.put("GroupAcctID",map.get("GroupAcctID"));
+        jsonObject.put("GroupAcctName",map.get("GroupAcctName"));
+        jsonObject.put("PrePrintInvBeginCycle",map.get("PrePrintInvBeginCycle"));
+        jsonObject.put("PrePrintInvEndCycle",map.get("PrePrintInvEndCycle"));
+        jsonObject.put("IsSettlePreInv",map.get("IsSettlePreInv"));
+        jsonObject.put("FreezeFee",map.get("FreezeFee"));
+        jsonObject.put("ApplyFee",map.get("ApplyFee"));
+        jsonObject.put("ApplyDate",map.get("ApplyDate"));
+        jsonObject.put("Note",map.get("Note"));
+        jsonObject.put("PRTINVFORMNUM",map.get("PRTINVFORMNUM"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            String orderid = String.valueOf(map.get("OrderID"));
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //业务工单同步接口（集团成员缴费）
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @RequestMapping(value = "/syncFundAccountUserFlowGMCharge")
+    public String syncFundAccountUserFlowGMCharge(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpFundAccountUseFlowESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("OrderID",map.get("OrderID"));
+        jsonObject.put("RecType","GrpFundGMCharge");
+        jsonObject.put("AreaID",map.get("AreaID"));
+        jsonObject.put("ApplyOpID",map.get("ApplyOpID"));
+        jsonObject.put("TradeCenterID",map.get("TradeCenterID"));
+        jsonObject.put("GroupID",map.get("GroupID"));
+        jsonObject.put("GroupName",map.get("GroupName"));
+        jsonObject.put("GroupAcctID",map.get("GroupAcctID"));
+        jsonObject.put("GroupAcctName",map.get("GroupAcctName"));
+        jsonObject.put("PrePrintInvBeginCycle",map.get("PrePrintInvBeginCycle"));
+        jsonObject.put("PrePrintInvEndCycle",map.get("PrePrintInvEndCycle"));
+        jsonObject.put("FreezeFee",map.get("FreezeFee"));
+        jsonObject.put("ApplyFee",map.get("ApplyFee"));
+        jsonObject.put("ApplyDate",map.get("ApplyDate"));
+        jsonObject.put("GroupMemListFile",map.get("GroupMemListFile"));
+        jsonObject.put("GroupMemListFileLines",map.get("GroupMemListFileLines"));
+        jsonObject.put("Note",map.get("Note"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            String orderid = String.valueOf(map.get("OrderID"));
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //业务工单同步接口（超大集团成员缴费）
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @RequestMapping(value = "/syncFundAccountUserFlowLMCharge")
+    public String syncFundAccountUserFlowLMCharge(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpFundAccountUseFlowESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("OrderID",map.get("OrderID"));
+        jsonObject.put("RecType","GrpFundLMCharge");
+        jsonObject.put("AreaID",map.get("AreaID"));
+        jsonObject.put("ApplyOpID",map.get("ApplyOpID"));
+        jsonObject.put("TradeCenterID",map.get("TradeCenterID"));
+        jsonObject.put("GroupID",map.get("GroupID"));
+        jsonObject.put("GroupName",map.get("GroupName"));
+        jsonObject.put("GroupAcctID",map.get("GroupAcctID"));
+        jsonObject.put("GroupAcctName",map.get("GroupAcctName"));
+        jsonObject.put("PrePrintInvBeginCycle",map.get("PrePrintInvBeginCycle"));
+        jsonObject.put("PrePrintInvEndCycle",map.get("PrePrintInvEndCycle"));
+        jsonObject.put("FreezeFee",map.get("FreezeFee"));
+        jsonObject.put("ApplyFee",map.get("ApplyFee"));
+        jsonObject.put("ApplyDate",map.get("ApplyDate"));
+        jsonObject.put("GroupMemListFile",map.get("GroupMemListFile"));
+        jsonObject.put("GroupMemListFileLines",map.get("GroupMemListFileLines"));
+        jsonObject.put("Note",map.get("Note"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //业务工单同步接口（一次性费用）
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @RequestMapping(value = "/syncFundAccountUserFlowSaleGoods")
+    public String syncFundAccountUserFlowSaleGoods(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpFundAccountUseFlowESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("OrderID",map.get("OrderID"));
+        if(map.get("ProjectId").equals("youjiaka")){
+            jsonObject.put("RecType","GrpFundSaleGoods");
+        }else if(map.get("ProjectId").equals("zhongduan")){
+            jsonObject.put("RecType","GrpGroupBuyMob");
+        }
+        jsonObject.put("AreaID",map.get("AreaID"));
+        jsonObject.put("ApplyOpID",map.get("ApplyOpID"));
+        jsonObject.put("TradeCenterID",map.get("TradeCenterID"));
+        jsonObject.put("GroupID",map.get("GroupID"));
+        jsonObject.put("GroupName",map.get("GroupName"));
+        jsonObject.put("GroupAcctID",map.get("GroupAcctID"));
+        jsonObject.put("GroupAcctName",map.get("GroupAcctName"));
+        jsonObject.put("FreezeFee",map.get("FreezeFee"));
+        jsonObject.put("ApplyFee",map.get("ApplyFee"));
+        jsonObject.put("ApplyDate",map.get("ApplyDate"));
+        jsonObject.put("Note",map.get("Note"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            String orderid = String.valueOf(map.get("OrderID"));
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //业务工单同步接口（缴纳保证金）
+    @RequestMapping(value = "/syncFundMarginCharge")
+    public String syncFundMarginCharge(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpFundAccountUseFlowESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("OrderID",map.get("OrderID"));
+        jsonObject.put("RecType","GrpFundMarginCharge");
+        jsonObject.put("AreaID",map.get("AreaID"));
+        jsonObject.put("ApplyOpID",map.get("ApplyOpID"));
+        jsonObject.put("TradeCenterID",map.get("TradeCenterID"));
+        jsonObject.put("GroupID",map.get("GroupID"));
+        jsonObject.put("GroupName",map.get("GroupName"));
+        jsonObject.put("GroupAcctID",map.get("GroupAcctID"));
+        jsonObject.put("GroupAcctName",map.get("GroupAcctName"));
+        jsonObject.put("IsSettlePreInv",map.get("IsSettlePreInv"));
+        jsonObject.put("PrePrintInvBeginCycle",map.get("PrePrintInvBeginCycle"));
+        jsonObject.put("PrePrintInvEndCycle",map.get("PrePrintInvEndCycle"));
+        jsonObject.put("DepositType",map.get("DepositType"));
+        jsonObject.put("DepositReceiptID",map.get("DepositReceiptID"));
+        jsonObject.put("ShortFeeSeq",map.get("ShortFeeSeq"));
+        jsonObject.put("ContractID",map.get("ContractID"));
+        jsonObject.put("FreezeFee",map.get("FreezeFee"));
+        jsonObject.put("ApplyFee",map.get("ApplyFee"));
+        jsonObject.put("ApplyDate",map.get("ApplyDate"));
+        jsonObject.put("GroupMemListFile",map.get("GroupMemListFile"));
+        jsonObject.put("GroupMemListFileLines",map.get("GroupMemListFileLines"));
+        jsonObject.put("Note",map.get("Note"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //资金批量认领接口
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public String putMoneyToBoss(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpGroupFundBankClaimESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String ORDERID=map.get("ORDERID")+"";
+        String BANKFORMNUM=map.get("BANKFORMNUM")+"";
+        String AREAID=map.get("AREAID")+"";
+        String GROUPID=map.get("GROUPID")+"";
+        String GROUPNAME=map.get("GROUPNAME")+"";
+        String GRPCUSTMGR=map.get("GRPCUSTMGR")+"";
+        String APPLYOPERID=map.get("APPLYOPERID")+"";
+        String ACCOUNTCLERK=map.get("ACCOUNTCLERK")+"";
+        String STATUSDATE=map.get("STATUSDATE")+"";
+        String NOTE=map.get("NOTE")+"";
+        String ENTERORG=map.get("ENTERORG")+"";
+        String CLAIMOID=map.get("CLAIMOID")+"";
+        String CONFIRMBANKACCTID=map.get("CONFIRMBANKACCTID")+"";
+
+
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("ORDERID",ORDERID);
+        jsonObject.put("BANKFORMNUM",BANKFORMNUM);
+        jsonObject.put("AREAID",AREAID);
+        jsonObject.put("GROUPID",GROUPID);
+        jsonObject.put("GROUPNAME",GROUPNAME);
+        jsonObject.put("GRPCUSTMGR",GRPCUSTMGR);
+        jsonObject.put("APPLYOPERID",APPLYOPERID);
+        jsonObject.put("ACCOUNTCLERK",ACCOUNTCLERK);
+        jsonObject.put("STATUSDATE",STATUSDATE);
+        jsonObject.put("NOTE",NOTE);
+        jsonObject.put("ENTERORG",ENTERORG);
+        jsonObject.put("CLAIMOID",CLAIMOID);
+        jsonObject.put("CONFIRMBANKACCTID",CONFIRMBANKACCTID);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        String orderId  = "ZJRLTB_" + ORDERID;//简称+申请单号
+        try {
+            prePrintInvoiceService.saveCrmLog(orderId,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        if(result !=null && !result.equals("")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + result);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + result);
+        }
+        // 记录操作日志
+        return result;
+    }
+    //资金批量认领接口
+    public String returnMoneyToBoss(Map<String,Object> map){
+        String url=serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil=new PostJsonUtil();
+        String token=getBossToken.getBossToken();//获取Boss token
+        String method="grpModGrpBankTradeDetailESOP";//调用方法
+        //拼装调用Boss 服务URL地址
+        url+="?access_token="+token;
+        url+="&format=json&method="+method;
+        //获取请求参数
+        String BANKFORMNUM=map.get("BANKFORMNUM")+"";
+        String OPVALUE=map.get("OPVALUE")+"";
+        String OPTYPE=map.get("OPTYPE")+"";
+
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put("BANKFORMNUM",BANKFORMNUM);
+        jsonObject.put("OPTYPE",OPTYPE);
+        jsonObject.put("OPVALUE",OPVALUE);
+        logger.info("组装报文请求参数>>>>>>>>"+ jsonObject.toString());
+        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        String orderId="ZWYXGLS_"+BANKFORMNUM;
+        try {
+            prePrintInvoiceService.saveCrmLog(orderId,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+
+        if(result !=null && !result.equals("")){
+            logger.info("调用接口成功！>>>>>>>>>>>>" + result);
+        }else{
+            logger.info("调用接口失败！>>>>>>>>>>>>" + result);
+        }
+        // 记录操作日志
+        return result;
+    }
+
+    //集团预开发票查询
+    @RequestMapping(value = "/getPrePrintInvRecoid")
+    public String getPrePrintInvRecoid(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "arQryPrePrintInv";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("GROUPID",map.get("GROUPID"));
+        jsonObject.put("GROUPACCTID",map.get("GROUPACCTID"));
+        jsonObject.put("BEGINDATE",map.get("BEGINDATE"));
+        jsonObject.put("ENDDATE",map.get("ENDDATE"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //集团预开发票查询 --改造后，通过集团编号，发票订单号等查询
+    @RequestMapping(value = "/getPrePrintInvoiceList")
+    public String getPrePrintInvoiceList(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserOrderService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "arQryPrePrintInv";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("GROUPID",map.get("GROUPID"));
+        jsonObject.put("GROUPACCTID",map.get("GROUPACCTID"));
+        jsonObject.put("ESOPORDERID",map.get("ESOPORDERID"));
+        jsonObject.put("STATUS",map.get("STATUS"));
+        jsonObject.put("BEGINDATE",map.get("BEGINDATE"));
+        jsonObject.put("ENDDATE",map.get("ENDDATE"));
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            logger.info("[记录发票查询日志]"+"FPCX_"+map.get("GROUPID"));
+            String orderid = String.valueOf("FPCX_"+map.get("GROUPID"));
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+
+    //查询集团账户信息
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @RequestMapping(value = "/grpQryGrpAcctBaseInfoESOP")
+    public String grpQryGrpAcctBaseInfoESOP(Map<String,Object> map){
+        String url = serviceHuaWei + "/openapi/httpService/UserQryService";//服务地址
+        PostJsonUtil postJsonUtil = new PostJsonUtil();
+        String token = getBossToken.getBossToken();//获取boss token
+
+        String method = "grpQryGrpAcctBaseInfoESOP";//调用方法
+
+        url += "?access_token="+token;
+        url += "&format=json&method="+method;
+
+        logger.info("【调用Boss服务URL地址】>>>>>>>>>>>>>"+ url);
+
+        //组装报文请求接口
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("GROUPACCTID",map.get("GROUPACCTID"));
+        if(map.get("INVOICETYPE").equals("1")){
+            jsonObject.put("TYPE",map.get("TYPE"));
+        }
+
+        logger.info("组装报文请求参数>>>>>>>>>>>>"+jsonObject.toString());
+
+        String result = postJsonUtil.post(url,jsonObject.toString(),null);
+        try {
+            String orderid = String.valueOf("ZHCX"+map.get("GROUPACCTID"));
+            prePrintInvoiceService.saveCrmLog(orderid,url,method,jsonObject.toString(),result,"1");
+        }catch (Exception e){
+            logger.info("记录日志失败！");
+        }
+        if(result != null && !result.equals("")){
+            logger.info("接口调用成功！>>>>>>>>>>>>>"+result);
+        }else {
+            logger.info("接口调用失败！>>>>>>>>>>>>>"+result);
+        }
+        return result;
+    }
+}

@@ -1,0 +1,65 @@
+package com.esop.workflow.util;
+
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
+
+/**
+ * ApplicationContext对象是Spring开源框架的上下文对象实例，在项目运行时自动装载Handler内的所有信息到内存。
+ * 目标：基于SpringBoot平台完成ApplicationContext对象的获取，并通过实例手动获取Spring管理的bean。
+ * 过程：实现ApplicationContextAware接口，重写接口内的setApplicationContext方法来完成获取ApplicationContext实例
+ *
+ * @author daish 2017/11/2
+ */
+@Component
+public class ApplicationContextUtil implements ApplicationContextAware {
+    private static ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    /**
+     * 获取应用上下文对象实例
+     *
+     * @return
+     */
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    /**
+     * 通过name获取bean
+     *
+     * @param name
+     * @return
+     */
+    public static Object getBean(String name) {
+        return getApplicationContext().getBean(name);
+    }
+
+    /**
+     * 通过clazz获取bean
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T getBean(Class<T> clazz) {
+        return getApplicationContext().getBean(clazz);
+    }
+
+    /**
+     * 通过name和clazz返回指定的bean
+     *
+     * @param name
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T getBean(String name, Class<T> clazz) {
+        return getApplicationContext().getBean(name, clazz);
+    }
+}

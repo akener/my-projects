@@ -1,0 +1,38 @@
+package com.esop.basicManagement.service;
+
+
+import com.esop.basicManagement.dto.BasicBossBusimentDto;
+import com.esop.common.dataBase.SqlE;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@Repository
+public class BasicBossBusimentService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    //查询
+    public List queryBusiBossLoginList(BasicBossBusimentDto parameter){
+
+        String selectTion = "";
+        selectTion = "queryBusiBossLoginMsg";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //查询
+    public List queryBusiBossLoginInfoList(BasicBossBusimentDto parameter){
+
+        String selectTion = "";
+        selectTion = "queryBusiBossLoginInfoMsg";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

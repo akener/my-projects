@@ -1,0 +1,105 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: liuxiao
+  Date: 2017/6/5
+  Time: 19:29
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="/view/pub/base.jsp"%>
+<%@ include file="/view/pub/dataTables.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+<div id="container" style="min-width:400px;height:400px;"></div>
+</body>
+<script>
+    var chart = null;
+    var series = [];
+    var categories = [];
+    var person_role = "";
+    $(function(){
+        GetRequest();
+    })
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("=");
+            person_role = decodeURI(strs[1]);
+        }
+        requestData();
+    }
+
+    function requestData() {
+        $.ajax({
+            url: '/getCountByRole',
+            type: 'POST',     // 请求类型，常用的有 GET 和 POST
+            data: {
+                'person_role': person_role// 请求参数
+            },
+            success: function (data) { // 接口调用成功回调函数
+                // data 为服务器返回的数据
+                var data1 = [];
+                var data2 = {};
+                for (var i = 0; i < data.length; i++) {
+                    categories.push(data[i].region_name);
+                    data1.push(parseInt(data[i].amount));
+                }
+                data2.name = "人员统计";
+                data2.data = data1;
+                series.push(data2);
+                getChart();
+            }
+        });
+    }
+
+    function getChart(){
+        chart = new Highcharts.Chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: "各地市"+person_role+'统计'
+            },
+            credits: {
+                enabled:false
+            },
+            /*subtitle: {
+             text: ''
+             },*/
+            xAxis: {
+                categories: categories,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '人数（人）'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y} 人</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    colorByPoint : true
+                }
+            },
+            series: series
+        });
+    }
+
+</script>
+</html>

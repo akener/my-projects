@@ -1,0 +1,28 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.workbench.dto.GroupLevelDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by liuxiao on 2017/7/2.
+ */
+@Repository
+public class GroupLevelService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(GroupLevelService.class);
+    public String getGroupLevel(Map map){
+        List list = sqlE.selectM("selectGroupLevel",map);
+        return (String)list.get(0);
+    }
+    public List<GroupLevelDto> getParentGroupId(GroupLevelDto groupLevelDto){
+        List<GroupLevelDto> list = sqlE.selectM("selectParentGroupId",groupLevelDto);
+        return list;
+    }
+}

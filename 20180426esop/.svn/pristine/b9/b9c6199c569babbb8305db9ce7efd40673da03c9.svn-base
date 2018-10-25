@@ -1,0 +1,55 @@
+package com.esop.workbench.dto;
+
+/**
+ * Created by Administrator on 2017/6/30.
+ */
+public class EncryParamDto {
+    String grp_staff_number="";     //	451aavg90   一级esop工号 //集团总部用户名
+    String companyId = ""; //省代码
+    String is_grp_staff = ""; //是否处理跨省业务
+
+    public String getIs_grp_staff() {
+        return is_grp_staff;
+    }
+
+    public void setIs_grp_staff(String is_grp_staff) {
+        this.is_grp_staff = is_grp_staff;
+    }
+
+    String UserName = ""; //加密后的集团总部用户名
+    String TimeStamp = ""; //加密后的时间戳
+
+    public String getGrp_staff_number() {
+        return grp_staff_number;
+    }
+
+    public void setGrp_staff_number(String grp_staff_number) {
+        this.grp_staff_number = grp_staff_number;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public void setUserName(String userName) {
+        UserName = userName;
+    }
+
+    public String getTimeStamp() {
+        return TimeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        TimeStamp = timeStamp;
+    }
+}

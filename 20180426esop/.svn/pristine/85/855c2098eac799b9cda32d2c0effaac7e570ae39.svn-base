@@ -1,0 +1,107 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class CapitalInfoQueryDto {
+
+    String zijin_zhanghao = "";
+    String kehu_bianhao = "";
+    String kehu_mingcheng = "";
+    String yinhang_zhanghao = "";
+    String kaihuhang = "";
+    String fengongsi = "";
+    String zhanghao_zhuangtai = "";
+    String zhanghu_yue = "";
+    String keyong_yue = "";
+    String zhanyong_zijin = "";
+    String dongjie_zijin = "";
+
+    public String getZijin_zhanghao() {
+        return zijin_zhanghao;
+    }
+
+    public void setZijin_zhanghao(String zijin_zhanghao) {
+        this.zijin_zhanghao = zijin_zhanghao;
+    }
+
+    public String getKehu_bianhao() {
+        return kehu_bianhao;
+    }
+
+    public void setKehu_bianhao(String kehu_bianhao) {
+        this.kehu_bianhao = kehu_bianhao;
+    }
+
+    public String getKehu_mingcheng() {
+        return kehu_mingcheng;
+    }
+
+    public void setKehu_mingcheng(String kehu_mingcheng) {
+        this.kehu_mingcheng = kehu_mingcheng;
+    }
+
+    public String getYinhang_zhanghao() {
+        return yinhang_zhanghao;
+    }
+
+    public void setYinhang_zhanghao(String yinhang_zhanghao) {
+        this.yinhang_zhanghao = yinhang_zhanghao;
+    }
+
+    public String getKaihuhang() {
+        return kaihuhang;
+    }
+
+    public void setKaihuhang(String kaihuhang) {
+        this.kaihuhang = kaihuhang;
+    }
+
+    public String getFengongsi() {
+        return fengongsi;
+    }
+
+    public void setFengongsi(String fengongsi) {
+        this.fengongsi = fengongsi;
+    }
+
+    public String getZhanghao_zhuangtai() {
+        return zhanghao_zhuangtai;
+    }
+
+    public void setZhanghao_zhuangtai(String zhanghao_zhuangtai) {
+        this.zhanghao_zhuangtai = zhanghao_zhuangtai;
+    }
+
+    public String getZhanghu_yue() {
+        return zhanghu_yue;
+    }
+
+    public void setZhanghu_yue(String zhanghu_yue) {
+        this.zhanghu_yue = zhanghu_yue;
+    }
+
+    public String getKeyong_yue() {
+        return keyong_yue;
+    }
+
+    public void setKeyong_yue(String keyong_yue) {
+        this.keyong_yue = keyong_yue;
+    }
+
+    public String getZhanyong_zijin() {
+        return zhanyong_zijin;
+    }
+
+    public void setZhanyong_zijin(String zhanyong_zijin) {
+        this.zhanyong_zijin = zhanyong_zijin;
+    }
+
+    public String getDongjie_zijin() {
+        return dongjie_zijin;
+    }
+
+    public void setDongjie_zijin(String dongjie_zijin) {
+        this.dongjie_zijin = dongjie_zijin;
+    }
+}

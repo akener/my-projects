@@ -1,0 +1,39 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.EncryParamDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * Created by dinghl on 2017/6/27.
+ */
+@RestController
+public class EncryptParamController {
+    @Value("${keyFilePath}")
+    private String KeyFilePath;
+
+    @RequestMapping(value="/encryParams")
+    public EncryParamDto encryptParams (EncryParamDto encryParamDto, HttpServletRequest request){
+
+        Date date = new Date();
+        String grp_staff_number =  encryParamDto.getGrp_staff_number();
+        String companyId = grp_staff_number.substring(0,3);
+        String inName = grp_staff_number;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        String timeStamp = sdf.format(date);
+        IntegrationDESPlus integrationDESPlus = new IntegrationDESPlus(KeyFilePath,"esop");
+        String desName =  integrationDESPlus.encrypt(inName);
+        String desTime = integrationDESPlus.encrypt(timeStamp);
+        encryParamDto.setUserName(desName);
+        encryParamDto.setTimeStamp(desTime);
+        encryParamDto.setCompanyId(companyId);
+
+        return  encryParamDto;
+    }
+}

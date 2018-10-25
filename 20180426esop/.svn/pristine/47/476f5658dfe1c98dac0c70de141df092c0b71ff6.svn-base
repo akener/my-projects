@@ -1,0 +1,72 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.cqDevelopment.capitalManage.dto.GroupMoneyRecordedDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class GroupMoneyRecordedService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    public List groupMoneyRecordedSvc(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "selectGroupMoneyRecorded";
+        List<GroupMoneyRecordedDto>list=sqlE.selectM(selectTion,groupMoneyRecordedDto);
+        return list;
+    }
+    public List selectGroupMoneyAllRecorded(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "selectGroupMoneyAllRecorded";
+        List<GroupMoneyRecordedDto>list=sqlE.selectM(selectTion,groupMoneyRecordedDto);
+        return list;
+    }
+    public List groupMoneyMonthRecordedSvc(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "selectGroupMoneyMonthRecorded";
+        List<GroupMoneyRecordedDto>list=sqlE.selectM(selectTion,groupMoneyRecordedDto);
+        return list;
+    }
+    public String  selectJihe(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "selectJihe";
+        String i=sqlSessionTemplate.selectOne(selectTion,groupMoneyRecordedDto);
+        return i;
+    }
+    public int  jiheruzhang(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "jiheruzhang";
+        int i=sqlSessionTemplate.update(selectTion,groupMoneyRecordedDto);
+        return i;
+    }
+
+    public int  bohuiruzhang(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "bohuiruzhang";
+        int i=sqlSessionTemplate.update(selectTion,groupMoneyRecordedDto);
+        return i;
+    }
+    public List getOrgIdService(){
+        String selectTion = "";
+        selectTion = "selectOrgId";
+         List list=sqlSessionTemplate.selectList(selectTion);
+        return list;
+    }
+    public List getBusinessCenter(GroupMoneyRecordedDto groupMoneyRecordedDto){
+        String selectTion = "";
+        selectTion = "selectBusinessCenterCode";
+        List list=sqlSessionTemplate.selectList(selectTion,groupMoneyRecordedDto);
+        return list;
+    }
+
+}

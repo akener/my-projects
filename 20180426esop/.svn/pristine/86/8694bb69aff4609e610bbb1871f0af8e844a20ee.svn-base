@@ -1,0 +1,476 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<%--<%@ include file="../../pub/cqDevelopment.jsp"%>--%>
+<%@ include file="../../pub/public_include.jsp"%>
+
+<%
+    String renling_shenqingdan=request.getParameter("renling_shenqingdan");
+    String fromacctid = request.getParameter("fromacctid");
+    String fromacctname = request.getParameter("fromacctname");
+    String bankacctid = request.getParameter("bankacctid");
+    String bankacctname = request.getParameter("bankacctname");
+    String transdate = request.getParameter("transdate");
+    String infee = request.getParameter("infee");
+    String statusdate = request.getParameter("statusdate");
+    String accountclerk = request.getParameter("accountclerk");
+    String accountclerk_zhongwen=request.getParameter("accountclerk_zhongwen");
+    String summary = request.getParameter("summary");
+    String groupid = request.getParameter("groupid");
+    String bankformnum = request.getParameter("bankformnum");
+    String claimoid = request.getParameter("claimoid");
+    String infee_yuan = request.getParameter("infee_yuan");
+    String outfee_yuan = request.getParameter("outfee_yuan");
+    String servfee_yuan = request.getParameter("servfee_yuan");
+    String login_no = request.getParameter("login_no");
+    String login_name = request.getParameter("login_name");
+    String center_code_ep = (String) session.getAttribute("center_code_ep");//拥有的行业中心串
+%>
+<head>
+    <title>反撤申请</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>反撤申请单</span>
+            </div>
+        </div>
+        <input type="hidden" value="" id="jiaoyi_liushui">
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <input  type="hidden" id="bankformnum" value="">
+                    <input  type="hidden" id="renling_shenqingdan" value="">
+                    <input  type="hidden" id="weiyibiaoshima" value="">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>来款账号</th>
+                            <td>
+                                <input style="width:200px;"  id="account" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                            <th>来款户名</th>
+                            <td>
+                                <input style="width:200px;"  id="userid" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>到账账号</th>
+                            <td>
+                                <input style="width:200px;" id="arrive_account" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                            <th>到账户名</th>
+                            <td>
+                                <input style="width:200px;" id="arrive_account_name" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>到账日期</th>
+                            <td>
+                                <input style="width:200px;" type=text id="arrive_date" disabled="disabled"class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                            </td>
+                            <th>到账金额(元)</th>
+                            <td>
+                                <input style="width:200px;" id="arrival_amount_yuan" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                <input  type="hidden" id="arrival_amount"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>入账日期</th>
+                            <td>
+                                <input style="width:200px;" type=text id="billing_date" disabled="disabled"class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                            </td>
+                            <th>账务员</th>
+                            <td>
+                                <input style="width:200px;" id="account_clerk2" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                <input type="hidden" id="account_clerk" >
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>摘要</th>
+                            <td colspan="3">
+                                <textarea rows="5" cols="50" id="abstracts" disabled="disabled"></textarea>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>申请人</th>
+                            <td>
+                                <input style="width:200px;" type=text id="applicant" disabled="disabled" class="input-sty04 form-ipt" maxlength="11" readonly="true">
+                                <input type="hidden" id="applicant_no">
+                            </td>
+                            <th>申请日期</th>
+                            <td>
+                                <input style="width:200px;" id="apply_date" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>出账集团</th>
+                            <td>
+                                <input style="width:200px;" id="out_group" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                            </td>
+                            <th>集团编码</th>
+                            <td>
+                                <input style="width:200px;" id="group_num" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>资金联系人</th>
+                            <td>
+                                <input style="width:200px;" id="capital_contact" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                            </td>
+                            <th>联系人电话</th>
+                            <td>
+                                <input style="width:200px;" id="telphone" type="text" class="input-sty04 form-ipt" disabled="disabled">
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>联系人类型</th>
+                            <td>
+                                <input style="width:200px;" id="contact_type" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                            </td>
+                            <th>账本余额(元)</th>
+                            <td>
+                                <input style="width:200px;" id="book_balance_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                <input type="hidden" id="book_balance" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>可用余额(元)</th>
+                            <td>
+                                <input style="width:200px;" id="available_balance_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                <input type="hidden" id="available_balance" />
+                            </td>
+                            <th>反撤金额(元)</th>
+                            <td>
+                                <input style="width:200px;" id="annul_balance_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled">
+                                <input type="hidden" id="annul_balance" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>反撤说明</th>
+                            <td colspan="3">
+                                <textarea rows="5" cols="50" id="annul_explain" ></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>附件信息</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table-infor-7" width="100%;">
+                        <tbody>
+                        <tr>
+                            <th>附件：</th>
+                            <td style="border:none">
+                                <form id="uploadFile" action="uploadFile" method="post"  enctype="multipart/form-data">
+                                    <input type="file" class="ui-text" id="file" name="file" style="width: 240px" onchange="uploadFile()"/>
+                                </form>
+                            </td>
+                            <input id="attach_file_id" name="" type="hidden" value="">
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>下一环节</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <input  type="hidden" id="first_node_id" value="">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <%@ include file="../workFlowQuery.jsp"%>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn btn-default mgr-10" id="back" name="reset1" onclick="goback()">重填</button>
+                            <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="saveAnnulApply()">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no = "<%=login_no%>";
+    var login_name = "<%=login_name%>";
+    $(document).ready(function() {
+        init("<%=renling_shenqingdan%>","<%=fromacctid%>","<%=fromacctname%>","<%=bankacctid%>","<%=bankacctname%>","<%=transdate%>","<%=infee%>","<%=statusdate%>","<%=accountclerk%>","<%=summary%>","<%=groupid%>","<%=bankformnum%>","<%=claimoid%>","<%=infee_yuan%>","<%=outfee_yuan%>","<%=servfee_yuan%>","<%=accountclerk_zhongwen%>");
+       //获取下一环节和处理人
+        getNextLink("8","0");
+    });
+    //申请时间
+    var currentDate= getNowFormatTime();
+    function init(renling_shenqingdan,fromacctid,fromacctname,bankacctid,bankacctname,transdate,infee,statusdate,accountclerk,summary,groupid,bankformnum,claimoid,infee_yuan,outfee_yuan,servfee_yuan,accountclerk_zhongwen) {
+        $("#renling_shenqingdan").val(renling_shenqingdan);
+        $("#account").val(fromacctid);
+        $("#userid").val(decodeURI(fromacctname));
+        $("#arrive_account").val(bankacctid);
+        $("#arrive_account_name").val(decodeURI(bankacctname));
+        $("#arrive_date").val(transdate);
+        $("#arrival_amount").val(infee);//到账金额（分）
+        $("#arrival_amount_yuan").val(infee_yuan);//到账金额（元）
+        $("#billing_date").val(statusdate);//处理时间
+        $("#account_clerk").val(accountclerk);
+        $("#account_clerk2").val(decodeURI(accountclerk_zhongwen));
+        $("#abstracts").val(summary);
+        $("#group_num").val(groupid);
+        //通过集团编号查询集团名称
+        getGroupInfo(groupid);
+        $("#annul_balance").val(infee);//反撤金额(分)
+        $("#annul_balance_yuan").val(infee_yuan);//反撤金额（元）
+        $("#bankformnum").val(bankformnum);//银行交易流水号
+        getCapitalInfoFromBoss(groupid);//获取账本余额,可用余额
+        $("#applicant").val(login_name);//申请人名称
+        $("#applicant_no").val(login_no);//申请人工号
+        $("#weiyibiaoshima").val(claimoid);//唯一标识码
+        var currentNewDate = currentDate.substring(0, 10);//申请时间
+        $("#apply_date").val(currentNewDate);
+    }
+
+    //提交反撤申请单内容
+    function saveAnnulApply(){
+        $("#qu_reset").attr("disabled",true);
+        $("#qu_reset").text("提交中...");
+        //审批信息
+        var nextDealPerson = $("#nextStepDealPerson").val();//下一步处理人
+        if(nextDealPerson=="" || nextDealPerson==undefined ){
+            alert("请选择下一步处理人后提交！！");
+            $("#qu_reset").attr("disabled",false);
+            $("#qu_reset").text("提交");
+            return;
+        }
+        var applicantNo = login_no;//申请人
+        var nodeId = $("#first_node_id").val();//下一环节ID
+        var annul_balance = $("#annul_balance").val();//反撤金额
+        var arrival_amount = $("#arrival_amount").val();//到账金额
+        var available_balance = $("#available_balance").val();//可用余额
+        if(Number(annul_balance) == Number(arrival_amount) && Number(annul_balance) <= Number(available_balance)){
+            $.ajax({
+                type: "post",
+                url: "getAnnulInfo",
+                dataType:"text",
+                data: {
+                    "renling_shenqingdan":$("#renling_shenqingdan").val(),
+                    "account" : $("#account").val(),
+                    "userid"  :	$("#userid").val(),
+                    "arrive_account"  :	$("#arrive_account").val(),
+                    "arrive_account_name"  : $("#arrive_account_name").val(),
+                    "arrive_date" :	$("#arrive_date").val(),
+                    "arrival_amount"  :	$("#arrival_amount").val(),
+                    "billing_date"   :	 $("#billing_date").val(),
+                    "account_clerk"  :	$("#account_clerk").val(),
+                    "abstracts"   :	 $("#abstracts").val(),
+                    "nextDealPerson"   : nextDealPerson,
+                    "applicantNo"   : applicantNo,
+                    "nodeId"   : nodeId,
+                    "applicant":$("#applicant_no").val(),
+                    "out_group":$("#out_group").val(),
+                    "out_grp_no":$("#group_num").val(),
+                    "out_linkman":$("#capital_contact").val(),
+                    "out_link_phone":$("#telphone").val(),
+                    "out_link_type":$("#contact_type").val(),
+                    "out_balance":$("#book_balance").val(),
+                    "out_usable_balance":$("#available_balance").val(),
+                    "annul_balance":$("#annul_balance").val(),
+                    "annul_explain":$("#annul_explain").val(),
+                    "bankformnum":$("#bankformnum").val(),
+                    "weiyibiaoshima":$("#weiyibiaoshima").val(),
+                    "file":$("#attach_file_id").val()
+                },
+                success: function (result) {
+                  var res_code=result.split("|")[0];
+                  var res_desc=result.split("|")[1];
+                    if(res_code==1){
+                      alert(res_desc);
+                     window.close();
+                  }else{
+                      alert(res_desc);
+                      $("#qu_reset").attr("disabled",false);
+                      $("#qu_reset").text("提交");
+                  }
+
+                },
+                error: function () {
+                    $("#qu_reset").attr("disabled",false);
+                    $("#qu_reset").text("提交");
+                    alert("请求超时，请重试！");
+                }
+            });
+        }else{
+            alert("反撤金额必须等于到账金额,且反撤金额应小于可用余额,请核对金额!!!");
+            $("#qu_reset").attr("disabled",false);
+            $("#qu_reset").text("提交");
+        }
+    }
+
+    //查询集团账号缴费联系人
+    function group_connect_choose() {
+        var jituan_bianhao = $("#outGroupNo").val();
+        var url="/esop/jtlxrcx?jituan_bianhao=" + jituan_bianhao;
+        var ret = window.showModalDialog(url, window, 'dialogTop:0;dialogWidth:'+(window.screen.availWidth)+'px;DialogHeight='+(window.screen.availHeight)+'px;help=0;center=1;status:yes;scroll=1');
+        if(ret!=undefined){
+            var data=ret.split("#");
+            $("#capitalContact").val(data[0]);
+            $("#contactNumber").val(data[1]);
+            $("#contactType").val(data[2]);
+        }
+    }
+    //集团账号查询账号名称
+    function getGroupInfo(groupNo) {
+        $.ajax({
+            url:"custInfoQuery",
+            type:"POST",
+            data:{union_code:groupNo},
+            success:function (data) {
+                $("#out_group").val(data.data[0].union_name);
+            }
+        })
+    }
+
+    function getNowFormatTime() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+            + " " + date.getHours() + seperator2 + date.getMinutes()
+            + seperator2 + date.getSeconds();
+        return currentdate;
+
+    }
+
+    //查询集团资金账户接口
+    function  getCapitalInfoFromBoss(groupid) {
+        $.ajax({
+            url:"getGroupCapitalInfoFromBoss",
+            type:"POST",
+            data:{
+                GROUPID:groupid
+            }
+        }).then(function(result){
+            var result=result.data;
+            $("#book_balance").val(result[0].balance);
+            $("#available_balance").val(result[0].nowbalance);
+            $("#book_balance_yuan").val(result[0].newBalance);
+            $("#available_balance_yuan").val(result[0].newNowbalance);
+
+        })
+    }
+
+    function getNextLink(ind_type,node_id) {
+        //带入审批信息
+        $.ajax({
+            type: "POST",
+            url: "workFlowQuery",
+            data:{
+                ind_type:ind_type,
+                node_id:node_id
+            },
+            cache: false,
+            success: function (result) {
+                if(result.length > 0) {
+                    $("#nextLink").html(result[0].node_role_name);
+                    getNextDealPerson(result[0].node_role_id);
+                    $("#first_node_id").val(result[0].node_id);
+                }else{
+                    document.getElementById("appove_show").style.display='none';
+                }
+            },
+            error: function () {
+                bootStrapAlert('请求超时，请重试！');
+            }
+        });
+    }
+    //获取下一环节处理人
+    function getNextDealPerson(role_id) {
+        var hangye_zhongxin = "<%=center_code_ep%>";
+        if((role_id!='23064')){
+            hangye_zhongxin = "";
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'qryNextDealPerson',
+            cache: false,
+            data: {
+                role_id:role_id,
+                hangye_zhongxin:hangye_zhongxin
+            },
+            success: function (data) {
+                var type_data="";
+                $.each(data, function (i, field) {
+                    //拼接json数据集字符串
+                    type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                    type_data += ">" + field.login_name + "</option>";
+                });
+                $("#nextStepDealPerson").empty();
+                $("#nextStepDealPerson").append(type_data);
+            },
+            error: function (resp) {
+                bootStrapAlert('获取下一步处理人失败！');
+                return false;
+
+            }
+        });
+    }
+
+</script>
+
+
+
+
+
+</html>

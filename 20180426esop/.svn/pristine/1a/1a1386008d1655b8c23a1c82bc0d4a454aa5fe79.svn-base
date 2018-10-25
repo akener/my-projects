@@ -1,0 +1,45 @@
+package com.esop.workflow.dto;
+
+/**
+ * 获取audiLevel上级审批标识InDTO
+ *
+ * @author daish 2017/12/15
+ */
+public class GetApprLevelInDTO extends InDTO {
+    private String procId;//流程模板ID
+    private String stepId;//环节ID
+    private String deptId;//分公司ID
+    private String judgeVal;//判断值
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getStepId() {
+        return stepId;
+    }
+
+    public void setStepId(String stepId) {
+        this.stepId = stepId;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getJudgeVal() {
+        return judgeVal;
+    }
+
+    public void setJudgeVal(String judgeVal) {
+        this.judgeVal = judgeVal;
+    }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectSynLoginInfo" resultType="com.esop.synLoginFor4A.dto.SynLoginFor4ADto" >
+        select trim(login_no) as login_no,trim(login_name) as login_name,trim(password) as password,trim(contract_phone) as contract_phone,trim(role_code) as role_code,trim(group_id) as group_id from syn_login_no_f4a1
+    </select>
+    <delete id="deleteSynLogin" parameterType="com.esop.synLoginFor4A.dto.SynLoginFor4ADto">
+        delete from syn_login_no_f4a1 where login_no = #{login_no}
+    </delete>
+</mapper>

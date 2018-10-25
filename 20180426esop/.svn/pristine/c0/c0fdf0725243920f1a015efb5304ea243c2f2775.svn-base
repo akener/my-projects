@@ -1,0 +1,50 @@
+package com.esop.common.word;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
+import com.lowagie.text.rtf.style.RtfFont;
+/*
+ * 插入页眉类
+ */
+public class InsertHeader {
+    private RtfFont headerFont = new RtfFont("仿宋_GB2312", 14, Font.BOLD, Color.BLACK);
+    /*
+     * 插入字符串形式的页眉，用来描述文档
+     * @param document 文档对象
+     */
+    public void insertHeader(Document document,String headerStr,int fontsize,int fontStyle) throws DocumentException, IOException{
+        Paragraph paraHeader = new Paragraph();
+        paraHeader.setFont(new Font(headerFont));
+        paraHeader.add(new Phrase(headerStr));
+        HeaderFooter header = new RtfHeaderFooter(paraHeader);
+        header.setAlignment(Element.ALIGN_CENTER);
+        header.setBorder(Rectangle.NO_BORDER);
+        document.setHeader(header);
+    }
+    /*
+     * 插入图片形式的页眉，由参数定义
+     * @param document 文档对象
+     * @param img 图片对象
+     */
+    public void insertHeader(Document document,String imgUrl,int height) throws BadElementException, MalformedURLException, IOException{
+        Image img = Image.getInstance(imgUrl);
+        img.setAlignment(Element.ALIGN_CENTER);
+        img.scaleAbsolute(document.getPageSize().getWidth()*88/100, document.getPageSize().getHeight()*height/100);
+        RtfHeaderFooter header = new RtfHeaderFooter(img);
+        document.setHeader(header);
+    }
+}
+

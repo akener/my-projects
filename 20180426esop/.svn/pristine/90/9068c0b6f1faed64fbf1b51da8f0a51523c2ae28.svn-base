@@ -1,0 +1,267 @@
+package com.esop.capAdjustApply.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/11/22.
+ */
+//集团缴费之一次性费用（资金管理下资金使用的子业务）
+public class EpCapOneTimeExpenseInfo  extends BaseDto {
+
+    private String ltd ;/*分公司*/
+    private String   trade_center_id ;/*行业中心*/
+    private String    applicant ;/*申请人*/
+    private String     group_name ;/*集团单位名称*/
+    private String      group_id ;/*集团编码*/
+    private String      pay_busi_acct ;/*缴费业务账号*/
+
+    private String      pay_busi_name ;/*缴费业务*/
+    private String      invoice_info ;/*已开发票信息*/
+    private String       usable_amt ;/*可用金额*/
+    private String       product_acct_period ;/*产品账期*/
+    private String       apply_amt ;/*申请使用金额*/
+    private String        apply_date ;/*申请日期*/
+    private String    order_id ;/*ESOP工单号码*/
+    private String    rec_type ;/*申请工单业务类型*/
+    private String      area_id ;/*分公司编码*/
+    private String     apply_op_id ;/*申请人ID*/
+    private String    group_acct_id ;/*集团账号*/
+    private String     group_acct_name ;/*集团账号名称*/
+
+    private String    iss_settle_pre_inv ;/*是否冲销预打发票*/
+    private String     freeze_fee ;/*冻结金额*/
+    private String      note;/*备注信息*/
+    private String     upload_file_name  ;/*上传文件名*/
+
+    public EpCapOneTimeExpenseInfo() {
+    }
+
+    public EpCapOneTimeExpenseInfo(String ltd, String trade_center_id, String applicant, String group_name, String group_id, String pay_busi_acct, String pay_busi_name, String invoice_info, String usable_amt, String product_acct_period, String apply_amt, String apply_date, String order_id, String rec_type, String area_id, String apply_op_id, String group_acct_id, String group_acct_name, String iss_settle_pre_inv, String freeze_fee, String note, String upload_file_name) {
+        this.ltd = ltd;
+        this.trade_center_id = trade_center_id;
+        this.applicant = applicant;
+        this.group_name = group_name;
+        this.group_id = group_id;
+        this.pay_busi_acct = pay_busi_acct;
+        this.pay_busi_name = pay_busi_name;
+        this.invoice_info = invoice_info;
+        this.usable_amt = usable_amt;
+        this.product_acct_period = product_acct_period;
+        this.apply_amt = apply_amt;
+        this.apply_date = apply_date;
+        this.order_id = order_id;
+        this.rec_type = rec_type;
+        this.area_id = area_id;
+        this.apply_op_id = apply_op_id;
+        this.group_acct_id = group_acct_id;
+        this.group_acct_name = group_acct_name;
+        this.iss_settle_pre_inv = iss_settle_pre_inv;
+        this.freeze_fee = freeze_fee;
+        this.note = note;
+        this.upload_file_name = upload_file_name;
+    }
+
+    public String getLtd() {
+        return ltd;
+    }
+
+    public void setLtd(String ltd) {
+        this.ltd = ltd;
+    }
+
+    public String getTrade_center_id() {
+        return trade_center_id;
+    }
+
+    public void setTrade_center_id(String trade_center_id) {
+        this.trade_center_id = trade_center_id;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getPay_busi_acct() {
+        return pay_busi_acct;
+    }
+
+    public void setPay_busi_acct(String pay_busi_acct) {
+        this.pay_busi_acct = pay_busi_acct;
+    }
+
+    public String getPay_busi_name() {
+        return pay_busi_name;
+    }
+
+    public void setPay_busi_name(String pay_busi_name) {
+        this.pay_busi_name = pay_busi_name;
+    }
+
+    public String getInvoice_info() {
+        return invoice_info;
+    }
+
+    public void setInvoice_info(String invoice_info) {
+        this.invoice_info = invoice_info;
+    }
+
+    public String getUsable_amt() {
+        return usable_amt;
+    }
+
+    public void setUsable_amt(String usable_amt) {
+        this.usable_amt = usable_amt;
+    }
+
+    public String getProduct_acct_period() {
+        return product_acct_period;
+    }
+
+    public void setProduct_acct_period(String product_acct_period) {
+        this.product_acct_period = product_acct_period;
+    }
+
+    public String getApply_amt() {
+        return apply_amt;
+    }
+
+    public void setApply_amt(String apply_amt) {
+        this.apply_amt = apply_amt;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    public String getRec_type() {
+        return rec_type;
+    }
+
+    public void setRec_type(String rec_type) {
+        this.rec_type = rec_type;
+    }
+
+    public String getArea_id() {
+        return area_id;
+    }
+
+    public void setArea_id(String area_id) {
+        this.area_id = area_id;
+    }
+
+    public String getApply_op_id() {
+        return apply_op_id;
+    }
+
+    public void setApply_op_id(String apply_op_id) {
+        this.apply_op_id = apply_op_id;
+    }
+
+    public String getGroup_acct_id() {
+        return group_acct_id;
+    }
+
+    public void setGroup_acct_id(String group_acct_id) {
+        this.group_acct_id = group_acct_id;
+    }
+
+    public String getGroup_acct_name() {
+        return group_acct_name;
+    }
+
+    public void setGroup_acct_name(String group_acct_name) {
+        this.group_acct_name = group_acct_name;
+    }
+
+    public String getIss_settle_pre_inv() {
+        return iss_settle_pre_inv;
+    }
+
+    public void setIss_settle_pre_inv(String iss_settle_pre_inv) {
+        this.iss_settle_pre_inv = iss_settle_pre_inv;
+    }
+
+    public String getFreeze_fee() {
+        return freeze_fee;
+    }
+
+    public void setFreeze_fee(String freeze_fee) {
+        this.freeze_fee = freeze_fee;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getUpload_file_name() {
+        return upload_file_name;
+    }
+
+    public void setUpload_file_name(String upload_file_name) {
+        this.upload_file_name = upload_file_name;
+    }
+
+    @Override
+    public String toString() {
+        return "EpCapOneTimeExpenseInfo{" +
+                "ltd='" + ltd + '\'' +
+                ", trade_center_id='" + trade_center_id + '\'' +
+                ", applicant='" + applicant + '\'' +
+                ", group_name='" + group_name + '\'' +
+                ", group_id='" + group_id + '\'' +
+                ", pay_busi_acct='" + pay_busi_acct + '\'' +
+                ", pay_busi_name='" + pay_busi_name + '\'' +
+                ", invoice_info='" + invoice_info + '\'' +
+                ", usable_amt='" + usable_amt + '\'' +
+                ", product_acct_period='" + product_acct_period + '\'' +
+                ", apply_amt='" + apply_amt + '\'' +
+                ", apply_date='" + apply_date + '\'' +
+                ", order_id='" + order_id + '\'' +
+                ", rec_type='" + rec_type + '\'' +
+                ", area_id='" + area_id + '\'' +
+                ", apply_op_id='" + apply_op_id + '\'' +
+                ", group_acct_id='" + group_acct_id + '\'' +
+                ", group_acct_name='" + group_acct_name + '\'' +
+                ", iss_settle_pre_inv='" + iss_settle_pre_inv + '\'' +
+                ", freeze_fee='" + freeze_fee + '\'' +
+                ", note='" + note + '\'' +
+                ", upload_file_name='" + upload_file_name + '\'' +
+                '}';
+    }
+}

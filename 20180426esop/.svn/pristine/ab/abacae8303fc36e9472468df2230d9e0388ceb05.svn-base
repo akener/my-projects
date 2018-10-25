@@ -1,0 +1,49 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.InformationIncomeDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@Repository
+public class InformationIncomeService {
+    @Autowired
+    private static Logger logger = Logger.getLogger(InformationIncomeService.class);
+
+    @Autowired
+    SqlE sqlE;
+    //查询节点合计台账
+    public List<InformationIncomeDto> getInformationIncome(InformationIncomeDto obj){
+        logger.info("parameter="+obj.getRegion_code());
+        String date_type = obj.getData_type();
+        String selectTion = "";
+        if(date_type.equals("1")){
+            selectTion = "selectInformationIncome_province";
+        }else if(date_type.equals("2")){
+            selectTion = "selectInformationIncome_region";
+        }
+        return sqlE.selectM(selectTion, obj);
+    }
+    public Result getInformationIncomeList(InformationIncomeDto parameter){
+        String selectTion = "";
+        selectTion = "selectInformationIncome_town";
+        Result result= sqlE.selectPage(selectTion,parameter);
+        return result;
+    }
+    public List<InformationIncomeDto> getCityCodeShowList(InformationIncomeDto obj){
+        String selectTion = "";
+        List listtmp = null;
+        selectTion = "selectCityCodeList";
+        logger.info("parameter="+obj.getRegion_code());
+        listtmp =  sqlE.selectM(selectTion, obj);
+        return listtmp;
+    }
+}

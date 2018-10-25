@@ -1,0 +1,179 @@
+/**
+ * Created by wangxy on 2017/12/13.
+ */
+$(document).ready(function() {
+    request_num = "1513079246296";
+    //selOrderDetail();
+
+    loadFirstSteps();
+});
+
+//产品成员号码修改订单发起
+function updOrder(){
+    var jtName = $("#jtName").val();
+    var jtCode = $("#jtCode").val();
+    var htNo = $("#htNo").val();
+    var proId = $("#proId").val();
+    var cyName = $("#cyName").val();
+    var cyNo = $("#cyNo").val();
+    var orderTitle = $("#orderTitle").val();
+    var orderDesc = $("#orderDesc").val();
+    var ASSIGNEE_1 = $("#ASSIGNEE_1").val();
+    var cyStatus = $("#cyStatus").val();
+    var mem_id = $("#mem_id").val();
+
+    if(jtName==null||$.trim(jtName)==''){
+        alert('请输入选择集团名称');
+        $("#jtName").focus();
+        return;
+    }
+    if(jtCode==null||$.trim(jtCode)==''){
+        alert('集团编码为空，请先选择集团名称');
+        $("#jtCode").focus();
+        return;
+    }
+    if(htNo==null||$.trim(htNo)==''){
+        alert('合同编号为空，请先选择集团名称');
+        $("#htNo").focus();
+        return;
+    }
+    if(proId==null||$.trim(proId)==''){
+        alert('产品名称为空，请先选择合同编号');
+        $("#proId").focus();
+        return;
+    }
+    if(cyName==null||$.trim(cyName)==''){
+        alert('请输入成员姓名');
+        $("#cyName").focus();
+        return;
+    }
+    if(cyNo==null||$.trim(cyNo)==''){
+        alert('请输入成员号码');
+        $("#cyNo").focus();
+        return;
+    }
+    if(orderTitle==null||$.trim(orderTitle)==''){
+        alert('请输入订单标题');
+        $("#orderTitle").focus();
+        return;
+    }
+    if(orderDesc==null||$.trim(orderDesc)==''){
+        alert('请输入订单说明');
+        $("#orderDesc").focus();
+        return;
+    }
+
+    if(ASSIGNEE_1==null||$.trim(ASSIGNEE_1)==''){
+        alert('请选择下一环节处理人');
+        $("#ASSIGNEE_1").focus();
+        return;
+    }
+
+
+
+    $("#updOrderSubmit").text('提交中..')
+    $("#updOrderSubmit").attr("disabled",true);
+    $.ajax({
+        type: "post",
+        url: "addApplyOrder",
+        data: {jtName: jtName,jtCode:jtCode,htNo:htNo,proId:proId,cyName:cyName,cyNo:cyNo,orderTitle:orderTitle,orderDesc:orderDesc,ASSIGNEE_1:ASSIGNEE_1,memStatus:3,id:mem_id,memprivilege:"gl.grpmem.vpmn.0",attr:"ShortNum=63584",payPlanFlag:"1"},
+        cache: false,
+        success: function (result) {
+            alert(result.msg);
+            $("#updOrderSubmit").text('提交')
+            $("#updOrderSubmit").removeAttr("disabled");
+        }
+    });
+};
+
+function loadFirstSteps() {
+    $.ajax({
+        type: 'POST',
+        url: 'workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+        },
+        success: loadFirstStepsHandler
+    });
+}
+
+function loadFirstStepsHandler(data) {
+    var stepList = data.stepList[0];
+    $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+        $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+    }
+}
+
+
+
+
+
+function  selOrderDetail() {
+    $.ajax({
+        url: "selOrderDetail",
+        type: "post",
+        "data": {
+            "reqNum": request_num
+        },
+        success: function (result) {
+            $("#jtName").val(result.jtName);
+            $("#jtCode").val(result.jtCode);
+            $("#htNo").val(result.htNo);
+            $("#proName").val(result.proName);
+            $("#cyName").val(result.cyName);
+            $("#cyNo").val(result.cyNo);
+            $("#orderTitle").val(result.orderTitle);
+            $("#orderDesc").val(result.orderDesc);
+
+            selHtList(result.jtCode,result.htNo);
+            selProListAuto(result.htNo,result.proId);
+        }
+    });
+}
+
+function selHtList(jtCode,selHtNo) {
+    $.ajax({
+        type: "post",
+        url: "selHtNo",
+        data: {jtCode: jtCode},
+        cache: false,
+        success: function (result) {
+            $("#htNo").empty();
+            $("#htNo").append('<option selected="selected" value="">请选择</option>')
+            $.each(result, function (i, field) {
+                if(field.selValue==selHtNo){
+                    $("#htNo").append('<option selected="selected" value="' + field.selValue + '">' + field.selKey + '</option>');
+                }else{
+                    $("#htNo").append('<option  value="' + field.selValue + '">' + field.selKey + '</option>');
+                }
+            })
+        }
+    });
+}
+
+//根据合同号查询产品
+function selProListAuto(htNo,selProNo){
+    $.ajax({
+        type: "post",
+        url: "selProList",
+        data: {htNo:htNo},
+        cache: false,
+        success: function (result) {
+            $("#proId").empty();
+            $("#proId").append('<option selected="selected" value="">请选择</option>')
+            $.each(result, function (i, field) {
+                if(field.selValue==selProNo){
+                    $("#proId").append('<option selected="selected" value="' + field.selValue + '">' + field.selKey + '</option>');
+                }else {
+                    $("#proId").append('<option  value="' + field.selValue + '">' + field.selKey + '</option>')
+                }
+            })
+        }
+    });
+};

@@ -1,0 +1,11 @@
+open=true
+debug=true
+mode=true
+sql=true
+sql_key=1,20
+#xss_char=;$%@'"&<>()+,\n\r\\
+xss_char=;$%@'"&<>()+,\n\r\\"
+xss_key=truncate|char|insert|select|delete|update|declare|drop|javascript|script|iframe|vbscript|frame|img|href|onreadystatechange|alert|atestu|xss|eval|;//|alert\\(
+json=true
+json_key={
+rtn_str={root:{rtnCode:999999,rtnMsg:%s}}

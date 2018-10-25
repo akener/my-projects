@@ -1,0 +1,293 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/tableList.jsp"%>
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+<link rel="stylesheet" href="/esop/static/zTree_v3/css/demo.css" type="text/css">
+<link rel="stylesheet" href="/esop/static/zTree_v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="/esop/static/zTree_v3/js/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="/esop/static/zTree_v3/js/jquery.ztree.excheck.js"></script>
+<head>
+    <title>ESOP工号角色修改</title>
+</head>
+<body class="bg-ff">
+<form name="form1" method="post">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <input id="zTree_value" type="hidden" value="" readonly="readonly"/>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tr>
+                            <th>大角色：</th>
+                            <td>
+                                <select id="role_code" class="selector_region input-sty04 form-ipt">
+                                    <option value="01">管理人员</option>
+                                    <option value="02">产品经理</option>
+                                    <option value="03">行业经理</option>
+                                    <option value="04">业务管理</option>
+                                    <option value="05">营销人员</option>
+                                    <option value="06">稽核人员</option>
+                                    <option value="07">客户经理</option>
+                                    <option value="08">系统管理员</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <a class="ui-btn mgr-10" onclick="roleQuery()">查询</a>
+                            <a class="ui-btn" type="reset" id="button" onclick="resetList()">重置</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table width="100%"  border="0" cellspacing="0"  cellpadding="0" class="table-infor-7 width-th" align="center">
+                        <tr  >
+                            <th style="text-align: center;" colspan="4">
+                                角色
+                            </th>
+                            <th  style="text-align: center;">
+                                权限
+                            </th>
+                        </tr>
+                        <tr >
+                            <td >
+                                <select id="list_roleid_all" style="width:200px" size=26 multiple="multiple">
+                                </select>
+                            </td>
+                            <td align=center valign=center style="vertical-align: middle">
+                                <p>
+                                <input style="width: auto;" type="button" class="btn-style02" name="OPR_TYPE1" title="将单个工员加入到[备选的]列表中" value=" &gt; "  onclick=exchangeListItems(document.form1.list_roleid_all,document.form1.list_roleid_now)>
+                                    <br>
+                                    <br>
+                                    <br>
+                                <p>
+                                <input style="width: auto;" type="button" class="btn-style02" name="OPR_TYPE3" title="将单个工员从[备选的]列表中删除" value=" &lt; " onclick=exchangeListItems(document.form1.list_roleid_now,document.form1.list_roleid_all)>
+                            </td>
+                            <td >
+                                <select id="list_roleid_now" style="width:200px" size=26 multiple="multiple">
+                                    <option value="">............................................................</option>
+                                </select>
+                            </td>
+                            <td align=center valign=center style="text-align:center;vertical-align: middle">
+                                <p>
+                                <a class="ui-btn mgr-10" name="btnquery1" id="modifyAction" onclick="mod_func()" >查看功能</a>
+                                    <br>
+                                    <br>
+                                    <br>
+                                <p>
+                                <a class="ui-btn mgr-10" name="btnquery1" id="submitAction" onclick="sub_func()" >修改提交</a>
+                            </td>
+                            <td id="treeDemo" class="ztree" style="width: 50%;vertical-align: top"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<script type="text/javascript">
+    var treeValue = "";
+
+    function roleQuery() {
+        resetList();
+        $.ajax({
+            type: "post",
+            url: "basicRoleFcQuery",
+            data: {
+                role_code: $("#role_code").val()
+            },
+            cache: false,
+            success: function (result) {
+                role_data = "<option value=''>............................................................</option>";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    role_data += "<option value='" + field.role_code + "' ";
+                    role_data += ">" + field.role_name + "</option>";
+                });
+                $("#list_roleid_all").empty();
+                $("#list_roleid_all").append(role_data);
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+
+    function sub_func(){
+        with(document.form1){
+            var n1 = list_roleid_now.length;
+            var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+                nodes=treeObj.getCheckedNodes(true);
+            var n2 = nodes.length;
+
+
+            if(n1 == 1){
+                alert("角色不能为空！"); return;
+            }
+            if(n2 == 0){
+                alert("功能不能为空！"); return;
+            }
+            if(n1>2){
+                alert("选择角色数据不能大于2，请重新选择！"); return;
+            }
+
+            var roleCode = list_roleid_now.options[1].value;
+
+            $.ajax({
+                type: "get",
+                url: "insertFunctionInfo",
+                data: {
+                    role_code: roleCode,
+                    tree_value: treeValue
+                },
+                cache: false,
+                success: function (result) {
+                    if(1==result){
+                        alert("操作成功！");
+                    }else{
+                        if(888==result){
+                            alert("操作成功！本操作涉及CRM功能赋权，请确认相关工号是否已在CRM系统完成相关赋权！");
+                        }else{
+                            alert("操作失败,请联系系统管理员！");
+                        }
+                    }
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+            resetList();
+        }
+    }
+
+    function mod_func() {
+        with(document.form1){
+            var n1 = list_roleid_now.length;
+            if(n1 == 1){
+                alert("角色不能为空！"); return;
+            }
+            if(n1 > 2){
+                alert("只能选择一个角色查看功能！"); return;
+            }
+
+            $("#submitAction").removeAttr("disabled");
+
+            setCheck();
+            $("#level").bind("change", setCheck);
+            $("#all").bind("change", setCheck);
+        }
+    }
+
+    function exchangeAllItems(from,to){
+        var k = 1;
+        for(var i=from.length -1;i>=k;i--){
+            to.options[to.length++] = new Option(from.options[i].text,from.options[i].value);
+            from.options[i] = null;
+        }
+    }
+    function exchangeListItems(from,to){
+        var k = from.selectedIndex;
+        if(k >= 1){
+            for(var i=from.length -1;i>=k;i--){
+                if(from.options[i].selected){
+                    to.options[to.length++] = new Option(from.options[i].text,from.options[i].value);
+                    from.options[i] = null;
+                }
+            }
+        }
+    }
+
+
+    var setting = {
+        check:{
+            enable:true
+        },
+        data:    {
+            simpleData:{
+                enable:true
+            }
+        },
+        callback:{
+            onCheck:onCheck
+        }
+    };
+
+    function onCheck(e,treeId,treeNode){
+        var treeObj=$.fn.zTree.getZTreeObj("treeDemo"),
+            nodes=treeObj.getCheckedNodes(true);
+        var v="";
+        for(var i=0;i<nodes.length;i++){
+            v+=nodes[i].id + ",";//获取选中节点的值
+        }
+        v=v.substring(0, v.length - 1);
+        treeValue=v;
+    }
+
+
+    function resetList() {
+        $("#list_roleid_now").empty();
+        $("#list_roleid_all").empty();
+        $("#list_roleid_now").append("<option value=''>............................................................</option>");
+        $("#treeDemo").empty();
+        $("#submitAction").attr("disabled",true);
+    }
+
+
+    function  showParent(){
+        with(document.form1) {
+            var rCode = list_roleid_now.options[1].value;
+            $.ajax({
+                type: "POST",
+                url: "groupTreeMsg_function",
+                data: {
+                    id: rCode,
+                    pId: '4100'
+                },
+                cache: false,
+                success: function (data) {
+                    $.fn.zTree.init($("#treeDemo"), setting, data)
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+    }
+
+    var code;
+    function setCheck() {
+        var type = $("#level").attr("checked")? "level":"all";
+        setting.check.radioType = type;
+        showCode('setting.check.radioType = "' + type + '";');
+        showParent();
+    }
+    function showCode(str) {
+        if (!code) code = $("#code");
+        code.empty();
+        code.append("<li>"+str+"</li>");
+    }
+    $(document).ready(function(){
+        resetList();
+    });
+</script>
+</body>
+</html>
+

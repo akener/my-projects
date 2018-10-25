@@ -1,0 +1,178 @@
+
+function getNextStep(){
+    b=$("#stepId").val();
+    var t={};
+
+    key1="procId";
+    value1=$("#procId").val();
+    t[key1]=value1;
+
+    key2="procNameEn";
+    value2=$("#procNameEn").val();
+    t[key2]=value2;
+
+    key3="stepId";
+    value3=$("#stepId").val();
+    t[key3]=value3;
+
+    key4="bizRecordId";
+    value4=$("#bizRecordId").val();
+    t[key4]=value4;
+
+    key5="procInstId";
+    value5=$("#procInstId").val();
+    t[key5]=value5;
+
+    key6="regionId";
+    value6=$("#regionId").val();
+    t[key6]=value6;
+
+    $.ajax({
+        type: 'POST',
+        url: 'orderflow/getNextSteps',
+        data:t,
+        success: loadNexttStepsHandler
+    });
+
+}
+
+function loadNexttStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    var stepList = data.stepList[0]
+    $("#next_deal6").val(stepList.ctProcStepRel.stepName);
+    //  alert(stepList.ctProcStepRel.stepName);
+    // $('#next_stepName').text(stepList.ctProcStepRel.stepName);
+
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+        $("#ASSIGNEE_3").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+    }
+
+}
+
+function reSubmit(){
+
+
+    var grpSubsId = $("#grpSubsId").val();
+    var unionCode = $("#unionCode").val();
+    var grp_subsid = $("#grp_subsid").val();
+    var prod_ids = $("#prod_ids").val();
+    var order_title = $("#order_title").val();
+    var notes = $("#notes").val();
+
+    var next_deal6 = $("#next_deal6").val();
+    var ASSIGNEE_3 = $("#ASSIGNEE_3").val();
+    if(grpSubsId==null||$.trim(grpSubsId)==''){
+        alert('请输入集团名称！');
+        $("#grpSubsId").focus();
+        return;
+    }
+    if(unionCode==null||$.trim(unionCode)==''){
+        alert('请输入合同名称！');
+        $("#notes").focus();
+        return;
+    }
+    if(grp_subsid==null||$.trim(grp_subsid)==''){
+        alert('请输入集团产品用户编码！');
+        $("#grp_subsid").focus();
+        return;
+    }
+    if(prod_ids==null||$.trim(prod_ids)==''){
+        alert('请输入变更产品！');
+        $("#prod_ids").focus();
+        return;
+    }
+    if(order_title==null||$.trim(order_title)==''){
+        alert('请输入订单标题！');
+        $("#order_title").focus();
+        return;
+    }
+    if(notes==null||$.trim(notes)==''){
+        alert('请输入订单描述！');
+        $("#notes").focus();
+        return;
+    }
+    if(next_deal6==null||$.trim(next_deal6)==''){
+        alert('请输入下一步环节！');
+        $("#prod_ids").focus();
+        return;
+    }
+    if(ASSIGNEE_3==null||$.trim(ASSIGNEE_3)==''){
+        alert('请输入下一步环节处理人！');
+        $("#ASSIGNEE_1").focus();
+        return;
+    }
+    var t = {};
+
+    key = "procInstId";
+    value = $("#procInstId").val();
+    t[key] = value;
+
+    key1 = "taskInstId";
+    value1 = $("#taskInstId").val();
+    t[key1] = value1;
+
+    key2 = "taskId";
+    value2 = $("#taskId").val();
+    t[key2] = value2;
+
+    key3 = "stepId";
+    value3 = $("#stepId").val();
+    t[key3] = value3;
+
+    key4 = "procId";
+    value4 = $("#procId").val();
+    t[key4] = value4;
+
+    key5 = "dealOpinion";
+    value5 = "重新提交";
+    t[key5] = value5;
+
+    key6 = "remarks";
+    value6 = "修改";
+    t[key6] = value6;
+
+
+    key7 = "ASSIGNEE_3" ;
+    value7 = $("#assignee_3").val();
+    t[key7] = value7;
+
+    $.ajax({
+        url: "/orderflow/submitTask",
+        type: "post",
+        "data": t,
+        success: function (result) {
+            if(result=="0")
+                upChangesave();
+            else
+                alert("流程发起失败！");
+        },
+    });
+}
+
+
+function upChangesave() {
+    $.ajax({
+        type: "post",
+        url: "/upGroupProdChange",
+        data: {
+            request_num:request_num,
+            grp_subs_id:$("#grp_subsid").val(),
+            prod_id:$("#prod_ids").val(),
+            effect_type:$("#effect_type").val(),
+            op_type:$("#op_type").val(),
+            contract_id:$("#contractId").text(),
+            order_title:$("#order_title").val(),
+            notes:$("#notes").val()
+        },
+        success: function (result) {
+            if(result>0){
+                alert("重新提交成功！");
+                open(location, '_self').close();
+            }else {
+                alert("重新提交失败！");
+            }
+        }
+    })
+}
+

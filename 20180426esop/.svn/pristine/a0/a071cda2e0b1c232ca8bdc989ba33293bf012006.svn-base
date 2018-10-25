@@ -1,0 +1,70 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+/**
+ * Created by wangxy on 2017/12/18.
+ */
+public class InvoiceInfoDto {
+    private String unionCode;//集团编码
+    private String unionName;//集团名称
+    private String bankAccount;//开户账号
+    private String bankName;//开户银行
+    private String accountStatus;//账号状态   0:未绑定;1:已绑定
+    private Integer reStatus;//接口返回状态
+    private String reDesc;//接口返回信息
+
+    public String getAccountStatus() {
+        return accountStatus;
+    }
+
+    public void setAccountStatus(String accountStatus) {
+        this.accountStatus = accountStatus;
+    }
+
+    public Integer getReStatus() {
+        return reStatus;
+    }
+
+    public void setReStatus(Integer reStatus) {
+        this.reStatus = reStatus;
+    }
+
+    public String getReDesc() {
+        return reDesc;
+    }
+
+    public void setReDesc(String reDesc) {
+        this.reDesc = reDesc;
+    }
+
+    public String getUnionCode() {
+        return unionCode;
+    }
+
+    public void setUnionCode(String unionCode) {
+        this.unionCode = unionCode;
+    }
+
+    public String getUnionName() {
+        return unionName;
+    }
+
+    public void setUnionName(String unionName) {
+        this.unionName = unionName;
+    }
+
+    public String getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(String bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+}

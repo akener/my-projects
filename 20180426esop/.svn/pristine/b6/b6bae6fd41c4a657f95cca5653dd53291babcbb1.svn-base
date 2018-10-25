@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="signOnRecordServiceRepository">
+    <!-- 导入签约工单数据 -->
+    <select id="insertSignOnRecord" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        insert into ep_signonrecord_info(
+            id,
+            record_id,
+            cust_id    ,
+            cust_name  ,
+            org_code   ,
+            cust_addr  ,
+            province_end_date,
+            region_end_date ,
+            record_status   ,
+            service_no      ,
+            service_name     ,
+            op_time          ,
+            endding_time    ,
+            org_name
+        ) values (
+            work_order_seq.nextval,
+            #{record_id},
+            #{cust_id},
+            #{cust_name},
+            #{org_code},
+            #{cust_addr},
+            #{province_end_date},
+            #{region_end_date},
+            #{record_status},
+            #{service_no},
+            #{service_name},
+            #{op_time},
+            #{endding_time},
+            #{org_name}
+        )
+    </select>
+    <!-- 获取org_name -->
+    <select id="getOrg_Name" parameterType="Map" resultType="String">
+        select distinct(name) org_name from dgrpgroups t where t.group_id=#{ORG_CODE}
+    </select>
+    <!-- 查询工单 -->
+    <select id="getAllSignRecord" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+          select
+                id,
+                record_id,
+                cust_id    ,
+                cust_name  ,
+                org_code   ,
+                cust_addr  ,
+                province_end_date,
+                region_end_date ,
+                record_status   ,
+                service_no      ,
+                service_name     ,
+                op_time          ,
+                endding_time    ,
+                org_name,
+                county_code,
+                county_name,
+                giveup_reason,
+                DECODE(TRIM(record_status),
+                '01',
+                '省签约管理员导入',
+                '02',
+                '省级下发地市',
+                '03',
+                '地市下发区县',
+                '04',
+                '转发至客户经理',
+                '05',
+                '区县回退地市',
+                '06',
+                '工单主动放弃，进入工单池',
+                '07',
+                '客户经理回退区县',
+                '08',
+                '工单被动放弃，进入工单池',
+                '09',
+                '回退省管理员处',
+                '10',
+                '省管理员结单',
+                '11',
+                '签约成功结单'
+                ) status_name
+          from  ep_signonrecord_info
+          where 1=1
+          <if test="record_status != null and record_status != ''">
+              and record_status=#{record_status}
+          </if>
+          <if test="org_code != null and org_code != ''">
+              and org_code=#{org_code}
+          </if>
+          <if test="service_no != null and service_no != ''">
+              and service_no=#{service_no}
+          </if>
+          <if test="record_id != null and record_id != ''">
+              and record_id=#{record_id}
+          </if>
+          <if test="county_code != null and county_code != ''">
+              and county_code=#{county_code}
+          </if>
+            <if test="id != null and id != ''">
+                and id=#{id}
+            </if>
+    </select>
+    <!-- 获取工单批次号 -->
+    <select id="getSignRecordId" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select distinct(record_id) record_id from ep_signonrecord_info where 1=1
+        <if test="record_status != null and record_status != ''">
+            and record_status=#{record_status}
+        </if>
+        <if test="org_code != null and org_code != ''">
+            and org_code=#{org_code} and record_status=#{record_status}
+        </if>
+    </select>
+    <!-- 工单下发地市 -->
+    <select id="sendSignOnRecordToRegion" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='02',province_end_date=#{province_end_date} where record_status='01'
+        <if test="record_id != null and record_id != ''">
+            and record_id=#{record_id}
+        </if>
+    </select>
+    <!-- 获取区县 -->
+    <select id="getCountyCode" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select a.group_id county_code,a.group_name county_name
+          from ep_sys_group_info a
+         where a.group_id in (select group_id
+                                from ep_sys_group_rel t
+                               where t.parent_group_id = #{org_code}
+                                 and t.denorm_level = '1')
+    </select>
+    <!-- 下发工单到区县 -->
+    <select id="sendRecordToCounty" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='03',region_end_date=#{region_end_date},county_code=#{county_code},county_name=#{county_name} where id=#{id}
+    </select>
+
+    <select id="getProvinceEndDate" parameterType="Map" resultType="String">
+        select min(province_end_date) province_end_date from ep_signonrecord_info
+    </select>
+    <!-- 区县下客户经理 -->
+    <select id="getServiceNo" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select service_no,name service_name
+        from dgrpmanagermsg a where a.service_no in (
+                select login_no from ep_sys_loginmsg_new where vilid_flag = '1' and group_id in (
+                      select group_id from ep_sys_group_rel z where z.parent_group_id = #{org_code}
+                )
+        )
+    </select>
+    <!-- 转发至客户经理 -->
+    <select id="sendSignRecordToService" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='04',service_no=#{service_no},service_name=#{service_name} where id=#{id}
+    </select>
+    <!-- 回退至地市 -->
+    <select id="backSignRecordToRegion" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='05',county_code='',county_name='' where id=#{id}
+    </select>
+    <!-- 工单放弃 -->
+    <select id="giveUpRecordByService" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='06',service_no='',service_name='',giveup_reason=#{giveup_reason} where id=#{id}
+    </select>
+    <!-- 工单回退 -->
+    <select id="backRecordToCounty" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='07',endding_time=to_char(sysdate,'yyyy-MM-dd hh24:mm:ss') where id=#{id}
+    </select>
+    <!-- 签约成功 -->
+    <select id="setSignRecordSuccess" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='11' where id=#{id}
+    </select>
+    <!-- 获取在网集团，校验签约成功失败 -->
+    <select id="getCustMsg" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="String">
+        select unit_id from dgrpcustmsg t where t.unit_id=#{cust_id}
+    </select>
+    <!-- 区县工单处理查询 -->
+    <select id="querySignRecordByCountyForHandle" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select
+            id,
+            record_id,
+            cust_id    ,
+            cust_name  ,
+            org_code   ,
+            cust_addr  ,
+            province_end_date,
+            region_end_date ,
+            record_status   ,
+            service_no      ,
+            service_name     ,
+            op_time          ,
+            endding_time    ,
+            org_name,
+            county_code,
+            county_name,
+            giveup_reason,
+            DECODE(TRIM(record_status),
+                '01',
+                '省签约管理员导入',
+                '02',
+                '省级下发地市',
+                '03',
+                '地市下发区县',
+                '04',
+                '转发至客户经理',
+                '05',
+                '区县回退地市',
+                '06',
+                '工单主动放弃，进入工单池',
+                '07',
+                '客户经理回退区县',
+                '08',
+                '工单被动放弃，进入工单池',
+                '09',
+                '回退省管理员处',
+                '10',
+                '省管理员结单',
+                '11',
+                '签约成功结单'
+            ) status_name
+            from  ep_signonrecord_info
+            where 1=1
+            <choose>
+                <when test="record_status != null and record_status != ''">
+                    and record_status=#{record_status}
+                </when>
+                <otherwise>
+                    and (record_status='03' or record_status='07')
+                </otherwise>
+            </choose>
+            <if test="org_code != null and org_code != ''">
+                and org_code=#{org_code}
+            </if>
+            <if test="cust_id != null and cust_id != ''">
+                and cust_id=#{cust_id}
+            </if>
+            <if test="record_id != null and record_id != ''">
+                and record_id=#{record_id}
+            </if>
+            <if test="county_code != null and county_code != ''">
+                and county_code=#{county_code}
+            </if>
+            <if test="id != null and id != ''">
+                and id=#{id}
+            </if>
+            <if test="start_date != null and start_date != '' and end_date != null and end_date != ''">
+                and region_end_date between #{start_date} and #{end_date}
+            </if>
+            <if test="cust_name != null and cust_name != ''">
+                and cust_name like concat(concat('%',#{cust_name}),'%')
+            </if>
+    </select>
+    <!-- 地市工单处理查询  -->
+    <select id="querySignRecordByRegionForHandle" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select
+        id,
+        record_id,
+        cust_id    ,
+        cust_name  ,
+        org_code   ,
+        cust_addr  ,
+        province_end_date,
+        region_end_date ,
+        record_status   ,
+        service_no      ,
+        service_name     ,
+        op_time          ,
+        endding_time    ,
+        org_name,
+        county_code,
+        county_name,
+        giveup_reason,
+        DECODE(TRIM(record_status),
+        '01',
+        '省签约管理员导入',
+        '02',
+        '省级下发地市',
+        '03',
+        '地市下发区县',
+        '04',
+        '转发至客户经理',
+        '05',
+        '区县回退地市',
+        '06',
+        '工单主动放弃，进入工单池',
+        '07',
+        '客户经理回退区县',
+        '08',
+        '工单被动放弃，进入工单池',
+        '09',
+        '回退省管理员处',
+        '10',
+        '省管理员结单',
+        '11',
+        '签约成功结单'
+        ) status_name
+        from  ep_signonrecord_info
+        where 1=1
+        <choose>
+            <when test="record_status != null and record_status != ''">
+                and record_status=#{record_status}
+            </when>
+            <otherwise>
+                and (record_status='02' or record_status='05')
+            </otherwise>
+        </choose>
+        <if test="org_code != null and org_code != ''">
+            and org_code=#{org_code}
+        </if>
+        <if test="cust_id != null and cust_id != ''">
+            and cust_id=#{cust_id}
+        </if>
+        <if test="record_id != null and record_id != ''">
+            and record_id=#{record_id}
+        </if>
+    </select>
+    <!-- 客户经理所属地市 -->
+    <select id="getOrgCodeOfService" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="String">
+          select t.parent_group_id org_code
+              from ep_sys_group_rel t
+             where t.group_id = (select t.group_id
+                                   from ep_sys_loginmsg_new t
+                                  where t.login_no = #{service_no})
+               and t.denorm_level = '1'
+    </select>
+    <!-- 查询地市工单池数据 -->
+    <select id="getAllSignRecordForPool" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select
+        id,
+        record_id,
+        cust_id    ,
+        cust_name  ,
+        org_code   ,
+        cust_addr  ,
+        province_end_date,
+        region_end_date ,
+        record_status   ,
+        service_no      ,
+        service_name     ,
+        op_time          ,
+        endding_time    ,
+        org_name,
+        county_code,
+        county_name,
+        giveup_reason,
+        DECODE(TRIM(record_status),
+        '01',
+        '省签约管理员导入',
+        '02',
+        '省级下发地市',
+        '03',
+        '地市下发区县',
+        '04',
+        '转发至客户经理',
+        '05',
+        '区县回退地市',
+        '06',
+        '工单主动放弃，进入工单池',
+        '07',
+        '客户经理回退区县',
+        '08',
+        '工单被动放弃，进入工单池',
+        '09',
+        '回退省管理员处',
+        '10',
+        '省管理员结单',
+        '11',
+        '签约成功结单'
+        ) status_name
+        from  ep_signonrecord_info
+        where 1=1
+        <choose>
+            <when test="record_status != null and record_status != ''">
+                and record_status=#{record_status}
+            </when>
+            <otherwise>
+                and (record_status='06' or record_status='08')
+            </otherwise>
+        </choose>
+        <if test="org_code != null and org_code != ''">
+            and org_code=#{org_code}
+        </if>
+    </select>
+    <!-- 客户经理区县 -->
+    <select id="getCountyCodeByService" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select group_id county_code,group_name county_name
+          from ep_sys_group_info t
+         where t.group_id = (select t.group_id
+                               from ep_sys_loginmsg_new t
+                              where t.login_no = #{service_no})
+    </select>
+    <!-- 客户经理认领工单 -->
+    <select id="claimSignRecordByService" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status=#{record_status},service_no=#{service_no},service_name=#{service_name},county_code=#{county_code},county_name=#{county_name} where id=#{id}
+    </select>
+    <!-- 获取最新下发工单批次号 -->
+    <select id="getSignRecordIdOfSend" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select distinct(record_id) record_id,op_time from ep_signonrecord_info t order by op_time desc
+    </select>
+    <!-- 结单 -->
+    <select id="endSignRecord" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status='10' where 1=1
+        <if test="id != null and id != ''">
+            and id=#{id}
+        </if>
+    </select>
+    <!-- 发送短信 -->
+    <select id="sendMessage" parameterType="Map" resultType="int">
+        insert into push_sms_crm_0(
+               SEQ,
+               TEMPLATEID,
+               PARAMETER,
+               SERVICE_NO,
+               PHONE_NO,
+               INSERT_TIME,
+               OP_CODE,
+               LOGIN_NO,
+               SERV_NO,
+               SERV_NAME,
+               SUB_PHONE_SEQ,
+               SEND_TIME,
+               HOLD1,
+               HOLD2,
+               HOLD3,
+               HOLD4,
+               HOLD5,
+               REAL_SEND_TIME)
+        values (
+              pushsms_seq.nextval,
+              'CRM_0558',
+              #{PARAM},
+              '',
+              #{PHONE_NO},
+              sysdate,
+              #{OP_CODE},
+              #{LOGIN_NO},
+              '',
+              '',
+              '',
+              to_date(#{SEND_TIME}, 'yyyy-mm-dd hh24:mi:ss'),
+              '',
+              '',
+              '',
+              '',
+              '',
+              null
+        )
+    </select>
+    <!-- 查询地市截止日期 -->
+    <select id="getRecordRegionEndDate" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+         select region_end_date,id,province_end_date
+              from ep_signonrecord_info t
+             where t.record_status = '03'
+               or t.record_status = '04'
+                or t.record_status = '05'
+               or t.record_status = '07'
+    </select>
+    <!-- 差省派单截止日期 -->
+    <select id="getRecordProvinceEndDate" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select province_end_date,id
+              from ep_signonrecord_info t
+             where t.record_status != '01' and t.record_status!='09' and t.record_status!='10' and t.record_status!='11'
+    </select>
+    <!-- 修改工单状态进入工单池 -->
+    <select id="updateRecordToPool" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status=#{record_status},service_no='',service_name='',region_end_date=#{province_end_date} where id=#{id}
+    </select>
+    <!-- 修改工单状态回退省管理员 -->
+    <select id="updateRecordToProvince" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="int">
+        update ep_signonrecord_info set record_status=#{record_status} where id=#{id}
+    </select>
+    <!-- 查组织机构等级 -->
+    <select id="getGroupLevel" parameterType="Map" resultType="String">
+        select denorm_level from ep_sys_group_rel where parent_group_id = '10014' and group_id=#{GROUP_ID}
+    </select>
+    <!-- 工单查询 -->
+    <select id="getSignRecordForQuery" parameterType="com.esop.workOrderInfo.dto.SignOnRecordDto" resultType="com.esop.workOrderInfo.dto.SignOnRecordDto">
+        select
+        id,
+        record_id,
+        cust_id    ,
+        cust_name  ,
+        org_code   ,
+        cust_addr  ,
+        province_end_date,
+        region_end_date ,
+        record_status   ,
+        service_no      ,
+        service_name     ,
+        op_time          ,
+        endding_time    ,
+        org_name,
+        county_code,
+        county_name,
+        giveup_reason,
+        DECODE(TRIM(record_status),
+        '01',
+        '省签约管理员导入',
+        '02',
+        '省级下发地市',
+        '03',
+        '地市下发区县',
+        '04',
+        '转发至客户经理',
+        '05',
+        '区县回退地市',
+        '06',
+        '工单主动放弃，进入工单池',
+        '07',
+        '客户经理回退区县',
+        '08',
+        '工单被动放弃，进入工单池',
+        '09',
+        '回退省管理员处',
+        '10',
+        '省管理员结单',
+        '11',
+        '签约成功结单'
+        ) status_name
+        from  ep_signonrecord_info
+        where 1=1
+        <!-- 地市查询 -->
+        <if test="org_code != null and org_code != ''">
+            and record_status!='01'  and org_code=#{org_code}
+        </if>
+        <!-- 区县查询 -->
+        <if test="county_code != null and county_code != ''">
+            and record_status not in ('01','02') and county_code=#{county_code}
+        </if>
+        <!-- 客户经理查询 -->
+        <if test="service_no != null and service_no != ''">
+            and record_status not in ('01','02','03') and service_no=#{service_no}
+        </if>
+    </select>
+</mapper>

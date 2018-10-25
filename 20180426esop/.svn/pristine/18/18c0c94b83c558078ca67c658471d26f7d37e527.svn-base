@@ -1,0 +1,833 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<script src="/esop/static/js/workbench/aes.js" type="text/javascript"></script>
+<script src="/esop/static/js/workbench/crypto-js.js" type="text/javascript"></script>
+<script src="/esop/static/js/workbench/pad-zeropadding.js" type="text/javascript"></script>
+<head>
+    <title>ESOP工号映射</title>
+</head>
+<body class="add">
+<input type="hidden" id="apply_no" value="${login_no}">
+<ul id="myTab" class="nav nav-tabs">
+    <!--<li class="active">
+        <a href="#tj" data-toggle="tab" onclick="resetAll()">
+            添加
+        </a>
+    </li>-->
+    <li class="active"><a href="#xg" data-toggle="tab" onclick="resetAll()">修改</a></li>
+    <li><a href="#cx" data-toggle="tab" onclick="resetAll()">查询</a></li>
+</ul>
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">操作提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="myTabContent" class="tab-content bg-ff">
+    <div class="tab-pane fade " id="tj">
+        <div id='tbs1' class="box-in">
+            <!--<div class="radio">
+                <label>
+                    <input type="radio" name="optionsRadios1" id="optionsRadios1" onchange="chooseAddType('1')" checked>已有BOSS工号
+                </label>
+                <label>
+                    <input type="radio" name="optionsRadios2" id="optionsRadios2" onchange="chooseAddType('2')" >无BOSS工号
+                </label>
+            </div>-->
+            <table class="table-infor-7 width-th" width="100%" id="haveBossNo">
+                <tr>
+                    <th>
+                        BOSS工号(<font class='red'>6</font>位)
+                    </th>
+                    <td>
+                        <input value="" id="login_no4" type="text" maxlength="6" class="required isLengthOf"/>
+                        <button name='vilidEsop' class='ui-btn btn-default mgr-10' onclick="check_login_no4()">获取
+                            <button class='ui-btn btn-success mgr-10' onclick="check_login_no1()" id="login_no44">验证</button>
+                        </button>
+                    </td>
+                    <th>
+                        工号名称
+                    </th>
+                    <td>
+                        <input id="login_name4" value="" maxlength='20' maxlength="20" class="required"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>联系电话</th>
+                    <td>
+                        <input value="" id="phone_no4" class="required allCellPhone" onchange="check_phone_no1(this.value)"/>
+                    </td>
+                    <th>身份证号码</th>
+                    <td>
+                        <input value="" id="id_card_no4" type="text" maxlength="18" class="haveSpeForAll isLengthOf required"/>
+                        <button class='ui-btn btn-success mgr-10' onclick="check_id_card_no4()">验证</button>
+                        <input id="id_card_no4_check" type="hidden" value="0" readonly="readonly"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>营业专属工号(<font class='red'>6</font>位)</th>
+                    <td>
+                        <input value="" id="busi_boss_no4" type="text" maxlength="6" class="haveSpeForAll isLengthOf required"/>
+                        <button class='ui-btn btn-success mgr-10' onclick="check_busi_boss_no4()">验证</button>
+                        <input id="busi_boss_no4_check" type="hidden" value="0" readonly="readonly"/>
+                    </td>
+                    <th>OA工号</th>
+                    <td>
+                        <input value="" id="oa_login_no4" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                        <button class='ui-btn btn-success mgr-10' onclick="check_oa_login_no4()">验证</button>
+                        <input id="oa_login_no4_check" type="hidden" value="0" readonly="readonly"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>员工编号</th>
+                    <td>
+                        <input value="" id="mis_no4" type="text" maxlength="10" class="haveSpeForAll isLengthOf required"/>
+                        <button class='ui-btn btn-success mgr-10' onclick="check_mis_no4()">验证</button>
+                        <input id="mis_no4_check" type="hidden" value="0" readonly="readonly"/>
+                    </td>
+                    <th>工号可用标识</th>
+                    <td>
+                        <select id="vilid_flag4">
+                            <option value="1">可用</option>
+                            <option value="0">不可用</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>OA编号</th>
+                    <td>
+                        <input value="" id="oa_no4" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                    </td>
+                    <th>OA标题</th>
+                    <td>
+                        <input value="" id="oa_title4" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                    </td>
+
+                </tr>
+                <tr>
+                    <th>输入密码(<font class='green'>6</font>位)</th>
+                    <td><input value="" id="password4" type="password" size="21" name="esopPass"
+                               maxlength="6" class="required isLengthOf"/></td>
+                    <th>确认密码</th>
+                    <td>
+                        <input value="" id="password44" type="password" size="21" maxlength="6"
+                               name="cfmEsopPwd" class="required isLengthOf"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>ESOP角色</th>
+                    <td>
+                        <input value="" id="role_name4"
+                               type="text" value="" readonly="readonly" class="required"
+                               onchange="checkNameVal('in')"/>
+                        <button name="chooseCode" id="add_boss_chooseCode" class="ui-btn btn-success mgr-10"
+                                onclick="chooseloginGroup4('role')">选择
+                        </button>
+                        <input id="role_code4" type="hidden" readonly="readonly"/>
+                    </td>
+                    <th>处理跨省业务</th>
+                    <td>
+                        <select id="is_grp_staff4" onchange="bindIpChange('4')">
+                            <option value="N">否</option>
+                            <option value="Y">是</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>总部用户类型</th>
+                    <td>
+                        <select id="grpusertype4" readonly="readonly">
+                            <option value="2">地市级</option>
+                            <option value="1">省级</option>
+                        </select>
+                    </td>
+                    <th>总部ESOP用户名</th>
+                    <td>
+                        <input value="" type='text' id='grp_staff_number4'
+                               readonly="readonly"/>
+                    </td>
+                </tr>
+                <%--<tr>
+<<<<<<< HEAD
+                    <th>ESOP角色</th>
+=======
+                    <th>跨省待办提醒</th>
+                    <td>
+                        <select id="need_remind4" readonly="readonly">
+                            <option value="1">需要</option>
+                            <option value="2">不需要</option>
+                        </select>
+                    </td>
+                    <th>总部用户角色</th>
+                    <td colspan="4" id="checkboxgrprolecode4" readonly="readonly">
+                        <input type="checkbox" id="grp_role_code1_4" name="grp_role_code_4" value="1"/> 客户经理　
+                        <input type="checkbox" id="grp_role_code2_4" name="grp_role_code_4" value="2"/> 领导　
+                        <input type="checkbox" id="grp_role_code3_4" name="grp_role_code_4" value="3"/> 提单人员　
+                        <input type="checkbox" id="grp_role_code4_4" name="grp_role_code_4" value="4"/> 接口人
+                        <input type="checkbox" id="grp_role_code5_4" name="grp_role_code_4" value="5"/> 业务支撑人员
+                    </td>
+                </tr>--%>
+                <tr>
+                    <th>工作台</th>
+                    <td>
+                        <select id="work_area4" disabled="disabled">
+                            <option value="2">管理者工作台</option>
+                            <option value="3">产品经理工作台</option>
+                            <option value="1">客户经理工作台</option>
+                        </select>
+                    </td>
+                    <th>部门</th>
+                    <td>
+                        <select id="group_id4">
+                        </select>
+                    </td>
+                    <!--<th>部门</th>
+                    <td>
+                        <input value="" id="group_name4" readonly="readonly"
+                               class="required"/>
+                        <button name="chooseGroup" id="add_boss_chooseGroup"
+                                class="ui-btn btn-success mgr-10" onclick="chooseloginGroup4('group')">归属
+                        </button>
+                        <input id="group_id4" type="hidden" value="" readonly="readonly"/>
+                    </td>-->
+                </tr>
+                <tr>
+                    <th>跨省待办提醒</th>
+                    <td>
+                        <select id="need_remind4" readonly="readonly">
+                            <option value="1">需要</option>
+                            <option value="2">不需要</option>
+                        </select>
+                    </td>
+                    <th>总部用户角色</th>
+                    <td colspan="4" id="checkboxgrprolecode4" readonly="readonly">
+                        <input type="checkbox" id="grp_role_code1_4" name="grp_role_code_4" value="1"/> 客户经理　
+                        <input type="checkbox" id="grp_role_code2_4" name="grp_role_code_4" value="2"/> 领导　
+                        <input type="checkbox" id="grp_role_code3_4" name="grp_role_code_4" value="3"/> 提单人员　
+                        <input type="checkbox" id="grp_role_code4_4" name="grp_role_code_4" value="4" onclick="set(this)"/> 接口人
+                        <input type="checkbox" id="grp_role_code5_4" name="grp_role_code_4" value="5"/> 业务支撑人员
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>是否参与量酬</th>
+                    <td>
+                        <select id="is_lc4">
+                            <option value="0">是</option>
+                            <option value="1">否</option>
+                        </select>
+                    </td>
+                    <div id="" style="display: none">
+                        <th>接口人类型</th>
+                        <td id="checkboxgintertype4">
+                            <input type="checkbox" id="inter_type4_1" name="inter_type4" value="1" onclick="check(this)"/> 跨省数据专线　
+                            <input type="checkbox" id="inter_type4_2" name="inter_type4" value="2" onclick="check(this)"/> 跨省数据专线　
+                            <input type="checkbox" id="inter_type4_3" name="inter_type4" value="3" onclick="check(this)"/> 双跨融合通信　
+                            <input type="checkbox" id="inter_type4_4" name="inter_type4" value="4" onclick="check(this)"/> 短彩信
+                            <input type="checkbox" id="inter_type4_5" name="inter_type4" value="5" onclick="check(this)"/> WLAN统付
+                            <input type="checkbox" id="inter_type4_6" name="inter_type4" value="6" onclick="check(this)"/> 流量统付
+                            <input type="checkbox" id="inter_type4_7" name="inter_type4" value="7" onclick="check(this)"/> CDN业务
+                        </td>
+                    </div>
+                </tr>
+                <input id="busido_region4" type="hidden" value="" readonly="readonly"/>
+                <input id="busido_town4" type="hidden" value="" readonly="readonly"/>
+                <input id="office_town4" type="hidden" value="" readonly="readonly"/>
+                <input id="busi_password4" type="hidden" value="" readonly="readonly"/>
+                <input id="boss_role_code4" type="hidden" value="" readonly="readonly"/>
+                <input id="right_code4" type="hidden" value="" readonly="readonly"/>
+                <input id="org_code4" type="hidden" value="" readonly="readonly"/>
+                <input id="contract_phone4" type="hidden" value="" readonly="readonly"/>
+            </table>
+            <div class="row mgt-20"  id="haveBossNo1">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10" id="add_boss_button" name="add_printsub" onmouseup="comm_boss_add()">确认</button>
+                    <button class="ui-btn" id="add_reset4" onclick="resetBossAdd()">清除</button>
+                </div>
+            </div>
+            <!--<table class="table-infor-7 width-th" width="100%" id="noBossNo" style="display:none">
+                <tr>
+                <th>帐户类型</th>
+                <td colspan="3">
+                    <select id="boss_login_type" onchange="bossLoginTypeChoose(this.value)">
+                        <option value="1">营业类帐号</option>
+                        <option value="3">业务管理类帐号</option>
+                    </select>
+                </td>
+                </tr>
+                <tr>
+                    <th>地市(BOSS)：</th>
+                    <td>
+                        <select id="region_code1" class="selector_region input-sty04 form-ipt"
+                                onchange="TownQuery()">
+                        </select>
+                    </td>
+                    <th>区县(BOSS)：</th>
+                    <td>
+                        <select id="town_code1" class="selector_town input-sty04 form-ipt" onchange="OfficeQuery()">
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>营业厅(BOSS)：</th>
+                    <td>
+                        <select id="office_code1" class="selector_town input-sty04 form-ipt">
+                        </select>
+                    </td>
+                    <th>设置BOSS角色</th>
+                    <td>
+                        <input value="" id="boss_role_name1"
+                               type="text" value="" readonly="readonly" class="required"
+                               onchange="checkNameVal('in')"/>
+                        <button name="chooseCode" id="add_chooseBossCode" class="ui-btn btn-success mgr-10"
+                                onclick="chooseloginGroup1('bossRole')">选择
+                        </button>
+                        <input id="boss_role_code1" type="hidden" readonly="readonly"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>角色权限(BOSS)：</th>
+                    <td colspan="2">
+                        <select id="right_code1" class="selector_region input-sty04 form-ipt">
+                        </select>
+                    </td>
+                    <td>
+                        <button name='vilidLogin' class='ui-btn mgr-10' onclick="LoginQuery()">生成
+                        </button>
+                    </td>
+                </tr>-->
+                <!--</table>
+                <table class="table-infor-7 width-th" width="100%" id="mgr_no" style="display:none">
+                    <th>组织结构</th>
+                    <td>
+                        <input value="" id="boss_group_name1"
+                               type="text" value="" readonly="readonly" class="required"
+                               onchange="checkNameVal('in')"/>
+                        <button name="chooseCode" id="select_boss_group" class="ui-btn btn-success mgr-10"
+                                onclick="chooseloginGroup1('bossGroup')">选择
+                        </button>
+                        <input id="boss_group_code1" type="hidden" readonly="readonly"/>
+                    </td>
+                    <th>管理类BOSS帐号</th>
+                    <td>
+                        <input value="" id="mgr_boss_no1" type="text" maxlength="18" class="haveSpeForAll isLengthOf required"/>
+                        <button class='ui-btn btn-success mgr-10' onclick="check_boss_no1()">验证</button>
+                        <input id="mgr_boss_no1_chek" type="hidden" value="0" readonly="readonly"/>
+                    </td>
+                </table>
+                <table class="table-infor-7 width-th" width="100%">-->
+            <!--
+                   <tr>
+                       <th>
+                           ESOP工号(<font class='red'>6</font>位)
+                       </th>
+                       <td>
+                           <input value="" id="login_no1" type="text" maxlength="6" class="required isLengthOf"/>
+                           <button class='ui-btn btn-success mgr-10' id="check_boss_no1" onclick="check_boss_no1()" style="display:none">验证</button>
+                       </td>
+                       <th>
+                           ESOP工号名称
+                       </th>
+                       <td>
+                           <input id="login_name1" value="" maxlength="20" class="required"/>
+                       </td>
+                   </tr>
+                   <tr>
+                       <th>联系电话</th>
+                       <td>
+                           <input value="" id="phone_no1" class="required allCellPhone" onchange="check_phone_no1(this.value)"/>
+                       </td>
+                       <th>身份证号码</th>
+                       <td>
+                           <input value="" id="id_card_no1" type="text" maxlength="18" class="haveSpeForAll isLengthOf required"/>
+                           <button class='ui-btn btn-success mgr-10' onclick="check_id_card_no1()">验证</button>
+                           <input id="id_card_no1_check" type="hidden" value="0" readonly="readonly"/>
+                       </td>
+                   </tr>
+                   <tr>
+                       <th>营业专属工号(<font class='red'>6</font>位)</th>
+                       <td>
+                           <input value="" id="busi_boss_no1" name="busi_boss_no1" type="text" maxlength="6" class="haveSpeForAll isLengthOf required"/>
+                           <button class='ui-btn btn-success mgr-10' onclick="check_busi_boss_no1()">验证</button>
+                           <input id="busi_boss_no1_check" type="hidden" value="0" readonly="readonly"/>
+                       </td>
+                       <th>OA工号</th>
+                       <td>
+                           <input value="" id="oa_login_no1" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                           <button class='ui-btn btn-success mgr-10' onclick="check_oa_login_no1()">验证</button>
+                           <input id="oa_login_no1_check" type="hidden" value="0" readonly="readonly"/>
+                       </td>
+                   </tr>
+                   <tr>
+                       <th>员工编号</th>
+                       <td>
+                           <input value="" id="mis_no1" type="text" maxlength="10" class="haveSpeForAll isLengthOf required"/>
+                           <button class='ui-btn btn-success mgr-10' onclick="check_mis_no1()">验证</button>
+                           <input id="mis_no1_check" type="hidden" value="0" readonly="readonly"/>
+                       </td>
+                       <th>工号可用标识</th>
+                       <td>
+                           <select id="vilid_flag1">
+                               <option value="1">可用</option>
+                               <option value="0">不可用</option>
+                           </select>
+                       </td>
+                   </tr>
+                    <tr>
+                        <th>OA编号</th>
+                        <td>
+                            <input value="" id="oa_no1" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                        </td>
+                        <th>OA标题</th>
+                        <td>
+                            <input value="" id="oa_title1" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                        </td>
+
+                    </tr>
+                   <tr>
+                       <th>输入密码(<font class='green'>6</font>位)</th>
+                       <td><input value="" id="password1" type="password" size="21" name="esopPass"
+                                  maxlength="6" class="required isLengthOf"/></td>
+                       <th>确认密码</th>
+                       <td>
+                           <input value="" id="password11" type="password" size="21" maxlength="6"
+                                  name="cfmEsopPwd" class="required isLengthOf"/>
+                       </td>
+                   </tr>
+                   <tr>
+                       <th>设置工作台</th>
+                       <td>
+                           <select id="work_area1">
+                               <option value="2">管理者工作台</option>
+                               <option value="3">产品经理工作台</option>
+                               <option value="1">客户经理工作台</option>
+                           </select>
+                       </td>
+                       <th>处理跨省业务</th>
+                       <td>
+                           <select id="is_grp_staff1" onchange="bindIpChange('1')">
+                               <option value="N">否</option>
+                               <option value="Y">是</option>
+                           </select>
+                       </td>
+                   </tr>
+                   <tr>
+                       <th>总部用户类型</th>
+                       <td>
+                           <select id="grpusertype1">
+                               <option value="2">地市级</option>
+                               <option value="1">省级</option>
+                           </select>
+                       </td>
+                       <th>总部ESOP用户名</th>
+                       <td>
+                           <input value="" type='text' id='grp_staff_number1'
+                                  readonly="readonly"/>
+                       </td>
+                   </tr>
+                <tr>
+                    <th>设置ESOP角色</th>
+                    <td>
+                        <input value="" id="role_name1"
+                               type="text" value="" readonly="readonly" class="required"
+                               onchange="checkNameVal('in')"/>
+                        <button name="chooseCode" id="add_chooseCode" class="ui-btn btn-success mgr-10"
+                                onclick="chooseloginGroup1('role')">选择
+                        </button>
+                        <input id="role_code1" type="hidden" readonly="readonly"/>
+                    </td>
+                    <th>选择ESOP专属部门</th>
+                    <td>
+                        <input value="" id="group_name1" readonly="readonly"
+                               class="required"/>
+                        <button name="chooseGroup" id="add_chooseGroup"
+                                class="ui-btn btn-success mgr-10" onclick="chooseloginGroup1('group')">归属
+                        </button>
+                        <input id="group_id1" type="hidden" value="" readonly="readonly"/>
+                    </td>
+                </tr>
+                   <tr>
+                       <th>跨省待办提醒</th>
+                       <td>
+                           <select id="need_remind1">
+                               <option value="1">需要</option>
+                               <option value="2">不需要</option>
+                           </select>
+                       </td>
+                       <th>总部用户角色</th>
+                       <td colspan="4" id="checkboxgrprolecode1">
+                           <input type="checkbox" id="grp_role_code1" name="grp_role_code_1" value="1"/> 客户经理　
+                           <input type="checkbox" id="grp_role_code2" name="grp_role_code_1" value="2"/> 领导　
+                           <input type="checkbox" id="grp_role_code3" name="grp_role_code_1" value="3" /> 提单人员　
+                           <input type="checkbox" id="grp_role_code4" name="grp_role_code_1" value="4" onclick="set1(this)"/> 接口人
+                           <input type="checkbox" id="grp_role_code5" name="grp_role_code_1" value="5"/> 业务支撑人员
+                       </td>
+                   </tr>
+
+                    <tr>
+                        <th>是否参与量酬</th>
+                        <td>
+                            <select id="is_lc1">
+                                <option value="0">是</option>
+                                <option value="1">否</option>
+                            </select>
+                        </td>
+                        <div id="div" style="display: none">
+                            <th>接口人类型</th>
+                            <td id="checkboxgintertype1">
+                                <input type="checkbox" id="inter_type1_1" name="inter_type1" value="1" onclick="check1(this)"/> 跨省数据专线　
+                                <input type="checkbox" id="inter_type1_2" name="inter_type1" value="2" onclick="check1(this)"/> 跨省数据专线　
+                                <input type="checkbox" id="inter_type1_3" name="inter_type1" value="3" onclick="check1(this)"/> 双跨融合通信　
+                                <input type="checkbox" id="inter_type1_4" name="inter_type1" value="4" onclick="check1(this)"/> 短彩信
+                                <input type="checkbox" id="inter_type1_5" name="inter_type1" value="5" onclick="check1(this)"/> WLAN统付
+                                <input type="checkbox" id="inter_type1_6" name="inter_type1" value="6" onclick="check1(this)"/> 流量统付
+                                <input type="checkbox" id="inter_type1_7" name="inter_type1" value="7" onclick="check1(this)"/> CDN业务
+                            </td>
+                        </div>
+                    </tr>
+               </table>
+               <div class="row mgt-20" id="noBossNo1" style="display:none">
+                   <div class="btn-box">
+                       <button class="ui-btn mgr-10" id="add_button" name="add_printsub" onmouseup="comm_add()">确认</button>
+                       <button class="ui-btn" id="add_reset1" onclick="resetAll()">清除</button>
+                   </div>
+               </div>-->
+           </div>
+       </div>
+       <div class="tab-pane fade in active" id="xg">
+               <div id='tbs2' class="box-in">
+                   <table class="table-infor-7 width-th" width="100%">
+                       <tr>
+                           <th>
+                               ESOP工号(<font class='red'>6</font>位)
+                           </th>
+                           <td>
+                               <input value="" id="login_no2" type="text" maxlength="6" class="required isLengthOf"/>
+                               <button name='vilidEsop' class='ui-btn btn-default mgr-10' onclick="check_login_no2()">获取
+                               </button>
+                           </td>
+                           <th>
+                               ESOP工号名称
+                           </th>
+                           <td>
+                               <input id="login_name2" value="" maxlength='20' maxlength="20" class="required"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>联系电话</th>
+                           <td>
+                               <input value="" id="phone_no2" class="required allCellPhone" onchange="check_phone_no1(this.value)"/>
+                           </td>
+                           <th>身份证号码</th>
+                           <td>
+                               <input value="" id="id_card_no2" type="text" maxlength="18" class="haveSpeForAll isLengthOf required"/>
+                               <button class='ui-btn btn-default mgr-10' onclick="check_id_card_no2()">验证</button>
+                               <button class='ui-btn mgr-10' onclick="modify('1')">修改</button>
+                               <input id="id_card_no2_check" type="hidden" value="0" readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>营业专属工号(<font class='red'>6</font>位)</th>
+                           <td>
+                               <input value="" id="busi_boss_no2" name="busi_boss_no2" type="text" maxlength="6" class="haveSpeForAll isLengthOf required"/>
+                               <button class='ui-btn btn-default mgr-10' onclick="check_busi_boss_no2()">验证</button>
+                               <button class='ui-btn mgr-10' onclick="modify('2')">修改</button>
+                               <input id="busi_boss_no2_check" type="hidden" value="0" readonly="readonly"/>
+                           </td>
+                           <th>OA工号</th>
+                           <td>
+                               <input value="" id="oa_login_no2" type="text" maxlength="20" class="haveSpeForAll isLengthOf required"/>
+                               <button class='ui-btn btn-default mgr-10' onclick="check_oa_login_no2()">验证</button>
+                               <button class='ui-btn mgr-10' onclick="modify('3')">修改</button>
+                               <input id="oa_login_no2_check" type="hidden" value="0" readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>员工编号</th>
+                           <td>
+                               <input value="" id="mis_no2" type="text" maxlength="10" class="haveSpeForAll isLengthOf required"/>
+                               <button class='ui-btn btn-default mgr-10' onclick="check_mis_no2()">验证</button>
+                               <button class='ui-btn mgr-10' onclick="modify('4')">修改</button>
+                               <input id="mis_no2_check" type="hidden" value="0" readonly="readonly"/>
+                           </td>
+                           <th>工号可用标识</th>
+                           <td>
+                               <select id="vilid_flag2">
+                                   <option value="1">可用</option>
+                                   <option value="0">不可用</option>
+                               </select>
+                           </td>
+                       </tr>
+                       <tr>
+<<<<<<< HEAD
+                           <th>OA编号</th>
+                           <td>
+                               <input value="" id="oa_no2" type="text" maxlength="20" readonly/>
+                           </td>
+                           <th>OA标题</th>
+                           <td>
+                               <input value="" id="oa_title2" type="text" maxlength="20" readonly/>
+                           </td>
+
+                       </tr>
+                       <tr>
+                           <th>设置工作台</th>
+=======
+                           <th>设置ESOP角色</th>
+>>>>>>> 7e293a0d9c445855890b0e10539f5caac6a4b23b
+                           <td>
+                               <input value="" id="role_name2"
+                                      type="text" value="" readonly="readonly" class="required"
+                                      onchange="checkNameVal('in')"/>
+                               <button name="chooseCode" id="add_chooseCode2" class="ui-btn btn-default mgr-10"
+                                       onclick="chooseloginGroup2('role')">选择
+                               </button>
+                               <input id="role_code2" type="hidden" readonly="readonly"/>
+                           </td>
+                           <th>处理跨省业务</th>
+                           <td>
+                               <select id="is_grp_staff2" onchange="bindIpChange('2')">
+                                   <option value="N">否</option>
+                                   <option value="Y">是</option>
+                               </select>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>总部用户类型</th>
+                           <td>
+                               <select id="grpusertype2">
+                                   <option value="2">地市级</option>
+                                   <option value="1">省级</option>
+                               </select>
+                           </td>
+                           <th>总部ESOP用户名</th>
+                           <td>
+                               <input value="" type='text' id='grp_staff_number2'
+                                      readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>跨省待办提醒</th>
+                           <td>
+                               <select id="need_remind2">
+                                   <option value="1">需要</option>
+                                   <option value="2">不需要</option>
+                               </select>
+                           </td>
+                           <th>总部用户角色</th>
+                           <td colspan="4" id="checkboxgrprolecode2">
+                               <input type="checkbox" id="grp_role_code1_2" name="grp_role_code_2" value="1"/> 客户经理　
+                               <input type="checkbox" id="grp_role_code2_2" name="grp_role_code_2" value="2"/> 领导　
+                               <input type="checkbox" id="grp_role_code3_2" name="grp_role_code_2" value="3"/> 提单人员　
+                               <input type="checkbox" id="grp_role_code4_2" name="grp_role_code_2" value="4"/> 接口人
+                               <input type="checkbox" id="grp_role_code5_2" name="grp_role_code_2" value="5"/> 业务支撑人员
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>设置工作台</th>
+                           <td>
+                               <select id="work_area2" disabled="disabled">
+                                   <option value="2">管理者工作台</option>
+                                   <option value="3">产品经理工作台</option>
+                                   <option value="1">客户经理工作台</option>
+                               </select>
+                           </td>
+                           <th>部门</th>
+                           <td>
+                               <select id="group_id2">
+                               </select>
+                           </td>
+                           <!--<th>选择部门</th>
+                           <td>
+                               <input value="" id="group_name2" readonly="readonly"
+                                      class="required"/>
+                               <button name="chooseGroup" id="add_chooseGroup2"
+                                       class="ui-btn btn-default mgr-10" onclick="chooseloginGroup2('group')">归属
+                               </button>
+                               <input id="group_id2" type="hidden" value="" readonly="readonly"/>
+                           </td>-->
+                       </tr>
+                       <tr>
+                           <th>是否参与量酬</th>
+                           <td>
+                               <select id="is_lc2">
+                                   <option value="0">是</option>
+                                   <option value="1">否</option>
+                               </select>
+                           </td>
+                       </tr>
+                   </table>
+                   <div class="row mgt-20">
+                       <div class="btn-box">
+                           <button class="ui-btn mgr-10" id="up_button" name="printsub" onmouseup="comm_update()">修改</button>
+                           <button class="ui-btn" id="up_reset1" name='reset1' onclick="resetAll()">清除</button>
+                       </div>
+                   </div>
+               </div>
+       </div>
+       <div class="tab-pane fade" id="cx">
+               <div id='tbs3' class="box-in">
+                   <table class="table-infor-7 width-th" width="100%">
+                       <tr>
+                           <th>
+                               ESOP工号(<font class='red'>6</font>位)
+                           </th>
+                           <td>
+                               <input value="" id="login_no3" type="text" maxlength="6" class="required isLengthOf"/>
+                               <button name='vilidEsop' class='ui-btn btn-default mgr-10' onclick="check_login_no3()">获取
+                               </button>
+                           </td>
+                           <th>
+                               ESOP工号名称
+                           </th>
+                           <td>
+                               <input id="login_name3" value="" maxlength='20' maxlength="20" class="required" readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>联系电话</th>
+                           <td>
+                               <input value="" id="phone_no3" class="required allCellPhone" readonly="readonly"/>
+                           </td>
+                           <th>身份证号码</th>
+                           <td>
+                               <input value="" id="id_card_no3" type="text" maxlength="18" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>营业专属工号(<font class='red'>6</font>位)</th>
+                           <td>
+                               <input value="" id="busi_boss_no3" type="text" maxlength="6" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                           </td>
+                           <th>OA工号</th>
+                           <td>
+                               <input value="" id="oa_login_no3" type="text" maxlength="20" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>员工编号</th>
+                           <td>
+                               <input value="" id="mis_no3" type="text" maxlength="10" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                           </td>
+                           <th>工号可用标识</th>
+                           <td>
+                               <select id="vilid_flag3" readonly="readonly">
+                                   <option value="1">可用</option>
+                                   <option value="0">不可用</option>
+                               </select>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>OA编号</th>
+                           <td><input id="oa_no3" readonly></td>
+                           <th>OA标题</th>
+                           <td><input id="oa_title3" readonly></td>
+                       </tr>
+                       <tr>
+                           <th>工作台</th>
+                           <td>
+                               <select id="work_area3" readonly="readonly">
+                                   <option value="2">管理者工作台</option>
+                                   <option value="3">产品经理工作台</option>
+                                   <option value="1">客户经理工作台</option>
+                               </select>
+                           </td>
+                           <th>处理跨省业务</th>
+                           <td>
+                               <select id="is_grp_staff3" readonly="readonly">
+                                   <option value="N">否</option>
+                                   <option value="Y">是</option>
+                               </select>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>总部用户类型</th>
+                           <td>
+                               <select id="grpusertype3" readonly="readonly">
+                                   <option value="2">地市级</option>
+                                   <option value="1">省级</option>
+                               </select>
+                           </td>
+                           <th>总部ESOP用户名</th>
+                           <td>
+                               <input value="" type='text' id='grp_staff_number3'
+                                      readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>跨省待办提醒</th>
+                           <td>
+                               <select id="need_remind3" readonly="readonly">
+                                   <option value="1">需要</option>
+                                   <option value="2">不需要</option>
+                               </select>
+                           </td>
+                           <th>总部用户角色</th>
+                           <td colspan="4" id="checkboxgrprolecode3" readonly="readonly">
+                               <input type="checkbox" id="grp_role_code1_3" name="grp_role_code_3" value="1"/> 客户经理　
+                               <input type="checkbox" id="grp_role_code2_3" name="grp_role_code_3" value="2"/> 领导　
+                               <input type="checkbox" id="grp_role_code3_3" name="grp_role_code_3" value="3"/> 提单人员　
+                               <input type="checkbox" id="grp_role_code4_3" name="grp_role_code_3" value="4"/> 接口人
+                               <input type="checkbox" id="grp_role_code5_3" name="grp_role_code_3" value="5"/> 业务支撑人员
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>ESOP角色</th>
+                           <td>
+                               <input value="" id="role_name3"
+                                      type="text" value="" readonly="readonly" class="required"
+                                      onchange="checkNameVal('in')"/>
+                               <input id="role_code3" type="hidden" readonly="readonly"/>
+                           </td>
+                           <th>部门</th>
+                           <td>
+                               <input value="" id="group_name3" readonly="readonly"
+                                      class="required"/>
+                               <input id="group_id3" type="hidden" value="" readonly="readonly"/>
+                           </td>
+                       </tr>
+                       <tr>
+                           <th>是否参与量酬</th>
+                           <td>
+                               <select id="is_lc3">
+                                   <option value="0">是</option>
+                                   <option value="1">否</option>
+                               </select>
+                           </td>
+                       </tr>
+                   </table>
+                   <div class="row mgt-20">
+                       <div class="btn-box">
+                           <button class="ui-btn mgr-10" id="qu_reset3" name="reset1" onclick="resetAll()">清除</button>
+                       </div>
+                   </div>
+               </div>
+       </div>
+    <div class="tab-pane fade" id="zh">
+        <div id='tbs4' class="box-in">
+        </div>
+    </div>
+   </div>
+   <script type="text/javascript" language="javascript" src="/esop/view/basicManagement/workManagerDeal.js"></script>
+   <script type="text/javascript" language="javascript" src="/esop/view/basicManagement/workManagerDealUpdate.js"></script>
+   <script type="text/javascript" language="javascript" src="/esop/view/basicManagement/workManagerDealQuery.js"></script>
+   <script type="text/javascript" language="javascript" src="/esop/view/basicManagement/workManagerBossDeal.js"></script>
+   </body>
+   </html>
+

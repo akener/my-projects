@@ -1,0 +1,44 @@
+package com.esop.invoice.mapper;
+
+import com.esop.invoice.dto.QryInvApprListInDTO;
+import com.esop.invoice.model.EpInvPreprintActInfo;
+import com.esop.invoice.model.EpInvPreprintAppInfo;
+import com.esop.invoice.vo.InvApprListVo;
+
+import java.util.List;
+
+public interface EpInvPreprintAppInfoMapper {
+    int deleteByPrimaryKey(Integer recSerialNo);
+
+    int insert(EpInvPreprintAppInfo record);
+
+    EpInvPreprintAppInfo selectByPrimaryKey(Integer recSerialNo);
+
+    /**
+     * 根据申请单编号查询预打发票申请信息
+     * @param appNo
+     * @return
+     */
+    EpInvPreprintAppInfo selectByAppNo(String appNo);
+
+    /**
+     * 查询预打发票申请信息（用于冲红查询基本信息）
+     * @param applicationNo
+     * @return
+     */
+    EpInvPreprintAppInfo selectForRed(EpInvPreprintAppInfo applicationNo);
+
+    List<EpInvPreprintAppInfo> selectAll();
+
+    int updateByPrimaryKey(EpInvPreprintAppInfo record);
+
+    List<InvApprListVo> selectInvApprList(QryInvApprListInDTO inDTO);
+
+    int updateWorkState(EpInvPreprintAppInfo record);
+    //通过集团账号查询在途的账期
+    List<EpInvPreprintAppInfo> selectAcctPeriod(EpInvPreprintActInfo acctid);
+    //通过申请单号查询在途的冲红订单
+    EpInvPreprintAppInfo qryRedExistUnPrint(EpInvPreprintAppInfo appid);
+    //通过账号、账期查询在途的发票订单
+    List<EpInvPreprintAppInfo> qryHdAcctExistUnPrint(EpInvPreprintActInfo acct);
+}

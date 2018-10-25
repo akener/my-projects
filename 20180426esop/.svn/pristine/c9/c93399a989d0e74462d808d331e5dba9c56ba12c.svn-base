@@ -1,0 +1,33 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/3.
+ */
+public class WidthStatisDto {
+    String manager_no = "";//客户经理编码
+    String manager_name = "";//客户经理名称
+    int total_width = 0;//宽带总数
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public int getTotal_width() {
+        return total_width;
+    }
+
+    public void setTotal_width(int total_width) {
+        this.total_width = total_width;
+    }
+}

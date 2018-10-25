@@ -1,0 +1,50 @@
+package com.esop.alertClassified.dto;
+
+
+import com.esop.alertClassified.dto.AccountAlertDto;
+
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/6/11.
+ */
+public class AccountAlertRetrunDto {
+
+
+    String code = "";
+    String message = "";
+    String promptMsg = "";
+    List data;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getPromptMsg() {
+        return promptMsg;
+    }
+
+    public void setPromptMsg(String promptMsg) {
+        this.promptMsg = promptMsg;
+    }
+
+    public List getData() {
+        return data;
+    }
+
+    public void setData(List data) {
+        this.data = data;
+    }
+}

@@ -1,0 +1,328 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: pan
+  Date: 2017/10/18
+  Time: 15:05
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+
+<head>
+    <title>资金调账申请表填写</title>
+        <%--src可能有毛病--%>
+    <script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+</head>
+
+<body>
+    <%--集团资金调账申请表填写--%>
+<form   id="adjust_apply_form" method="post" onsubmit="tijiao()" enctype="multipart/form-data" method="post" >
+    <table class="table-infor-7 width-th" width="100%" style="align-content: center">
+       <tr><h3  style="text-align: center"> 调账申请表 </h3></tr>
+        <tr>
+            <%--readonly="readonly" 本来是查出来的--%>
+            <th> 调账申请人：</th>
+            <td> <input value="" type='text' id='applicant' name="applicant"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+            <th> 申请日期：</th>
+            <td> <%--<input value="" type='text' id='apply_date'  name="apply_date"/>--%>
+                <input id= "apply_date"  class="input-sty04 form-ipt" readonly="true">
+                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                   <%--  style="width: 25px;margin-top:-50px;margin-left:150px"--%>
+                     onclick="WdatePicker({el:'apply_date',dateFmt:'yyyy-MM-dd'})"
+                     title="选择时间" />
+
+
+            </td>
+        </tr>
+
+        <tr>
+            <th> 出账集团：</th>
+            <td>
+                <select id="out_group"   name ="out_group" onchange="out_groupinfo_load()"  class="input-sty04 form-ipt"  maxlength="11">
+                   <option id="out_default" value="全市集团" >全市集团</option>
+                </select>
+            </td>
+            <%--<th></th>--%>
+            <td><button type="button" onclick="out_group_load()">选择</button></td>
+        </tr>
+        <tr>
+            <th> 集团编号：</th>
+            <td> <input value="" type='text' id='out_grp_no'  name ="out_grp_no" readonly="readonly" class="input-sty04 form-ipt"  maxlength="11"/></td>
+            <th> 资金联系人： </th>
+            <td> <input value="" type='text' id='out_linkman'  name="out_linkman" readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+
+        <tr>
+            <th> 联系人电话：</th>
+            <td> <input value="" type='text' id='out_link_phone'  name ="out_link_phone" readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+            <th>联系人类型：</th>
+            <td> <input value="" type='text' id='out_link_type' name ="out_link_type"  readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+
+        <tr>
+            <th> 账本余额： </th>
+            <td> <input value="" type='text' id='out_balance' name ="out_balance"  readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+            <th> 可用余額：</th>
+            <td> <input value="" type='text' id='out_usable_balance' name ="out_usable_balance"  readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+
+        <tr>
+            <th  class="text-center">调账申请信息</th>
+
+        </tr>
+
+        <tr>
+            <th>  入账集团： </th>
+            <td> <select id="into_group" name="into_group" onchange="into_groupinfo_load()"  class="input-sty04 form-ipt"  maxlength="11">
+                <option  id="in_default" value="全市集团" >全市集团</option>
+
+            </select>
+            </td>
+           <%-- <th></th>--%>
+            <td><button type="button" onclick="into_group_load()">选择</button></td>
+        </tr>
+        <tr>
+            <th> 集团编号：</th>
+            <td> <input value="" type='text' id='into_grp_no' name ="into_grp_no"  readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+            <th> 资金联系人： </th>
+            <td> <input value="" type='text' id='into_linkman' name="into_linkman" readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+
+        <tr>
+            <th> 联系人电话：</th>
+            <td> <input value="" type='text' id='into_link_phone' name="into_link_phone" readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+            <th>联系人类型：</th>
+            <td> <input value="" type='text' id='into_link_type'  name="into_link_type" readonly="readonly"  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+
+        <tr>
+            <th> 调账原因： </th>
+           <td><textarea id="adjust_reason" name ="adjust_reason"   ></textarea></td>
+        <%--<td> <input value="" type='text' name ="adjust_reason"  id='adjust_reason'  class="input-sty04 form-ipt"  maxlength="11"/></td>--%>
+        </tr>
+        <tr>
+            <th> 调账金额：</th>
+            <td> <input value="" type='text' name ="adjust_money"  id='adjust_money'  class="input-sty04 form-ipt"  maxlength="11" /></td>
+            <th> 审核人：</th>
+            <td> <input value="" type='text'  name ="auditor" id='auditor'  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+        <tr>
+            <th> 调账说明：</th>
+            <td>
+                <textarea id="adjust_explain" name ="adjust_explain"   ></textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <th> 工单状态：</th>
+            <%--申请时固定为默认的值--%>
+            <%--<td> <input value="" type='text' id='work_order_status' name ="work_order_status"   class="input-sty04 form-ipt"  maxlength="11"/></td>--%>
+            <td> <select id="work_order_status" name="work_order_status" onchange="into_groupinfo_load()"  class="input-sty04 form-ipt"  maxlength="11">
+                <option  id="default" value="" >请选择</option>
+                 <option  id="1" value="已受理" >已受理</option>
+                <option  id="2" value="已关闭" >已关闭</option>
+                <option  id="3" value="待办" >待办</option>
+            </select>
+            </td>
+        </tr>
+
+        <tr>
+            <th>  附件上传：</th>
+            <td > <input value="" type='file' name ="fileName"  id='upload_attach_file'  class="input-sty04 form-ipt"  maxlength="11"/></td>
+        </tr>
+        <tr >
+            <td colspan="4" style="text-align: center "><input type="submit"  value="提交"    maxlength="11" class="ui-btn mgr-10" ></td>
+        </tr>
+    </table>
+</form>
+</body>
+<script>
+    //加载出账集团下拉框选择列表
+ /*$(document).ready(function () {
+
+    });*/
+
+    function out_group_load() {
+      $("#out_default").nextAll().remove();
+        $.ajax({
+            type : "post",  //提交方式
+            url : "/qryOutGrpList",//路径,查询出账集团列表
+            data : {},
+            success : function(result) {//返回数据根据结果进行相应的处理
+               //$("out_group").append("<option>chenggongle</option>") ;
+                  //  循环遍历增加selection下option，
+                    $.each(result.info,function(i,filed){
+                        console.info("wai---"+i+"---"+filed);
+                        console.info(filed.out_grp_name);
+                        var opt ="<option value='"+filed.out_grp_name+"'>"+filed.out_grp_name+"</option>";
+                      $("#out_group").append(opt) ;
+                    });
+               /* $("#out_group").trigger('click');*/
+
+                $("#out_grp_no").val("");
+                $("#out_linkman").val("");
+                $("#out_link_phone").val("");
+                $("#out_link_type").val("");
+                $("#out_balance").val("");
+                $("#out_usable_balance").val("");
+
+            },
+            error:function () {
+                alert("请求集团列表出错，请重试！");
+            }
+        });
+
+    }
+    //加载出账集团信息
+  function out_groupinfo_load() {
+        console.info($("#out_group option:selected").val() +"--beixuanzhong");
+        if($("#out_group option:selected").val()=="全市集团"){
+            $("#out_grp_no").val("");
+            $("#out_linkman").val("");
+            $("#out_link_phone").val("");
+            $("#out_link_type").val("");
+            $("#out_balance").val("");
+            $("#out_usable_balance").val("");
+        }else{
+        $.ajax({
+            type : "POST",  //提交方式
+            url : "/qryOutGrpInfo",
+            data : {
+                "out_grp_name" : $("#out_group option:selected").val()
+            },
+            success : function(result) {//返回数据根据结果进行相应的处理
+                //$("out_group").append("<option>chenggongle</option>") ;
+                //  循环遍历增加selection下option，
+                $.each(result.info,function(i,filed){
+                    console.info(filed.out_grp_name+"onchange-limian");
+
+                    //  为出账集团每个input 填充数据，
+                $("#out_grp_no").val(filed.out_grp_no);
+                $("#out_linkman").val(filed.out_linkman);
+                $("#out_link_phone").val(filed.out_link_phone);
+                $("#out_link_type").val(filed.out_link_type);
+                $("#out_balance").val(filed.out_balance);
+                $("#out_usable_balance").val(filed.out_usable_balance);
+                   /* console.info("wai---"+i+"---"+filed);
+                    console.info(filed.out_grp_name);*/
+                });
+            },
+            error:function () {
+                alert("请求查询出错，请重试！");
+            }
+        });
+        }
+    }
+
+    //加载入账集团下拉框选择列表
+    function into_group_load() {
+        $("#in_default").nextAll().remove();
+
+
+     $.ajax({
+     type : "post",  //提交方式
+     url : "/qryIntoGrpList",//路径,查询出账集团列表
+     data : {},
+     success : function(result) {//返回数据根据结果进行相应的处理
+     //$("out_group").append("<option>chenggongle</option>") ;
+     //  循环遍历增加selection下option，
+     $.each(result.info,function(i,filed){
+     console.info("ruzhang---"+i+"---"+filed);
+     var ipt ="<option value='"+filed+"'>"+filed+"</option>";
+     $("#into_group").append(ipt) ;
+     });
+        /* $("#into_group").trigger('click');*/
+         $("#into_group").trigger("mousedown");
+         $("#into_grp_no").val("");
+         $("#into_linkman").val("");
+         $("#into_link_phone").val("");
+         $("#into_link_type").val("");
+     },
+     error:function () {
+     alert("请求入账集团列表出错，请重试！");
+     }
+     });
+     }
+
+
+    //加载入账集团信息
+    function into_groupinfo_load() {
+        console.info($("#into_group option:selected").val() +"--beixuanzhong");
+        console.log($("#in_default").attr("select"));
+
+        if($("#into_group option:selected").val()=="全市集团"){
+            $("#into_grp_no").val("");
+            $("#into_linkman").val("");
+            $("#into_link_phone").val("");
+            $("#into_link_type").val("");
+        }else {
+            $.ajax({
+                type: "POST",  //提交方式
+                url: "/qryIntoGrpInfo",
+                data: {
+                    "into_grp_name": $("#into_group option:selected").val()
+                },
+                success: function (result) {//返回数据根据结果进行相应的处理
+                    var data = result.info;
+                    $("#into_grp_no").val(data[2].into_grp_no);
+                    $("#into_linkman").val(data[3].into_linkman);
+                    $("#into_link_phone").val(data[4].into_link_phone);
+                    $("#into_link_type").val(data[5].into_link_type);
+                },
+                error: function () {
+                    alert("请求查询出错，请重试！");
+                }
+            });
+        }
+    }
+
+    //提交表单信息
+   function tijiao() {
+        $.ajax({
+            type : "POST",  //提交方式
+            url : "/submitApplyInfo",
+            data : {
+               /* "apply_info" :$("#adjust_apply_form").serialize(),*/
+                "applicant":$("#applicant").val(),
+                "apply_date":$("#apply_date").val(),
+
+                "out_group":$("#out_group option:selected").val(),
+                "out_grp_no":$("#out_grp_no").val(),
+                "out_linkman":$("#out_linkman").val(),
+                "out_link_phone":$("#out_link_phone").val(),
+                "out_link_type":$("#out_link_type").val(),
+                "out_balance":$("#out_balance").val(),
+                "out_usable_balance":$("#out_usable_balance").val(),
+
+                "into_group":$("#into_group option:selected").val(),
+                "into_grp_no":$("#into_grp_no").val(),
+                "into_linkman":$("#into_linkman").val(),
+                "into_link_phone":$("#into_link_phone").val(),
+                "into_link_type":$("#into_link_type").val(),
+
+                "adjust_reason":$("#adjust_reason").val(),
+                "adjust_money":$("#adjust_money").val(),
+                "auditor":$("#auditor").val(),
+                "adjust_explain":$("#adjust_explain").val(),
+                "work_order_status":$("#work_order_status").val(),
+                "upload_attach_file":$("#upload_attach_file").val()
+
+            },
+            async:false,
+            success:function(result) {//返回数据根据结果进行相应的处理
+               console.info("data="+result.info[0].succ_msg);
+               alert("申请提交成功");
+                //提交成功，表单所有内容清空？防止重复提交，或者跳回前一页
+            },
+            error:function () {
+                alert("申请提交出错，请重试！");
+            }
+        });
+    }
+
+</script>
+
+</html>

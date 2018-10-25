@@ -1,0 +1,384 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+import com.esop.common.page.BaseDto;
+
+public class DealElecOrderDto extends BaseDto {
+    String	cust_id	;
+    String	pay_fee_acc;
+    String	grp_subs_name;
+    String	link_man;
+    String	contract_code;
+    String	is_cust_mgr_audt;
+    String	subs_priv_attr_list;
+    String	subs_prod_attr_list;
+    String	pay_fee_acc_name;
+//    String	prod_id	;
+//    String	region;
+    String	group_acct_id;
+    String	pay_cycle;
+//    String	region;
+    String	group_subs_id;
+//    String	grp_subs_id;
+    String	access_type;
+    String	rec_prod_list;
+    String	effect_type;
+    String	op_type	;
+    String	attr_para;
+//    String	region;
+//    String	prod_id	;
+    String	subs_name;
+    String	status;
+    String	del_mem_privilege;
+//    String	group_id;
+    String	prod_id	;
+    String	memtel_no;
+    String	add_mem_privilege;
+    String	attr;
+    String	pay_plan_flag;
+    String	seq_relation_info;
+    String	contact_man;
+    String	mobile_no;
+    String	role_type;
+//    String	region;
+//    String	group_id;
+    String	important;
+    String	grp_subs_id;
+    String	attr_list;
+    String	group_id;
+    String	grp_list;
+    String	flag;
+    String	memtel;
+    String	pagecnt	;
+    String	account_num;
+    String	rowcnt;
+    String	mode;
+    String	region;
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public String getPay_fee_acc() {
+        return pay_fee_acc;
+    }
+
+    public void setPay_fee_acc(String pay_fee_acc) {
+        this.pay_fee_acc = pay_fee_acc;
+    }
+
+    public String getGrp_subs_name() {
+        return grp_subs_name;
+    }
+
+    public void setGrp_subs_name(String grp_subs_name) {
+        this.grp_subs_name = grp_subs_name;
+    }
+
+    public String getLink_man() {
+        return link_man;
+    }
+
+    public void setLink_man(String link_man) {
+        this.link_man = link_man;
+    }
+
+    public String getContract_code() {
+        return contract_code;
+    }
+
+    public void setContract_code(String contract_code) {
+        this.contract_code = contract_code;
+    }
+
+    public String getIs_cust_mgr_audt() {
+        return is_cust_mgr_audt;
+    }
+
+    public void setIs_cust_mgr_audt(String is_cust_mgr_audt) {
+        this.is_cust_mgr_audt = is_cust_mgr_audt;
+    }
+
+    public String getSubs_priv_attr_list() {
+        return subs_priv_attr_list;
+    }
+
+    public void setSubs_priv_attr_list(String subs_priv_attr_list) {
+        this.subs_priv_attr_list = subs_priv_attr_list;
+    }
+
+    public String getSubs_prod_attr_list() {
+        return subs_prod_attr_list;
+    }
+
+    public void setSubs_prod_attr_list(String subs_prod_attr_list) {
+        this.subs_prod_attr_list = subs_prod_attr_list;
+    }
+
+    public String getPay_fee_acc_name() {
+        return pay_fee_acc_name;
+    }
+
+    public void setPay_fee_acc_name(String pay_fee_acc_name) {
+        this.pay_fee_acc_name = pay_fee_acc_name;
+    }
+
+    public String getGroup_acct_id() {
+        return group_acct_id;
+    }
+
+    public void setGroup_acct_id(String group_acct_id) {
+        this.group_acct_id = group_acct_id;
+    }
+
+    public String getPay_cycle() {
+        return pay_cycle;
+    }
+
+    public void setPay_cycle(String pay_cycle) {
+        this.pay_cycle = pay_cycle;
+    }
+
+    public String getGroup_subs_id() {
+        return group_subs_id;
+    }
+
+    public void setGroup_subs_id(String group_subs_id) {
+        this.group_subs_id = group_subs_id;
+    }
+
+    public String getAccess_type() {
+        return access_type;
+    }
+
+    public void setAccess_type(String access_type) {
+        this.access_type = access_type;
+    }
+
+    public String getRec_prod_list() {
+        return rec_prod_list;
+    }
+
+    public void setRec_prod_list(String rec_prod_list) {
+        this.rec_prod_list = rec_prod_list;
+    }
+
+    public String getEffect_type() {
+        return effect_type;
+    }
+
+    public void setEffect_type(String effect_type) {
+        this.effect_type = effect_type;
+    }
+
+    public String getOp_type() {
+        return op_type;
+    }
+
+    public void setOp_type(String op_type) {
+        this.op_type = op_type;
+    }
+
+    public String getAttr_para() {
+        return attr_para;
+    }
+
+    public void setAttr_para(String attr_para) {
+        this.attr_para = attr_para;
+    }
+
+    public String getSubs_name() {
+        return subs_name;
+    }
+
+    public void setSubs_name(String subs_name) {
+        this.subs_name = subs_name;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDel_mem_privilege() {
+        return del_mem_privilege;
+    }
+
+    public void setDel_mem_privilege(String del_mem_privilege) {
+        this.del_mem_privilege = del_mem_privilege;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getMemtel_no() {
+        return memtel_no;
+    }
+
+    public void setMemtel_no(String memtel_no) {
+        this.memtel_no = memtel_no;
+    }
+
+    public String getAdd_mem_privilege() {
+        return add_mem_privilege;
+    }
+
+    public void setAdd_mem_privilege(String add_mem_privilege) {
+        this.add_mem_privilege = add_mem_privilege;
+    }
+
+    public String getAttr() {
+        return attr;
+    }
+
+    public void setAttr(String attr) {
+        this.attr = attr;
+    }
+
+    public String getPay_plan_flag() {
+        return pay_plan_flag;
+    }
+
+    public void setPay_plan_flag(String pay_plan_flag) {
+        this.pay_plan_flag = pay_plan_flag;
+    }
+
+    public String getSeq_relation_info() {
+        return seq_relation_info;
+    }
+
+    public void setSeq_relation_info(String seq_relation_info) {
+        this.seq_relation_info = seq_relation_info;
+    }
+
+    public String getContact_man() {
+        return contact_man;
+    }
+
+    public void setContact_man(String contact_man) {
+        this.contact_man = contact_man;
+    }
+
+    public String getMobile_no() {
+        return mobile_no;
+    }
+
+    public void setMobile_no(String mobile_no) {
+        this.mobile_no = mobile_no;
+    }
+
+    public String getRole_type() {
+        return role_type;
+    }
+
+    public void setRole_type(String role_type) {
+        this.role_type = role_type;
+    }
+
+    public String getImportant() {
+        return important;
+    }
+
+    public void setImportant(String important) {
+        this.important = important;
+    }
+
+    public String getGrp_subs_id() {
+        return grp_subs_id;
+    }
+
+    public void setGrp_subs_id(String grp_subs_id) {
+        this.grp_subs_id = grp_subs_id;
+    }
+
+    public String getAttr_list() {
+        return attr_list;
+    }
+
+    public void setAttr_list(String attr_list) {
+        this.attr_list = attr_list;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGrp_list() {
+        return grp_list;
+    }
+
+    public void setGrp_list(String grp_list) {
+        this.grp_list = grp_list;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
+    public String getMemtel() {
+        return memtel;
+    }
+
+    public void setMemtel(String memtel) {
+        this.memtel = memtel;
+    }
+
+    public String getPagecnt() {
+        return pagecnt;
+    }
+
+    public void setPagecnt(String pagecnt) {
+        this.pagecnt = pagecnt;
+    }
+
+    public String getAccount_num() {
+        return account_num;
+    }
+
+    public void setAccount_num(String account_num) {
+        this.account_num = account_num;
+    }
+
+    public String getRowcnt() {
+        return rowcnt;
+    }
+
+    public void setRowcnt(String rowcnt) {
+        this.rowcnt = rowcnt;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+}

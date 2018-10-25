@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.CtProcInstParamsInfoMapper">
+  <resultMap id="BaseResultMap" type="com.esop.workflow.model.CtProcInstParamsInfo">
+    <result column="proc_inst_id" jdbcType="VARCHAR" property="procInstId" />
+    <result column="param_key" jdbcType="VARCHAR" property="paramKey" />
+    <result column="param_value" jdbcType="VARCHAR" property="paramValue" />
+    <result column="param_type" jdbcType="VARCHAR" property="paramType" />
+  </resultMap>
+  <insert id="insert" parameterType="com.esop.workflow.model.CtProcInstParamsInfo">
+    insert into ct_proc_inst_params_info (proc_inst_id, param_key, param_value,
+      param_type)
+    values (#{procInstId,jdbcType=VARCHAR}, #{paramKey,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR},
+      #{paramType,jdbcType=VARCHAR})
+  </insert>
+  <update id="update" parameterType="com.esop.workflow.model.CtProcInstParamsInfo">
+    update ct_proc_inst_params_info set param_value = #{paramValue,jdbcType=VARCHAR} where proc_inst_id = #{procInstId,jdbcType=VARCHAR} and param_key = #{paramKey,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select proc_inst_id, param_key, param_value, param_type
+    from ct_proc_inst_params_info
+  </select>
+  <select id="selectByProcInstIdAndParamKey" parameterType="com.esop.workflow.model.CtProcInstParamsInfo" resultMap="BaseResultMap">
+    select proc_inst_id, param_key, param_value, param_type
+    from ct_proc_inst_params_info
+    where proc_inst_id = #{procInstId,jdbcType=VARCHAR} and param_key = #{paramKey,jdbcType=VARCHAR}
+  </select>
+</mapper>

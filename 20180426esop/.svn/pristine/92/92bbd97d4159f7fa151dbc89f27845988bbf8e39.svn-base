@@ -1,0 +1,263 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>预打发票>>预开发票未回款情况统计查询</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/cqDevelopment.jsp"%>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预打发票>>预开发票未回款情况统计查询</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>组织机构：</th>
+                            <td>
+                                <%--<input id="applicantOrg" type="text" class="input-sty04 form-ipt"/>--%>
+                                <select id="applicantOrg" class="select-style-1">
+                                    <%--<option></option>--%>
+                                    <%--<option value="">重庆市</option>--%>
+                                </select>
+                            </td>
+                           <%-- <th>集团账户名称：</th>
+                            <td>
+                                <input id="accountName" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>集团账号：</th>
+                            <td>
+                                <input id="accountId" type="text" class="input-sty04 form-ipt"/>
+                            </td>--%>
+                            <th>发票类型：</th>
+                            <td>
+                                <select id="invoiceType" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">增值税电子发票</option>
+                                    <option value="2">增值税专用发票</option>
+                                </select>
+                            </td>
+                            <th>发票模式：</th>
+                            <td>
+                                <select id="invoiceMode" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">实收</option>
+                                    <option value="2">月结</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <%--<tr>
+
+                        </tr>--%>
+
+                        </tbody>
+                    </table>
+                    <div style="display: none">
+                        <form action="" name="exportExcel" id="exportExcel" target="export"
+                              method="post" accept-charset="utf-8"></form>
+                        <iframe name="export" id="export"></iframe>
+                    </div>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <%--<button class="ui-btn mgr-10">查询</button>
+                            <button class="ui-btn btn-success mgr-10">导出</button>--%>
+                            <input type="button" class="ui-btn mgr-10" value="查询" onclick="qryUnBackSta()"/>
+                            <input type="button" class="ui-btn btn-success mgr-10" onclick="excelExport()"  value="导出"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预开发票未回款情况统计查询</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table table-bordered" id="specdat" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th rowspan="3">组织机构</th>
+                            <th rowspan="3">发票种类</th>
+                            <th rowspan="3">开票类型</th>
+                            <th rowspan="1" colspan="6">其中：预开发票未回款账龄</th>
+                        </tr>
+                        <tr>
+                            <th rowspan="1"  colspan="2">一个月（含）以内</th>
+                            <th rowspan="1"  colspan="2">一个月至三个月（含）</th>
+                            <th rowspan="1"  colspan="2">三个月以上</th>
+                        </tr>
+                        <tr>
+                            <th>未回款金额（元）</th>
+                            <th>未回款发票数量</th>
+                            <th>未回款金额（元）</th>
+                            <th>未回款发票数量</th>
+                            <th>未回款金额（元）</th>
+                            <th>未回款发票数量</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                            <th colspan="3">合计</th>
+                            <th id="whkjeyhj"></th>
+                            <th id="whkslyhj"></th>
+                            <th id="whkjeyshj"></th>
+                            <th id="whkslyshj"></th>
+                            <th id="whkjeshj"></th>
+                            <th id="whkslshj"></th>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var table;
+    var rootOrgId = '<%=root_org_id%>';
+    var role_codes='<%=role_codes%>';
+    $(document).ready(function () {
+        var roleId=getInvoiceManagerId();
+        //判断组织机构权限
+        if(role_codes.indexOf(roleId)>0 && (rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B')){
+            $.ajax({
+                url:"invoice/getOrganizationInfos",
+                type:"POST",
+                success:function (data) {
+                    //console.log(data);
+                    var applicantOrgStr = "";
+                    for(var i=0;i<data.length;i++){
+                        applicantOrgStr += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                    }
+                    $("#applicantOrg").empty();
+                    $("#applicantOrg").append(applicantOrgStr);
+                }
+            });
+        }else{
+            $.ajax({
+                url:"invoice/getOrganizationInfos",
+                type:"POST",
+                data:{id:rootOrgId},
+                success:function (data) {
+                    //console.log(data);
+                    var applicantOrgStr = "";
+                    for(var i=0;i<data.length;i++){
+                        applicantOrgStr += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                    }
+                    $("#applicantOrg").empty();
+                    $("#applicantOrg").append(applicantOrgStr);
+                }
+            });
+        }
+    });
+
+
+    /**
+     * 获取角色id
+     */
+
+    function getInvoiceManagerId(){
+        var id="";
+        $.ajax({
+            url:"invoice/getInvoiceManagerId",
+            type:"POST",
+            async: false,
+            success:function (data) {
+                id=data;
+            }
+        });
+        return id;
+    }
+
+    /**
+     * 查询发票统计未回款
+     */
+    function qryUnBackSta() {
+        var whkjeyhj=0,whkslyhj=0,whkjeyshj=0,whkslyshj=0,whkjeshj=0,whkslshj=0;
+        table = $('#specdat').DataTable({
+            "scrollX": false,
+            "processing": true,
+            "serverSide": false,
+            destroy: true,
+            "bFilter": false,
+            "bSort":false,
+            "pageLength": 10,//设置每页显示多少条记录
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                url: "invoice/queryUnbackSta",
+                type: "POST",
+                data: {
+                    "applicantOrg":$("#applicantOrg").val()=="CQ.CQ"?"":$("#applicantOrg").val(),
+                    "invoiceType":$("#invoiceType").val(),
+                    "invoiceMode":$("#invoiceMode").val()
+                }
+            },
+            "columns": [
+                {data: "appOrg"},
+                {data: "invoiceType"},
+                {data: "invoiceMode"},
+                {data: "whkjey"},
+                {data: "whksly"},
+                {data: "whkjeys"},
+                {data: "whkslys"},
+                {data: "whkjes"},
+                {data: "whksls"}
+            ],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                whkjeyhj += parseFloat(aData.whkjey);
+                whkslyhj +=parseFloat(aData.whksly);
+                whkjeyshj +=parseFloat(aData.whkjeys);
+                whkslyshj +=parseFloat(aData.whkslys);
+                whkjeshj += parseFloat(aData.whkjes);
+                whkslshj +=parseFloat(aData.whksls);
+            },
+            "drawCallback":function(settings){
+                $("#whkjeyhj").html(whkjeyhj);
+                $("#whkslyhj").html(whkslyhj);
+                $("#whkjeyshj").html(whkjeyshj);
+                $("#whkslyshj").html(whkslyshj);
+                $("#whkjeshj").html(whkjeshj);
+                $("#whkslshj").html(whkslshj);
+                whkjeyhj=0;
+                whkslyhj=0;
+                whkjeyshj=0;
+                whkslyshj=0;
+                whkjeshj=0;
+                whkslshj=0;
+            },
+            select: true
+        });
+    }
+
+    /**
+     * 导出Excel表格
+     */
+    function excelExport() {
+        var applicantOrg=$("#applicantOrg").val()=="CQ.CQ"?"":$("#applicantOrg").val();
+        var invoiceType=$("#invoiceType").val();
+        var invoiceMode=$("#invoiceMode").val();
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='invoice/exportNonReturnReport?applicantOrg='+applicantOrg
+            +'&invoiceType='+invoiceType
+            +'&invoiceMode='+invoiceMode;
+        f.action = actionUrl;
+        f.submit();
+    }
+</script>
+</html>

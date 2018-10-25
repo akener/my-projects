@@ -1,0 +1,40 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+public class GroupAttachFileDto {
+    private String gongdan_bianhao;
+    private String kaishi_zhangqi;
+    private String jieshu_zhangqi;
+    private String fujian;
+
+    public String getGongdan_bianhao() {
+        return gongdan_bianhao;
+    }
+
+    public void setGongdan_bianhao(String gongdan_bianhao) {
+        this.gongdan_bianhao = gongdan_bianhao;
+    }
+
+    public String getKaishi_zhangqi() {
+        return kaishi_zhangqi;
+    }
+
+    public void setKaishi_zhangqi(String kaishi_zhangqi) {
+        this.kaishi_zhangqi = kaishi_zhangqi;
+    }
+
+    public String getJieshu_zhangqi() {
+        return jieshu_zhangqi;
+    }
+
+    public void setJieshu_zhangqi(String jieshu_zhangqi) {
+        this.jieshu_zhangqi = jieshu_zhangqi;
+    }
+
+    public String getFujian() {
+        return fujian;
+    }
+
+    public void setFujian(String fujian) {
+        this.fujian = fujian;
+    }
+}

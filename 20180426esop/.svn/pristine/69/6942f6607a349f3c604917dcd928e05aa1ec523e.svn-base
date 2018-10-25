@@ -1,0 +1,204 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<%
+    String region_code = request.getParameter("region_code");
+    String town_code = request.getParameter("town_code");
+
+%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var testParameter;
+        var table;
+        $(document).ready(function () {
+            var region_code_tp = "<%=region_code%>";
+            if (region_code_tp != '' && region_code_tp != null) {
+                init_region();
+            } else {
+                IncomeListQuery();
+            }
+        });
+        function init_region() {
+            var region_code_region = "<%=region_code%>";
+            var region_code_town = "<%=town_code%>";
+            $(".selector_region").find("option[value='" + region_code_region + "']").attr("selected", true);
+            CityListQuery();
+        }
+        function IncomeListQuery() {
+            table = $('#example').DataTable({
+                "processing": true,
+                "serverSide": true,
+                destroy: true,
+                "bFilter": false,
+                "pageLength": 5,//设置每页显示多少条记录
+                //"bSort":false,
+                "bLengthChange": false,
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                "ajax": {
+                    url: "/thisInformationIncomeList",
+                    type: "POST",
+                    "data": {
+                        eff_date: $("#eff_date").val(),
+                        region_code: $("#region_code").val(),
+                        town_code: $("#town_code").val(),
+                        manager_name: $("#manager_name").val()
+                    }
+                },
+                "columns": [
+                    {data: "eff_date"},
+                    {data: "region_code"},
+                    {data: "region_name"},
+                    {data: "town_code"},
+                    {data: "town_name"},
+                    {data: "manager_no"},
+                    {data: "manager_name"},
+                    {data: "income"}
+                ],
+                select: true,
+                buttons: []
+            });
+            /*editor.on('submitSuccess',function ( e, type ) {
+             alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+             } );*/
+        }
+        function CityListQuery() {
+            if ($("#region_code").val() != "") {
+                $.ajax({
+                    type: "get",
+                    url: "cityCodeListShow",
+                    data: {
+                        region_code: $("#region_code").val()
+                    },
+                    cache: false,
+                    success: function (result) {
+                        city_data = "<option value=''>全市</option>";
+                        $.each(result, function (i, field) {
+                            //拼接json数据集字符串
+                            city_data += "<option value='" + field.group_id + "' ";
+                            if ("<%=town_code%>" == field.group_id) {
+                                city_data += " selected";
+                            }
+                            city_data += ">" + field.group_name + "</option>";
+                        });
+                        $("#town_code").empty();
+                        $("#town_code").append(city_data);
+                        IncomeListQuery();
+                    },
+                    error: function () {
+                        alert("请求超时，请重试！");
+                    }
+                });
+            } else {
+                $("#town_code").empty();
+            }
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>日期：</th>
+                            <td>
+                                <input type=text id="eff_date" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>地市：</th>
+                            <td>
+                                <select id="region_code" class="selector_region input-sty04 form-ipt"
+                                        onchange="CityListQuery()">
+                                    <option value="">
+                                        全省
+                                    </option>
+                                    <option value="10031">哈尔滨</option>
+                                    <option value="10032">齐齐哈尔</option>
+                                    <option value="10033">牡丹江</option>
+                                    <option value="10034">佳木斯</option>
+                                    <option value="10035">双鸭山</option>
+                                    <option value="10036">七台河</option>
+                                    <option value="10037">鸡西</option>
+                                    <option value="10038">鹤岗</option>
+                                    <option value="10039">伊春</option>
+                                    <option value="10040">黑河</option>
+                                    <option value="10041">绥化</option>
+                                    <option value="10042">大兴安岭</option>
+                                    <option value="10043">大庆</option>
+                                </select>
+                            </td>
+                            <th>区县：</th>
+                            <td>
+                                <select id="town_code" class="selector_town input-sty04 form-ipt">
+                                </select>
+                            </td>
+                            <th>客户经理姓名：</th>
+                            <td>
+                                <input type="text" id="manager_name" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="IncomeListQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="example" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">日期</th>
+                            <th class="text-center">地市编码</th>
+                            <th class="text-center">地市名称</th>
+                            <th class="text-center">区县编码</th>
+                            <th class="text-center">区县名称</th>
+                            <th class="text-center">客户经理工号</th>
+                            <th class="text-center">客户经理姓名</th>
+                            <th class="text-center">收入</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

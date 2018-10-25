@@ -1,0 +1,279 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Qiao
+  Date: 2017/8/3
+  Time: 10:38
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<head>
+    <title>工号申请审批</title>
+</head>
+<body>
+<input type="hidden" id="order_id" value="${order_id}">
+<input type="hidden" id="is_lc">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default">
+    <div class="box-header">
+        <h3 class="box-title">工号申请审批</h3>
+    </div>
+</div>
+<div id="myTabContent" class="tab-content bg-ff">
+    <div class="tab-pane fade in active">
+        <div class="box-in">
+        <table class="table-infor-7 width-th" width="100%">
+            <tr>
+                <th>
+                    ESOP工号(<font class='red'>6</font>位)
+                </th>
+                <td>
+                    <input value="" id="login_no" type="text" maxlength="6" class="required isLengthOf" readonly/>
+                    <%--<button name='vilidEsop' class='ui-btn btn-default mgr-10' onclick="check_login_no3()">获取
+                    </button>--%>
+                </td>
+                <th>
+                    ESOP工号名称
+                </th>
+                <td>
+                    <input id="login_name" value="" maxlength='20' maxlength="20" class="required" readonly="readonly"/>
+                </td>
+            </tr>
+            <tr>
+                <th>联系电话</th>
+                <td>
+                    <input value="" id="phone_no" class="required allCellPhone" readonly="readonly"/>
+                </td>
+                <th>身份证号码</th>
+                <td>
+                    <input value="" id="id_card_no" type="text" maxlength="18" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                </td>
+            </tr>
+            <tr>
+                <th>营业专属工号(<font class='red'>6</font>位)</th>
+                <td>
+                    <input value="" id="busi_boss_no" type="text" maxlength="6" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                </td>
+                <th>OA工号</th>
+                <td>
+                    <input value="" id="oa_login_no" type="text" maxlength="20" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                </td>
+            </tr>
+            <tr>
+                <th>员工编号</th>
+                <td>
+                    <input value="" id="mis_no" type="text" maxlength="10" class="haveSpeForAll isLengthOf required" readonly="readonly"/>
+                </td>
+                <th>工号可用标识</th>
+                <td>
+                    <select id="vilid_flag" readonly="readonly">
+                        <option value="1">可用</option>
+                        <option value="0">不可用</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>工作台</th>
+                <td>
+                    <select id="work_area" readonly="readonly">
+                        <option value="2">管理者工作台</option>
+                        <option value="3">产品经理工作台</option>
+                        <option value="1">客户经理工作台</option>
+                    </select>
+                </td>
+                <th>处理跨省业务</th>
+                <td>
+                    <select id="is_grp_staff" readonly="readonly">
+                        <option value="N">否</option>
+                        <option value="Y">是</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>总部用户类型</th>
+                <td>
+                    <select id="grpusertype" readonly="readonly">
+                        <option value="2">地市级</option>
+                        <option value="1">省级</option>
+                    </select>
+                </td>
+                <th>总部ESOP用户名</th>
+                <td>
+                    <input value="" type='text' id='grp_staff_number' readonly="readonly"/>
+                </td>
+            </tr>
+            <tr>
+                <th>跨省待办提醒</th>
+                <td>
+                    <select id="need_remind" readonly="readonly">
+                        <option value="1">需要</option>
+                        <option value="2">不需要</option>
+                    </select>
+                </td>
+                <th>总部用户角色</th>
+                <td colspan="4" id="checkboxgrprolecode" readonly="readonly">
+                    <input type="checkbox" id="grp_role_code1_3" name="grp_role_code_3" value="1"/> 客户经理　
+                    <input type="checkbox" id="grp_role_code2_3" name="grp_role_code_3" value="2"/> 领导　
+                    <input type="checkbox" id="grp_role_code3_3" name="grp_role_code_3" value="3"/> 提单人员　
+                    <input type="checkbox" id="grp_role_code4_3" name="grp_role_code_3" value="4"/> 接口人
+                    <input type="checkbox" id="grp_role_code5_3" name="grp_role_code_3" value="5"/> 业务支撑人员
+                </td>
+            </tr>
+            <tr>
+                <th>ESOP角色</th>
+                <td>
+                    <input value="" id="role_name" type="text" value="" readonly="readonly" class="required"/>
+                    <input id="role_code" type="hidden" readonly="readonly"/>
+                </td>
+                <th>部门</th>
+                <td>
+                    <input value="" id="group_name" readonly="readonly"  class="required"/>
+                    <input id="group_id" type="hidden" value="" readonly="readonly"/>
+                </td>
+            </tr>
+            <tr>
+                <th>OA编号</th>
+                <td><input type="text" id="oa_no" readonly></td>
+                <th>OA标题</th>
+                <td><input type="text" id="oa_title" readonly></td>
+            </tr>
+            <tr>
+                <th>审批结果</th>
+                <td>
+                    <select id="examine_type">
+                        <option value="0">新增</option>
+                        <option value="1">通过</option>
+                        <option value="2">不通过</option>
+                    </select>
+                </td>
+                <th>不通过原因</th>
+                <td><input type="text" id="examine_des"></td>
+            </tr>
+        </table>
+        <div class="row mgt-20">
+            <div class="btn-box">
+                <button class="ui-btn btn-default mgr-10" id="back" name="reset1" onclick="goback()">返回</button>
+                <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="examine()">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function() {
+        var order_id = $("#order_id").val();
+        $.ajax({
+            type: "GET",
+            url: "getLoginMsgMidDetail",
+            data:{
+                order_id:order_id
+            }
+        }).then(function (data) {
+            var key  = CryptoJS.enc.Latin1.parse('1234123412341324');
+            var iv   = CryptoJS.enc.Latin1.parse('1234123412341324');
+            var decrypted = CryptoJS.AES.decrypt(data.id_card_no,key,{iv:iv,padding:CryptoJS.pad.ZeroPadding});
+            $("#id_card_no").val(decrypted.toString(CryptoJS.enc.Utf8));
+            $("#login_no").val(data.login_no);
+            $("#login_name").val(data.login_name);
+            $("#phone_no").val(data.contract_phone);
+            $("#busi_boss_no").val(data.busi_boss_no);
+            $("#oa_login_no").val(data.oa_login_no);
+            $("#mis_no").val(data.mis_no);
+            $("#role_name").val(data.role_name);
+            $("#grp_staff_number").val(data.grp_staff_number);
+            $("#group_id").val(data.group_id);
+            $("#group_name").val(data.group_name);
+            $("#work_area").val(data.work_area);
+            $("#is_grp_staff").val(data.is_grp_staff);
+            $("#grpusertype").val(data.grpusertype);
+            $("#grp_staff_number").val(data.grp_staff_number);
+            $("#need_remind").val(data.need_remind);
+            $("#oa_no").val(data.oa_no);
+            $("#oa_title").val(data.oa_title);
+            $("#examine_type").val(data.examine_type);
+            $("#examine_des").val(data.examine_des);
+            $("#is_lc").val(data.is_lc);
+
+            var tempGrpRoleCode = new Array();
+            tempGrpRoleCode = data.grp_role_code.split(",");
+            for (var i = 0; i < tempGrpRoleCode.length; i++) {
+                if (tempGrpRoleCode[i] == '1') {
+                    $("#grp_role_code1_3").prop("checked", true);
+                } else if (tempGrpRoleCode[i] == '2') {
+                    $("#grp_role_code2_3").prop("checked", true);
+                } else if (tempGrpRoleCode[i] == '3') {
+                    $("#grp_role_code3_3").prop("checked", true);
+                } else if (tempGrpRoleCode[i] == '4') {
+                    $("#grp_role_code4_3").prop("checked", true);
+                } else if (tempGrpRoleCode[i] == '5') {
+                    $("#grp_role_code5_3").prop("checked", true);
+                }
+            }
+            if(data.examine_type != '0'){
+                $("#qu_reset").attr("disabled",true);
+            }
+
+        })
+    })
+
+    function examine(){
+        var order_id = $("#order_id").val();
+        var examine_type = $("#examine_type").val();
+        var examine_des = $("#examine_des").val();
+        var has_boss = $("#has_boss").val();
+        if(examine_type == '0'){
+            $("#alertLabelInfo").text("请选择审批结果");
+            $("#operationAlertInfo").modal('show');
+            return;
+        }
+        if(examine_type == '2' && examine_des == ""){
+            $("#alertLabelInfo").text("请输入不通过原因");
+            $("#operationAlertInfo").modal('show');
+            return;
+        }
+        $.ajax({
+            type: "GET",
+            url: "updateLoginMsgMid",
+            data:{
+                order_id:order_id,
+                examine_type:examine_type,
+                examine_des:examine_des
+            }
+        }).then(function (data) {
+            $("#alertLabelInfo").text(data.result);
+            $("#operationAlertInfo").modal('show');
+            if(data.result == "添加成功" || data.result == "操作成功"){
+                location.href="wne";
+            }
+        })
+    }
+
+    function goback(){
+        location.href="wne";
+    }
+</script>
+</html>

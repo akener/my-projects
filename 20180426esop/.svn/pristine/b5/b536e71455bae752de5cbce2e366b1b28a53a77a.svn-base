@@ -1,0 +1,106 @@
+package com.esop.visitInfo.dto;
+
+/**
+ * Created by subt on 2017/6/12 0012.
+ */
+public class VisitLinkDto {
+    String visit_id                 ="";//参观内容ID
+    String region_id                ="";//区域ID
+    String content_id               ="";//内容ID
+    String apply_write              ="";//申请方填写
+    String undertake_write          ="";//承接方填写
+    String detail                   ="";//详情
+    String vip_cage_independent     ="";//VIP机笼+ 独立门禁
+    String charging_mode            ="";//计费方式
+    String postage_apply            ="";//资费申请
+    String create_date               ="";//创建时间
+    String update_date               ="";//修改时间
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(String update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getVisit_id() {
+        return visit_id;
+    }
+
+    public void setVisit_id(String visit_id) {
+        this.visit_id = visit_id;
+    }
+
+    public String getRegion_id() {
+        return region_id;
+    }
+
+    public void setRegion_id(String region_id) {
+        this.region_id = region_id;
+    }
+
+    public String getContent_id() {
+        return content_id;
+    }
+
+    public void setContent_id(String content_id) {
+        this.content_id = content_id;
+    }
+
+    public String getApply_write() {
+        return apply_write;
+    }
+
+    public void setApply_write(String apply_write) {
+        this.apply_write = apply_write;
+    }
+
+    public String getUndertake_write() {
+        return undertake_write;
+    }
+
+    public void setUndertake_write(String undertake_write) {
+        this.undertake_write = undertake_write;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getVip_cage_independent() {
+        return vip_cage_independent;
+    }
+
+    public void setVip_cage_independent(String vip_cage_independent) {
+        this.vip_cage_independent = vip_cage_independent;
+    }
+
+    public String getCharging_mode() {
+        return charging_mode;
+    }
+
+    public void setCharging_mode(String charging_mode) {
+        this.charging_mode = charging_mode;
+    }
+
+    public String getPostage_apply() {
+        return postage_apply;
+    }
+
+    public void setPostage_apply(String postage_apply) {
+        this.postage_apply = postage_apply;
+    }
+}

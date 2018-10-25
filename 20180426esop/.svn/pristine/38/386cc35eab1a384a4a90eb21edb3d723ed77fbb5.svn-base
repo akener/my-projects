@@ -1,0 +1,583 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.HttpMsgSend;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.PropertiesUtil;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import com.esop.cqDevelopment.elecPack.service.*;
+import com.esop.workflow.dto.orderDto.OrderStartDto;
+import com.esop.workflow.service.OrderWorkFlowService;
+import com.google.common.collect.Maps;
+import org.apache.axis.utils.StringUtils;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanMap;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+
+@Controller
+
+public class GroupPayContacter {
+    @Autowired
+    DataConversion dataConversion;
+    @Autowired
+    OrRequestDetailInfoService service;
+    @Autowired
+    OrRequestinstInfoService instService;
+    @Autowired
+    OrTemplateAttrService attrService;
+    @Autowired
+    SeElecPackRecordTracService recordtraceservie;
+    @Autowired
+    GroupPayContacterService contacterService;
+    @Autowired
+    OrderWorkFlowService workFlowService;
+    @Autowired
+    PropertiesUtil propUtil;
+    @Autowired
+    OrderService orderService;
+    Result result=new Result();
+    //新增集团账号缴费联系人
+
+    private  final org.apache.commons.logging.Log log = LogFactory.getLog(PostJsonUtil.class);
+
+    @RequestMapping(value = "/addGroupPayContacter")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String addGroupPayContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag) {
+        Date date = new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf.format(date);
+        String i="0";
+        try{
+            String token = propUtil.getBossToken(); //获取bosstoken
+            String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                    "UserQryService",token,"grpAddGrpLinkManNetShop");
+
+            JSONObject jsonObject = new JSONObject();
+
+            String request_num=groupPayContacter.getRequest_num();
+            groupPayContacter.setState("2");//已经受理
+            groupPayContacter.setModify_date(now);
+            groupPayContacter.setModify_no(groupPayContacter.getOper_no());
+            groupPayContacter.setAudit_date(now);
+            groupPayContacter.setState_date(now);
+            contacterService.updateInstState(groupPayContacter);
+
+            Map<String,Object> map =beanToMap(groupPayContacter);
+            List<OrTemplateAttrDto> list = attrService.SelectTemplateAttrList(10006);
+            for (OrTemplateAttrDto temp : list) {
+                OrRequestDetailInfoDto orRequestDetailInfoDto=new OrRequestDetailInfoDto();
+                orRequestDetailInfoDto.setAttr_code(temp.getAttr_code());
+                orRequestDetailInfoDto.setAttr_value(map.get(temp.getAttr_code())+"");
+                orRequestDetailInfoDto.setAttr_id(temp.getAttr_id());
+                orRequestDetailInfoDto.setRequest_num(groupPayContacter.getRequest_num());
+                service.InsertOrRequestDetailInfoDto(orRequestDetailInfoDto);
+            }
+            String operator="hwtest4";
+            jsonObject.put("groupid", groupPayContacter.getUnion_code());
+            jsonObject.put("region", groupPayContacter.getRegion_code());
+            jsonObject.put("contactman", groupPayContacter.getLink_man());
+            jsonObject.put("mobileno", groupPayContacter.getMobile_no());
+            jsonObject.put("important", "MemberSort03");
+            jsonObject.put("roletype", "MemberSort0305");
+            jsonObject.put("OPERATOR", operator);
+            jsonObject.put("email", groupPayContacter.getEmail());
+            jsonObject.put("groupacctid", groupPayContacter.getAccount_code());
+
+
+            /*jsonObject.put("region", "230");
+            jsonObject.put("groupid", "2300000062102");
+            jsonObject.put("contactman", "啊发发而且");
+            jsonObject.put("mobileno", "15004082144");
+            jsonObject.put("important", "MemberSort03");
+            jsonObject.put("roletype", "MemberSort0305");
+            jsonObject.put("OPERATOR","hwtest4");*/
+
+            String result=  new HttpMsgSend().sendHttpMsg(reqIp,jsonObject.toString());
+            try {
+                if(!StringUtils.isEmpty(result)){
+                    org.json.JSONObject jobject=new org.json.JSONObject(result);
+                    String res_code=jobject.getString("res_code"); //请求接口Boss地址
+                    if("0".equals(res_code)){//增加记录boss日志
+                        orderService.saveBossLog(reqIp,jsonObject.toString(),result,"新增集团缴费联系人成功",request_num,"true");
+                    }else{
+                        orderService.saveBossLog(reqIp,jsonObject.toString(),result,"新增集团缴费联系人失败",request_num,"false");
+                    }
+                }
+            }catch (Exception e){
+                log.error("日志请求记录写入失败，错误信息："+e);
+            }
+            groupPayContacter.setState("1");//默认为传送给boss了
+            groupPayContacter.setValid("Y");
+            groupPayContacter.setBpm_state("0");
+            contacterService.updateGroupPayContacter(groupPayContacter);
+        }catch (Exception e){
+            i="1";
+            return i;
+        }
+        return i;
+    }
+
+    //结束修改集团账号缴费联系人
+    @RequestMapping(value = "/updateGroupPayContacter")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String UpdateGroupPayContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag) {
+
+        Date date = new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf.format(date);
+        String i="0";
+        try{
+            String token = propUtil.getBossToken(); //获取bosstoken
+            String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                    "UserQryService",token,"grpUpdateGrpLinkManNetShop");
+
+            JSONObject jsonObject = new JSONObject();
+
+            String request_num=groupPayContacter.getRequest_num();
+            groupPayContacter.setState("2");//已经受理
+            groupPayContacter.setModify_date(now);
+            groupPayContacter.setModify_no(groupPayContacter.getOper_no());
+            groupPayContacter.setAudit_date(now);
+            groupPayContacter.setState_date(now);
+            contacterService.updateInstState(groupPayContacter);
+
+            Map<String,Object> map =beanToMap(groupPayContacter);
+            List<OrTemplateAttrDto> list = attrService.SelectTemplateAttrList(10006);
+            for (OrTemplateAttrDto temp : list) {
+                OrRequestDetailInfoDto orRequestDetailInfoDto=new OrRequestDetailInfoDto();
+                orRequestDetailInfoDto.setAttr_code(temp.getAttr_code());
+                orRequestDetailInfoDto.setAttr_value(map.get(temp.getAttr_code())+"");
+                orRequestDetailInfoDto.setAttr_id(temp.getAttr_id());
+                orRequestDetailInfoDto.setRequest_num(groupPayContacter.getRequest_num());
+                service.InsertOrRequestDetailInfoDto(orRequestDetailInfoDto);
+            }
+
+            String operator="b30test1";//操作人暂时写死
+            String password="96E79218965EB72C92A549DD5A330112";
+
+                /*jsonObject.put("groupid", groupPayContacter.getUnion_code());
+            jsonObject.put("region", groupPayContacter.getRegion_code());
+            jsonObject.put("seqrelationinfo", "230201712239717157");
+            jsonObject.put("contactman", groupPayContacter.getLink_man());
+            jsonObject.put("mobileno", groupPayContacter.getMobile_no());
+            jsonObject.put("important", "MemberSort03");
+            jsonObject.put("roletype", "MemberSort0305");
+            jsonObject.put("OPERATOR", operator);
+            jsonObject.put("PASSWORD", password);
+            jsonObject.put("groupacctid","2308106122367");
+            jsonObject.put("email","zz@qq.com");*/
+
+            jsonObject.put("GROUPID", groupPayContacter.getUnion_code());
+            jsonObject.put("REGION", groupPayContacter.getRegion_code());
+            jsonObject.put("SEQRELATIONINFO", "230201712239717157");//需需根据接口查询
+            jsonObject.put("CONTACTMAN", groupPayContacter.getLink_man());
+            jsonObject.put("MOBILENO", groupPayContacter.getMobile_no());
+            jsonObject.put("IMPORTANT", "MemberSort03");
+            jsonObject.put("ROLETYPE", "MemberSort0305");
+            jsonObject.put("OPERATOR", operator);
+            jsonObject.put("PASSWORD", password);
+            jsonObject.put("groupacctid",groupPayContacter.getAccount_code());
+            jsonObject.put("email",groupPayContacter.getEmail());
+
+            String result=  new HttpMsgSend().sendHttpMsg(reqIp,jsonObject.toString());
+            try {
+                if(!StringUtils.isEmpty(result)){
+                    org.json.JSONObject jobject=new org.json.JSONObject(result);
+                    String res_code=jobject.getString("res_code"); //请求接口Boss地址
+                    if("0".equals(res_code)){//增加记录boss日志
+                        orderService.saveBossLog(reqIp,jsonObject.toString(),result,"修改集团缴费联系人成功",request_num,"true");
+                    }else{
+                        orderService.saveBossLog(reqIp,jsonObject.toString(),result,"修改集团缴费联系人失败",request_num,"false");
+                    }
+                }
+            }catch (Exception e){
+                log.error("日志请求记录写入失败，错误信息："+e);
+            }
+            groupPayContacter.setState("1");//默认为传送给boss了
+            groupPayContacter.setValid("C");
+            groupPayContacter.setBpm_state("0");
+            contacterService.updateGroupPayContacter(groupPayContacter);
+        }catch (Exception e){
+            i="1";
+            return i;
+        }
+        return i;
+    }
+    //结束删除集团账号缴费联系人
+    @RequestMapping(value = "/deleteGroupPayContacter")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String deleteGroupPayContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf.format(date);
+        String i="0";
+        try{
+            String token = propUtil.getBossToken(); //获取bosstoken
+            String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                    "UserQryService",token,"grpDeleteGrpLinkManNetShop");
+
+
+            JSONObject jsonObject = new JSONObject();
+            String request_num=groupPayContacter.getRequest_num();
+            groupPayContacter.setState("2");//已经受理
+            groupPayContacter.setModify_date(now);
+            groupPayContacter.setModify_no(groupPayContacter.getOper_no());
+            groupPayContacter.setAudit_date(now);
+            groupPayContacter.setState(now);
+            contacterService.updateInstState(groupPayContacter);
+            List<OrTemplateAttrDto> list = attrService.SelectTemplateAttrList(10006);
+            Map<String,Object> map =beanToMap(groupPayContacter);
+            for (OrTemplateAttrDto temp : list) {
+                OrRequestDetailInfoDto orRequestDetailInfoDto=new OrRequestDetailInfoDto();
+                orRequestDetailInfoDto.setAttr_code(temp.getAttr_code());
+                orRequestDetailInfoDto.setAttr_value(map.get(temp.getAttr_code())+"");
+                orRequestDetailInfoDto.setAttr_id(temp.getAttr_id());
+                orRequestDetailInfoDto.setRequest_num(groupPayContacter.getRequest_num());
+                service.InsertOrRequestDetailInfoDto(orRequestDetailInfoDto);
+            }
+            String operator="d0000000";//操作人暂时写死
+
+            jsonObject.put("groupid", groupPayContacter.getUnion_code());
+            jsonObject.put("region", groupPayContacter.getRegion_code());
+            jsonObject.put("seq_relation_info", groupPayContacter.getSeq_relation_info());
+            jsonObject.put("OPERATOR", operator);
+            String result=  new HttpMsgSend().sendHttpMsg(reqIp,jsonObject.toString());
+            try {
+                if(!StringUtils.isEmpty(result)){
+                    org.json.JSONObject jobject=new org.json.JSONObject(result);
+                    String res_code=jobject.getString("res_code"); //请求接口Boss地址
+                    if("0".equals(res_code)){//增加记录boss日志
+                        orderService.saveBossLog(reqIp,jsonObject.toString(),result,"删除集团缴费联系人成功",request_num,"true");
+                    }else{
+                        orderService.saveBossLog(reqIp,jsonObject.toString(),result,"删除集团缴费联系人失败",request_num,"false");
+                    }
+                }
+            }catch (Exception e){
+                log.error("日志请求记录写入失败，错误信息："+e);
+            }
+            //修改集团联系人的状态
+            groupPayContacter.setState("1");//传给BOSS了
+            groupPayContacter.setValid("N");//N删除/无效
+            contacterService.updateGroupPayContacterState(groupPayContacter);
+        }catch (Exception e){
+            i="1";
+            return i;
+        }
+        return i;
+    }
+    //查询集团账号缴费联系人
+    @RequestMapping(value = "/selectGroupPayContacter")
+    @ResponseBody
+    public Result selectGroupPayContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag){
+        Enumeration en =request.getParameterNames();
+        while (en.hasMoreElements()){
+            String paramName = (String) en.nextElement();
+        }
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        groupPayContacter.setPage(page);
+        result = contacterService.selectGroupPayContacter(groupPayContacter);
+        return result;
+    }
+    @RequestMapping(value="/selectGroupPayContacterInfo")
+    @Transactional(rollbackFor = Exception.class)
+    public String groupPayContacterDto(GroupPayContacterDto groupPayContacter, Model model){
+        groupPayContacter = contacterService.selectGroupPayContacterInfo(groupPayContacter).get(0);
+        model.addAttribute("groupPayContacter",groupPayContacter);
+        return "cqDevelopment/elecPack/newDeleteGroup";
+    }
+    @RequestMapping(value="/selectGroupPayContacterInfo3")
+    @Transactional(rollbackFor = Exception.class)
+    public String groupPayContacterDto3(GroupPayContacterDto groupPayContacter, Model model){
+        groupPayContacter = contacterService.selectGroupPayContacterInfo(groupPayContacter).get(0);
+        model.addAttribute("groupPayContacter",groupPayContacter);
+        return "cqDevelopment/elecPack/newUpdateGroup";
+    }
+    @RequestMapping(value="/selectGroupPayContacterInfo2")
+    @ResponseBody
+    public GroupPayContacterDto groupPayContacterDto2(GroupPayContacterDto groupPayContacter, Model model){
+
+
+        return  contacterService.selectGroupPayContacterInfo(groupPayContacter).get(0);
+    }
+
+    @RequestMapping(value="/selectSeNewContractInfoDto")
+    @ResponseBody
+    public SeNewContractInfoDto seNewContractInfoDto(SeNewContractInfoDto seNewContractInfoDto, HttpServletRequest request, boolean flag){
+        return contacterService.selectSeNewContractInfoDto(seNewContractInfoDto).get(0);
+    }
+    @RequestMapping(value="/selectSeAccountInfoDto2")
+    @ResponseBody
+    public List<SeContractAccountInfoDto> seContractAccountInfoDto(SeContractAccountInfoDto seContractAccountInfoDto, HttpServletRequest request, boolean flag){
+        return contacterService.selectSeAccountInfoDto2(seContractAccountInfoDto.getContract_id());
+    }
+    //增加集团缴费联系人
+    @RequestMapping(value="/checkAddContacter")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String checkAddContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf2.format(date);
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
+        String request_num=sdf.format(date);
+        String i="0";
+        try{
+            groupPayContacter.setCreate_time(now);
+            groupPayContacter.setState("0");
+            groupPayContacter.setBpm_state("1");
+            String id=contacterService.insertGroupPayContacter(groupPayContacter);//创建集团缴费联系人
+            groupPayContacter.setId(id);
+
+            OrRequestinstInfoDto orRequestinstInfoDto=new OrRequestinstInfoDto();
+            orRequestinstInfoDto.setRequest_template_id(10006);
+            orRequestinstInfoDto.setCreate_date(now);
+            orRequestinstInfoDto.setState("0");//审批中
+            orRequestinstInfoDto.setRequest_num(request_num);
+            orRequestinstInfoDto.setNotes(groupPayContacter.getNotes());
+            orRequestinstInfoDto.setCreate_name(now);
+            orRequestinstInfoDto.setCreate_no(groupPayContacter.getCreate_no());
+            orRequestinstInfoDto.setOrder_title(groupPayContacter.getOrder_title());
+            orRequestinstInfoDto.setRegion_code(groupPayContacter.getRegion_code());
+            orRequestinstInfoDto.setUnion_code(groupPayContacter.getUnion_code());
+            orRequestinstInfoDto.setUnion_name(groupPayContacter.getUnion_name());
+            orRequestinstInfoDto.setOp_code("10006");
+            orRequestinstInfoDto.setContract_id(groupPayContacter.getContract_id());
+            orRequestinstInfoDto.setDepert_id(groupPayContacter.getDepert_id());
+            orRequestinstInfoDto.setSource_id(id);
+            instService.insertOrRequestinstInfoDto(orRequestinstInfoDto);
+
+            //发起增加流程
+            OrderStartDto orderStartDto =new OrderStartDto();
+            orderStartDto.setBizRecordId(request_num);
+            orderStartDto.setStartDept(groupPayContacter.getStartDept());
+            orderStartDto.setStartLoginNo(groupPayContacter.getStartLoginNo());
+            orderStartDto.setStartRegion(groupPayContacter.getStartRegion());
+            orderStartDto.setKeyValue(groupPayContacter.getKeyValue());
+            orderStartDto.setProcTypeCode(groupPayContacter.getProcTypeCode());
+            orderStartDto.setBranchCode(groupPayContacter.getBranchCode());
+            workFlowService.createOrderFlowService(orderStartDto,request);
+            //改变进入删除流程的状态
+            groupPayContacter.setDel_up_state("2");
+            groupPayContacter.setId(groupPayContacter.getId());
+            contacterService.updateDelOrUpState(groupPayContacter);
+        }catch (Exception e){
+            i="1";
+            return i;
+        }
+
+        return i;
+    }
+
+    //发起删除流程
+    @RequestMapping(value="/checkDeleteContacter")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String checkDeleteContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf2.format(date);
+        //创建删除集团联系人订单
+        String i="0";
+        try{
+            SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
+            String request_num=sdf.format(date);
+            OrRequestinstInfoDto orRequestinstInfoDto=new OrRequestinstInfoDto();
+            orRequestinstInfoDto.setRequest_template_id(10006);
+            orRequestinstInfoDto.setCreate_date(now);
+            orRequestinstInfoDto.setState("0");//审批中
+
+            orRequestinstInfoDto.setRequest_num(request_num);
+            orRequestinstInfoDto.setNotes(groupPayContacter.getNotes());
+            orRequestinstInfoDto.setCreate_name(groupPayContacter.getCreate_name());
+            orRequestinstInfoDto.setCreate_no(groupPayContacter.getCreate_no());
+            orRequestinstInfoDto.setOrder_title(groupPayContacter.getOrder_title());
+            orRequestinstInfoDto.setRegion_code(groupPayContacter.getRegion_code());
+            orRequestinstInfoDto.setUnion_code(groupPayContacter.getUnion_code());
+            orRequestinstInfoDto.setUnion_name(groupPayContacter.getUnion_name());
+            orRequestinstInfoDto.setOp_code("10006");
+            orRequestinstInfoDto.setContract_id(groupPayContacter.getContract_id());
+            orRequestinstInfoDto.setDepert_id(groupPayContacter.getDepert_id());
+            orRequestinstInfoDto.setSource_id(groupPayContacter.getId());
+            instService.insertOrRequestinstInfoDto(orRequestinstInfoDto);
+            //发起删除流程
+            OrderStartDto orderStartDto =new OrderStartDto();
+            orderStartDto.setBizRecordId(request_num);
+            orderStartDto.setStartDept(groupPayContacter.getStartDept());
+            orderStartDto.setStartLoginNo(groupPayContacter.getStartLoginNo());
+            orderStartDto.setStartRegion(groupPayContacter.getStartRegion());
+            orderStartDto.setKeyValue(groupPayContacter.getKeyValue());
+            orderStartDto.setProcTypeCode(groupPayContacter.getProcTypeCode());
+            orderStartDto.setBranchCode(groupPayContacter.getBranchCode());
+            workFlowService.createOrderFlowService(orderStartDto,request);
+            //改变进入删除流程的状态
+            groupPayContacter.setDel_up_state("0");
+            groupPayContacter.setId(groupPayContacter.getId());
+            contacterService.updateDelOrUpState(groupPayContacter);
+            //改变是否能查询的状态
+            contacterService.updateBpmState(groupPayContacter.getId());
+        }catch( Exception e) {
+            i = "1";
+            return i;
+        }
+        return i ;
+    }
+    //发起修改流程
+    @RequestMapping(value="/checkUpdateContacter")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String checkUpdateContacter(GroupPayContacterDto groupPayContacter, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf2.format(date);
+        //创建修改集团联系人订单
+        String i="0";
+        try{
+            SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
+            String request_num=sdf.format(date);
+            OrRequestinstInfoDto orRequestinstInfoDto=new OrRequestinstInfoDto();
+            orRequestinstInfoDto.setRequest_template_id(10006);
+            orRequestinstInfoDto.setCreate_date(now);
+            orRequestinstInfoDto.setState("0");//审批中
+
+            orRequestinstInfoDto.setRequest_num(request_num);
+            orRequestinstInfoDto.setModify_no(groupPayContacter.getCreate_no());//修改人和发起人一样
+            orRequestinstInfoDto.setNotes(groupPayContacter.getNotes());
+            orRequestinstInfoDto.setCreate_name(groupPayContacter.getCreate_name());
+            orRequestinstInfoDto.setCreate_no(groupPayContacter.getCreate_no());
+            orRequestinstInfoDto.setOrder_title(groupPayContacter.getOrder_title());
+            orRequestinstInfoDto.setRegion_code(groupPayContacter.getRegion_code());
+            orRequestinstInfoDto.setUnion_code(groupPayContacter.getUnion_code());
+            orRequestinstInfoDto.setUnion_name(groupPayContacter.getUnion_name());
+            orRequestinstInfoDto.setOp_code("10006");
+            orRequestinstInfoDto.setContract_id(groupPayContacter.getContract_id());
+            orRequestinstInfoDto.setDepert_id(groupPayContacter.getDepert_id());
+            orRequestinstInfoDto.setSource_id(groupPayContacter.getId());
+            orRequestinstInfoDto.setModify_date(now);
+            instService.insertOrRequestinstInfoDto(orRequestinstInfoDto);
+            //发起修改流程
+            OrderStartDto orderStartDto =new OrderStartDto();
+            orderStartDto.setBizRecordId(request_num);
+            orderStartDto.setStartDept(groupPayContacter.getStartDept());
+            orderStartDto.setStartLoginNo(groupPayContacter.getStartLoginNo());
+            orderStartDto.setStartRegion(groupPayContacter.getStartRegion());
+            orderStartDto.setKeyValue(groupPayContacter.getKeyValue());
+            orderStartDto.setProcTypeCode(groupPayContacter.getProcTypeCode());
+            orderStartDto.setBranchCode(groupPayContacter.getBranchCode());
+            workFlowService.createOrderFlowService(orderStartDto,request);
+            //修改集团信息
+            groupPayContacter.setModify_time(now);
+            contacterService.updateGroupPayContacterInfo(groupPayContacter);
+            //改变进入修改流程的状态
+            groupPayContacter.setDel_up_state("1");
+            groupPayContacter.setId(groupPayContacter.getId());
+            contacterService.updateDelOrUpState(groupPayContacter);
+            //改变是否能查询的状态
+            contacterService.updateBpmState(groupPayContacter.getId());
+
+        }catch( Exception e) {
+            i = "1";
+            return i;
+        }
+        return i ;
+    }
+    //受理需要改变订单的状态
+    @RequestMapping(value="/updateInstState")
+    @ResponseBody
+    public int updateInstState(GroupPayContacterDto groupPayContacterDto, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf.format(date);
+        groupPayContacterDto.setModify_date(now);
+        groupPayContacterDto.setModify_no(groupPayContacterDto.getOper_no());
+        groupPayContacterDto.setAudit_date(now);
+        groupPayContacterDto.setState_date(now);
+        return contacterService.updateInstState(groupPayContacterDto);
+    }
+
+    //修改保存的信息
+    @RequestMapping(value="/updateGroupPayContacterInfo")
+    @ResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public String updateGroupPayContacterInfo(GroupPayContacterDto groupPayContacterDto, HttpServletRequest request, boolean flag){
+        Date date = new Date();
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=sdf.format(date);
+        groupPayContacterDto.setState("0");
+        groupPayContacterDto.setModify_date(now);
+        groupPayContacterDto.setModify_no(groupPayContacterDto.getOper_no());
+        groupPayContacterDto.setAudit_date(now);
+        groupPayContacterDto.setState_date(now);
+
+        String i="0";
+        try{
+            contacterService.updateInstState(groupPayContacterDto);//重新提交改变的状态---订单
+            contacterService.updateGroupPayContacterInfo(groupPayContacterDto); //修改集团信息
+        }catch (Exception e){
+            i="1";
+            return i;
+        }
+        return i;
+    }
+
+    /**
+     * 将对象装换为map
+     * @param bean
+     * @return
+     */
+    public  <T> Map<String, Object> beanToMap(T bean) {
+        Map<String, Object> map = Maps.newHashMap();
+        if (bean != null) {
+            BeanMap beanMap = BeanMap.create(bean);
+            for (Object key : beanMap.keySet()) {
+                map.put(key+"", beanMap.get(key));
+            }
+        }
+        return map;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

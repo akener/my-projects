@@ -1,0 +1,423 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <%
+        String process_date=request.getParameter("process_date");
+        String org_id1=request.getParameter("org_id");
+        String center_code=request.getParameter("center_code");
+        String org_name1=request.getParameter("org_name");
+        String business_center=request.getParameter("business_center");
+    %>
+    <title>资金使用日报表</title>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+    <%--<%@ include file="../pub/base.jsp"%>--%>
+    <%--<%@ include file="../pub/dataTables.jsp"%>--%>
+    <%--<%@ include file="../pub/tableList.jsp"%>--%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>集团资金使用日报表</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <input type="hidden" id="org_id" value="" class="input-sty04 form-ipt" >
+                                <input type="text" id="org_name" value="" class="input-sty04 form-ipt" disabled="disabled">
+                            <%--              <select id="org_id" class="input-sty04 form-ipt" onchange="getBusinessCenter(this.value)">
+                                    &lt;%&ndash;<option value="">请选择</option>&ndash;%&gt;
+                                </select>--%>
+                            </td>
+                            <th>行业中心：</th>
+                            <td>
+                                <input type="hidden" id="center_code" value="" class="input-sty04 form-ipt">
+                                <input type="text" id="business_center" value="" class="input-sty04 form-ipt" disabled="disabled">
+                              <%--  <select id="center_code" class="input-sty04 form-ipt">
+                                    &lt;%&ndash;<option value="">请选择</option>&ndash;%&gt;
+                                </select>--%>
+                            </td>
+                            <th>开始时间：</th>
+                            <td>
+                                <input type=text id="process_date_start" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="fundUseDetailList()">查询</button>
+                            <button class="ui-btn mgr-10" id="checkAgreement" onclick="checkAgreement()">稽核通过</button>
+                            <button class="ui-btn mgr-10" id="checkBack" onclick="checkBack()">驳回</button>
+                            <button class="ui-btn mgr-10" id="excelExport"  onclick="excelExport()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="fundUseDetailList" width="100%;">
+                        <thead>
+                        <tr>
+                            <%--<th class="text-center"><input type="checkbox" id='regulation_apply_no' onclick="selectAll()"></th>--%>
+                            <%--<th class="text-center">数据查询时间</th>--%>
+                            <th class="text-center">分公司</th>
+                            <th class="text-center">行业中心</th>
+                            <th class="text-center">业务受理员</th>
+                            <th class="text-center">受理时间</th>
+                            <th class="text-center">业务类型</th>
+                            <th class="text-center">实际使用金额(元)</th>
+                            <th class="text-center">业务工单处理状态</th>
+                            <th class="text-center">集团编号</th>
+                            <th class="text-center">集团名称</th>
+                            <th class="text-center">业务工单编号</th>
+                            <th class="text-center">申请人</th>
+                            <th class="text-center">申请日期</th>
+                            <th class="text-center">申请金额(元)</th>
+                            <%--<th class="text-center">处理状态</th>
+                            <th class="text-center">处理人</th>
+                            <th class="text-center">处理时间</th>--%>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var org_name1;
+    var process_date;
+    var org_id1;
+    var center_code;
+    var business_center;
+    var process_date1;
+    var root_org_id;
+    $(document).ready(function() {
+        org_name1="<%=org_name1%>";
+        process_date="<%=process_date%>";
+        org_id1="<%=org_id1%>";
+        center_code="<%=center_code%>";
+        business_center="<%=business_center%>";
+        root_org_id="<%=root_org_id%>";
+        process_date1;
+        $("#org_name").val(org_name1);
+        $("#org_id").val(org_id1);
+        $("#center_code").val(center_code);
+        $("#business_center").val(business_center);
+       if(process_date.length==8){
+           process_date1=process_date.substring(0,4)+"-"+process_date.substring(4,6)+"-"+process_date.substring(6,8);
+       }else{
+           process_date1=process_date;
+       }
+        $("#process_date_start").val(process_date1);
+       if(root_org_id=="CQ.CQ.C4"||root_org_id=="CQ.CQ.0B"||root_org_id=="CQ.CQ"){
+           $("#checkAgreement").css("display","none");
+           $("#checkBack").css("display","none");
+       }
+        fundUseDetailList();
+    });
+
+
+    var checkedData = "";
+    function fundUseDetailList() {
+        checkedData = "";
+        var process_date_start = $("#process_date_start").val();
+        if(process_date_start == null || process_date_start == "" ){
+            alert("日期不能为空");
+            return false;
+        }
+        $("html").showLoading();
+        $.ajax({
+            type: "get",
+            url: "/groupFundAccountUseDetailReport",
+            data: {
+                org_id: $("#org_id").val(),
+                center_code: $("#center_code").val(),
+                process_date_start: $("#process_date_start").val()
+            },
+            cache: false,
+            success: function (result) {
+                $("html").hideLoading();
+                var report_data = "";
+                var checkStatus = result[result.length-1].applicant;
+                if( checkStatus== "已稽核" || checkStatus == "已驳回"){
+                    $("#checkAgreement").css("display","none");
+                    $("#checkBack").css("display","none");
+                }
+                $.each(result, function (i, field) {
+                    if(result.length > 2){
+                        if(field.check_status == '0') {
+                            checkedData += field.order_id + ',';
+                        }
+                    }
+                    //拼接json数据集字符串
+                    report_data += "<tr>";
+//                    if(field.check_status == '0'){
+//                        report_data += "<td nowrap='nowrap'><input type='checkbox' class='regulation_apply_no' value='"+field.order_id+"'></td>";
+//                    }else{
+//                        report_data += "<td nowrap='nowrap'></td>";
+//                    }
+//                    report_data += "<td nowrap='nowrap'>" + field.insert_date + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.org_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_center + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_admissible + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.process_date + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_type + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.actual_use_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.deal_status + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.group_code + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.group_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.order_id + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.applicant + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.apply_time + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.apply_amount + "</td>";
+                    /*if(field.check_status == '0'){
+                        report_data += "<td nowrap='nowrap'>未稽核</td>";
+                    }else if(field.check_status == '1'){
+                        report_data += "<td nowrap='nowrap'>已稽核</td>";
+                    }else if(field.check_status == '2'){
+                        report_data += "<td nowrap='nowrap'>已驳回</td>";
+                    }
+                    report_data += "<td nowrap='nowrap'>" + field.check_code + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.check_date + "</td>";*/
+                    report_data += "</tr>";
+                });
+                $("#list_info").empty();
+                $("#list_info").append(report_data);
+            },
+            error: function () {
+                $("html").hideLoading();
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+
+    function selectAll() {
+        var allCheck = $("#regulation_apply_no").get(0).checked;
+        var boxs = $(".regulation_apply_no");
+        if(allCheck){
+            for(var i=0;i<boxs.length;i++){
+                boxs[i].checked = true;
+            }
+        }else{
+            for(var i=0;i<boxs.length;i++){
+                boxs[i].checked = false;
+            }
+        }
+
+    }
+
+    function checkAgreement() {
+        /*var checkBoxs = $(".regulation_apply_no");
+        var checkBoxStr = "";
+        for(var i=0;i<checkBoxs.length;i++){
+            if(checkBoxs[i].checked){
+                checkBoxStr += checkBoxs[i].value + ',';
+            }
+        }
+        if(checkBoxStr == null || checkBoxStr == ""){
+            alert("请选择稽核通过的数据");
+            return false;
+        }
+        checkBoxStr = checkBoxStr.substring(0,checkBoxStr.length-1);*/
+
+        /*if (checkedData == null || checkedData == "") {
+            alert("没有数据需要稽核");
+            return false;
+        }*/
+        var login_no = '<%=login_no%>';
+        var login_name = '<%=login_name%>';
+        var audit_date = $("#process_date_start").val();
+        var org_id = $("#org_id").val();
+        var center_code = $("#center_code").val();
+
+        if(audit_date == null || audit_date == ""){
+            alert("日期不能为空");
+            return false;
+        }
+
+        if(org_id == null || org_id == ""){
+            alert("分公司不能为空");
+            return false;
+        }
+
+        if(center_code == null || center_code == ""){
+            alert("行业中心不能为空");
+            return false;
+        }
+
+        if(window.confirm('确定稽核通过报表数据？')) {
+
+            $.ajax({
+                url: "/updateFundAccountUseDetailCheckNext",
+                type: "POST",
+                data: {
+                    audit_date:audit_date,
+                    org_id:org_id,
+                    center_code:center_code,
+                    login_no:login_no,
+                    login_name:login_name
+                },
+                success: function (data) {
+//                    console.log(data);
+                    if (data == "1") {
+                        alert("稽核通过成功");
+                        fundUseDetailList();
+                    }
+                }
+            })
+        }
+    }
+
+    function checkBack() {
+        /*if (checkedData == null || checkedData == "") {
+            alert("没有数据需要驳回");
+            return false;
+        }*/
+
+        var login_no = '<%=login_no%>';
+        var login_name = '<%=login_name%>';
+        var audit_date = $("#process_date_start").val();
+        var org_id = $("#org_id").val();
+        var center_code = $("#center_code").val();
+
+        if(audit_date == null || audit_date == ""){
+            alert("日期不能为空");
+            return false;
+        }
+
+        if(org_id == null || org_id == ""){
+            alert("分公司不能为空");
+            return false;
+        }
+
+        if(center_code == null || center_code == ""){
+            alert("行业中心不能为空");
+            return false;
+        }
+        if(window.confirm('确定驳回报表数据？')) {
+
+            $.ajax({
+                url: "/updateFundAccountUseDetailCheckBackNext",
+                type: "POST",
+                data: {
+                    audit_date:audit_date,
+                    org_id:org_id,
+                    center_code:center_code,
+                    login_no:login_no,
+                    login_name:login_name
+                },
+                success: function (data) {
+//                    console.log(data);
+                    if (data == "1") {
+                        alert("驳回成功");
+                        fundUseDetailList();
+                    }
+                }
+            })
+        }
+    }
+
+    function excelExport() {
+//        $.ajax({
+//            url:"/exportGroupFundAccountUseDetailReport",
+//            type:"POST",
+//            data: {
+//                org_id: $("#org_id").val(),
+//                center_code: $("#center_code").val(),
+//                process_date_start: $("#process_date_start").val()
+//            },
+//            success:function (result) {
+//
+//            }
+//        });
+
+        var process_date_start = $("#process_date_start").val();
+        if(process_date_start == null || process_date_start == "" ){
+            alert("日期不能为空");
+            return false;
+        }
+
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='exportGroupFundAccountUseDetailReport?org_id='+org_id1
+            +'&org_name='+org_name1
+            +'&center_code='+center_code
+            +'&business_center='+business_center
+            +'&process_date_start='+process_date_start;
+        f.action = actionUrl;
+        f.submit();
+    }
+
+    function getNowFormatDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate()-1;
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+        return currentdate;
+    }
+
+    function getFormatDate(index) {
+        var date = new Date();
+        date.setTime(date.getTime() + 24*60*60*1000*index);
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate();
+        if(month >= 1 && month <= 9){
+            month = "0"+month;
+        }
+        if(day >= 0 && day <= 9){
+            day = "0"+day;
+        }
+        var dateStr = year+"-"+month+"-"+day;
+        return dateStr;
+    }
+</script>
+</html>

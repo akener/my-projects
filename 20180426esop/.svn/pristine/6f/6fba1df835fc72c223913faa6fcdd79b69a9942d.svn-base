@@ -1,0 +1,276 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/10/30.
+ */
+public class GroupFundsChangeDailyRptDto extends BaseDto{
+    private String id;//Id
+    private String org_name;//分公司
+    private String business_center;//行业中心
+    private String group_code;//集团编号
+    private String group_name;//集团名称
+    private String manager;//客户经理
+    private String account_clerk;//账务员
+   // private String order_type;//工单类型（认领申请单/调账申请单/退款申请单/入账反撤申请单/业务受理工单/历史短款冲销 申请单））
+    //private String order_num;//业务工单号/申请单号
+    private String yesterday_balance;//昨日余额（A)
+    private String yesterday_available_balance;//昨日可用余额(B)
+    private String today_claim_amount;//今日认款金额（C）
+    private String today_deduction_amount;//今日业务工单扣减金额 D
+    private String today_into_amount;//今日调入金额 E
+    private String today_out_amount;//今日调出金额(F)
+    private String today_refund_amount;//今日退款金额(G)
+    private String today_freeze_amount;//今日冻结金额 H
+    private String today_occupy_amount;//今日资金占用金额 L
+    private String today_history_deduction_amount;//今日历史短款扣减金额 I
+    private String today_account_balance;//今日账户余额 J J=A+C-D+E-F-G-I
+    private String today_account_available_balance;//今日账户可用余额K K=B+C-D+E-F-G-H-L-I
+    private String last_operat_date;//最后操作时间
+    private String check_code;//稽核人
+    private String check_date;//稽核日期
+    private String check_status;//稽核状态
+    private String insert_date;//数据入库时间
+
+    //筛选条件
+    private String org_id; //分公司ID
+    private String center_code; //行业中心编码
+    private String last_operat_date_start;//工单办结时间-start
+    private String last_operat_date_end;//工单办结时间-end
+
+    //临时字段
+    private String last_day;//每个月的最后一天
+
+    public String getLast_day() {
+        return last_day;
+    }
+
+    public void setLast_day(String last_day) {
+        this.last_day = last_day;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getOrg_name() {
+        return org_name;
+    }
+
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getGroup_code() {
+        return group_code;
+    }
+
+    public void setGroup_code(String group_code) {
+        this.group_code = group_code;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getAccount_clerk() {
+        return account_clerk;
+    }
+
+    public void setAccount_clerk(String account_clerk) {
+        this.account_clerk = account_clerk;
+    }
+
+    public String getYesterday_balance() {
+        return yesterday_balance;
+    }
+
+    public void setYesterday_balance(String yesterday_balance) {
+        this.yesterday_balance = yesterday_balance;
+    }
+
+    public String getYesterday_available_balance() {
+        return yesterday_available_balance;
+    }
+
+    public void setYesterday_available_balance(String yesterday_available_balance) {
+        this.yesterday_available_balance = yesterday_available_balance;
+    }
+
+    public String getToday_claim_amount() {
+        return today_claim_amount;
+    }
+
+    public void setToday_claim_amount(String today_claim_amount) {
+        this.today_claim_amount = today_claim_amount;
+    }
+
+    public String getToday_deduction_amount() {
+        return today_deduction_amount;
+    }
+
+    public void setToday_deduction_amount(String today_deduction_amount) {
+        this.today_deduction_amount = today_deduction_amount;
+    }
+
+    public String getToday_into_amount() {
+        return today_into_amount;
+    }
+
+    public void setToday_into_amount(String today_into_amount) {
+        this.today_into_amount = today_into_amount;
+    }
+
+    public String getToday_out_amount() {
+        return today_out_amount;
+    }
+
+    public void setToday_out_amount(String today_out_amount) {
+        this.today_out_amount = today_out_amount;
+    }
+
+    public String getToday_refund_amount() {
+        return today_refund_amount;
+    }
+
+    public void setToday_refund_amount(String today_refund_amount) {
+        this.today_refund_amount = today_refund_amount;
+    }
+
+    public String getToday_freeze_amount() {
+        return today_freeze_amount;
+    }
+
+    public void setToday_freeze_amount(String today_freeze_amount) {
+        this.today_freeze_amount = today_freeze_amount;
+    }
+
+    public String getToday_occupy_amount() {
+        return today_occupy_amount;
+    }
+
+    public void setToday_occupy_amount(String today_occupy_amount) {
+        this.today_occupy_amount = today_occupy_amount;
+    }
+
+    public String getToday_history_deduction_amount() {
+        return today_history_deduction_amount;
+    }
+
+    public void setToday_history_deduction_amount(String today_history_deduction_amount) {
+        this.today_history_deduction_amount = today_history_deduction_amount;
+    }
+
+    public String getToday_account_balance() {
+        return today_account_balance;
+    }
+
+    public void setToday_account_balance(String today_account_balance) {
+        this.today_account_balance = today_account_balance;
+    }
+
+    public String getToday_account_available_balance() {
+        return today_account_available_balance;
+    }
+
+    public void setToday_account_available_balance(String today_account_available_balance) {
+        this.today_account_available_balance = today_account_available_balance;
+    }
+
+    public String getLast_operat_date() {
+        return last_operat_date;
+    }
+
+    public void setLast_operat_date(String last_operat_date) {
+        this.last_operat_date = last_operat_date;
+    }
+
+    public String getCheck_code() {
+        return check_code;
+    }
+
+    public void setCheck_code(String check_code) {
+        this.check_code = check_code;
+    }
+
+    public String getCheck_date() {
+        return check_date;
+    }
+
+    public void setCheck_date(String check_date) {
+        this.check_date = check_date;
+    }
+
+    public String getCheck_status() {
+        return check_status;
+    }
+
+    public void setCheck_status(String check_status) {
+        this.check_status = check_status;
+    }
+
+    public String getInsert_date() {
+        return insert_date;
+    }
+
+    public void setInsert_date(String insert_date) {
+        this.insert_date = insert_date;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getLast_operat_date_start() {
+        return last_operat_date_start;
+    }
+
+    public void setLast_operat_date_start(String last_operat_date_start) {
+        this.last_operat_date_start = last_operat_date_start;
+    }
+
+    public String getLast_operat_date_end() {
+        return last_operat_date_end;
+    }
+
+    public void setLast_operat_date_end(String last_operat_date_end) {
+        this.last_operat_date_end = last_operat_date_end;
+    }
+}

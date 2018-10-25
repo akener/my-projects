@@ -1,0 +1,73 @@
+package com.esop.workflow.model;
+
+public class CtProcMatchCfg {
+    private String procTypeCode;
+
+    private String deptId;
+
+    private String keyValue;
+
+    private String procId;
+
+    private String procNameEn;
+
+    private String procNameCh;
+
+    private String initAssigneeFlag;
+
+    public String getProcTypeCode() {
+        return procTypeCode;
+    }
+
+    public void setProcTypeCode(String procTypeCode) {
+        this.procTypeCode = procTypeCode;
+    }
+
+    public String getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(String deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public void setKeyValue(String keyValue) {
+        this.keyValue = keyValue;
+    }
+
+    public String getProcId() {
+        return procId;
+    }
+
+    public void setProcId(String procId) {
+        this.procId = procId;
+    }
+
+    public String getProcNameEn() {
+        return procNameEn;
+    }
+
+    public void setProcNameEn(String procNameEn) {
+        this.procNameEn = procNameEn;
+    }
+
+    public String getProcNameCh() {
+        return procNameCh;
+    }
+
+    public void setProcNameCh(String procNameCh) {
+        this.procNameCh = procNameCh;
+    }
+
+    public String getInitAssigneeFlag() {
+        return initAssigneeFlag;
+    }
+
+    public void setInitAssigneeFlag(String initAssigneeFlag) {
+        this.initAssigneeFlag = initAssigneeFlag;
+    }
+}

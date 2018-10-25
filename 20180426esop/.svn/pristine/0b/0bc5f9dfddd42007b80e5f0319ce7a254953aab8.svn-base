@@ -1,0 +1,318 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>预打发票>>增值税电子发票>>实收>>发票开具申请</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="active-cost-box tc" style="text-align: center;margin-left: auto; margin-right: auto; margin-top: 10px;">
+    <div class="row-tab">
+        <table id="table-choose" class="cost-table rev-tabs" width="100%; ">
+            <tbody>
+            <tr>
+                <th>选择</th>
+                <th>集团账户名称</th>
+                <th>集团账户编号</th>
+                <th>是否开通预打发票</th>
+                <th>税号</th>
+                <th>单位地址</th>
+                <th>电话号码</th>
+                <th>开户银行</th>
+                <th>银行账户</th>
+                <th>是否一般纳税人</th>
+                <th>最小账期</th>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    var groupId = getQueryString("groupId");
+    var invoiceType = getQueryString("invoiceType");
+    var msg;
+    $(document).ready(function () {
+        loadGrpAcctList();
+    });
+
+    /**
+     * 查询集团用户/账户列表
+     */
+    function loadGrpAcctList() {
+        msg=layer.msg('加载中', {
+            icon: 16,
+            shade: 0.4,
+            time:20000 //取消自动关闭
+        });
+        var url = 'UserService';
+        var method = "grpQryGrpSubsAcctListInfoNetShop";
+        var param = {};
+        param['FLAG'] = "2"; //查询模式，1表示查询集团用户列表，2表示查询集团账户列表
+        param['REGION'] = "230"; //归属地市
+        param['GROUPID'] = groupId;
+        param['MEMTEL'] = "";
+        param['PAGECNT'] = "1";//页码
+        param['ROWCNT'] = "300";//每页的行数
+        param['MOD'] = "0";//查询总数-1，查询明细-0
+        // console.log(JSON.stringify(param));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {url: url, method: method, param: JSON.stringify(param), connectTimeout: 10000, readTimeOut: 30000},
+            dataType: 'json',
+            success: loadGrpAcctListHandler
+        });
+    }
+
+    function loadGrpAcctListHandler(data) {
+        // console.log(JSON.stringify(data));
+        $("#table-choose tr:not(:first)").remove();
+        var res_code = data.res_code;
+        if (res_code == "0") {
+            var grpAcctList = data.result.GRPLIST;
+            if (isNotNull(grpAcctList)) {
+                for (var i = 0; i < grpAcctList.length; i++) {
+                    var grpAcct = grpAcctList[i];
+                    var grpAcctHtml = "<tr style='display: none'>\n" +
+                        "    <td><input name='acctRadio' type='radio' class='chbox-ipt' disabled='disabled'/></td>\n" +
+                        "    <td>" + grpAcct.ITEMNAME + "</td>\n" +
+                        "    <td>" + grpAcct.ITEMID + "</td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "    <td></td>\n" +
+                        "</tr>";
+                    $("#table-choose tr:last").after(grpAcctHtml);
+                }
+
+                $(":radio").click(function () {
+                    var nm = $(this).attr("name");
+                    var checkedState = $(this).attr('checked');
+                  /*  $("input:radio[name='" + nm + "']").attr('checked', false);*/
+                    if (checkedState == 'checked') {
+                        $(this).attr('checked', false);
+                    } else {
+                        $(this).attr('checked', true);
+                        loadPrePrintInv(this);
+                    }
+                });
+
+                loadGrpAcctBase();
+            }
+        } else {
+            var res_desc = data.res_desc;
+            // console.log(res_desc);
+        }
+    }
+
+    /**
+     * 查询集团账户信息
+     */
+    function loadGrpAcctBase() {
+        $("#table-choose tr:not(:first)").each(function () {
+            var grpAcctTr = $(this);
+            var url = 'UserQryService';
+            var method = "grpQryGrpAcctBaseInfoESOP";
+            var param = {};
+            param['GROUPACCTID'] = grpAcctTr.find("td:eq(2)").html();
+            // console.log(JSON.stringify(param));
+
+            $.ajax({
+                type: 'POST',
+                url: '<%=ctxPath %>/boss/postRest',
+                data: {
+                    url: url,
+                    method: method,
+                    param: JSON.stringify(param),
+                    connectTimeout: 10000,
+                    readTimeOut: 30000
+                },
+                dataType: 'json',
+                success: function (data) {
+                    layer.close(msg);
+                    // console.log(JSON.stringify(data));
+                    var res_code = data.res_code;
+                    if (res_code == "0") {
+                        //新增是否有统付成员过滤条件，如果是无删除该行
+                        var ISHAVEMEMS = data.result.ISHAVEMEMS;//是否有统付成员	1-有；0-无
+                        if (ISHAVEMEMS != "1") {//无 删除该行
+                            grpAcctTr.remove();
+                            return;
+                        }
+                        var invPrintMode = data.result.INVPRINTMODE;//发票打印模式，0-实收发票，1-月结发票
+                        if (invPrintMode == "0") {//实收账户不展示，删除该行
+                            grpAcctTr.remove();
+                            return;
+                        }
+                        grpAcctTr.find("td:eq(4)").html(data.result.TAXNO);
+                        grpAcctTr.find("td:eq(5)").html(data.result.TAXADDRESS);
+                        grpAcctTr.find("td:eq(6)").html(data.result.TAXPHONE);
+                        grpAcctTr.find("td:eq(7)").html(data.result.TAXBANK);
+                        grpAcctTr.find("td:eq(8)").html(data.result.TAXBANKACCT);
+                        grpAcctTr.find("td:eq(10)").html(data.result.MINBILLCYCLE);
+                        if (data.result.ISGENERALTAXPAYER == "commonTaxPayer") {
+                            grpAcctTr.find("td:eq(9)").html("一般纳税人");
+                        } else {//unCommonTaxPayer
+                            if (invoiceType == "1") {//电子发票
+                                grpAcctTr.find("td:eq(9)").html("非一般纳税人");
+                            } else {//专用发票
+                                grpAcctTr.remove();
+                                return;
+                            }
+                        }
+                        if (data.result.ISPREPRINTINV == "1") {//已开通
+                            grpAcctTr.find("td:eq(3)").html("已开通");
+                            grpAcctTr.find("input:eq(0)").attr("disabled", false);
+                        } else {//如果当前是关闭预开发票状态，则调用crm接口开通
+                            // grpAcctTr.find("td:eq(3)").html("开通中");
+                            grpAcctCheck(grpAcctTr);
+                        }
+                        grpAcctTr.css('display','');
+                    } else {
+                        var res_desc = data.res_desc;
+                        // console.log(res_desc);
+                    }
+                },
+                error:function(){
+                    layer.close(msg);
+                }
+            });
+        });
+    }
+
+    /**
+     *  集团账户预打发票标识打标
+     */
+    function grpAcctCheck(grpAcctTr) {
+        var url = 'UserOrderService';
+        var method = "grpGrpAccPrePrintInvDealESOP";
+        var param = {};
+        param['GROUPID'] = groupId;
+        param['GROUPACCTID'] = grpAcctTr.find("td:eq(2)").html();
+        param['OPTYPE'] = "1";//1-开通预开发票；0-关闭预开发票
+        // console.log(JSON.stringify(param));
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {
+                url: url,
+                method: method,
+                param: JSON.stringify(param),
+                connectTimeout: 10000,
+                readTimeOut: 30000
+            },
+            dataType: 'json',
+            success: function (data) {
+                // console.log(JSON.stringify(data));
+                var res_code = data.res_code;
+                if (res_code == "0") {//打标成功
+                    grpAcctTr.find("td:eq(3)").html("已开通");
+                    grpAcctTr.find("input:eq(0)").attr("disabled", false);
+                } else {//打标失败原因
+                    grpAcctTr.find("td:eq(3)").html("未开通");
+                }
+            },
+            error: function (data) {
+                grpAcctTr.find("td:eq(3)").html("未开通");
+            }
+        });
+    }
+
+    //查询预打发票回款状态
+    function loadPrePrintInv(acctRadio) {
+        var grpAcctTr = $(acctRadio).parent().parent();
+        var grpAcctId = grpAcctTr.find("td:eq(2)").html();
+
+        var url = 'UserOrderService';
+        var method = "arQryPrePrintInv";
+        var begin = new Date();
+        begin.setFullYear(begin.getFullYear() - 1);
+        var end = new Date();
+        var param = {};
+        param['GROUPID'] = groupId;
+        param['GROUPACCTID'] = grpAcctId;
+        param['BEGINDATE'] = begin.format("yyyyMMdd");
+        param['ENDDATE'] = end.format("yyyyMMdd");
+
+        // console.log(JSON.stringify(param));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {
+                url: url,
+                method: method,
+                param: JSON.stringify(param),
+                connectTimeout: 10000,
+                readTimeOut: 30000
+            },
+            dataType: 'json',
+            success: function (data) {
+                // console.log(JSON.stringify(data));
+                var res_code = data.res_code;
+                if (res_code == "0") {
+                    var earliestUnbackDate = "";//最早一笔未回款的发票开票时间
+                    var applicationNo = "";//最早一笔未回款的发票申请单编号
+                    var invList = data.result;
+                    if (isNotNull(invList) && invList.length > 0) {
+                        var earliestIdx = "";//下标
+                        // 遍历数据，先找出最早一笔月结发票未回款的开票信息
+                        for (var i = 0; i < invList.length; i++) {
+                            var status = invList[i].STATUS;
+                            if (status == "未回款") {
+                                var printDate = convertDateFromString(invList[i].PRINTDATE);//yyyy-MM-dd hh:mm:ss
+                                var orderId = invList[i].ORDERID;
+                                if (earliestUnbackDate == "") {
+                                    earliestUnbackDate = printDate;
+                                    applicationNo = orderId;
+                                    earliestIdx = i;
+                                    continue;
+                                }
+                                if (printDate < earliestUnbackDate) {
+                                    earliestUnbackDate = printDate;
+                                    applicationNo = orderId;
+                                    earliestIdx = i;
+                                }
+                            }
+                        }
+                    }
+                    if (earliestUnbackDate != "" && countDiffDays(new Date(), earliestUnbackDate) >= 60) {//月结：最早一笔未回款发票超过60天，不允许再次发起预打发票申请
+                        $(acctRadio).attr("checked", false);
+                        var altMsg = "该集团月结账户存在超过60天未回款的发票，申请单编号为【" + applicationNo + "】，不允许再次提交申请。";
+                        layer.alert(altMsg, {
+                            icon: 2,
+                            skin: 'layer-ext-moon'
+                        });
+                    }
+                } else {
+                    var res_desc = data.res_desc;
+                    // console.log(res_desc);
+                    $(acctRadio).attr("checked", false);
+                    var altMsg = "接口调用返回错误信息：\"" + res_desc + "\"。";
+                    layer.alert(altMsg, {
+                        icon: 2,
+                        skin: 'layer-ext-moon'
+                    });
+                }
+            },
+            error: function (data) {
+                $(acctRadio).attr("checked", false);
+                var altMsg = "调用CRM集团预开发票查询接口失败！";
+                layer.alert(altMsg, {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                });
+            }
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SignInRepository">
+    <!--查询集团名-->
+    <select id="qryUnitName" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.VisitReminderDto">
+        select unit_id,unit_name from ep_returnRemind_info
+        where  1=1
+         and service_no = #{service_no}
+         <if test="unit_name != null and unit_name != ''">
+             and unit_name like  '%'||#{unit_name}||'%'
+         </if>
+    </select>
+    <select id="qrySignInId" resultType="com.esop.cust.dto.SignInDto">
+        select gnote_seq.nextval as id  from dual
+    </select>
+    <!--走访集团信息录入-->
+    <select id="updateVisitReminder" parameterType="com.esop.cust.dto.SignInDto" resultType="int">
+        <if test="return_date !=null and return_date !='' and unit_id !=null and unit_id != ''  and service_no !=null and service_no !='' ">
+            update ep_returnRemind_info set
+            return_date = to_date(#{return_date},'yyyy-mm-dd hh24:mi:ss'),
+            surplus_days ='0'
+            where 1=1
+            and unit_id =#{unit_id}
+            and service_no = #{service_no}
+        </if>
+    </select>
+    <!--保存经纬度-->
+    <select id="saveGnote" parameterType="com.esop.cust.dto.SignInDto" resultType="int">
+      <if test="related_id != null and related_id != ''">
+          insert into ep_gnote_table
+          (id,unit_id,service_no,create_date,signIn_addr,signIn_longitude,signIn_latitude,related_id,visit_unit,visit_person,visit_matters)
+          values (#{id},#{unit_id},#{service_no},to_date(#{return_date},'yyyy/mm/dd hh24:mi:ss'),#{signIn_addr},#{signIn_longitude},#{signIn_latitude},#{related_id},#{visit_unit},#{visit_person},#{visit_matters})
+      </if>
+       <if test="related_id == null or related_id == '' ">
+           insert into ep_gnote_table
+           (id,unit_id,service_no,create_date,signIn_addr,signIn_longitude,signIn_latitude,visit_unit,visit_person,visit_matters)
+           values (#{id},#{unit_id},#{service_no},to_date(#{return_date},'yyyy/mm/dd hh24:mi:ss'),#{signIn_addr},#{signIn_longitude},#{signIn_latitude},#{visit_unit},#{visit_person},#{visit_matters})
+       </if>
+    </select>
+    <select id="qrySignIn" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.SignInDto">
+        select id,unit_id,service_no,create_date as return_date,signIn_addr,signIn_longitude,signIn_latitude,related_id,visit_unit,visit_person,visit_matters
+        from ep_gnote_table
+        where  service_no  = #{service_no}
+    </select>
+    <!--保存上传文件-->
+    <select id="uploadFile" parameterType="com.esop.cust.dto.UploadFileDto" resultType="int">
+        insert into ep_upload_file
+        (related_id,create_no,create_date,name,path)
+        values (#{related_id},#{create_no},#{create_date},#{name},#{path})
+    </select>
+    <select id="qryUnitInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.VisitReminderInfoDto">
+         select a.unit_id,
+        a.unit_name,
+        a.owner_code as interview_type,
+        '0' as visit_type
+   from dgrpcustmsg a
+  where a.service_no = #{service_no}
+        <if test="owner_code != null and owner_code != ''">
+            and trim(a.owner_code) = #{owner_code}
+        </if>
+    and not exists
+  (select *
+           from dgrpreturninfo b
+          where a.unit_id = to_number(b.unit_id)
+            and b.submit_date between
+                trunc(add_months(sysdate,
+                                 -mod(to_number(to_char(sysdate, 'mm')) - 1,
+                                      to_number(decode(substr(a.owner_code,
+                                                              1,
+                                                              1),
+                                                       'a',
+                                                       '1',
+                                                       'b',
+                                                       '2',
+                                                       'c',
+                                                       '3',
+                                                       '12')))),
+                      'month') and
+                last_day(add_months(sysdate,
+                                    (to_number(decode(substr(a.owner_code,
+                                                             1,
+                                                             1),
+                                                      'a',
+                                                      '1',
+                                                      'b',
+                                                      '2',
+                                                      'c',
+                                                      '3',
+                                                      '12')) - 1) -
+                                    mod(to_number(to_char(sysdate, 'mm')) - 1,
+                                        to_number(decode(substr(a.owner_code,
+                                                                1,
+                                                                1),
+                                                         'a',
+                                                         '1',
+                                                         'b',
+                                                         '2',
+                                                         'c',
+                                                         '3',
+                                                         '12'))))))
+<if test="unit_name != null and unit_name != ''">
+    and a.unit_name like  '%'||#{unit_name}||'%'
+</if>
+ union all
+ select distinct a.unit_id,
+                 a.unit_name,
+                 a.owner_code as interview_type,
+                 '1' as visit_type
+   from dgrpcustmsg a, dgrpreturninfo b
+  where a.service_no = #{service_no}
+        <if test="owner_code != null and owner_code != ''">
+            and trim(a.owner_code) = #{owner_code}
+        </if>
+    and a.unit_id = to_number(b.unit_id)
+    and b.submit_date between
+        trunc(add_months(sysdate,
+                         -mod(to_number(to_char(sysdate, 'mm')) - 1,
+                              to_number(decode(substr(a.owner_code, 1, 1),
+                                               'a',
+                                               '1',
+                                               'b',
+                                               '2',
+                                               'c',
+                                               '3',
+                                               '12')))),
+              'month') and
+        last_day(add_months(sysdate,
+                            (to_number(decode(substr(a.owner_code, 1, 1),
+                                              'a',
+                                              '1',
+                                              'b',
+                                              '2',
+                                              'c',
+                                              '3',
+                                              '12')) - 1) -
+                            mod(to_number(to_char(sysdate, 'mm')) - 1,
+                                to_number(decode(substr(a.owner_code, 1, 1),
+                                                 'a',
+                                                 '1',
+                                                 'b',
+                                                 '2',
+                                                 'c',
+                                                 '3',
+                                                 '12')))))
+        <if test="unit_name != null and unit_name != ''">
+            and a.unit_name like  '%'||#{unit_name}||'%'
+        </if>
+    </select>
+    <select id="qryVisitedUnitInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.VisitReminderInfoDto">
+        select a.unit_id,
+        a.unit_name,
+        a.owner_code as interview_type,
+        '0' as visit_type
+        from dgrpcustmsg a
+        where a.service_no = #{service_no}
+        <if test="owner_code != null and owner_code != ''">
+            and trim(a.owner_code) = #{owner_code}
+        </if>
+        and not exists
+                (select *
+                from dgrpreturninfo b
+                where a.unit_id = to_number(b.unit_id)
+                and b.submit_date between
+                trunc(add_months(sysdate,
+                        -mod(to_number(to_char(sysdate, 'mm')) - 1,
+                        to_number(decode(substr(a.owner_code,
+                                                        1,
+                                                        1),
+                                                        'a',
+                                                        '1',
+                                                        'b',
+                                                        '2',
+                                                        'c',
+                                                        '3',
+                                                        '12')))),
+                                                        'month') and
+                        last_day(add_months(sysdate,
+                                        (to_number(decode(substr(a.owner_code,
+                                        1,
+                                        1),
+                                        'a',
+                                        '1',
+                                        'b',
+                                        '2',
+                                        'c',
+                                        '3',
+                                        '12')) - 1) -
+                                         mod(to_number(to_char(sysdate, 'mm')) - 1,
+                                        to_number(decode(substr(a.owner_code,
+                                        1,
+                                        1),
+                                        'a',
+                                        '1',
+                                        'b',
+                                        '2',
+                                        'c',
+                                        '3',
+                                        '12'))))))
+        <if test="unit_name != null and unit_name != ''">
+            and a.unit_name like  '%'||#{unit_name}||'%'
+        </if>
+    </select>
+    <select id="qryVisitUnitInfo" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.VisitReminderInfoDto">
+        select distinct a.unit_id,
+        a.unit_name,
+        a.owner_code as interview_type,
+        '1' as visit_type
+        from dgrpcustmsg a, dgrpreturninfo b
+        where a.service_no = #{service_no}
+        <if test="owner_code != null and owner_code != ''">
+            and trim(a.owner_code) = #{owner_code}
+        </if>
+        and a.unit_id = to_number(b.unit_id)
+        and b.submit_date between
+        trunc(add_months(sysdate,
+                -mod(to_number(to_char(sysdate, 'mm')) - 1,
+                                to_number(decode(substr(a.owner_code, 1, 1),
+                                'a',
+                                '1',
+                                'b',
+                                '2',
+                                'c',
+                                '3',
+                                '12')))),
+                                'month') and
+                last_day(add_months(sysdate,
+                            (to_number(decode(substr(a.owner_code, 1, 1),
+                            'a',
+                            '1',
+                            'b',
+                            '2',
+                            'c',
+                            '3',
+                            '12')) - 1) -
+                           mod(to_number(to_char(sysdate, 'mm')) - 1,
+                                        to_number(decode(substr(a.owner_code, 1, 1),
+                                        'a',
+                                        '1',
+                                        'b',
+                                        '2',
+                                        'c',
+                                        '3',
+                                        '12')))))
+        <if test="unit_name != null and unit_name != ''">
+            and a.unit_name like  '%'||#{unit_name}||'%'
+        </if>
+
+    </select>
+    <!--查询集团类型编码-->
+    <select id="qryWonerCode"   resultType="com.esop.cust.dto.GrpTypeDto">
+        select t.owner_code,t.owner_name from Sgrpownercode t where 1=1 and trim(t.owner_code) not like 'C3' and trim(t.owner_code) not like 'E'
+    </select>
+    <!--根据电话号码查询联系人姓名和职务-->
+    <select id="qryContacts" parameterType="com.esop.cust.dto.GrpInterfaceParameterDto" resultType="com.esop.cust.dto.ContactsDto">
+        select a.name ,a.duty  from dgrpmembermsg a  where phone_no = rpad(#{phone_no},15,' ')
+    </select>
+    <!--获取走访集团编号-->
+    <select id="qryReturnInfoId"    resultType="com.esop.cust.dto.ReturnVisitDto"  >
+        select seq_grp_dGrpReturnRec_ID.nextval as return_info_id from dual
+    </select>
+    <!--录入走访集团信息-->
+    <select id="insertDgrpreturninfo"  parameterType="com.esop.cust.dto.ReturnVisitDto"  resultType="int"  >
+        insert into Dgrpreturninfo(return_info_id,service_no,unit_id,unit_name,return_date,submit_date,return_type,return_address,contact_phone,contact_person,duty,guest_sat,service_name,interview_type ,return_rmk)
+        values (#{return_info_id},#{service_no},#{unit_id},#{unit_name},to_date(#{return_date},'yyyy/mm/dd'),to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy/mm/dd'),#{return_type},#{return_address},#{contact_phone},#{contact_person},#{duty},#{guest_sat},#{service_name},#{interview_type},#{return_rmk})
+    </select>
+</mapper>

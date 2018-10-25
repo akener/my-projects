@@ -1,0 +1,237 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/15
+  Time: 8:39
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>行业拓展专项行动</title>
+</head>
+
+<body>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+    </div>
+</div>
+<!--地市详情-->
+
+<div class="row col-12" style="min-height:100px;">
+    <div class="pd-20 pos-rel pos-bg1">
+        <div class="row">
+            <table class="table-infor-7" width="100%">
+                <tbody>
+                <tr>
+                    <th>日期</th>
+                    <td>
+                        <input type=text id="eff_date" class="input-sty04 form-ipt"
+                               maxlength="11" readonly="true">
+                        <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                             style="width: 25px;" width="25" height="21"
+                             onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM-dd'})"
+                             title="选择时间" />
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="row mgt-30">
+                <div class="btn-box pdb-20">
+                    <button class="ui-btn mgr-10" onclick="getTradeList()">查询</button>
+                    <%--                    <button class="ui-btn" onclick="reset()">重置</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" >
+        <div class="active-cost-box" >
+            <div style="overflow:auto;">
+            <table id="epTradeEx" class="cost-table"  width="100%" >
+                <thead>
+                <tr>
+                <th rowspan="3" class="text-center">日期</th>
+                <th rowspan="3" class="text-center">地市</th>
+                <th colspan="15" class="text-center">行业拓展专项行动</th>
+                </tr>
+                <tr>
+                    <th colspan="5" class="text-center">宽带完成进度</th>
+                    <th colspan="5" class="text-center">4G完成进度</th>
+                    <th colspan="5" class="text-center">新建集团完成进度</th>
+                </tr>
+                <tr>
+                    <th class="text-center">日新增宽带</th>
+                    <th class="text-center">月新增宽带</th>
+                    <th class="text-center">活动累计新增宽带</th>
+                    <th class="text-center">宽带目标值</th>
+                    <th class="text-center">月完成进度</th>
+                    <th class="text-center">日新增4G</th>
+                    <th class="text-center">月新增4G</th>
+                    <th class="text-center">活动累计新增4G</th>
+                    <th class="text-center">4G目标值</th>
+                    <th class="text-center">月完成进度</th>
+                    <th class="text-center">日新建集团</th>
+                    <th class="text-center">月新建集团</th>
+                    <th class="text-center">活动累计新建集团</th>
+                    <th class="text-center">新建集团目标值</th>
+                    <th class="text-center">月完成进度</th>
+                </tr>
+                </thead>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+
+    $(document).ready(function() {
+        //getTradeList();
+        /*  table = $('#epTradeEx').DataTable( {
+         dom: "Bfrtip",
+         bLengthChange:true,
+         "bFilter": false,
+         //"iDisplayLength": 10,
+         //"aLengthMenu": [10, 50, 100 ],
+         "pageLength": 14,//设置每页显示多少条记录
+         "language": {
+         "url": "/static/data/Chinese.json"
+         },//多语言配置
+         processing: true,
+         serverSide: true,
+         ajax: {
+         url:"/epTradeMedic",
+         type:"POST"
+         },
+         columns: [
+
+         /!* { data:"","fnCreatedCell":function (td) {
+         $(td).attr("rowspan",14);
+         } },*!/
+         { data: "dt_RowId"},
+         { data: "region_name" },
+         { data:"ex_wid_day_inc" },
+         { data:"ex_wid_mon_inc"},
+         { data: "ex_wid_total_inc" },
+         { data: "ex_wid_goal" },
+         { data: "ex_wid_comp_rate" },
+         { data: "ex_day_inc" },
+         { data: "ex_mon_inc" },
+         { data: "ex_total_inc" },
+         { data: "ex_goal" },
+         { data: "ex_comp_rate" },
+         { data: "ex_unit_day_inc" },
+         { data: "ex_unit_mon_inc" },
+         { data: "ex_unit_total_inc" },
+         { data: "ex_unit_goal" },
+         { data: "ex_unit_comp_rate"}
+         ],
+         select: true,
+         buttons: [
+         ]
+         } );*/
+    })
+    //小数转百分数并保留两位小数
+    function toPct(num){
+        num=num+"00000";
+        var idx = num.indexOf(".");
+        num = num.substring(0,idx)+num.substring(idx+1,idx+3)+"."+num.substring(idx+3,idx+4)+"%";
+        return num;
+    }
+    function getTradeList(){
+        toPct();
+        $("#epTradeEx tr").each(function(i){
+
+            if(i>=3){
+                $(this).empty();
+            }
+        })
+        function toPercent(point){
+            var str=Number(point*100).toFixed(1);
+            str+="%";
+            return str;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/epTradeMedicine',
+            cache : false,
+            data : {
+                eff_date:$("#eff_date").val()
+            },
+            success : function(data) {
+                if(data.length > 0) {
+                    for(var i=0; i<data.length; i++){
+                        var trStr = "";
+                        trStr+="<tr>";
+                        if(i==0){
+                            trStr += "<td rowspan=" + data.length + ">" + data[0].eff_date + "</td>"
+                        }
+                        trStr +=
+                            "<td>" + data[i].region_name + "</td>" +
+                            "<td>" + data[i].ex_wid_day_inc + "</td>" +
+                            "<td>" + data[i].ex_wid_mon_inc + "</td>" +
+                            "<td>" + data[i].ex_wid_total_inc + "</td>" +
+                            "<td>" + data[i].ex_wid_goal + "</td>" +
+                            "<td>" + toPercent(data[i].ex_wid_comp_rate)+ "</td>" +
+                            "<td>" + data[i].ex_day_inc + "</td>" +
+                            "<td>" + data[i].ex_mon_inc + "</td>" +
+                            "<td>" + data[i].ex_total_inc + "</td>" +
+                            "<td>" + data[i].ex_goal + "</td>" +
+                            "<td>" + toPercent(data[i].ex_comp_rate) + "</td>" +
+                            "<td>" + data[i].ex_unit_day_inc + "</td>" +
+                            "<td>" + data[i].ex_unit_mon_inc + "</td>" +
+                            "<td>" + data[i].ex_unit_total_inc + "</td>" +
+                            "<td>" + data[i].ex_unit_goal + "</td>" +
+                            "<td>" + toPercent(data[i].ex_unit_comp_rate)+ "</td>" +
+                            "</tr>"
+                        $("#epTradeEx").append(trStr);
+                    }
+                }else{
+                    $("#modal_text").text("没有数据");
+                    $("#modalInfo").modal('show');
+                    return false;
+                }
+                // $("#initElement").val(resp);
+            },
+            error:function(resp){
+                alert("查询数据失败");
+            }
+        });
+    }
+</script>
+</html>
+

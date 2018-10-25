@@ -1,0 +1,44 @@
+package com.esop.productInfo.dto;
+
+/**
+ * Created by wangbl on 2017/5/23.
+ */
+//提供给外围系统产品信息和审批环节信息
+public class ProductAndLinkDto {
+   String prod_id   = ""; //产品编码
+   String prod_name = ""; //产品名称
+   String link_id   = ""; //环节编码
+   String link_name = ""; //环节名称
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public String getLink_id() {
+        return link_id;
+    }
+
+    public void setLink_id(String link_id) {
+        this.link_id = link_id;
+    }
+
+    public String getLink_name() {
+        return link_name;
+    }
+
+    public void setLink_name(String link_name) {
+        this.link_name = link_name;
+    }
+}

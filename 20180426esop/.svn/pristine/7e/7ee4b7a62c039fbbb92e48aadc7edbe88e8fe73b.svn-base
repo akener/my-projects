@@ -1,0 +1,191 @@
+package com.esop.cqDevelopment.groupMemberPayCost.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/10/23.
+ */
+public class GroupMemberDto extends BaseDto{
+
+    //业务工单同步接口(集团成员缴费)--业务请求参数
+    private String orderID;//ESOP工单号码
+    private String recType;//申请工单业务类型
+    private String areaID;//分公司编码
+    private String applyOpID;//申请人ID
+    private String tradeCenterID;//行业中心
+    private String groupID;//集团编号
+    private String groupName;//集团名称
+    private String groupAcctID;//集团账号
+    private String groupAcctName;//集团账号名称
+    private String prePrintInvBeginCycle;//预打发票开始账期
+    private String prePrintInvEndCycle;//预打发票结束账期
+    private String invoicingInfo;//已开发票信息
+    private String freezeFee;//冻结金额
+    private String applyFee;//申请金额
+    private String applyDate;//申请时间
+    private String groupMemListFile;//批量导入文件名
+    private String groupMemListFileLines;//导入文件记录数
+    private String note;//备注信息
+    private String productBook;//产品账期（可选无）
+    private String orderStatus;//工单状态（已受理/待办/关闭）
+
+    public String getInvoicingInfo() {
+        return invoicingInfo;
+    }
+
+    public void setInvoicingInfo(String invoicingInfo) {
+        this.invoicingInfo = invoicingInfo;
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    public String getRecType() {
+        return recType;
+    }
+
+    public void setRecType(String recType) {
+        this.recType = recType;
+    }
+
+    public String getAreaID() {
+        return areaID;
+    }
+
+    public void setAreaID(String areaID) {
+        this.areaID = areaID;
+    }
+
+    public String getApplyOpID() {
+        return applyOpID;
+    }
+
+    public void setApplyOpID(String applyOpID) {
+        this.applyOpID = applyOpID;
+    }
+
+    public String getTradeCenterID() {
+        return tradeCenterID;
+    }
+
+    public void setTradeCenterID(String tradeCenterID) {
+        this.tradeCenterID = tradeCenterID;
+    }
+
+    public String getGroupID() {
+        return groupID;
+    }
+
+    public void setGroupID(String groupID) {
+        this.groupID = groupID;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getGroupAcctID() {
+        return groupAcctID;
+    }
+
+    public void setGroupAcctID(String groupAcctID) {
+        this.groupAcctID = groupAcctID;
+    }
+
+    public String getGroupAcctName() {
+        return groupAcctName;
+    }
+
+    public void setGroupAcctName(String groupAcctName) {
+        this.groupAcctName = groupAcctName;
+    }
+
+    public String getPrePrintInvBeginCycle() {
+        return prePrintInvBeginCycle;
+    }
+
+    public void setPrePrintInvBeginCycle(String prePrintInvBeginCycle) {
+        this.prePrintInvBeginCycle = prePrintInvBeginCycle;
+    }
+
+    public String getPrePrintInvEndCycle() {
+        return prePrintInvEndCycle;
+    }
+
+    public void setPrePrintInvEndCycle(String prePrintInvEndCycle) {
+        this.prePrintInvEndCycle = prePrintInvEndCycle;
+    }
+
+    public String getFreezeFee() {
+        return freezeFee;
+    }
+
+    public void setFreezeFee(String freezeFee) {
+        this.freezeFee = freezeFee;
+    }
+
+    public String getApplyFee() {
+        return applyFee;
+    }
+
+    public void setApplyFee(String applyFee) {
+        this.applyFee = applyFee;
+    }
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public String getGroupMemListFile() {
+        return groupMemListFile;
+    }
+
+    public void setGroupMemListFile(String groupMemListFile) {
+        this.groupMemListFile = groupMemListFile;
+    }
+
+    public String getGroupMemListFileLines() {
+        return groupMemListFileLines;
+    }
+
+    public void setGroupMemListFileLines(String groupMemListFileLines) {
+        this.groupMemListFileLines = groupMemListFileLines;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getProductBook() {
+        return productBook;
+    }
+
+    public void setProductBook(String productBook) {
+        this.productBook = productBook;
+    }
+
+    public String getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+}

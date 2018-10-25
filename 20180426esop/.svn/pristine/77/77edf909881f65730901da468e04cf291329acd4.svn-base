@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.invoice.mapper.EpInvPreprintActInfoMapper">
+  <resultMap id="BaseResultMap" type="com.esop.invoice.model.EpInvPreprintActInfo">
+    <id column="rec_serial_no" jdbcType="INTEGER" property="recSerialNo" />
+    <result column="application_no" jdbcType="VARCHAR" property="applicationNo" />
+    <result column="group_account_id" jdbcType="VARCHAR" property="groupAccountId" />
+    <result column="group_account_name" jdbcType="VARCHAR" property="groupAccountName" />
+    <result column="tax_no" jdbcType="VARCHAR" property="taxNo" />
+    <result column="tax_address" jdbcType="VARCHAR" property="taxAddress" />
+    <result column="tax_phone" jdbcType="VARCHAR" property="taxPhone" />
+    <result column="tax_bank" jdbcType="VARCHAR" property="taxBank" />
+    <result column="tax_bank_account" jdbcType="VARCHAR" property="taxBankAccount" />
+    <result column="is_general_taxpayer" jdbcType="CHAR" property="isGeneralTaxpayer" />
+    <result column="invoice_value" jdbcType="DECIMAL" property="invoiceValue" />
+    <result column="arrears_account_period" jdbcType="VARCHAR" property="arrearsAccountPeriod" />
+    <result column="arrears_amount" jdbcType="DECIMAL" property="arrearsAmount" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from ep_inv_preprint_act_info
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.esop.invoice.model.EpInvPreprintActInfo">
+    <selectKey keyProperty="recSerialNo" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ep_inv_preprint_act_info (application_no, group_account_id, group_account_name, 
+      tax_no, tax_address, tax_phone, 
+      tax_bank, tax_bank_account, is_general_taxpayer, 
+      invoice_value, arrears_account_period, arrears_amount
+      )
+    values (#{applicationNo,jdbcType=VARCHAR}, #{groupAccountId,jdbcType=VARCHAR}, #{groupAccountName,jdbcType=VARCHAR}, 
+      #{taxNo,jdbcType=VARCHAR}, #{taxAddress,jdbcType=VARCHAR}, #{taxPhone,jdbcType=VARCHAR}, 
+      #{taxBank,jdbcType=VARCHAR}, #{taxBankAccount,jdbcType=VARCHAR}, #{isGeneralTaxpayer,jdbcType=CHAR}, 
+      #{invoiceValue,jdbcType=DECIMAL}, #{arrearsAccountPeriod,jdbcType=VARCHAR}, #{arrearsAmount,jdbcType=DECIMAL}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.esop.invoice.model.EpInvPreprintActInfo">
+    update ep_inv_preprint_act_info
+    set application_no = #{applicationNo,jdbcType=VARCHAR},
+      group_account_id = #{groupAccountId,jdbcType=VARCHAR},
+      group_account_name = #{groupAccountName,jdbcType=VARCHAR},
+      tax_no = #{taxNo,jdbcType=VARCHAR},
+      tax_address = #{taxAddress,jdbcType=VARCHAR},
+      tax_phone = #{taxPhone,jdbcType=VARCHAR},
+      tax_bank = #{taxBank,jdbcType=VARCHAR},
+      tax_bank_account = #{taxBankAccount,jdbcType=VARCHAR},
+      is_general_taxpayer = #{isGeneralTaxpayer,jdbcType=CHAR},
+      invoice_value = #{invoiceValue,jdbcType=DECIMAL},
+      arrears_account_period = #{arrearsAccountPeriod,jdbcType=VARCHAR},
+      arrears_amount = #{arrearsAmount,jdbcType=DECIMAL}
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, group_account_id, group_account_name, tax_no, 
+    tax_address, tax_phone, tax_bank, tax_bank_account, is_general_taxpayer, invoice_value, 
+    arrears_account_period, arrears_amount
+    from ep_inv_preprint_act_info
+    where rec_serial_no = #{recSerialNo,jdbcType=INTEGER}
+  </select>
+  <select id="selectByAppNo" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, group_account_id, group_account_name, tax_no,
+    tax_address, tax_phone, tax_bank, tax_bank_account, is_general_taxpayer, invoice_value,
+    arrears_account_period, arrears_amount
+    from ep_inv_preprint_act_info
+    where application_no = #{applicationNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectForSSAppValid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select t1.rec_serial_no, t1.application_no, t1.group_account_id, t1.group_account_name, t1.tax_no,
+    t1.tax_address, t1.tax_phone, t1.tax_bank, t1.tax_bank_account, t1.is_general_taxpayer, t1.invoice_value,
+    t1.arrears_account_period, t1.arrears_amount
+    from ep_inv_preprint_act_info t1
+    where t1.group_account_id = #{groupAccountId,jdbcType=VARCHAR}
+    and exists (select 1 from ep_inv_preprint_app_info t2
+    where t1.application_no = t2.application_no and t2.invoice_mode='1' and t2.work_state in ('1','2')) /*1-审批中，2-待开票*/
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select rec_serial_no, application_no, group_account_id, group_account_name, tax_no, 
+    tax_address, tax_phone, tax_bank, tax_bank_account, is_general_taxpayer, invoice_value, 
+    arrears_account_period, arrears_amount
+    from ep_inv_preprint_act_info
+  </select>
+</mapper>

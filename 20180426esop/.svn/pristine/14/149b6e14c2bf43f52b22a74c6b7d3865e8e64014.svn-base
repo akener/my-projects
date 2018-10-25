@@ -1,0 +1,207 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <script type="text/javascript" language="javascript" class="init">
+        var table = "";
+
+        $(document).ready(function () {
+        });
+
+        function IncomeListQueryValidate() {
+            var login_no = '<%=login_no%>';
+            var jituan_bianma = $("#jituan_bianma").val();
+            if(jituan_bianma == null || jituan_bianma == ""){
+                alert("集团编号不能为空！");
+                return false;
+            }
+
+            /*$.ajax({
+                url:"/custInfoQuery",
+                type:"POST",
+                data:{union_code:jituan_bianma,service_no:login_no},
+                success:function (result) {
+                    var data = result.data;
+                    if(data.length == 0){
+                        alert("该集团为其他客户经理管辖集团");
+                        return false;
+                    }else{
+                        IncomeListQuery();
+                    }
+                },
+                error:function (result) {
+                    alert("校验集团编号出错，请重新查询");
+                    return false;
+                }
+            });*/
+
+
+            $.ajax({
+                url:"/getCustInfo",
+                type:"POST",
+                data:{union_code:jituan_bianma,service_no:login_no},
+                success:function (result) {
+                    if(result == 1){
+                        alert("该集团为其他客户经理管辖集团");
+                        return false;
+                    }else{
+                        IncomeListQuery();
+                    }
+                },
+                error:function (result) {
+                    alert("校验集团编号出错，请重新查询");
+                    return false;
+                }
+            });
+        }
+
+        function IncomeListQuery() {
+            var root_org_id = '<%=root_org_id%>';
+            var root_org_name = '<%=root_org_name%>';
+
+            var jituan_bianma = $("#jituan_bianma").val();
+            if(jituan_bianma == null || jituan_bianma == ""){
+                alert("集团编号不能为空！");
+                return false;
+            }
+
+            table = $('#example').DataTable({
+                "scrollX": true,
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                //"ordering":true,
+                //"scrollX": true,
+                //"bRetrieve": true,
+                "pageLength": 5,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                ajax: {
+                    url:"/getGroupCapitalInfoFromBoss",
+                    type:"POST",
+                    data:{
+                        GROUPID:jituan_bianma
+                    }
+                },
+                columns: [
+                    { data: "claimoid",
+                        "width": "15%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<button type='button' class='ui-btn mgr-10' style='width: 85px' onclick=capitalApply('"+row.grpfundacctid+"','"+row.grpcustid+"','"+encodeURI(row.grpcustname)+"','"+root_org_id+"','"+row.status+"','"+row.balance+"','"+row.nowbalance+"','"+row.holdbalance+"','"+row.freezefee+"','"+row.newBalance+"','"+row.newNowbalance+"','"+row.newHoldbalance+"','"+row.newFreezefee+"','"+root_org_name+"')>发起申请</button>";
+                        }
+                    },
+                    { data: "grpfundacctid"},
+                    { data: "groupid"},
+                    { data: "grpcustname"},
+                    { data: "ownerorgname"},
+                    {
+                        data: "status",
+                        render:function (data, type, row, meta) {
+                            if(row.status == '0'){
+                                return data = "未绑定";
+                            }else if(row.status == '1'){
+                                return data = "已绑定";
+                            }
+                        }
+                    },
+                    { data: "newBalance"},
+                    { data: "newNowbalance"},
+                    { data: "newHoldbalance"},
+                    { data: "newFreezefee"}
+                ],
+                select: true,
+                buttons: [
+                ]
+            });
+        }
+
+        function capitalApply(zijin_zhanghao,kehu_bianhao,kehu_mingcheng,fengongsi,zhanghao_zhuangtai,zhanghu_yue,keyong_yue,zhanyong_zijin,dongjie_zijin,zhanghu_yue_yuan,keyong_yue_yuan,zhanyong_zijin_yuan,dongjie_zijin_yuan,fengongsi_name) {
+            var jituan_bianma = $("#jituan_bianma").val();
+            var url="/esop/zjsq?zijin_zhanghao="+zijin_zhanghao+"&kehu_bianhao="+kehu_bianhao+"&kehu_mingcheng="+encodeURI(kehu_mingcheng)+"&fengongsi="+encodeURI(fengongsi)+"&zhanghao_zhuangtai="+zhanghao_zhuangtai+"&zhanghu_yue="+zhanghu_yue+"&keyong_yue="+keyong_yue+"&zhanyong_zijin="+zhanyong_zijin+"&dongjie_zijin="+dongjie_zijin+"&jituan_bianma="+jituan_bianma+"&login_no="+"<%=login_no%>"+"&zhanghu_yue_yuan="+zhanghu_yue_yuan+"&keyong_yue_yuan="+keyong_yue_yuan+"&zhanyong_zijin_yuan="+zhanyong_zijin_yuan+"&dongjie_zijin_yuan="+dongjie_zijin_yuan+"&fengongsi_name="+encodeURI(fengongsi_name)+"&login_name="+encodeURI("<%=login_name%>");
+            window.open(url);
+        }
+
+        function aprrove_button(zijin_zhanghao,kehu_bianhao,kehu_mingcheng,fengongsi,zhanghao_zhuangtai,zhanghu_yue,keyong_yue,zhanyong_zijin,dongjie_zijin) {
+            $("#approve_detail").modal('show');
+            var jituan_bianma = $("#jituan_bianma").val();
+            init(zijin_zhanghao,kehu_bianhao,kehu_mingcheng,fengongsi,zhanghao_zhuangtai,zhanghu_yue,keyong_yue,zhanyong_zijin,dongjie_zijin,jituan_bianma);
+            getNextLink("2","0");
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编号：</th>
+                            <td>
+                                <input type="text" id="jituan_bianma" onkeyup="value=value.replace(/[^\d]/g,'')"  placeholder="请输入数字" value="" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="IncomeListQueryValidate()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="example" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">操作</th>
+                            <th class="text-center">集团资金账户号</th>
+                            <th class="text-center">集团编码</th>
+                            <th class="text-center">集团名称</th>
+                            <th class="text-center">归属分公司</th>
+                            <th class="text-center">账号状态</th>
+                            <th class="text-center">资金账户余额（元）</th>
+                            <th class="text-center">资金账户可用余额（元）</th>
+                            <th class="text-center">占用资金（元）</th>
+                            <th class="text-center">冻结资金（元）</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

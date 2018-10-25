@@ -1,0 +1,116 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="doGroupSuperMemApprove" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">超大集团成员缴费业务使用集团资金账户</h4>
+            </div>
+             <div class="modal-body">
+                 <div class="row col-16" >
+                     <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <table  class="table-infor-7 width-th" width="100%">
+                    <tr>
+                        <th colspan="5" style="text-align:left">资金账户清单</th>
+                    </tr>
+                    <tr>
+                        <th>集团编号</th><td><input value="" id="groupNo" type="text" class="haveSpeForAll isLengthOf"  />
+                        <button onclick="getCaptialInfo()"></button>
+                    </td>
+                        <th>集团资金账户号</th><td><input value="" id="grpFundAcctid" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <th>集团客户编号</th><td><input value="" id="grpCustId" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                        <th>集团客户名称</th><td><input value="" id="grpCustName" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <th>绑定银行账号</th><td><input value="" id="bankAcctId" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                        <th>开户行</th><td><input value="" id="bankName" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <th>归属分公司</th><td><input value="" id="ownerOrgId" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                        <th>账号状态</th><td><input value="" id="status" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <th>资金账户余额（分）</th><td><input value="" id="balance" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                        <th>资金账户可用余额（分）</th><td><input value="" id="nowBalance" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <th>占用资金（分）</th><td><input value="" id="holdBalance" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                        <th>冻结资金（分）</th><td><input value="" id="freezeFee" type="text" class="haveSpeForAll isLengthOf" disabled="disabled"/></td>
+                    </tr>
+                    <tr>
+                        <th colspan="5" style="text-align:left">超大集团成员资金使用申请</th>
+                    </tr>
+                    <tr>
+                        <th>ESOP工单号码</th><td><input value="" id="orderId" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>申请工单业务类型</th>
+                        <td><input value="" id="apply_order_type" type="text" class="haveSpeForAll isLengthOf"/></td>
+
+                    </tr>
+                    <tr>
+                        <th>分公司编码</th><td><input value="" id="areaID" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>申请人</th><td><input value="" id="applyOpID" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                    <tr>
+                        <th>行业中心</th><td><input value="" id="tradeCenterID" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>集团编号</th><td><input value="" id="groupID" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                    <tr>
+                        <th>集团名称</th><td><input value="" id="groupName" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>集团账号</th><td><input value="" id="groupAcctID" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                    <tr>
+                        <th>集团账号名称</th><td><input value="" id="groupAcctName" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>预打发票开始账期</th><td><input value="" id="prePrintInvBeginCycle" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                    <tr>
+                        <th>预打发票结束账期</th><td><input value="" id="prePrintInvEndCycle" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>冻结金额</th><td><input value="" id="freezeFee1" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                    <tr>
+                        <th>申请金额</th><td><input value="" id="applyFee" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>申请时间</th>
+                        <td>
+                            <input value="" id="applyDate" type="text" class="haveSpeForAll isLengthOf"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>批量导入文件名</th><td><input value="" id="groupMemListFile" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>导入文件记录数</th><td><input value="" id="groupMemListFileLines" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                    <tr>
+                        <th>已开发票信息</th><td><input value="" id="invoicingInfo" type="text" class="haveSpeForAll isLengthOf"/></td>
+                        <th>备注信息</th><td><input value="" id="note" type="text" class="haveSpeForAll isLengthOf"/></td>
+                    </tr>
+                </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                          <%--  <button class="ui-btn btn-default mgr-10" id="back" name="reset1" onclick="goback()">清空</button>--%>
+                            <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="doApprove()">提交</button>
+                        </div>
+                    </div>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</div>

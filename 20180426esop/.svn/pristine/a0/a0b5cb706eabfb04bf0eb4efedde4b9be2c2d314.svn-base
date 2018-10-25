@@ -1,0 +1,45 @@
+package test;
+
+/**
+ * Created by yanhao on 2017/6/23.
+ */
+
+import org.apache.axis.client.Call;
+import org.apache.axis.client.Service;
+
+import javax.xml.namespace.QName;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
+public class CallRestFulTest {
+    public static void main(String[] args) {
+        HttpURLConnection conn = null;
+        try {
+            String url = "http://10.110.22.170:8083/call4AService_UserAdd";
+            URL target = new URL(url);
+            conn = (HttpURLConnection) target.openConnection();
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+
+            //OutputStream os = conn.getOutputStream();
+            //os.write(paramDto.getParam().getBytes("utf8"));
+
+            InputStream is = conn.getInputStream();
+            byte[] b = new byte[1024];
+            int len = 0;
+            String resp = "";
+            while((len = is.read(b)) != -1){
+                String ss = new String(b,0,len,"UTF-8");
+                resp += ss;
+            }
+            System.out.println("出参-----------"+resp);
+        }
+        catch (Exception e) {
+            System.err.println(e.toString());
+        }
+    }
+}

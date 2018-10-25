@@ -1,0 +1,50 @@
+package com.esop.busiAnalysis.service;
+
+import com.esop.busiAnalysis.dto.GetCompeteIdDto;
+import com.esop.busiAnalysis.dto.epCompeteInfoDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Shinelon on 2017/6/6.
+ */
+@Repository
+public class epCompeteInfoService {
+    @Autowired
+    SqlE sqlE;
+    /*竞争信息查询*/
+    public Result getEpCompeteInfo(epCompeteInfoDto parameter){
+        System.out.println("成功");
+        Result result = sqlE.selectPage("selectEpCompeteInfo",parameter);
+        return result;
+    }
+    /*新增操作*/
+    public int insert(epCompeteInfoDto parameter){
+        GetCompeteIdDto cpDto = (GetCompeteIdDto)sqlE.selectM("getCompeteId").get(0);
+        parameter.setCompete_id(cpDto.getCompete_id());
+        return sqlE.insertM("insertEpCompeteInfo",parameter);
+    }
+    public Result getUnitIdInfo(epCompeteInfoDto param){
+        Result result = sqlE.selectPage("getUnitIdInfo",param);
+        return result;
+    }
+    public List<epCompeteInfoDto> qryCompeteInfoById(epCompeteInfoDto param){
+        return sqlE.selectM("qryCompeteInfoById", param);
+    }
+    public List getServiceNoGroupInfo(epCompeteInfoDto param){
+        return sqlE.selectM("getServiceNoGroupInfo",param);
+    }
+    public List<GetCompeteIdDto> getCompeteId(){
+        return sqlE.selectM("getCompeteId");
+    }
+    /*app端竞争情报详细信息查询*/
+    public List<epCompeteInfoDto> getCompeteInfoById(epCompeteInfoDto param){
+        return sqlE.selectM("getCompeteInfoById", param);
+    }
+}

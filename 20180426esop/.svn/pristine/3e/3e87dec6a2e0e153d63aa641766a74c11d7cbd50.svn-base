@@ -1,0 +1,472 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by user on 2017/11/30.
+ */
+//入账反撤申请信息表（资金管理）
+
+public class EpCapAnnulInfo extends BaseDto {
+      //申请基本信息
+      String taskOrderId = "";//申请工单流水
+      String renling_shenqingdan="";//反撤的已认领的那一条
+      String applicant = ""; //反撤申请人
+      String role_codes = "";//用户角色
+      String apply_date = ""; //申请时间
+      String out_group = ""; //出账集团
+      String out_grp_no = ""; //出账集团编号
+      String out_linkman = ""; //资金联系人
+      String out_link_phone = ""; //联系人电话
+      String out_link_type = ""; //联系人类型
+      String annul_explain = ""; //反撤说明
+      String apply_order_status = ""; //申请单处理状态（备用字段）
+      String start_date = ""; //查询条件临时设置起始时间
+      String end_date = "";//查询条件临时设置结束时间
+      //银行交易信息
+      String bill = "";//入账单
+      String file = "";//附件id
+      String fileName = "";//附件名称
+
+      String account = "";//来款账号
+      String userid = "";//来款户名
+      String arrive_account = "";//  到账账号
+      String arrive_account_name = "";//到账户名
+      String arrive_date = "";//到账日期
+
+      String arrival_amount = "";// 到账金额(分)
+      String out_balance = ""; // 账本余额'(分)
+      String out_usable_balance = ""; // 可用金額'(分)
+      String annul_balance = ""; // 反撤金额'(分)
+      //页面显示元
+      String arrival_amount_yuan = "";// 到账金额(元)
+      String out_balance_yuan = ""; // 账本余额(元)
+      String out_usable_balance_yuan = "";//可用金額(元)
+      String annul_balance_yuan = ""; //反撤金额(元)
+
+      String billing_date = "";//入账日期
+      String account_clerk = "";//账务员
+      String abstracts = "";//摘要
+      String  weiyibiaoshima="";//唯一标识码
+      //审批信息
+      String login_name = "";
+      String dealTime = "";
+      String nextDealPerson = "";
+      String link_name = "";
+      String nodeId = "";
+      String applicantNo = "";
+      String approveOpinion = "";
+      String memo ="";
+      String bankformnum = "";//银行交易流水号
+
+      //其他
+      String startTime = "";//开始时间
+      String endTime = "";//结束时间
+
+      String login_no2="";//临时字段
+      String root_org_id="";//临时字段
+      String businessCenter="";//临时字段
+      String nextDealPerson_zhongwen="";
+      String applicant_zhongwen="";
+
+
+    public String getRenling_shenqingdan() {
+        return renling_shenqingdan;
+    }
+
+    public void setRenling_shenqingdan(String renling_shenqingdan) {
+        this.renling_shenqingdan = renling_shenqingdan;
+    }
+
+    public String getNextDealPerson_zhongwen() {
+        return nextDealPerson_zhongwen;
+    }
+
+    public void setNextDealPerson_zhongwen(String nextDealPerson_zhongwen) {
+        this.nextDealPerson_zhongwen = nextDealPerson_zhongwen;
+    }
+
+    public String getApplicant_zhongwen() {
+        return applicant_zhongwen;
+    }
+
+    public void setApplicant_zhongwen(String applicant_zhongwen) {
+        this.applicant_zhongwen = applicant_zhongwen;
+    }
+
+    public String getLogin_no2() {
+        return login_no2;
+    }
+
+    public void setLogin_no2(String login_no2) {
+        this.login_no2 = login_no2;
+    }
+
+    public String getRoot_org_id() {
+        return root_org_id;
+    }
+
+    public void setRoot_org_id(String root_org_id) {
+        this.root_org_id = root_org_id;
+    }
+
+    public String getBusinessCenter() {
+        return businessCenter;
+    }
+
+    public void setBusinessCenter(String businessCenter) {
+        this.businessCenter = businessCenter;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getRole_codes() {
+        return role_codes;
+    }
+
+    public void setRole_codes(String role_codes) {
+        this.role_codes = role_codes;
+    }
+
+    public String getArrival_amount_yuan() {
+        return arrival_amount_yuan;
+    }
+
+    public void setArrival_amount_yuan(String arrival_amount_yuan) {
+        this.arrival_amount_yuan = arrival_amount_yuan;
+    }
+
+    public String getOut_balance_yuan() {
+        return out_balance_yuan;
+    }
+
+    public void setOut_balance_yuan(String out_balance_yuan) {
+        this.out_balance_yuan = out_balance_yuan;
+    }
+
+    public String getOut_usable_balance_yuan() {
+        return out_usable_balance_yuan;
+    }
+
+    public void setOut_usable_balance_yuan(String out_usable_balance_yuan) {
+        this.out_usable_balance_yuan = out_usable_balance_yuan;
+    }
+
+    public String getAnnul_balance_yuan() {
+        return annul_balance_yuan;
+    }
+
+    public void setAnnul_balance_yuan(String annul_balance_yuan) {
+        this.annul_balance_yuan = annul_balance_yuan;
+    }
+
+    public String getWeiyibiaoshima() {
+        return weiyibiaoshima;
+    }
+
+    public void setWeiyibiaoshima(String weiyibiaoshima) {
+        this.weiyibiaoshima = weiyibiaoshima;
+    }
+
+    public String getBankformnum() {
+        return bankformnum;
+    }
+
+    public void setBankformnum(String bankformnum) {
+        this.bankformnum = bankformnum;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getNextDealPerson() {
+        return nextDealPerson;
+    }
+
+    public void setNextDealPerson(String nextDealPerson) {
+        this.nextDealPerson = nextDealPerson;
+    }
+
+    public String getLink_name() {
+        return link_name;
+    }
+
+    public void setLink_name(String link_name) {
+        this.link_name = link_name;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+    public String getApproveOpinion() {
+        return approveOpinion;
+    }
+
+    public void setApproveOpinion(String approveOpinion) {
+        this.approveOpinion = approveOpinion;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getOut_group() {
+        return out_group;
+    }
+
+    public void setOut_group(String out_group) {
+        this.out_group = out_group;
+    }
+
+    public String getOut_grp_no() {
+        return out_grp_no;
+    }
+
+    public void setOut_grp_no(String out_grp_no) {
+        this.out_grp_no = out_grp_no;
+    }
+
+    public String getOut_linkman() {
+        return out_linkman;
+    }
+
+    public void setOut_linkman(String out_linkman) {
+        this.out_linkman = out_linkman;
+    }
+
+    public String getOut_link_phone() {
+        return out_link_phone;
+    }
+
+    public void setOut_link_phone(String out_link_phone) {
+        this.out_link_phone = out_link_phone;
+    }
+
+    public String getOut_link_type() {
+        return out_link_type;
+    }
+
+    public void setOut_link_type(String out_link_type) {
+        this.out_link_type = out_link_type;
+    }
+
+    public String getOut_balance() {
+        return out_balance;
+    }
+
+    public void setOut_balance(String out_balance) {
+        this.out_balance = out_balance;
+    }
+
+    public String getOut_usable_balance() {
+        return out_usable_balance;
+    }
+
+    public void setOut_usable_balance(String out_usable_balance) {
+        this.out_usable_balance = out_usable_balance;
+    }
+
+    public String getAnnul_balance() {
+        return annul_balance;
+    }
+
+    public void setAnnul_balance(String annul_balance) {
+        this.annul_balance = annul_balance;
+    }
+
+    public String getAnnul_explain() {
+        return annul_explain;
+    }
+
+    public void setAnnul_explain(String annul_explain) {
+        this.annul_explain = annul_explain;
+    }
+
+    public String getApply_order_status() {
+        return apply_order_status;
+    }
+
+    public void setApply_order_status(String apply_order_status) {
+        this.apply_order_status = apply_order_status;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getBill() {
+        return bill;
+    }
+
+    public void setBill(String bill) {
+        this.bill = bill;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public String getArrive_account() {
+        return arrive_account;
+    }
+
+    public void setArrive_account(String arrive_account) {
+        this.arrive_account = arrive_account;
+    }
+
+    public String getArrive_account_name() {
+        return arrive_account_name;
+    }
+
+    public void setArrive_account_name(String arrive_account_name) {
+        this.arrive_account_name = arrive_account_name;
+    }
+
+    public String getArrive_date() {
+        return arrive_date;
+    }
+
+    public void setArrive_date(String arrive_date) {
+        this.arrive_date = arrive_date;
+    }
+
+    public String getArrival_amount() {
+        return arrival_amount;
+    }
+
+    public void setArrival_amount(String arrival_amount) {
+        this.arrival_amount = arrival_amount;
+    }
+
+    public String getBilling_date() {
+        return billing_date;
+    }
+
+    public void setBilling_date(String billing_date) {
+        this.billing_date = billing_date;
+    }
+
+    public String getAccount_clerk() {
+        return account_clerk;
+    }
+
+    public void setAccount_clerk(String account_clerk) {
+        this.account_clerk = account_clerk;
+    }
+
+    public String getAbstracts() {
+        return abstracts;
+    }
+
+    public void setAbstracts(String abstracts) {
+        this.abstracts = abstracts;
+    }
+}

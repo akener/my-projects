@@ -1,0 +1,16 @@
+package com.esop.busiAnalysis.dto;
+
+/**
+ * Created by Administrator on 2017/7/5.
+ */
+public class getCaseRelateNumDto {
+    int relate_num = 0;
+
+    public int getRelate_num() {
+        return relate_num;
+    }
+
+    public void setRelate_num(int relate_num) {
+        this.relate_num = relate_num;
+    }
+}

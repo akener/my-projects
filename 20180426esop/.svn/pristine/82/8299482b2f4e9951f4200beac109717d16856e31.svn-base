@@ -1,0 +1,391 @@
+package com.esop.workOrderInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.workOrderInfo.dto.*;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.ReflectorFactory;
+import org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+import org.apache.ibatis.reflection.factory.ObjectFactory;
+import org.apache.ibatis.reflection.wrapper.DefaultObjectWrapperFactory;
+import org.apache.ibatis.reflection.wrapper.ObjectWrapperFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Description: 省级工单
+ * @Date: Created by yuansp on 2017/6/2.
+ */
+@Repository
+//@Transactional
+public class ProvinceOrderService {
+
+    @Autowired
+    SqlE sqlE;
+    private static Logger log = LoggerFactory.getLogger(ProvinceOrderService.class);
+    private static final ObjectFactory DEFAULT_OBJECT_FACTORY = new DefaultObjectFactory();
+    private static final ObjectWrapperFactory DEFAULT_OBJECT_WRAPPER_FACTORY = new DefaultObjectWrapperFactory();
+    private static final ReflectorFactory DEFAULT_REFLECTOR_WRAPPER_FACTORY = new DefaultReflectorFactory();
+
+    /**
+     * @Author: yuansp 
+     * @Description: 查询工单信息,dataTable方式
+     * @Param:  * @param ProvinceOrderDto
+     * @Date: 09:28 2017/6/6
+     */
+    public Result getOrder(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.getOrder 入参："+ param.toString());
+        Result result = sqlE.selectPage("getAllOrder", param);
+        log.info("ProvinceOrderService.getOrder 出参："+result);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 更新工单状态
+     * @Param:  * @param ProvinceOrderDto
+     * @Date: 09:28 2017/6/6
+     */
+    public int transToRegion(ProvinceOrderDto param){
+
+        log.info("ProvinceOrderService.transToRegion 入参："+ param.toString());
+        int cnt = sqlE.updateM("transToRegion", param);
+        log.info("ProvinceOrderService.transToRegion 出参："+cnt);
+        return cnt;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 下发工单入表
+     * @Param:  * @param null
+     * @Date: 09:28 2017/6/6
+     */
+    //@Transactional
+    public int insert(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.insert 入参："+ param.toString());
+        int cnt = sqlE.insertM("insert", param);
+        log.info("ProvinceOrderService.insert 出参："+cnt);
+        return cnt;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询地市下面的区县
+     * @Param:  * @param group_id
+     * @Date: 10:44 2017/6/6
+     */
+    public List<ProvinceOrderDto> getRegionName(Object group_id){
+        List<ProvinceOrderDto> getRegionName = sqlE.selectM("getRegionName", group_id);
+        return getRegionName;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 获取本地市的工单
+     * @Param:  * @param null
+     * @Date: 16:13 2017/6/6
+     */
+    public List getRegionOrder(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.getRegionOrder 入参："+ param.toString());
+        List<ProvinceOrderDto> regionOrder = sqlE.selectM("getRegionOrder", param);
+        List<String> list = new ArrayList<>();
+        if(regionOrder.size() == 0){
+            return  list;
+        }
+        ProvinceOrderDto pod = regionOrder.get(0);
+        list.add(pod.getRegion_name());
+        list.add(pod.getPack());
+        list.add(pod.getTermi());
+        list.add(pod.getOpen_amout());
+        list.add(pod.getCust());
+        list.add(pod.getBroad());
+
+        return list;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询客户经理
+     * @Param:  * @param null
+     * @Date: 09:56 2017/6/8
+     */
+    public Result getManager(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.getManager 入参："+ param.toString());
+        Result result = sqlE.selectPage("getLocalManager", param);
+        log.info("ProvinceOrderService.getManager 出参："+result);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description:
+     * @Param:  * @param null
+     * @Date: 17:02 2017/6/8
+     */
+    public List getMngRefInfo(ManagerRefInfoDto param){
+        log.info("ProvinceOrderService.getMngRefInfo 入参："+ param.toString());
+        List<ManagerRefInfoDto> refInfo = sqlE.selectM("managerRefInfo", param);
+        log.info("ProvinceOrderService.getMngRefInfo 出参："+ refInfo);
+        return refInfo;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 省派工单时，校验是否已经下发
+     * @Param:  * @param null
+     * @Date: 11:23 2017/6/13
+     */
+    public List checkRegion(){
+        List<ProvinceOrderDto> checkRegion = sqlE.selectM("checkRegion");
+        return checkRegion;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 向客户经理下发短信提示工单已到
+     * @Param:  * @param null
+     * @Date: 16:18 2017/6/13
+     */
+    public int sendMsgToMng(MsgDto msgDto){
+        log.info("ProvinceOrderService.sendMsgToMng 入参："+ msgDto.toString());
+        int cnt = sqlE.insertM("sendMsgToMng", msgDto);
+        log.info("ProvinceOrderService.sendMsgToMng 出参："+ cnt);
+        return cnt;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 客户经理任务监控
+     * @Param:  * @param null
+     * @Date: 21:54 2017/6/13
+     */
+    public Result getMngWorkCnt(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.getMngWorkCnt 入参："+ param.toString());
+        Result result = sqlE.selectPage("getMngWorkCnt", param);
+        log.info("ProvinceOrderService.getMngWorkCnt 出参："+ result);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询区县下的客户经理
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/14
+     */
+    public Result getMng(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.getMng 入参："+ param.toString());
+        Result result = sqlE.selectPage("getMng", param);
+        log.info("ProvinceOrderService.getMng 出参："+ result);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询区县下的客户经理
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/14
+     */
+    public List<CountyMonitorExtraDto> countyGetMng(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.countyGetMng 入参："+ param.toString());
+        List<CountyMonitorExtraDto> countyGetMng = sqlE.selectM("countyGetMngExtra", param);
+        log.info("ProvinceOrderService.countyGetMng 出参："+ countyGetMng);
+        return countyGetMng;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询区县下的客户经理
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/14
+     */
+    public List<CountyMonitorExtraDto> countyGetMngExtraTotal(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.countyGetMngExtraTotal 入参："+ param.toString());
+        List<CountyMonitorExtraDto> countyGetMng = sqlE.selectM("countyGetMngExtraTotal", param);
+        log.info("ProvinceOrderService.countyGetMngExtraTotal 出参："+ countyGetMng);
+        return countyGetMng;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 客户经理现场办公,签约,欠费回收完成量
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/14
+     */
+    public List<MngMonitorExtraDto> getMngExtra(MngMonitorExtraDto param){
+        log.info("ProvinceOrderService.getMngExtra 入参："+ param.toString());
+        List<MngMonitorExtraDto> getMngExtra = sqlE.selectM("getMngExtra", param);
+        log.info("ProvinceOrderService.getMngExtra 出参："+ getMngExtra);
+        return getMngExtra;
+    }
+
+
+
+    /**
+     * @Author: yuansp
+     * @Description: 客户经理现场办公,签约,欠费回收任务量
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/14
+     */
+    public List<MngMonitorExtraDto> getMngExtraTotal(MngMonitorExtraDto param){
+        log.info("ProvinceOrderService.getMngExtraTotal 入参："+ param.toString());
+        List<MngMonitorExtraDto> list = sqlE.selectM("getMngExtraTotal", param);
+        log.info("ProvinceOrderService.getMngExtraTotal 出参："+ list);
+        return list;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询地市下所有区县
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/19
+     */
+    public Result getAllCounty(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.getAllCounty 入参："+ param.toString());
+        Result result = sqlE.selectPage("getCounties", param);
+        log.info("ProvinceOrderService.getAllCounty 出参："+ result);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 区县任务监控
+     * @Param:  * @param null
+     * @Date: 15:56 2017/6/15
+     */
+    public Result getCountyWork(ProvinceOrderDto param){
+        MetaObject metaStatementHandler = MetaObject.forObject(param, DEFAULT_OBJECT_FACTORY,
+                DEFAULT_OBJECT_WRAPPER_FACTORY,DEFAULT_REFLECTOR_WRAPPER_FACTORY);
+        PageParameter page = (PageParameter)metaStatementHandler.getValue("page");
+        page.setFlag(true);
+        Result result = new Result();
+
+        log.info("ProvinceOrderService.getCountyWork 入参："+ param.toString());
+        List<CountyMonitorDto> allCounty = caculateCtyWork(param);
+        result.setData(allCounty);
+        result.setRecordsTotal(page.getRecordsTotal());
+        result.setRecordsFiltered(page.getRecordsTotal());
+
+        log.info("ProvinceOrderService.getCountyWork 出参："+ result);
+        return result;
+    }
+
+    public List caculateCtyWork(ProvinceOrderDto param){
+        //查所有区县
+        List<CountyMonitorDto> allCounty = sqlE.selectM("getAllCounty", param);
+        //查询每个区县下客户经理任务情况，并合计
+        ProvinceOrderDto provinceOrderDto = null;
+        for(int i=0;i<allCounty.size();i++){
+            CountyMonitorDto countyMonitorDto = allCounty.get(i);
+            provinceOrderDto = new ProvinceOrderDto();
+            provinceOrderDto.setGroup_id(countyMonitorDto.getGroup_id());
+            List<MngMonitorDto> mngWorkCnt = sqlE.selectM("getCountyWorkCnt", provinceOrderDto);
+            int packTotal = 0;
+            int termiTotal = 0;
+            int openTotal = 0;
+            int custTotal = 0;
+            int broadTotal = 0;
+            MngMonitorDto mngMonitorDto = new MngMonitorDto();
+            for(int j=0;j<mngWorkCnt.size();j++){
+                mngMonitorDto = mngWorkCnt.get(j);
+                log.info("ppppp"+j+"-->"+mngMonitorDto);
+                int change_amount = mngMonitorDto.getChange_amount();//4G套餐变更量
+                int termi_amount = mngMonitorDto.getTermi_amount();//4G终端
+                int open_amount = mngMonitorDto.getOpen_amount();//开户量
+                int web_amount = mngMonitorDto.getWeb_amount();//4G上网
+                int broad_dep_amount = mngMonitorDto.getBroad_dep_amount();//宽带发展量
+                packTotal += change_amount;
+                termiTotal += termi_amount;
+                openTotal += open_amount;
+                custTotal += web_amount;
+                broadTotal += broad_dep_amount;
+            }
+            log.info("i-->"+i);
+            log.info("pppppP-->"+mngMonitorDto);
+            countyMonitorDto.setChange_amount(packTotal);
+            countyMonitorDto.setPack(mngMonitorDto.getPack());
+            countyMonitorDto.setPackPercent(Math.round((float)packTotal*100/(float)mngMonitorDto.getPack()));
+
+            countyMonitorDto.setTermi_amount(termiTotal);
+            countyMonitorDto.setTermi(mngMonitorDto.getTermi());
+            countyMonitorDto.setTermiPercent(Math.round((float)termiTotal*100/(float)mngMonitorDto.getTermi()));
+
+            countyMonitorDto.setOpen_amount(openTotal);
+            countyMonitorDto.setOpen_amout(mngMonitorDto.getOpen_amout());
+            countyMonitorDto.setOpenPercent(Math.round((float)openTotal*100/(float)mngMonitorDto.getOpen_amout()));
+
+            countyMonitorDto.setWeb_amount(custTotal);
+            countyMonitorDto.setCust(mngMonitorDto.getCust());
+            countyMonitorDto.setCustPercent(Math.round((float)custTotal*100/(float)mngMonitorDto.getCust()));
+
+            countyMonitorDto.setBroad_dep_amount(broadTotal);
+            countyMonitorDto.setBroad(mngMonitorDto.getBroad());
+            countyMonitorDto.setBroadPercent(Math.round((float)broadTotal*100/(float)mngMonitorDto.getBroad()));
+
+        }
+        return allCounty;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询13个地市及其全业务任务量
+     * @Param:  * @param null
+     * @Date: 09:57 2017/6/23
+     */
+    public Result getRegions(ProvinceOrderDto param){
+        Result result = sqlE.selectPage("getRegions", param);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 查询13个地市现场办公，签约，欠费回收任务量及完成量
+     * @Param:  * @param null
+     * @Date: 09:56 2017/6/23
+     */
+    public Result getRegionExtra(ProvinceOrderDto param){
+        Result result = sqlE.selectPage("getRegionExtra", param);
+        return result;
+    }
+
+    /**
+     * @Author: yuansp
+     * @Description: 地市督办单
+     * @Param:  * @param null
+     * @Date: 09:56 2017/6/24
+     */
+    public Result getCountyOutDateCnt(ProvinceOrderDto param){
+        Result result = sqlE.selectPage("getCountyOutDateCnt", param);
+        return result;
+    }
+
+    public Result mngGetSelfWork(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.mngGetSelfWork 入参："+ param.toString());
+        Result result = sqlE.selectPage("mngGetSelfWork", param);
+        log.info("ProvinceOrderService.mngGetSelfWork 出参："+ result);
+        return result;
+    }
+
+    //查客户经理工号信息
+    public Result mngGetSelfInfo(ProvinceOrderDto param){
+        log.info("ProvinceOrderService.mngGetSelfInfo 入参："+ param.toString());
+        Result result = sqlE.selectPage("mngGetSelfInfo", param);
+        log.info("ProvinceOrderService.mngGetSelfInfo 出参："+ result);
+        return result;
+    }
+
+    //查询客户经理自己的任务量
+    public Result getSerfOrderNumberInfo(CustSerfOrderDto in){
+
+        Result result = sqlE.selectPage("selSelfOrderInfoMsg", in);
+
+        return result;
+    }
+
+}

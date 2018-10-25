@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <!--查询集团资金入账日报表-->
+    <select id="selectGroupFundAccountDay" parameterType="String" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundAccountDayRptDto">
+        select branch_company,bus_org,date_recorded,in_group_num,in_group_name,manager,
+        apply_type,apply_type_num,net_amount,account_clerk,credit_note,reciprocal_account_num,reciprocal_account_name,
+        received_date,receive_num,receive_name,memo,unique_code,apply_date
+        from ep_group_fund_account_day_rpt
+        where 1=1
+        <if test="branch_company != ''">
+            and branch_company = #{branch_company}
+        </if>
+        <if test="bus_org != ''">
+            and bus_org = #{bus_org}
+        </if>
+        <if test="date_recorded !=''">
+            and date_recorded = #{date_recorded}
+        </if>
+        <if test="received_date != ''">
+            and received_date = #{received_date}
+        </if>
+    </select>
+    <!--集团资金使用日报表-->
+    <select id="selectGroupFundUseDetailList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsUseDetailedRptDto">
+        select r.branch_company,r.bus_org,r.acceptor,r.accept_time,
+        CASE
+        WHEN  r.bus_type='1' THEN '售货'
+        WHEN  r.bus_type='2' THEN '团购终端'
+        WHEN  r.bus_type='3' THEN '集团缴费'
+        WHEN  r.bus_type='4' THEN '集团成员缴费'
+        WHEN  r.bus_type='5' THEN '缴纳保证金'
+        WHEN  r.bus_type='6' THEN '超大集团成员缴费' END  as bus_type,
+        r.actual_use_amount, r.order_status,r.group_num,r.group_name,r.order_num,r.applicant,r.apply_time,r.apply_amount
+        from ep_group_funds_use_detailed_rpt r
+        where 1=1
+        <if test="branch_company != ''">
+            and r.branch_company = #{branch_company}
+        </if>
+        <if test="bus_org != ''">
+            and r.bus_org = #{bus_org}
+        </if><!--
+        <if test="date_recorded !=''">
+            and date_recorded = #{date_recorded}
+        </if>
+        <if test="received_date != ''">
+            and received_date = #{received_date}
+        </if>-->
+    </select>
+
+    <!--集团资金变化明细表-->
+    <select id="selectGroupFundChangeDailyList" parameterType="String" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundsChangeDailyRptDto">
+        select branch_company,bus_org,group_num,group_name,manager,order_type,
+        order_num,after_last_opeart_balance,entry_amount,deduction_amount,occupy_amount,frozen_amount,after_opeart_amount,
+        after_opeart_available_amount,memo,clerk,water_number,apply_time
+        from ep_group_funds_change_daily_rpt
+        where 1=1
+        <if test="branch_company != ''">
+            and branch_company = #{branch_company}
+        </if>
+        <if test="bus_org != ''">
+            and bus_org = #{bus_org}
+        </if>
+    </select>
+
+    <!--集团资金调账日报表-->
+    <select id="selectGroupFundReconciliationDailyList" parameterType="String" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupFundReconciliationDailyRptDto">
+        select branch_company,bus_org,exp_group_name,exp_group_num,in_group_name,in_group_num,
+        book_value,reconciliation_request_num,order_status,order_completion_time,applicant,apply_time,apply_amount
+        from ep_group_fund_reconciliation_daily_rpt
+        where 1=1
+        <if test="branch_company != ''">
+            and branch_company = #{branch_company}
+        </if>
+        <if test="bus_org != ''">
+            and bus_org = #{bus_org}
+        </if>
+    </select>
+
+    <!--集团历史短款余额变化明细报表(清单报表)-->
+    <select id="groupHistoryShortFeeReportList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupHistoryShortFeeDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupHistoryShortFeeDto">
+        select * from(select
+        t8.name,
+        t6.business_center,
+        t1.groupNo,
+        t1.groupName,
+        t1.shortFee/100 as shortFee,
+        date_format(t1.shortDate, '%Y-%m-%d') as shortDate,
+        case t1.status when '未冲销' then '' when '已冲销' then t1.taskOrderId end as taskOrderId,
+        t1.STATUS,
+        t1.offsetAmount/100 as offsetAmount,
+        t1.afterOffsetAmount/100 as afterOffsetAmount,
+        ifnull(date_format(t4.dealTime,'%Y-%m-%d %H:%i:%s'),'')  as dealTime,
+        t4.applicantNo,
+        t2.applicant,
+        case t1.status when '未冲销' then '' when '已冲销' then  ifnull(date_format(t2.applyDate,'%Y-%m-%d %H:%i'),'') end as applyDate,
+        case t1.status when '未冲销' then '0.0' when '已冲销' then  ifnull(t2.applyAmount/100,'0.0') end  as applyAmount ,
+        case t1.status when '未冲销' THEN '' when '已冲销' THEN t3.login_name END as  login_name,
+        t3.login_name as login_name2
+        from
+        ct_union_info t10,
+        ep_short_history_info_bak t1 left join ep_work_flow_info t4 on t1.taskOrderId = t4.taskOrderId and t4.nodeId = '3'
+        left join  ep_short_history_info t2 on t1.taskOrderId = t2.taskOrderId,
+        bs_systemuser_info t3,
+        se_business_center_staff_rel t5 left join se_business_center t6 on t5.center_code = t6.center_code,
+        bs_staff_info t7 left join se_contract_qddw t8 on substr(t7.org_id,1,8) = t8.id,se_orgid_rel t11
+        where t10.union_code=t1.groupNo and t10.service_no=t5.staff_code and t3.staff_code=t10.service_no and t7.staff_id=t3.staff_id and t8.id=t11.fen_gongs
+        <if test="branch_company != ''">
+            and t11.group_pay_code = #{branch_company}
+        </if>
+        <if test="business_center != '' and business_center !='null' and business_center !=null">
+            and t6.center_code = #{business_center}
+        </if>
+        <if test="start_time != ''">
+            and t1.insertTime = #{start_time}
+        </if>
+        union all
+        select
+        '总计',
+        '',
+        '',
+        '',
+        cast(
+        coalesce (sum((t1.shortFee + 0) / 100), 0) as decimal (18, 2)
+        ),
+        '',
+        '',
+        '',
+        cast(
+        coalesce (
+        sum(
+        (t1.offsetAmount + 0) / 100
+        ),
+        0
+        ) as decimal (18, 2)
+        ),
+        cast(
+        coalesce (
+        sum(
+        (t1.afterOffsetAmount + 0) / 100
+        ),
+        0
+        ) as decimal (18, 2)
+        ),
+        '',
+        '',
+        '',
+        '',
+        cast(
+        coalesce (
+        sum((t2.applyAmount + 0) / 100),
+        0
+        ) as decimal (18, 2)
+        ),
+        '',
+        ''
+        from
+        ct_union_info t10,
+        ep_short_history_info_bak t1 left join ep_work_flow_info t4 on t1.taskOrderId = t4.taskOrderId and t4.nodeId = '3'
+        left join  ep_short_history_info t2 on t1.taskOrderId = t2.taskOrderId,
+        bs_systemuser_info t3,
+        se_business_center_staff_rel t5 left join se_business_center t6 on t5.center_code = t6.center_code,
+        bs_staff_info t7 left join se_contract_qddw t8 on substr(t7.org_id,1,8) = t8.id,se_orgid_rel t11
+        where t10.union_code=t1.groupNo and t10.service_no=t5.staff_code and t3.staff_code=t10.service_no and t7.staff_id=t3.staff_id and t8.id=t11.fen_gongs
+        <if test="branch_company != '' and branch_company !='null' and branch_company !=null">
+            and t11.group_pay_code = #{branch_company}
+        </if>
+        <if test="business_center != '' and business_center !='null' and business_center !=null">
+            and t6.center_code = #{business_center}
+        </if>
+        <if test="start_time != ''">
+            and t1.insertTime = #{start_time}
+        </if>)a
+    </select>
+
+    <!--集团业务申请单统计表(清单报表)-->
+    <select id="groupBusApplyCountReportList" parameterType="com.esop.cqDevelopment.groupFundReport.dto.GroupBusApplyCountDto" resultType="com.esop.cqDevelopment.groupFundReport.dto.GroupBusApplyCountDto">
+        select
+        t8.name,
+        t6.business_center,
+        t1.groupNo,
+        t1.groupName,
+        t1.manager,
+        t9.type_name,
+        ifnull(t1.taskOrderId,'') taskOrderId,
+        case t4.nodeId  when '3' then  'CRM业务办理成功' when '2' then  '作废'
+        when '4' then  '处理失败' when '6' then  '处理失败' when '7' then  '处理失败'
+        when '1' then  '审批完结待处理' else '审批中'  end as order_status,
+        ifnull(b3.staff_name,'') clerk,
+        date_format( t1.applyDate,'%Y-%m-%d %H:%i') as applyDate,
+        ifnull(t2.isFormAcceptOrder,'') isFormAcceptOrder,
+        ifnull( t2.busAcceptOrderId,'') busAcceptOrderId,
+        ifnull( t2.acceptStatus,'') acceptStatus,
+        ifnull( t3.login_name,'') as managerName
+
+        from
+        ep_group_bus_apply_rel_info t1
+        left join ep_group_bus_apply_count_info t2 on t1.taskOrderId = t2.taskOrderId
+        left join ep_apply_type_dict t9 on t9.type_code = t1.orderType
+        left join bs_systemuser_info t3 on t1.manager = t3.staff_code
+        left join bs_staff_info t7 on t3.staff_id = t7.staff_id
+        left join se_contract_qddw t8 on substr(t7.org_id, 1, 8) = t8.id
+        left join se_orgid_rel t10 on t8.id = t10.fen_gongs
+        left join se_business_center_staff_rel t5 on t1.manager = t5.staff_code
+        left join se_business_center t6 on t5.center_code = t6.center_code
+        left join ep_work_flow_info t4 on t1.taskOrderId = t4.taskOrderId and t4.dealTime = (select max(dealTime) from ep_work_flow_info th where th.taskOrderId = t4.taskOrderId)
+--         left join bs_systemuser_info b2 on t4.applicantNo = b2.staff_code
+        left join se_business_center_staff_rel b3 on t6.center_code = b3.center_code and b3.bak1 = '2'
+        where 1=1
+        <if test="branch_company != '' and branch_company !='null' and branch_company !=null">
+            and t10.group_pay_code = #{branch_company}
+        </if>
+        <if test="business_center != '' and business_center !='null' and business_center !=null ">
+            and t6.center_code = #{business_center}
+        </if>
+        <if test="start_time != ''">
+            and  date_format(t1.applyDate,'%Y-%m-%d') &gt;=#{start_time}
+        </if>
+        <if test="over_time != ''">
+            and date_format(t1.applyDate,'%Y-%m-%d') &lt;=#{over_time}
+        </if>
+        group by
+        t1.taskOrderId
+    </select>
+</mapper>

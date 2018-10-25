@@ -1,0 +1,711 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: lilei
+  Date: 2017/6/5
+  Time: 10:59
+  To change this template use File | Settings | File Templates.
+  地市展示省下发工单并追加，下发客户经理
+--%>
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../../pub/base.jsp"%>
+<%@ include file="../../pub/dataTables.jsp"%>
+<head>
+
+
+    <!--<link rel="icon" href="./favicon.ico">-->
+
+
+
+</head>
+
+<!--<hr />-->
+<body>
+<div class="modal fade" id="fault2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice2">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo2">工单数据为空，不能下发</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice3">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo3">您已选中营销活动，请先添加或者取消选中才能下发</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice4">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo4">营销活动添加成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="addCaseOK" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice5">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo5">营销活动添加失败</label>
+            </div>
+            <div class="modal-footer">
+                <button id="addCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice6">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo6">删除营销活动成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="delCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice7">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo7">删除营销活动失败</label>
+            </div>
+            <div class="modal-footer">
+                <button id="delCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice8">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo8">下发工单成功</label>
+            </div>
+            <div class="modal-footer">
+                <button id="sendCaseOK" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="fault9" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice9">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo9">下发工单失败</label>
+            </div>
+            <div class="modal-footer">
+                <button id="sendCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault10" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice10">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo10">工单数据为空，不能进行营销活动追加</label>
+            </div>
+            <div class="modal-footer">
+                <button id="sendCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault11" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice11">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo11">没有可以添加的营销活动</label>
+            </div>
+            <div class="modal-footer">
+                <button  type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="fault12" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice12">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo12">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="box box-solid box-default"  id="dealDiv">
+    <div class="box-header">
+        <h3 class="box-title">地市工单下发</h3>
+    </div>
+</div>
+<div style="height: 40px">
+    <button id="btnSelAlSend"style="width:100px;height:30px;color: #377aef;margin-height: 20px">查询已下发</button>
+</div>
+<div>
+    <table id="recordTable" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center">工单编号</th>
+            <th class="text-center">批次号</th>
+            <th class="text-center">地市编码</th>
+            <th class="text-center">地市名称</th>
+            <th class="text-center">集团编码</th>
+            <th class="text-center">集团名称</th>
+            <th class="text-center">智能V网成员数</th>
+            <th class="text-center">4G渗透率</th>
+            <th class="text-center">员工数</th>
+            <th class="text-center">移动用户数</th>
+            <th class="text-center">客户经理工号</th>
+            <th class="text-center">客户经理姓名</th>
+        </tr>
+        </thead>
+
+    </table>
+</div>
+<div>
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <%--<th class="text-center">请选择</th>--%>
+            <th class="text-center">批次号</th>
+            <th class="text-center">营销活动名称</th>
+            <th class="text-center" id="cond">操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<div style="background-color: #ffffee;width: 100%;height: 20px">
+
+</div>
+
+<div class="box box-solid box-default" >
+    <div class="box-header">
+        <h3 class="box-title">营销活动查询</h3>
+    </div>
+</div>
+<div>
+    <label style="margin-left: 40px">请输入营销活动名称:</label>
+    <input type="text" id="recordId" name="recordName" value=""/>
+    <button id="qryCase"style="width:60px;height:30px;color: #377aef">查 询</button>
+    <button id="btnSub"style="width:60px;height:30px;color: #377aef;margin-left: 20px">下 发</button>
+</div>
+
+<div id="caseId" style="display: none" >
+    <table id="caseTable" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center" ><strong >请选择</strong></th>
+            <th class="text-center" ><strong >营销活动编码</strong></th>
+            <th class="text-center" ><strong>营销活动名称</strong></th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div style="padding-left: 45%">
+        <button id="btnAdd"style="width:60px;height:30px;color: #377aef">添 加</button>
+    </div>
+</div>
+<div style="background-color: #ffffee;width: 100%;height: 40px">
+
+</div>
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var table1;
+    var editor1;
+    var table2;
+    var arr=new Array();
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+
+    $(document).ready(function() {
+
+                editor = new $.fn.DataTable.Editor({});
+
+                //省下发营销活动
+                table = $('#example').DataTable({
+                    dom: "Bfrtip",
+                    bLengthChange: true,
+                    "bFilter": false,
+                    "pageLength": 10,//设置每页显示多少条记录
+                    "language": {
+                        "url": "/esop/static/data/Chinese.json"
+                    }, //多语言配置
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/qryProSendRegion",
+                        type: "POST",
+                        data: {"status": "02", "group_id": group_id}
+                    },
+                    columns: [
+
+                        {data: "batch_no"},
+                        {data: "market_name"},
+                        {
+
+                            data: "market_no",
+                            //"orderable": false,
+                            "width": "8%",
+                            render: function (data, type, row, meta) {
+
+                                return data = "<button type='button'  onclick='del(" + row.mkid + ")' name='" + row.mkid + "'>删除</button>";
+
+                            }
+                        }
+
+                    ],
+                    select: true,
+                    buttons: []
+                });
+
+                //省下发到当前地市的工单数据
+                table1 = $('#recordTable').DataTable({
+                    dom: "Bfrtip",
+                    bLengthChange: true,
+                    "bFilter": false,
+                    "pageLength": 15,//设置每页显示多少条记录
+                    "language": {
+                        "url": "/esop/static/data/Chinese.json"
+                    }, //多语言配置
+                    processing: true,
+                    serverSide: true,
+                    ajax: {
+                        url: "/qryCustReturnCaseInfo",
+                        type: "POST",
+                        data: {"status": "02", "group_id": group_id}
+                    },
+                    columns: [
+                        {data: "local_number"},
+                        {data: "batch_no"},
+                        {data: "region_id"},
+                        {data: "region_name"},
+                        {data: "unit_id"},
+                        {data: "unit_name"},
+                        {data: "intelligent_number"},
+                        {data: "permeability"},
+                        {data: "employee_number"},
+                        {data: "user_number"},
+                        {data: "login_no"},
+                        {data: "manager_name"}
+
+                    ],
+                    select: true,
+                    buttons: []
+                });
+
+
+                table2.on('draw.dt', function () {
+                    var setObj = $("input[name='check']");
+                    //alert(setObj.length );
+                    for (var i = 0; i < arr.length; i++) {
+                        if (setObj.length > 0) {
+                            setObj.each(function () {
+                                if (arr[i] == $(this).val()) {
+                                    //alert(arr[i]);
+                                    this.setAttribute("checked", "checked");
+                                }
+                            });
+                        }
+                    }
+                });
+
+
+    } );
+
+
+
+    function check(obj){
+        if(!obj.checked){
+            obj.removeAttribute("checked");
+            removeByValue(arr,$(obj).val());
+            //alert(arr);
+
+
+        }else{
+            obj.setAttribute("checked","checked");
+            arr.push($(obj).val());
+            //alert(arr);
+
+
+
+        }
+    }
+    function removeByValue(arr, val) {
+        for(var i=0; i<arr.length; i++) {
+            if(arr[i] == val) {
+                arr.splice(i, 1);
+                break;
+            }
+        }
+    }
+    //查询营销活动
+    $("#qryCase").click(function(){
+        var inputName=$("#recordId").val();
+        $("#caseId").show();
+        editor = new $.fn.DataTable.Editor( {
+        } );
+        //alert(inputName);
+        table2 = $('#caseTable').DataTable( {
+         dom: "Bfrtip",
+         bLengthChange:true,
+         "bFilter": false,
+         "pageLength":10,//设置每页显示多少条记录
+         "language": {
+         "url": "/esop/static/data/Chinese.json"
+         }, //多语言配置
+         processing: true,
+         serverSide: true,
+            destroy:true,
+         ajax: {
+         url:"likeQryCaseRecordInfo",
+         type:"POST",
+         data:{"inputName":inputName,"group_id":group_id}
+         },
+         columns: [
+         {
+
+         data:"market_no",
+         //"orderable": false,
+         "width": "8%",
+         render: function ( data, type, row, meta ) {
+
+         return  data ='<input type="checkbox" name="check" value="'+row.market_no+'" onclick="check(this)"/>';
+         } },
+
+         {data:"market_no"},
+         {data:"market_name"}
+
+
+         ],
+
+
+         select: true,
+         buttons: [
+
+         ]
+         } );
+
+    });
+
+    //追加操作
+    $("#btnAdd").click(function(){
+        var marketNoList = "";//活动编码
+        var batchList="";//批次号
+
+
+
+        var dataTable = $('#recordTable').DataTable();
+        var info = dataTable.page.info();
+        var dataRows = info.recordsTotal;
+        if(dataRows=="0"){
+            $("#fault10").modal('show');
+            return;
+        }
+        var dataTable1 = $('#caseTable').DataTable();
+        var info1 = dataTable1.page.info();
+        var dataRows1 = info1.recordsTotal;
+        if(dataRows1=="0"){
+            $("#fault11").modal('show');
+            return;
+        }
+
+        if(arr.length>0){
+            for(var i=0;i<arr.length;i++){
+                marketNoList+=arr[i]+",";
+            }
+
+        }else{
+            $("#fault").modal('show');
+            return;
+        }
+        $('#recordTable tr:not(:first)').each(function(){
+
+            var s=$(this).children();
+            var batchBuf=s.eq(1).text();
+            batchList+=batchBuf+",";
+        });
+
+        //alert(batchList+" ");
+        //alert(marketNoList);
+        $.ajax({
+            type:"GET",
+            url:"/addRegionCaseToProCase",
+            data:{"marketNoList":marketNoList,"batchList":batchList,"status":"02","group_id":group_id}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault4").modal('show');
+            }else{
+                $("#fault5").modal('show');
+            }
+
+        });
+    });
+    function del(mkid) {
+        var delId=mkid;
+        //alert(delId);
+       $.ajax({
+            type:"GET",
+            url:"/deleteProSendCaseInfo",
+            data:{"mkid":delId}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault6").modal('show');
+
+            }else{
+                $("#fault7").modal('show');
+            }
+
+        });
+
+
+    }
+
+
+    $("#btnSub").click(function(){
+        var dataTable = $('#recordTable').DataTable();
+        var info = dataTable.page.info();
+        var dataRows = info.recordsTotal;
+        if(dataRows=="0"){
+            $("#fault2").modal('show');
+            return;
+        }
+
+        $.ajax({
+            type:"GET",
+            url:"/showRegionCaseSendCust",
+            data:{"status":"02","group_id":group_id}
+        }).then(function(data){
+            if(data == 1){
+                $("#fault8").modal('show');
+            }else{
+                $("#fault9").modal('show');
+            }
+
+        });
+
+    });
+
+    $("#btnSelAlSend").click(function () {
+        $("#btnSub").hide();
+        $("#cond").hide();
+        $("#caseId").hide();
+        /*editor = new $.fn.DataTable.Editor( {
+        } );*/
+
+        //地市下发营销活动
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 5,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy:true,
+            ajax: {
+                url:"/RegionAlreadySend",
+                type:"POST",
+                data:{"status":"03","group_id":group_id}
+            },
+            columns: [
+
+                { data:"batch_no"},
+                { data:"market_name"}
+                /*{
+
+                    data:"market_no",
+                    //"orderable": false,
+                    "width": "8%",
+                    render: function ( data, type, row, meta ) {
+
+                        return data= "<button type='button'  onclick='del("+row.mkid+")' name='"+row.mkid+"'>删除</button>";
+
+                    } }*/
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+
+        //地市下发到客户经理的数据
+        table1 = $('#recordTable').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            "pageLength": 15,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            destroy:true,
+            ajax: {
+                url:"/qryCustReturnCaseInfo",
+                type:"POST",
+                data:{"status":"03","group_id":group_id}
+            },
+            columns: [
+                {data:"local_number"},
+                { data:"batch_no"},
+                { data:"region_id"},
+                { data: "region_name" },
+                { data: "unit_id" },
+                { data: "unit_name" },
+                { data: "intelligent_number" },
+                { data: "permeability" },
+                { data: "employee_number" },
+                { data: "user_number" },
+                { data: "login_no" },
+                { data: "manager_name" }
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+
+
+    })
+
+    $("#addCaseOK").click(function () {
+
+        document.location.reload();
+    });
+    $("#addCaseFail").click(function () {
+
+        document.location.reload();
+    });
+
+    $("#delCaseOK").click(function () {
+
+        document.location.reload();
+    });$("#delCaseFail").click(function () {
+
+        document.location.reload();
+    });
+    $("#sendCaseFail").click(function () {
+
+        document.location.reload();
+    });
+    $("#sendCaseOK").click(function () {
+
+        document.location.reload();
+    });
+
+
+</script>
+</html>

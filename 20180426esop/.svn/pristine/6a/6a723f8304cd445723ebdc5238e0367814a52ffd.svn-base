@@ -1,0 +1,44 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+
+import com.esop.cqDevelopment.capitalManage.dto.RoleDictDto;
+import com.esop.cqDevelopment.capitalManage.dto.SystemUserInfoDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowQueryDto;
+import com.esop.cqDevelopment.capitalManage.service.WorkFlowQueryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+@RestController
+public class WorkFlowQueryRC {
+    @Autowired
+    WorkFlowQueryService workFlowQueryService;
+    @RequestMapping(value="/workFlowQuery")
+    public List getCapitalInfoRC(WorkFlowQueryDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= workFlowQueryService.getWorkFlowInfoSvc(parameter);
+        return list;
+    }
+    // 根据角色（role_id或登录人行业中心）获取下一步处理人
+    @RequestMapping(value="/qryNextDealPerson")
+    public List qryNextDealPerson(SystemUserInfoDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= workFlowQueryService.qryNextDealPerson(parameter);
+        return list;
+    }
+    // 根据角色（role_id或集团id）获取下一步处理人
+    @RequestMapping(value="/qryNextDealPerson_new")
+    public List qryNextDealPerson_new(SystemUserInfoDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list= workFlowQueryService.qryNextDealPerson_new(parameter);
+        return list;
+    }
+}

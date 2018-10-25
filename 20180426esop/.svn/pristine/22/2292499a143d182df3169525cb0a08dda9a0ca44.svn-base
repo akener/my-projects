@@ -1,0 +1,56 @@
+<%@ page contentType="text/html;charset=utf-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ESOP登陆</title>
+
+</head>
+<body>
+<form id="form1" name="form1" action="/esop/login" method="post">
+    <input type="hidden" name="token" id="token" value="${token}"/>
+    <input type="hidden" name="href_url" id="href_url" value="${href_url}"/>
+    <input name="username" id="username" value="${username}"/>
+    <input name="password" id="password" value="${password}"/>
+    <button id="loginsubmit" name="loginsubmit">提交</button>
+</form>
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    $(document).ready(function() {
+        function submitLogin(){
+            $.ajax({
+                type: "post",
+                url: '/esop/login',
+                data: {
+                    "username": $('#username').val(),
+                    "password": $('#password').val()
+                },
+                error: function (data) {alert("失败！");alert($('#href_url').val());
+                    $("#form1").attr("action", $('#href_url').val());
+                    //alert($("#form1").action);
+                    $("#form1").submit();
+                    //this.form.submit();
+                    //location.href="http://"+window.location.host+"/"+$('#href_url').val();
+                    //location.href=direct;
+                }
+            }).then(function (data) {alert("成功！");
+                alert($('#href_url').val());
+                $("#form1").attr("action", $('#href_url').val());
+                //$("#form1").attr("action","/"+$('#href_url').val());
+                //alert($("#form1").action);
+                $("#form1").submit();
+                //this.form.submit();
+                //direct="http://"+window.location.host+"/"+$('#href_url').val();
+                //alert(direct);
+                //location.href=direct;
+                //window.location.href = "http://example.com"
+            });
+        }
+        $("#loginsubmit").click(function () {alert("ddddee");
+            submitLogin();
+        });
+        if($('#token').val().length>0) {alert("xxxxx");
+            submitLogin();}
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+package com.esop.cqDevelopment.groupFundReport.service;
+
+import com.esop.cqDevelopment.groupFundReport.dto.OrgAndCenterDto;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class GroupFundReportUtilService {
+    private static Logger logger = Logger.getLogger(GroupFundReportUtilService.class);
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    //查询分公司
+    public List<OrgAndCenterDto> getOrgInfos(){
+        logger.info("查询分公司信息开始");
+        List<OrgAndCenterDto> list = sqlSessionTemplate.selectList("selectOrgInfos");
+        logger.info("查询分公司信息结束");
+        return list;
+    }
+
+    //通过分公司查行业中心
+    public List<OrgAndCenterDto> getBusinessCenterInfos(OrgAndCenterDto dto){
+        logger.info("查询行业中心信息开始");
+        List<OrgAndCenterDto> list = sqlSessionTemplate.selectList("selectBusinessCenterInfos",dto);
+        logger.info("查询行业中心信息结束");
+        return list;
+    }
+
+    //查询登陆工号的分公司和行业中心
+    public List<OrgAndCenterDto> getOrgAndCenterByLoginNo(OrgAndCenterDto dto){
+        logger.info("查询登陆工号的分公司和行业中心开始");
+        List<OrgAndCenterDto> info = sqlSessionTemplate.selectList("getOrgAndCenterByLoginNo",dto);
+        logger.info("查询登陆工号的分公司和行业中心结束");
+        return info;
+    }
+}

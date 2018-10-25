@@ -1,0 +1,62 @@
+package com.esop.common.uploadFile;
+
+/**
+ * Created by wangbl on 2017/3/1.
+ */
+//ep_upload_file_info表对应Dto
+public class UploadFileInfoDto {
+    String id ="";        //流水编码
+    String path ="";      //文件存放路径
+    String name ="";      //文件名称
+    String related_id ="";//关联id，建立与对应上传功能关联使用
+    String valid = "";    //有效标志，1有效，0无效
+    String oa_file = "";  //OA系统传过来的真实文件名称
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getRelated_id() {
+        return related_id;
+    }
+
+    public void setRelated_id(String related_id) {
+        this.related_id = related_id;
+    }
+
+    public String getValid() {
+        return valid;
+    }
+
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+
+    public String getOa_file() {
+        return oa_file;
+    }
+
+    public void setOa_file(String oa_file) {
+        this.oa_file = oa_file;
+    }
+}

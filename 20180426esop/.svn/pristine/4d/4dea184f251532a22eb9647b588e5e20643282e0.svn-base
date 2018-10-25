@@ -1,0 +1,24 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.workbench.dto.EpUnitSignDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+
+/**
+ * Created by liuxiao on 2017/6/3.
+ */
+@Repository
+public class EpUnitSignService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(EpUnitSignService.class);
+    //查询操作
+    public Result getUnitSignList(EpUnitSignDto epUnitSignDto){
+        Result result = sqlE.selectPage("selectUnitSignList",epUnitSignDto);
+        return result;
+    }
+}

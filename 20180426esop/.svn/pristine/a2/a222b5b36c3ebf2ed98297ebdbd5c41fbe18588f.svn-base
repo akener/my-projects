@@ -1,0 +1,208 @@
+package com.esop.cqDevelopment.dto;
+
+
+/**
+ * Created by wangbl on 16/7/12.
+ */
+public class GroupMemAlertDto {
+    String warning_type = "";
+    String lossing_risk = "";
+    String ent_level = "";
+    String key_person_num = "";
+    String pname = "";
+    String initiative_conn_count = "";
+    String passiveness_conn_count = "";
+    String business_competitor_num = "";
+    String is_terminal_signing = "";
+    String terminal_signing_time = "";
+    String terminal_brand = "";
+    String use_terminal_time = "";
+    String waring_time = "";
+    String manager = "";
+    String status = "";
+    String cust_id = "";
+    String cust_name = "";
+    String manager_phone = "";
+    String initiative_conn_count_mth = "";
+    String passiveness_conn_count_mth = "";
+
+    String mobile_phone = "";
+
+    String short_msg = "";
+
+    public String getWarning_type() {
+        return warning_type;
+    }
+
+    public void setWarning_type(String warning_type) {
+        this.warning_type = warning_type;
+    }
+
+    public String getLossing_risk() {
+        return lossing_risk;
+    }
+
+    public void setLossing_risk(String lossing_risk) {
+        this.lossing_risk = lossing_risk;
+    }
+
+    public String getEnt_level() {
+        return ent_level;
+    }
+
+    public void setEnt_level(String ent_level) {
+        this.ent_level = ent_level;
+    }
+
+    public String getKey_person_num() {
+        return key_person_num;
+    }
+
+    public void setKey_person_num(String key_person_num) {
+        this.key_person_num = key_person_num;
+    }
+
+    public String getPname() {
+        return pname;
+    }
+
+    public void setPname(String pname) {
+        this.pname = pname;
+    }
+
+    public String getInitiative_conn_count() {
+        return initiative_conn_count;
+    }
+
+    public void setInitiative_conn_count(String initiative_conn_count) {
+        this.initiative_conn_count = initiative_conn_count;
+    }
+
+    public String getPassiveness_conn_count() {
+        return passiveness_conn_count;
+    }
+
+    public void setPassiveness_conn_count(String passiveness_conn_count) {
+        this.passiveness_conn_count = passiveness_conn_count;
+    }
+
+    public String getBusiness_competitor_num() {
+        return business_competitor_num;
+    }
+
+    public void setBusiness_competitor_num(String business_competitor_num) {
+        this.business_competitor_num = business_competitor_num;
+    }
+
+    public String getIs_terminal_signing() {
+        return is_terminal_signing;
+    }
+
+    public void setIs_terminal_signing(String is_terminal_signing) {
+        this.is_terminal_signing = is_terminal_signing;
+    }
+
+    public String getTerminal_signing_time() {
+        return terminal_signing_time;
+    }
+
+    public void setTerminal_signing_time(String terminal_signing_time) {
+        this.terminal_signing_time = terminal_signing_time;
+    }
+
+    public String getTerminal_brand() {
+        return terminal_brand;
+    }
+
+    public void setTerminal_brand(String terminal_brand) {
+        this.terminal_brand = terminal_brand;
+    }
+
+    public String getUse_terminal_time() {
+        return use_terminal_time;
+    }
+
+    public void setUse_terminal_time(String use_terminal_time) {
+        this.use_terminal_time = use_terminal_time;
+    }
+
+    public String getWaring_time() {
+        return waring_time;
+    }
+
+    public void setWaring_time(String waring_time) {
+        this.waring_time = waring_time;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCust_id() {
+        return cust_id;
+    }
+
+    public void setCust_id(String cust_id) {
+        this.cust_id = cust_id;
+    }
+
+    public String getCust_name() {
+        return cust_name;
+    }
+
+    public void setCust_name(String cust_name) {
+        this.cust_name = cust_name;
+    }
+
+    public String getManager_phone() {
+        return manager_phone;
+    }
+
+    public void setManager_phone(String manager_phone) {
+        this.manager_phone = manager_phone;
+    }
+
+    public String getInitiative_conn_count_mth() {
+        return initiative_conn_count_mth;
+    }
+
+    public void setInitiative_conn_count_mth(String initiative_conn_count_mth) {
+        this.initiative_conn_count_mth = initiative_conn_count_mth;
+    }
+
+    public String getPassiveness_conn_count_mth() {
+        return passiveness_conn_count_mth;
+    }
+
+    public void setPassiveness_conn_count_mth(String passiveness_conn_count_mth) {
+        this.passiveness_conn_count_mth = passiveness_conn_count_mth;
+    }
+
+    public String getMobile_phone() {
+        return mobile_phone;
+    }
+
+    public void setMobile_phone(String mobile_phone) {
+        this.mobile_phone = mobile_phone;
+    }
+
+    public String getShort_msg() {
+        return short_msg;
+    }
+
+    public void setShort_msg(String short_msg) {
+        this.short_msg = short_msg;
+    }
+}

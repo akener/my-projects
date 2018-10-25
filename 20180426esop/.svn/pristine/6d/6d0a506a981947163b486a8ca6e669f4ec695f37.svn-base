@@ -1,0 +1,114 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <title>集团缴费联系人</title>
+    <script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/newGroup.js"></script>
+
+</head>
+
+<body class="bg-ff">
+<!-- main S -->
+<div class="main pd-20">
+    <!-- 工单列表 S -->
+    <div class="work-order-box over">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团缴费联系人查询列表</span>
+            </div>
+        </div>
+        <!--详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row pdb-10 border-ed">
+                    <div class="row">
+                        <table class="table-infor-7  width-th-1" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>分公司：</th>
+                                <td>
+                                    <input type="text" id="region_code" value="" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团单位名称：</th>
+                                <td>
+                                    <input type="text" id="union_name" value="" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团单位编码：</th>
+                                <td>
+                                    <input type="text" id="union_code" value="" class="input-sty04 form-ipt">
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <th>集团账户名称：</th>
+                                <td>
+                                    <input type="text" id="account_name" value="" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团账户编码：</th>
+                                <td>
+                                    <input type="text" id="account_code" value="" class="input-sty04 form-ipt">
+                                </td>
+                                <th>缴费联系人姓名：</th>
+                                <td>
+                                    <input type="text" id="link_man" value="" class="input-sty04 form-ipt">
+                                </td>
+                                <th>缴费联系人电话：</th>
+                                <td>
+                                    <input type="text" id="mobile_no" value="" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <button class="ui-btn mgr-10" onclick="selectGroupContact()">查询</button>
+                                <button class="ui-btn mgr-10"  onclick="addGroupContact()">增加</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row col-12 bg-white">
+                    <div class="market-name-box pdlr-10 clearfix">
+                        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团缴费联系人列表</span>
+                    </div>
+                </div>
+                <div class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <div class="row">
+                            <div class="active-cost-box" style="padding-bottom:0;">
+                                <table class="table table-bordered" id="contactInfo" width="100%;">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">id</th>
+                                        <th class="text-center">分公司</th>
+                                        <th class="text-center">集团单位名称</th>
+                                        <th class="text-center">集团单位编码</th>
+                                        <th class="text-center">客户经理</th>
+                                        <th class="text-center">缴费联系人姓名</th>
+                                        <th class="text-center">缴费联系人电话</th>
+                                        <th class="text-center">缴费联系人地址</th>
+                                        <th class="text-center">集团账户名称</th>
+                                        <th class="text-center">集团单位编码</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+

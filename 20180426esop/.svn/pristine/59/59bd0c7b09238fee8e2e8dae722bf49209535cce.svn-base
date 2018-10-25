@@ -1,0 +1,372 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+
+<head>
+    <title>公告信息查询 </title>
+</head>
+
+<body>
+<input type="hidden" id="service_no" value="${login_no}">
+<input type="hidden" id="org_code" value="${group_id}">
+<div class="form-wrapper">
+    <div class="pd-8">
+        <div id="operation_table" class="block02">
+            <div class="title-style04">
+                <span>◆</span><b>公告信息查询</b>
+            </div>
+            <div class="box-in">
+                <table width="100%"  border="0" cellspacing="0"
+                       cellpadding="0" class="table-01" align="center">
+                    <tr>
+                        <th >
+                            公告名称
+                        </th>
+                        <td >
+                            <input type="text" style="height: 30px;width:165px" id="note_title" name="note_title"/>
+                        </td>
+                        <th>
+                            是否已读
+                        </th>
+                        <td>
+                            <select id="read_flag" name="read_flag">
+                                <option value="N">未读</option>
+                                <option value="Y">已读</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            生效时间
+                        </th>
+                        <td>
+                            <input type=text id="op_time" class="input-sty04 form-ipt"
+                                   maxlength="11" readonly="true">
+                            <img  src="/esop/static/images/workbench/icon-01.png"
+                                  style="width:25px;!important" width="21" height="21"
+                                  onclick="WdatePicker({el:'op_time',dateFmt:'yyyy-MM-dd'})" title="选择日期" />
+                        </td>
+                        <th>发布类型</th>
+                        <td colspan="5" >
+                            <select id="notetype_flag" name="notetype_flag">
+                                <option value="1">公告</option>
+                                <option value="0">告警</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="operation_button" class="block03 mgt-8">
+                <button class="btn-style02" name="Submit" id="qry" onclick="qry_do()">查询</button>
+
+                <button type="reset" class="btn-style02" onclick="pageReset()">重置</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+        <div class="active-cost-box" >
+            <table id="example" class="cost-table" cellspacing="0" width="100%">
+   <thead>
+    <tr class="text-center">
+        <th class="text-center">公告标题</th>
+        <th class="text-center">发布类型</th>
+        <th class="text-center">发布人</th>
+        <th class="text-center">生效时间</th>
+        <th class="text-center">失效时间</th>
+        <th class="text-center">详细查看</th>
+    </tr>
+    </thead>
+    <tfoot>
+    <tr class="text-center">
+        <th class="text-center">公告标题</th>
+        <th class="text-center">发布类型</th>
+        <th class="text-center">发布人</th>
+        <th class="text-center">生效时间</th>
+        <th class="text-center">失效时间</th>
+        <th class="text-center">详细查看</th>
+    </tr>
+    </tfoot>
+
+    </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- 查看公告信息弹窗 -->
+<div id="alertInfo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">公告详情</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <table  class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>公告标题</th>
+                                <td>
+                                    <%--<input id="ree_ampay_year_live" type="text" class="input-sty04 form-ipt">--%>
+                                    <span id="note_tle"></span>
+                                </td>
+                                <th>关键字</th>
+                                <td>
+                                    <span id="key_word"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>公告内容</th>
+                                <td>
+                                    <textarea disabled="disabled"  id="note_content" rows="3" cols="70" >
+                                    </textarea>
+                                    <%--<span id="re_market_name_error" style="color: red"></span>--%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>公告附件</th>
+                                <td colspan="3" >
+                                    <div id="showFileDiv">
+                                    </div>
+                             </tr>
+                            <tr>
+                                <th>生效时间</th>
+                                <td>
+                                    <input  disabled="disabled" id="pub_date" type="text" class="input-sty04 form-ipt">
+                                    <%--<span id="re_market_name_error" style="color: red"></span>--%>
+                                </td>
+                                <th>失效时间</th>
+                                <td>
+                                    <input  disabled="disabled" id="exp_date" type="text" class="input-sty04 form-ipt">
+                                    <%--<span id="re_market_name_error" style="color: red"></span>--%>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div id="fh_bt" class="modal-footer">
+                <button type="button" class="btn btn-default mgr-10" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" language="javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no=  $("#service_no").val();
+    var group_id = $("#org_code").val();
+    $(document).ready(function() {
+        getTable();
+    } );
+    var table;
+    function getTable(){
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            destroy:true,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 15,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/noteinfo",
+                type:"POST",
+                data: {
+                    group_id:group_id,   //$("#org_code").val(),
+                    login_no: login_no,   //$("#org_code").val(),
+                    read_flag:'Y',
+                    note_type_flag:$("#notetype_flag").val()
+                }
+            },
+            columns: [
+                { data: "note_title",
+                    render: function ( data, type, row, meta ) {
+                        return  data='<a  herf="javascript:void(0);" onclick="claim('+row.note_id+')" value="" >'+row.note_title+'</a>';
+                    }},
+                { data: "note_type_flag",
+                    render : function ( data, type, row, meta ) {
+                        if(row.note_type_flag=='1'){
+                            return "公告"
+                        }else {
+                            return "告警"
+                        }
+                    }},
+                { data: "pub_loginno"
+    },
+                { data : "pub_date"},
+                { data : "exp_date"},
+                { data : "note_id",
+                    "width": "8%",
+                    render: function ( data, type, row, meta ) {
+                        return   data ='<input type="button" name="check" value="查看" onclick="claim('+row.note_id+')"/>';
+                    }}
+            ],
+            select: true,
+            buttons: [
+
+            ]
+        } );
+
+    }
+
+    //查看事件
+      function claim(id){
+          $("#showFileDiv").html("");
+          $("#exp_date").val("");
+          $("#note_tle").text("");
+          $("#key_word").text("");
+          $("#note_content").val("");
+          $("#pub_date").val("");
+          $.ajax({
+              url: 'qrynoteinfo',
+              type: 'POST',     // 请求类型，常用的有 GET 和 POST
+              data : {
+                  'note_id':id,
+                  'login_no':login_no
+              },
+              success: function (data) { // 接口调用成功回调函数
+                 $("#note_tle").text(data.note_title);
+                  $("#key_word").text(data.key_word);
+                  $("#note_content").val(data.note_content);
+                  $("#note_file").val(data.note_file);
+                  $("#pub_date").val(data.pub_date);
+                  $("#exp_date").val(data.exp_date);
+                 //
+                //  alert(data.power_right)
+                  qryname(data.power_right);
+              },
+              error:function(data){
+                  alert("请求超时，请重试");
+              }
+          });
+
+
+          $("#alertInfo").modal("show");
+      }
+
+      //查询附件
+    function qryname(id){
+          if(id==""){
+              $("#showFileDiv").html("不存在附件");
+          }else {
+              //查询附件
+              $.ajax({
+                  url: 'qrynotename',
+                  type: 'POST',     // 请求类型，常用的有 GET 和 POST
+                  data: {
+                      'related_id': id
+                  },
+                  success: function (data) { // 接口调用成功回调函数
+                      // alert(data);
+
+                      //$.each(data)
+                      if (data == null || data == "") {
+                          $("#showFileDiv").html("不存在附件");
+                      } else {
+                         // alert(2222);
+                          $.each(data, function (index, filed) {
+                              //alert(filed.filename);
+                              var strname = filed.filename;
+                              var arr = strname.split("|");
+                              var path = arr[0];
+                              var name = arr[1];
+                             // alert(name);
+                              $("#showFileDiv").append("<a href='fileLoad/"+path+"/"+name+"'>"+name
+                                  +"</a>");
+                          })
+
+                      }
+                  },
+                  error: function (data) {
+                      alert("请求超时，请重试");
+                  }
+              });
+
+          }
+    }
+      //查询按钮
+    function qry_do(){
+       getTable1();
+    }
+
+    function getTable1(){
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bFilter": false,
+            destroy:true,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 15,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/qrynotefinfo",
+                type:"POST",
+                data: {
+                    group_id:group_id,   //$("#org_code").val(),
+                    login_no: login_no,   //$("#org_code").val(),
+                    read_flag:$("#read_flag").val(),
+                    note_type_flag:$("#notetype_flag").val(),
+                    note_title: $("#note_title").val(),
+                    pub_date:$("#op_time").val()
+                }
+            },
+            columns: [
+                { data: "note_title",
+                    render: function ( data, type, row, meta ) {
+                        return  data=' <a   herf="javascript:void(0);" onclick="claim('+row.note_id+')" value="" >'+row.note_title+'</a>';
+                    }},
+                { data: "note_type_flag",
+                    render : function ( data, type, row, meta ) {
+                        if(row.note_type_flag=='1'){
+                            return "公告"
+                        }else {
+                            return "告警"
+                        }
+                    }},
+                { data: "pub_loginno"
+                },
+                { data : "pub_date"},
+                { data : "exp_date"},
+                { data : "note_id",
+                    "width": "8%",
+                    render: function ( data, type, row, meta ) {
+                        return   data ='<input type="button" name="check" value="查看" onclick="claim('+row.note_id+')"/>';
+                    }}
+            ],
+            select: true,
+            buttons: [
+
+            ]
+        } );
+
+    }
+  function pageReset(){
+     location.reload();
+
+  }
+
+</script>
+
+</body>
+</html>

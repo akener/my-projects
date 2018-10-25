@@ -1,0 +1,421 @@
+package com.esop.cqDevelopment.elecPack.controller;
+
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.GetBossToken;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.HttpMsgSend;
+import com.esop.cqDevelopment.elecPack.controller.PostUtil.PropertiesUtil;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import com.esop.cqDevelopment.elecPack.service.*;
+import com.esop.workflow.dto.orderDto.OrderStartDto;
+import com.esop.workflow.model.CtTaskInstInfo;
+import com.esop.workflow.service.OrderWorkFlowService;
+import com.google.common.collect.Maps;
+import org.apache.axis.utils.StringUtils;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanMap;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+public class DealElecOrder {
+    @Autowired
+    OrRequestDetailInfoService detailservice;
+    @Autowired
+    OrRequestinstInfoService instservice;
+    @Autowired
+    OrTemplateAttrService templateService;
+    @Autowired
+    OrderService orderService;
+    @Autowired
+    UnionContractService contractService;
+    @Autowired
+    OrderWorkFlowService workFlowService;
+    @Autowired
+    PropertiesUtil propUtil;
+    private final org.apache.commons.logging.Log log = LogFactory.getLog(DealElecOrder.class);
+    /**
+     *
+     * 集团产品开户初始化
+     * @param querydto
+     * @return
+     */
+    @RequestMapping("/startOpenGroupProdInit")
+    public Map startOpenGroupProdInit(SeNewContractInfoDto querydto){
+
+//        DealElecOrderDto ordto=new DealElecOrderDto();
+        String contrcat_id=querydto.getContract_id();//querydto.getContract_id();
+        Map resmap=new HashMap();
+        SeNewContractInfoDto contractInfoDto=contractService.getOneSeNewContractInfo(contrcat_id);//合同信息
+        resmap.put("contractInfoDto",contractInfoDto);
+        SeContractChargesInfo reqcharges=new SeContractChargesInfo();
+        reqcharges.setContract_id(contrcat_id);
+        List<SeContractChargesInfo> chargesInfos=contractService.selectProdList(reqcharges);
+        resmap.put("chargesInfos",chargesInfos);
+        return resmap;
+    }
+
+
+    /**
+     * 发起集团产品开户订单
+     *
+     */
+    @RequestMapping("/startOpenGroupProdNew")
+    @Transactional(rollbackFor = Exception.class)
+    public String startOpenGroupProd(OrRequestinstInfoDto instDto,SeNewContractInfoDto contractdto ,OrderStartDto orderStartDto, HttpServletRequest request){
+        String nowTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        //获取参数
+        Map<String,Object> map =new HashMap<>();
+        String contract_code=contractdto.getContract_id();
+        String prod_id=contractdto.getProduct_id();
+        String link_man=contractdto.getFirst_party_phone();
+        String group_id=contractdto.getFirst_party_code();
+        String request_num=new Date().getTime()+"";//待生成
+        String product_name=contractdto.getProduct_name();
+        String union_code=contractdto.getFirst_party_code();
+        String uinon_name=contractdto.getFirst_party();
+
+        map.put("contract_code",contract_code);
+        map.put("prod_id",prod_id);
+        map.put("link_man",link_man);
+        map.put("group_id",group_id);
+        map.put("prod_name",product_name);
+        //写数据到订单附表
+        Integer template_id=10001;
+//        String request_num="201711270001";
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates){
+            OrRequestDetailInfoDto dto=new OrRequestDetailInfoDto();
+            dto.setAttr_code(temp.getAttr_code());
+            dto.setAttr_value(map.get(temp.getAttr_code())+"");
+            dto.setAttr_id(temp.getAttr_id());
+            dto.setRequest_num(request_num);
+            detailservice.InsertOrRequestDetailInfoDto(dto);
+        }
+
+        //写数据到订单主表
+
+        instDto.setRequest_num(request_num);
+        //   instDto.setRequest_num(map.get("request_num")+"");
+        instDto.setRequest_template_id(template_id);
+//        instDto.setOrder_title(request_num);
+//        instDto.setUnion_code(dealdto.getGroup_id());
+        instDto.setCreate_date(nowTime);
+        instDto.setModify_date(nowTime);
+        instDto.setOp_code(template_id+"");
+        instDto.setState("0");
+        instDto.setSource_id(request_num);
+        instDto.setState_date(nowTime);
+        instDto.setUnion_code(union_code);
+        instDto.setUnion_name(uinon_name);
+        int i= instservice.insertOrRequestinstInfoDto(instDto);
+        log.info("插入数据个数++++"+i);
+        //发起流程  workflow
+        orderStartDto.setBizRecordId(request_num);
+        String wfres=workFlowService.createOrderFlowService(orderStartDto,request);
+        log.info("workflow----"+wfres);
+        String result="0";
+        if (i>0)
+            result="1";
+        return result;
+    }
+
+    /**
+     *
+     * 受理集团产品开户初始化
+     * @param contract_id
+     * @param request_num
+     * @return
+     */
+    @RequestMapping("/checkOpenGroupProdInit")
+    public Map checkOpenGroupProdInit(String  contract_id,String request_num){
+//        contrcat_id="20171208992";//querydto.getContract_id();
+        OrRequestinstInfoDto reqdto=instservice.queryOneRequestInfo(request_num);
+        contract_id=reqdto.getContract_id();
+        SeNewContractInfoDto contractInfoDto=contractService.getOneSeNewContractInfo(contract_id);
+        OrRequestDetailInfoDto querydto=new OrRequestDetailInfoDto();
+//        request_num="1512646551787";
+        querydto.setRequest_num(request_num);//"1512645994720"
+        List<OrRequestDetailInfoDto> dtos=detailservice.selectOrRequestDetailInfoDtoList(querydto);
+        OrRequestinstInfoDto instdto=instservice.queryOneRequestInfo(request_num);
+        Map resmap=new HashMap();
+        for(OrRequestDetailInfoDto dto:dtos){
+            resmap.put(dto.getAttr_code(),dto.getAttr_value());
+        }
+        resmap.put("contractInfo",contractInfoDto);
+        resmap.put("requestInfo",instdto);
+        return resmap;
+    }
+
+    /**
+     * 保存集团开户审核信息
+     * @param dealdto
+     * @param instDto
+     * @return
+     */
+    @RequestMapping("/saveCheckOpenGroupProdNew")
+    @Transactional(rollbackFor = Exception.class)
+    public String saveCheckOpenGroupProdNew(DealElecOrderDto dealdto,OrRequestinstInfoDto instDto){
+        Map<String,Object> map =beanToMap(dealdto);
+        String request_num=new Date().getTime()+"";
+        String cust_id=map.get("cust_id")+"";
+        String pay_fee_acc=map.get("pay_fee_acc")+"";
+        String grp_subs_name=map.get("grp_subs_name")+"";
+        String link_man=map.get("link_man")+"";
+        String contract_code=map.get("contract_code")+"";
+        String is_cust_mgr_audt=map.get("is_cust_mgr_audt")+"";
+        String subs_priv_attr_list=map.get("subs_priv_attr_list")+"";
+        String subs_prod_attr_list=map.get("subs_prod_attr_list")+"";
+        String pay_fee_acc_name=map.get("pay_fee_acc_name")+"";
+        String prod_id=map.get("prod_id")+"";
+        //写数据到订单附表
+        Integer template_id=10001;
+//        String request_num="201711270001";
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates){
+            OrRequestDetailInfoDto dto=new OrRequestDetailInfoDto();
+            dto.setAttr_code(temp.getAttr_code());
+            dto.setAttr_value(map.get(temp.getAttr_code())+"");
+            dto.setAttr_id(temp.getAttr_id());
+            dto.setRequest_num(request_num);
+            detailservice.InsertOrRequestDetailInfoDto(dto);
+        }
+
+        //写数据到订单主表
+        String nowTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        instDto.setRequest_num(request_num);
+        //   instDto.setRequest_num(map.get("request_num")+"");
+        instDto.setRequest_template_id(template_id);
+        instDto.setOrder_title(request_num);
+//        instDto.setUnion_code(dealdto.getGroup_id());
+        instDto.setCreate_date(nowTime);
+        instDto.setModify_date(nowTime);
+        instDto.setOp_code("kh");
+        instDto.setState("1");
+        instDto.setState_date(nowTime);
+        instDto.setNotes("测试");
+        int i= instservice.insertOrRequestinstInfoDto(instDto);
+        System.out.println("插入数据个数++++"+i);
+
+        String result="0";
+        if (i>0)
+            result="1";
+        return result;
+    }
+
+    /**
+     * 保存集团产品开户信息并调用接口开户
+     * @param instDto
+     * @return
+     */
+    @RequestMapping("/saveOpenGroupProdNew")
+    @Transactional(rollbackFor = Exception.class)
+    public String saveOpenGroupProdNew(OrRequestinstInfoDto instDto, CtTaskInstInfo taskdto, HttpServletRequest httpServletRequest){
+//        Map<String,Object> map =beanToMap(dealdto);
+
+        String token = propUtil.getBossToken(); //获取bosstoken
+        String reqIp = MessageFormat.format(propUtil.getReqAddress("reqBoss"),
+                "UserService",token,"grpInstallForNetShopNew");
+
+        //获取参数
+        String contrcat_id=instDto.getContract_id();
+        String request_num=instDto.getRequest_num();
+        /*String request_num=instDto.getRequest_num();
+        String contrcat_id=instDto.getContract_id();*/
+        SeNewContractInfoDto contractdto=contractService.getOneSeNewContractInfo(contrcat_id);
+        OrRequestDetailInfoDto reqdto=new OrRequestDetailInfoDto();//查询附表录入数据 写入map
+        Map<String,Object> resmap=new HashMap<>();
+
+        reqdto.setRequest_num(request_num);
+        List<OrRequestDetailInfoDto> resdtos=detailservice.selectOrRequestDetailInfoDtoList(reqdto);
+        for (OrRequestDetailInfoDto temp:resdtos){
+            resmap.put(temp.getAttr_code(),temp.getAttr_value());
+        }
+        String contract_code=contractdto.getContract_id();
+        String prod_id=resmap.get("prod_id")+"";
+        String prod_name=resmap.get("")+"";
+
+        String link_man=contractdto.getFirst_party_phone();
+        String group_id=contractdto.getFirst_party_code();
+
+        //组装报文请求接口
+        JSONObject jsonObject=new JSONObject();
+        JSONArray jsonArray=new JSONArray();
+        jsonObject.put("CUSTID","");
+        jsonObject.put("PRODID",prod_id);
+        jsonObject.put("LINKMAN","");
+        jsonObject.put("CONTRACTCODE",contract_code);
+        jsonObject.put("GROUPID",group_id);
+
+        jsonObject.put("PAYFEEACC","");
+        jsonObject.put("PAYFEEACCNAME","");
+        jsonObject.put("GRPSUBSNAME","");
+
+        String ATTRLIST= "test";//测试，此处应该为jsonarray
+        jsonObject.put("ATTRLIST","");
+        /*JSONObject jsonObject1=new JSONObject();//ATTRLIST用crset存放集团产品属性键值
+        JSONArray jsonArray1=new JSONArray();
+        jsonObject1.put("KEYID",map.get("KEYID"));
+        jsonObject1.put("KEYVALUE",map.get("KEYVALUE"));
+        jsonArray1.put(0,jsonObject1);
+        jsonObject.put("ATTRLIST",jsonArray1);*/
+
+
+        jsonObject.put("SUBSPRIVATTRLIST","");
+        jsonObject.put("ISCUSTMGRAUDT","");
+        jsonObject.put("SUBSPRODATTRLIST","");
+        log.info("testjson-----------"+jsonObject.toString());
+//        String result= postJsonUtil.post(url,jsonObject.toString(),null);
+        String result= HttpMsgSend.sendHttpMsg(reqIp, jsonObject.toString());
+        log.info("请求返回："+result);
+        try {
+            if(!StringUtils.isEmpty(result)){
+                JSONObject jobject=new JSONObject(result);
+                String res_code=jobject.getString("res_code"); //请求接口Boss地址
+                if("0".equals(res_code)){//增加记录boss日志
+                    orderService.saveBossLog(reqIp,jsonObject.toString(),result,"集团产品开户成功",request_num,"true");
+                }else{
+                    orderService.saveBossLog(reqIp,jsonObject.toString(),result,"集团产品开户失败",request_num,"false");
+                }
+            }
+        }catch (Exception e){
+            log.error("日志请求记录写入失败，错误信息："+e);
+        }
+        JSONObject resJson=new JSONObject(result);
+        String  rescode=resJson.getString("res_code");
+        if(rescode=="0"||("0").equals(rescode)){
+
+            //发起业务受理流程
+            String flag = workFlowService.submitTaskService(taskdto,httpServletRequest);
+
+            JSONObject resobject=resJson.getJSONObject("result");
+//            JSONObject resobject=resarray.getJSONObject(0);
+            String grp_subs_id=resobject.getString("GRPSUBSID");
+            String grp_acct_id=resobject.getString("GRPACCTID");
+//            String grp_acct_name=resobject.getString("GRPACCTNAME");
+            //将写入接口数据返回写入到合同账户信息表
+            SeContractAccountInfoDto accountInfo=new SeContractAccountInfoDto();
+            accountInfo.setAccount_code(grp_acct_id);
+//            accountInfo.setAccount_name(grp_acct_name);
+            accountInfo.setGrp_subsid(grp_subs_id);
+            accountInfo.setContract_id(contrcat_id);
+            accountInfo.setPay_cycle(contractdto.getPay_cycle());//从合同获取缴费周期
+            accountInfo.setState("1");
+            int i= contractService.insertOneContractAccountInfo(accountInfo);
+            if (i>0&&"0".equals(flag)){
+                result="1";
+            }
+        }
+        result="1";
+
+        return result;
+    }
+
+    /**
+     * 初始化更新驳回订单
+     * @param contract_id
+     * @param request_num
+     * @return
+     */
+    @RequestMapping("/upOpenGroupProdInit")
+    public Map upOpenGroupProdInit(String  contract_id,String request_num){
+//        contrcat_id="20171208992";//querydto.getContract_id();
+        OrRequestinstInfoDto reqdto=instservice.queryOneRequestInfo(request_num);
+        contract_id=reqdto.getContract_id();
+        SeNewContractInfoDto contractInfoDto=contractService.getOneSeNewContractInfo(contract_id);
+        OrRequestDetailInfoDto querydto=new OrRequestDetailInfoDto();
+//        request_num="1512646551787";
+        querydto.setRequest_num(request_num);//"1512645994720"
+        List<OrRequestDetailInfoDto> dtos=detailservice.selectOrRequestDetailInfoDtoList(querydto);
+        OrRequestinstInfoDto instdto=instservice.queryOneRequestInfo(request_num);
+        Map resmap=new HashMap();
+        for(OrRequestDetailInfoDto dto:dtos){
+            resmap.put(dto.getAttr_code(),dto.getAttr_value());
+        }
+        SeContractChargesInfo reqcharges=new SeContractChargesInfo();
+        reqcharges.setContract_id(contract_id);
+        List<SeContractChargesInfo> chargesInfos=contractService.selectProdList(reqcharges);
+        resmap.put("chargesInfos",chargesInfos);
+        resmap.put("contractInfo",contractInfoDto);
+        resmap.put("requestInfo",instdto);
+        return resmap;
+    }
+
+    /**
+     * 保存更新驳回订单
+     * @param instDto
+     * @param contractdto
+     * @return
+     */
+    @RequestMapping("/upOpenGroupProdNew")
+    @Transactional(rollbackFor = Exception.class)
+    public String upOpenGroupProdNew(OrRequestinstInfoDto instDto,SeNewContractInfoDto contractdto){
+        //获取参数
+        Map<String,Object> map =new HashMap<>();
+
+        String product_id=contractdto.getProduct_id();
+        String product_name=contractdto.getProduct_name();
+        String request_num=instDto.getRequest_num();
+        String order_title=instDto.getOrder_title();
+        String notes=instDto.getNotes();
+
+        map.put("prod_id",product_id);
+        map.put("prod_name",product_name);
+        //更新数据到订单主表
+        String nowTime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        OrRequestinstInfoDto reqinst=instservice.queryOneRequestInfo(request_num);
+        reqinst.setOrder_title(order_title);
+        reqinst.setNotes(notes);
+        reqinst.setModify_date(nowTime);
+        reqinst.setState("0");
+
+        int i= instservice.upOrRequestinstInfoDto(reqinst);
+        //更新数据到订单附表
+        Integer template_id=10001;
+//        String request_num="201711270001";
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(template_id);
+        for (OrTemplateAttrDto temp:templates){
+            if(map.get(temp.getAttr_code())!=null||"".equals(map.get(temp.getAttr_code()))){
+                OrRequestDetailInfoDto dto=new OrRequestDetailInfoDto();
+                dto.setAttr_code(temp.getAttr_code());
+                dto.setAttr_value(map.get(temp.getAttr_code())+"");
+                dto.setAttr_id(temp.getAttr_id());
+                dto.setRequest_num(request_num);
+                detailservice.upOneOrRequestDetailInfoDto(dto);
+            }
+        }
+
+
+        String result="0";
+        if (i>0)
+            result="1";
+        return result;
+    }
+
+    /**
+     * 将对象装换为map
+     * @param bean
+     * @return
+     */
+    public  <T> Map<String, Object> beanToMap(T bean) {
+        Map<String, Object> map = Maps.newHashMap();
+        if (bean != null) {
+            BeanMap beanMap = BeanMap.create(bean);
+            for (Object key : beanMap.keySet()) {
+                map.put(key+"", beanMap.get(key));
+            }
+        }
+        return map;
+    }
+
+}

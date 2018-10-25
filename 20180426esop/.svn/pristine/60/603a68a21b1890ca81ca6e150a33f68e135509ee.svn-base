@@ -1,0 +1,38 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<script type="text/javascript" language="javascript" src="/static/js/jquery.js"></script>
+<head>
+    <title>Spring Security Example </title>
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function() {
+            $.ajax({
+                type:"post",
+                url: '/login',
+                data: {
+                    "username":$('#username').val(),
+                    "password":$('#password').val()
+                },
+                error:function(e, xhr, opt){alert("请求失败");
+                    //alert("Error requesting " + opt.url + ": " + xhr.status + " " + xhr.statusText);
+                    direct="http://"+window.location.host+"/"+$('#href_url').val();
+                    location.href=direct;
+                }
+            }).then(function(data){alert("成功?");
+                direct="http://"+window.location.host+"/"+$('#href_url').val();
+                alert(direct);
+                location.href=direct;
+                //window.location.href = "http://example.com"
+            });
+        });
+    </script>
+</head>
+<body>
+<form>
+    <input type="hidden" name="href_url" id="href_url" value="${href_url}"/>
+    <input type="hidden" name="username" id="username" value="${username}"/>
+    <input type="hidden" name="password" id="password" value="${password}"/>
+</form>
+</body>
+</html>

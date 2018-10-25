@@ -1,0 +1,61 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/5.
+ */
+public class PerformanceInfoDto {
+    int rank = 0;             //绩效排名
+    String examine_name = "";//考核名称
+    String employee_no = "";//员工编号
+    String employee_name = "";//员工姓名
+    String employee_grade = "";//员工分数
+    String employee_level = "";//员工等级
+
+    public int getRank() {
+        return rank;
+    }
+
+    public void setRank(int rank) {
+        this.rank = rank;
+    }
+
+    public String getExamine_name() {
+        return examine_name;
+    }
+
+    public void setExamine_name(String examine_name) {
+        this.examine_name = examine_name;
+    }
+
+    public String getEmployee_no() {
+        return employee_no;
+    }
+
+    public void setEmployee_no(String employee_no) {
+        this.employee_no = employee_no;
+    }
+
+    public String getEmployee_name() {
+        return employee_name;
+    }
+
+    public void setEmployee_name(String employee_name) {
+        this.employee_name = employee_name;
+    }
+
+    public String getEmployee_grade() {
+        return employee_grade;
+    }
+
+    public void setEmployee_grade(String employee_grade) {
+        this.employee_grade = employee_grade;
+    }
+
+    public String getEmployee_level() {
+        return employee_level;
+    }
+
+    public void setEmployee_level(String employee_level) {
+        this.employee_level = employee_level;
+    }
+}

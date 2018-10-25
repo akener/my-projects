@@ -1,0 +1,228 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+</head>
+
+<body class="bg-ff">
+    <!-- main S -->
+    <div class="main pd-10">
+        <!-- 工单列表 S -->
+        <div class="work-order-box over">
+            <!--标题-->
+            <div class="row mgb-10">
+                <div class="col-sm-12 col-md-12">
+                    <div class="header-title tc">
+                        <h3> 合同模板查询 </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>合同模板信息</span>
+                </div>
+            </div>
+            <!--详情-->
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <table class="table-infor-7 width-th-1" width="100%">
+                            <tbody>
+                                <tr>
+                                    <th>合同模板名称：</th>
+                                    <td>
+                                        <input id="pack_name" type="text" class="input-sty04 form-ipt">
+                                    </td>
+                                    <th>产品：</th>
+                                    <td>
+                                        <select id="catalog_id" class="select-style-1">
+                                            <option value="">全部</option>
+                                            <c:forEach items="${productList}" var="product">
+                                                <option value="${product.catalog_id}">${product.catalog_name}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <input type="button" onclick="qryElecPackList()" class="ui-btn mgr-10" style="min-width:100px;" value="查询">
+                                <%--<input type="button" onclick="addElecPack()" class="ui-btn mgr-10" style="min-width:100px;" value="新增">--%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--标题-->
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>合同模板表</span>
+                </div>
+            </div>
+            <!--地市详情-->
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <div class="active-cost-box" style="padding-bottom:0;">
+                            <table id="elecPackList" class="cost-table" width="100%;">
+                                <thead>
+                                <tr>
+                                    <th>拟稿人</th>
+                                    <th >拟稿时间</th>
+                                    <th>合同模板名称</th>
+                                    <th>产品</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<input type="hidden" id="root_org_id" value="<%=root_org_id%>">
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    function qryElecPackList() {
+        function formatDate(now) {
+            var time = new Date(now);
+            var year=time.getFullYear();
+            var month=time.getMonth()+1;
+            var date=time.getDate();
+            var hour=time.getHours();
+            var minute=time.getMinutes();
+            var second=time.getSeconds();
+            return year+"-"+month+"-"+date;
+        }
+        table =  $('#elecPackList').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            "bPaginate": true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            destroy:true,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"getElecPackList",
+                type:"get",
+                dataType:"json",
+                data:{
+                   // oper_name : $("#oper_name").val(),
+                    // oper_date: $("#oper_date").val(),
+                    pack_name: $("#pack_name").val(),
+                    catalog_id: $("#catalog_id").val(),
+                   // state: $("#state").val()
+                },
+
+            },
+            columns: [
+                { data: "oper_name", "bSortable": false,
+                    "render":function (data,type,row) {
+                        if(row.oper_name != null && row.oper_name != ""){
+                            return row.oper_name;
+                        }else{
+                            return " ";
+                        }
+
+                    }},
+                { data: "oper_date", "bSortable": false,
+                    "render":function (data,type,row) {
+                        if (row.oper_date != null &&row.oper_date !=''){
+                            return formatDate(row.oper_date);
+                        }else return "";
+                    }},
+                { data: "pack_name", "bSortable": false,
+                    "render":function (data,type,row) {
+                        if(row.pack_name != null && row.pack_name != ""){
+                            return row.pack_name;
+                        }else{
+                            return " ";
+                        }
+
+                    }},
+                { data: "prod_name", "bSortable": false,
+                    "render":function (data,type,row) {
+                        if(row.prod_name != null && row.prod_name != ""){
+                            return row.prod_name;
+                        }else{
+                            return " ";
+                        }
+
+                    }},
+                { date: "status_name", "bSortable": false,
+                    "render":function (data,type,row) {
+                        if(row.status_name != null && row.status_name != ""){
+                            return row.status_name;
+                        }else{
+                            return " ";
+                        }
+
+                    }},
+
+                { date: null,
+                    "bSortable": false,
+                    "render":function (data, type,row){
+                        var prod_code =row.prod_code;
+                        var id = row.id;
+                        var catalog_name = row.catalog_name;
+                        var xml_name = row.xml_name;
+                        var catalog_id = row.catalog_id;
+                        var prod_name = row.prod_name;
+                        var pack_name = row.pack_name;
+                        var root_org_id = $("#root_org_id").val();
+                        var html = "<button class='ui-btn fs-12 draft' root_org_id = '" + root_org_id + "' prod_code='" + prod_code + "' id='" + id + "' catalog_name='" + catalog_name + "' xml_name='" + xml_name + "' catalog_id='" + catalog_id + "' prod_name='" + prod_name + "' pack_name='" + pack_name + "' >起草</button>";
+                        return html;
+                    }
+                }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+
+    }
+    function addElecPack() {
+        window.location.href="/esop/toElecPackInfo";
+    }
+    $(document).ready(function () {
+        qryElecPackList();
+        $("#elecPackList").on("click",".draft",function () {
+            var prod_code = $(this).attr("prod_code");
+            var id = $(this).attr("id");
+            var catalog_name = $(this).attr("catalog_name");
+            var xml_name = $(this).attr("xml_name");
+            var catalog_id = $(this).attr("catalog_id");
+            var prod_name = $(this).attr("prod_name");
+            var pack_name = $(this).attr("pack_name");
+            location.href = "/esop/toContractInfo?prod_code="+prod_code+"&id="+id+"&catalog_name = "+encodeURI(encodeURI(catalog_name))+"&xml_name="+xml_name+"&catalog_id = "+catalog_id+"&prod_name="+encodeURI(encodeURI(prod_name))+"&pack_name="+encodeURI(encodeURI(pack_name));
+        });
+
+
+
+    });
+
+
+
+
+</script>
+</html>

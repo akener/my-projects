@@ -1,0 +1,25 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/21.
+ */
+public class WidthStatisParamDto {
+    String manager_no = "";//客户经理名称
+    String in_time = "";//查询时间
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getIn_time() {
+        return in_time;
+    }
+
+    public void setIn_time(String in_time) {
+        this.in_time = in_time;
+    }
+}

@@ -1,0 +1,264 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<head>
+    <title>反撤审批</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="main pd-10">
+        <div class="work-order-box over">
+            <div class="row mgb-10">
+                <div class="col-sm-12 col-md-12">
+                    <div class="header-title tc">
+                        <h3> 资金反撤审批 </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>反撤申请单</span>
+                </div>
+            </div>
+            <input type="hidden" id="id" value="">
+            <input type="hidden" id="node_id" value="">
+            <input type="hidden" id="refund_id" value="">
+            <input type="hidden" id="first_node_id" value="">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input  type="hidden" id="bankformnum" value="">
+                        <div class="row">
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>来款账号</th>
+                                <td>
+                                    <input style="width:200px;"  id="account" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>来款户名</th>
+                                <td>
+                                    <input style="width:200px;"  id="userid" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>到账账号</th>
+                                <td>
+                                    <input style="width:200px;" id="arrive_account" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>到账户名</th>
+                                <td>
+                                    <input style="width:200px;" id="arrive_account_name" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>到账日期</th>
+                                <td>
+                                    <input style="width:200px;" type=text id="arrive_date" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>到账金额(元)</th>
+                                <td>
+                                    <input style="width:200px;" id="arrival_amount_yuan" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                    <input type="hidden" id="arrival_amount"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>入账日期</th>
+                                <td>
+                                    <input style="width:200px;" type=text id="billing_date" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>账务员</th>
+                                <td>
+                                    <input style="width:200px;" id="account_clerk" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>摘要</th>
+                                <td colspan="3">
+                                    <textarea rows="5" cols="50" id="abstracts" disabled="disabled"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>申请工单流水号</th>
+                                <td>
+                                    <input style="width:200px;" id="taskOrderId" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>申请人</th>
+                                <td>
+                                    <input style="width:200px;" type=text id="applicant_name" disabled="disabled" class="input-sty04 form-ipt" maxlength="11" readonly="true">
+                                    <input type="hidden" id="applicant1">
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <th>申请日期</th>
+                                <td>
+                                    <input style="width:200px;"id="apply_date" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                </td>
+                                <th>出账集团</th>
+                                <td>
+                                    <input style="width:200px;" id="out_groups" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团编码</th>
+                                <td>
+                                    <input style="width:200px;" id="out_grp_nos" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                </td>
+                                <th>资金联系人</th>
+                                <td>
+                                    <input style="width:200px;" id="out_linkman" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>联系人电话</th>
+                                <td>
+                                    <input style="width:200px;"id="out_link_phone" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                </td>
+                                <th>联系人类型</th>
+                                <td>
+                                    <input style="width:200px;"id="contact_type" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>账本余额(元)</th>
+                                <td>
+                                    <input style="width:200px;"id="out_balance_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                    <input type="hidden" id="out_balance"/>
+                                </td>
+                                <th>可用余额(元)</th>
+                                <td>
+                                    <input style="width:200px;"id="out_usable_balance_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                    <input type="hidden" id="out_usable_balance"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>反撤金额(元)</th>
+                                <td>
+                                    <input style="width:200px;"id="annul_balance_yuan" type="text" class="input-sty04 form-ipt" disabled="disabled" >
+                                    <input type="hidden" id="annul_balance"/>
+                                </td>
+                                <th>证明材料：</th>
+                                <td colspan="3" id="doloadFile">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>反撤说明</th>
+                                <td colspan="3">
+                                    <textarea rows="5" cols="50" id="annul_explain" disabled="disabled"></textarea>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>下一环节</span>
+                </div>
+            </div>
+            <table class="table-infor-7" width="100%">
+                <tbody id="appove_show">
+                <%@ include file="../workFlowQuery.jsp"%>
+                </tbody>
+                <tbody id="agree_show">
+                <%@ include file="../workFlowQuery_Next.jsp"%>
+                </tbody>
+            </table>
+            <div class="row mgt-20" style="margin-bottom: 5px;">
+                <div class="btn-box">
+                    <button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="saveDoApproveAnnulInfo()">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<input id="fileName" name="" type="hidden" value="">
+<input id="attach_file_id" name="" type="hidden" value="">
+</body>
+<script type="text/javascript" language="javascript" class="init">
+
+    function getNextLink(ind_type,node_id) {
+        //带入审批信息
+        $.ajax({
+            type: "POST",
+            url: "workFlowQuery",
+            data:{
+                ind_type:ind_type,
+                node_id:node_id
+            },
+            cache: false,
+            success: function (result) {
+                if(result.length > 0) {
+                    $("#nextLink").html(result[0].node_role_name);
+                    getNextDealPerson(result[0].node_role_id);
+                    $("#first_node_id").val(result[0].node_id);
+                }else{
+                    document.getElementById("appove_show").style.display='none';
+                }
+            },
+            error: function () {
+                bootStrapAlert('请求超时，请重试！');
+            }
+        });
+    }
+    //获取下一环节处理人
+    function getNextDealPerson(role_id) {
+        var hangye_zhongxin = $("#out_grp_nos").val();
+        if((role_id!='23064')){
+            hangye_zhongxin = "";
+        }
+        $.ajax({
+            type: 'POST',
+            url: 'qryNextDealPerson_new',
+            cache: false,
+            data: {
+                role_id:role_id,
+                union_code:hangye_zhongxin
+            },
+            success: function (data) {
+                var type_data="";
+                $.each(data, function (i, field) {
+                    //拼接json数据集字符串
+                    type_data += "<option value='" + field.staff_code + "' ";//下一步处理人
+                    type_data += ">" + field.login_name + "</option>";
+                });
+                $("#nextStepDealPerson").empty();
+                $("#nextStepDealPerson").append(type_data);
+            },
+            error: function (resp) {
+                bootStrapAlert('获取下一步处理人失败！');
+                return false;
+
+            }
+        });
+    }
+</script>
+</html>

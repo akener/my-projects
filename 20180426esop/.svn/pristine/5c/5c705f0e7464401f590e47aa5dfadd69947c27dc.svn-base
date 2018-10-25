@@ -1,0 +1,172 @@
+
+/**
+ * 保存集团开户信息
+ */
+function saveopen() {
+    // var data=tranformJson("openGroupProd");
+    // console.log(data);
+
+    var order_title = $("#order_title").val();
+    var notes = $("#notes").val();
+    var next_deal1 = $("#next_deal1").val();
+    var ASSIGNEE_1 = $("#ASSIGNEE_1").val();
+
+    if(order_title==null||$.trim(order_title)==''){
+        alert('请输入订单标题！');
+        $("#order_title").focus();
+        return false;
+    }
+    if(notes==null||$.trim(notes)==''){
+        alert('请输入订单描述！');
+        $("#notes").focus();
+        return false;
+    }
+    if(next_deal1==null||$.trim(next_deal1)==''){
+        alert('请输入下一步环节！');
+        $("#next_deal1").focus();
+        return false;
+    }
+    if(ASSIGNEE_1==null||$.trim(ASSIGNEE_1)==''){
+        alert('请输入下一步环节处理人!');
+        $("#ASSIGNEE_1").focus();
+        return false;
+    }
+
+
+    var region_code="CQ.CQ";
+    $.ajax({
+        type: "post",
+        datatype: "json",
+        url: "/startOpenGroupProdNew",
+        data: {
+            "product_id":$("#prod_id").val(),
+            "product_name":$("#prod_id").find("option:selected").text(),
+            "first_party_code":$("#first_party_code").val(),
+            "first_party":$("#first_party").val(),
+
+            "first_party_phone":$("#first_party_phone").val(),
+            "contract_id":$("#contract_id").val(),
+            "order_title":$("#order_title").val(),
+            "notes":$("#notes").val(),
+            //工作流数据 workflow
+            "bizRecordId":"",
+            "startDept":region_code,
+            "startLoginNo":"112900001",
+            "ASSIGNEE_1":$("#ASSIGNEE_1").val(),
+            "startRegion":region_code,
+            "procTypeCode":"3008",
+            "keyValue":"1",
+            "branchCode":"CQ.CQ",
+
+        },
+        success: function (result) {
+            console.log(result);
+            if(result=="1")
+                alert("集团产品开户发起成功！");
+        }
+    })
+
+}
+
+/**
+ * 集团产品开户受理后保存
+ */
+function savekhjg() {
+    $.ajax({
+        type: "post",
+        url: "/saveOpenGroupProdNew",
+        data: {
+            "request_num":$("#request_num").val(),
+            "contract_id":$("#contract_id").val(),
+        },
+        success: function (result) {
+            console.log(result);
+            if(result=="1")
+                alert("集团产品开户成功！");
+                open(location, '_self').close();
+        }
+     })
+}
+/**
+ * },
+ * 转换json格式
+ * @param formName  表单名
+ */
+function tranformJson(formName) {
+    var formData = $("#" + formName).serializeArray();
+    //将序列化数据转为对象
+    var formObject = {};
+    for (var item in formData) {
+        formObject[formData[item].name] = formData[item].value;
+    }
+    var formJSON = JSON.stringify(formObject);
+    return formJSON;
+}
+
+/**
+ * 工作流获取首环节
+ */
+function loadFirstSteps() {
+    $.ajax({
+        type: 'POST',
+        url: '/workflow/getFirstSteps',
+        data: {
+            "procTypeCode":$("#procTypeCode").val(),
+            "branchCode":$("#branchCode").val(),
+            "keyValue":$("#keyValue").val(),
+            "loginCode":$("#loginCode").val(),
+            "loginName":$("#loginName").val(),
+        },
+        success: loadFirstStepsHandler
+    });
+}
+/**
+ * 工作流获取首环节
+ */
+function loadFirstStepsHandler(data) {
+    //   alert(JSON.stringify(data));
+    //   var returnCode = data.returnCode;
+    var stepList = data.stepList[0];
+    $("#next_deal1").val(stepList.ctProcStepRel.stepName);
+    //  alert(stepList.ctProcStepRel.stepName);
+    // $('#next_stepName').text(stepList.ctProcStepRel.stepName);
+
+    for (var i = 0; i < 3; i++) {     //循环添加多个值
+
+        $("#ASSIGNEE_1").append("<option value='"+stepList.assignees[i].assignee+"'>" + stepList.assignees[i].assigneeName + "</option>");
+
+    }
+}
+
+function getRemark4() {
+    $("#remark4").removeAttr();
+
+    idea=$("#idea4 option:selected").val();
+    if(idea=="1"){
+        idea="同意";
+    }else{
+        idea="退回";
+    }
+    $("#remark4").html(idea);
+}
+
+/**
+ * 获取流程轨迹
+ * @param procInstId
+ */
+function selOrderTrances(procInstId){
+    $.ajax({
+        url: "orderflow/getTrance",
+        type: "post",
+        "data": {
+            "procInstId": procInstId
+        },
+        success: function (result) {
+            $.each(result, function (i, field) {
+                var trStr = "<tr class='tr-data-cc'><td>" + field.taskInstId +"</td><td>" +field.stepName+"</td><td>" + field.dealName +"</td><td>" + field.dealDateTime +"</td><td>" + field.dealOpinion
+                    +"</td><td>"+field.dealRemarks +"</td></tr>";
+                $("#trancesTb").append(trStr);
+            })
+        }
+    });
+}

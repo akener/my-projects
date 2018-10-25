@@ -1,0 +1,512 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>预打发票>>预存发票打印情况明细查询</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/cqDevelopment.jsp"%>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预打发票>>预存发票打印情况明细查询</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>组织机构：</th>
+                            <td>
+                               <%-- <input id="applicantOrg" type="text" class="input-sty04 form-ipt"/>--%>
+                                <select id="applicantOrg" class="select-style-1">
+                                    <%--<option></option>--%>
+                                        <%--<option value="">重庆市</option>--%>
+                                </select>
+                            </td>
+                            <%--<th>行业中心：</th>
+                            <td>
+                                <input id="indCentName" type="text" class="input-sty04 form-ipt"/>
+                            </td>--%>
+                            <th>客户经理：</th>
+                            <td>
+                                <input id="managerName" type="text" class="input-sty04 form-ipt" />
+                                <input id="isManagerFlag" type="hidden" class="input-sty04 form-ipt" />
+                            </td>
+                            <%--<th>操作员：</th>
+                            <td>
+                                <input id="applicantId" type="text" class="input-sty04 form-ipt"/>
+                            </td>--%>
+                            <th>开票起止日期：</th>
+                            <td>
+                                <input id="printDateBegin" type="text" class="input-sty04 form-ipt Wdate"
+                                       onclick="WdatePicker({el:this,dateFmt:'yyyyMMdd',maxDate:'#F{$dp.$D(\'printDateEnd\',{d:-1});}'})"/>
+                                至
+                                <input id="printDateEnd" type="text" class="input-sty04 form-ipt Wdate"
+                                       onclick="WdatePicker({el:this,dateFmt:'yyyyMMdd',minDate:'#F{$dp.$D(\'printDateBegin\',{d:1});}'})"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团账户名称：</th>
+                            <td>
+                                <input id="accountName" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>集团账号：</th>
+                            <td>
+                                <input id="accountId" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>发票类型：</th>
+                            <td>
+                                <select id="invoiceType" class="select-style-1">
+                                    <%--<option></option>--%>
+                                    <option value="1">增值税电子发票</option>
+                                    <option value="2">增值税专用发票</option>
+                                </select>
+                            </td>
+                            <%--<th>发票模式：</th>
+                            <td>
+                                <select id="invoiceMode" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">实收</option>
+                                    <option value="2">月结</option>
+                                </select>
+                            </td>--%>
+                        </tr>
+                        <tr>
+                            <th>申请单编号：</th>
+                            <td>
+                                <input id="applicationNo" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>发票号码：</th>
+                            <td>
+                                <input id="invoiceNo" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>回款状态：</th>
+                            <td>
+                                <select id="paymentState" class="select-style-1">
+                                    <option></option>
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>金额：</th>
+                            <td>
+                                <input id="invoiceTotalMoney" type="text" class="input-sty04 form-ipt"/>
+                            </td>
+                            <th>是否冲红：</th>
+                            <td>
+                                <select id="redState" class="select-style-1">
+                                    <option></option>
+                                    <option value="1">是</option>
+                                    <option value="0">否</option>
+                                </select>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="display: none">
+                        <form action="" name="exportExcel" id="exportExcel" target="export"
+                              method="post" accept-charset="utf-8"></form>
+                        <iframe name="export" id="export"></iframe>
+                    </div>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <%--<button class="ui-btn mgr-10">查询</button>
+                            <button class="ui-btn btn-success mgr-10">导出</button>--%>
+                            <input type="button" class="ui-btn mgr-10" value="查询" onclick="qryInvDetaSta()"/>
+                            <input type="button" class="ui-btn btn-success mgr-10" onclick="excelExport()" value="导出"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预存发票打印情况明细查询结果</span>
+            </div>
+        </div>
+        <div class="row col-12" id="zyfp">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table table-bordered" id="qryspec" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">申请单号</th>
+                            <th colspan="7">客户信息</th>
+                            <th rowspan="2">账期</th>
+                            <th rowspan="2">发票号码</th>
+                            <th rowspan="2">发票代码</th>
+                            <th rowspan="2">开票日期</th>
+                            <th rowspan="2">金额（元）</th>
+                            <th rowspan="2">税率</th>
+                            <th rowspan="2">税额（元）</th>
+                            <th rowspan="2">esop申请金额</th>
+                            <th rowspan="2">是否作废</th>
+                            <th rowspan="2">是否冲红</th>
+                            <th rowspan="2">是否回款</th>
+                            <th rowspan="2">未回款账龄</th>
+                            <th rowspan="2">组织机构</th>
+                            <th rowspan="2">客户经理</th>
+                            <th rowspan="2">开票员</th>
+                        </tr>
+                        <tr>
+                            <th>账户名称</th>
+                            <th>集团账号</th>
+                            <th>纳税人识别号</th>
+                            <th>地址</th>
+                            <th>电话</th>
+                            <th>开户行</th>
+                            <th>账号</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12" id="ptfp">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table table-bordered" id="qryspec1" width="100%;" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th rowspan="2">申请单号</th>
+                            <th colspan="7">客户信息</th>
+                            <th rowspan="2">发票模式</th>
+                            <th rowspan="2">账期</th>
+                            <th rowspan="2">发票号码</th>
+                            <th rowspan="2">发票代码</th>
+                            <th rowspan="2">开票日期</th>
+                            <th rowspan="2">金额（元）</th>
+                            <th rowspan="2">是否冲红</th>
+                            <th rowspan="2">是否回款</th>
+                            <th rowspan="2">回款时间</th>
+                            <th rowspan="2">组织机构</th>
+                            <th rowspan="2">客户经理</th>
+                            <th rowspan="2">开票员</th>
+
+                        </tr>
+                        <tr>
+                            <th>账户名称</th>
+                            <th>集团账号</th>
+                            <th>纳税人识别号</th>
+                            <th>地址</th>
+                            <th>电话</th>
+                            <th>开户行</th>
+                            <th>账号</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var table;
+    var rootOrgId = '<%=root_org_id%>';
+    var role_codes='<%=role_codes%>';
+    $(document).ready(function () {
+        $("#ptfp").hide();
+       // rootOrgId="CQ.CQ.C2";
+        var roleId=getInvoiceManagerId();
+        //判断组织机构权限
+        if(role_codes.indexOf(roleId)>0 && (rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B')){
+            $.ajax({
+                url:"invoice/getOrganizationInfos",
+                type:"POST",
+                success:function (data) {
+                    //console.log(data);
+                    var applicantOrgStr = "";
+                    for(var i=0;i<data.length;i++){
+                        applicantOrgStr += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                    }
+                    $("#applicantOrg").empty();
+                    $("#applicantOrg").append(applicantOrgStr);
+                }
+            });
+        }else{
+            $.ajax({
+                url:"invoice/getOrganizationInfos",
+                type:"POST",
+                data:{id:rootOrgId},
+                success:function (data) {
+                    //console.log(data);
+                    var applicantOrgStr = "";
+                    for(var i=0;i<data.length;i++){
+                        applicantOrgStr += "<option value='"+data[i].id+"'>"+data[i].name+"</option>";
+                    }
+                    $("#applicantOrg").empty();
+                    $("#applicantOrg").append(applicantOrgStr);
+                }
+            });
+        }
+        //判断客户经理权限
+        if(role_codes.indexOf(roleId)>0){
+            $("#isManagerFlag").val("1");
+        }else{
+            $("#isManagerFlag").val("2");
+            $("#managerName").val('<%=login_name%>');
+            $("#managerName").attr("style","background:#ededed;");
+            $("#managerName").attr("readonly","readonly");
+        }
+    });
+
+    /**
+     * 获取角色id
+     */
+
+    function getInvoiceManagerId(){
+        var id="";
+        $.ajax({
+            url:"invoice/getInvoiceManagerId",
+            type:"POST",
+            async: false,
+            success:function (data) {
+                id=data;
+            }
+        });
+        return id;
+    }
+
+    /**
+     * 预存发票打印情况查询明细
+     */
+    function qryInvDetaSta() {
+        var type=$("#invoiceType").val();
+        if(type=="1"){
+            cxpp();
+            $("#ptfp").show();
+            $("#zyfp").hide();
+        }else {
+            cxzp();
+            $("#zyfp").show();
+            $("#ptfp").hide();
+        }
+
+    }
+   //查询专票
+    function cxzp() {
+        table = $('#qryspec').DataTable({
+            "scrollX": true,
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            "bSort": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                url: "invoice/qryInvDetaSta",
+                type: "POST",
+                data: {
+                    "applicantOrg":$("#applicantOrg").val()=="CQ.CQ"?"":$("#applicantOrg").val(),
+//                    "indCentName":$("#indCentName").val(),
+                    "isManagerFlag":$("#isManagerFlag").val(),
+                    "managerName":$("#managerName").val(),
+                    /*"applicantId":$("#applicantId").val(),*/
+                    "accountName":$("#accountName").val(),
+                    "accountId":$("#accountId").val(),
+                    "invoiceType":$("#invoiceType").val(),
+//                    "invoiceMode":$("#invoiceMode").val(),
+                    "applicationNo":$("#applicationNo").val(),
+                    "invoiceNo":$("#invoiceNo").val(),
+                    "paymentState":$("#paymentState").val(),
+                    "printDateBegin":$("#printDateBegin").val(),
+                    "printDateEnd":$("#printDateEnd").val(),
+                    "redState":$("#redState").val(),
+                    "moneyAmountNotax":$("#invoiceTotalMoney").val()
+                }
+            },
+            "columns": [
+                {data: "applicationNo"},
+                {data: "accountName"},
+                {data: "accountId"},
+                {data: "taxNo"},
+                {data: "taxAddress"},
+                {data: "taxPhone"},
+                {data: "taxBank"},
+                {data: "taxBankAccount"},
+                { data: "",render: function ( data, type, row, meta ) {
+                    var account_period = row.startAccountPeriod+"-"+row.endAccountPeriod;
+                    return account_period;
+                }
+                },
+                {data: "invoiceNo"},
+                {data: "invoiceCode"},
+                {data: "printDate"},
+                {data: "moneyAmountNotax"},
+                {data: "taxRate"},
+                {data: "moneyAmountTax"},
+                { data: "",render: function ( data, type, row, meta ) {
+                    var money = parseFloat(row.moneyAmountNotax)+parseFloat(row.moneyAmountTax);
+                    return money;
+                }
+                },//价税合计todo
+                {data: "invalidState"},
+                {data: "redState"},
+                {data: "paymentState"},
+                {data: "paymentLimitDate"},
+                {data: "applicantOrg"},
+                {data: "managerName"},
+                {data: "openerName"}//开票员todo
+            ],
+            select: true
+        });
+    }
+
+    /**
+     * 查询普票
+     */
+    function cxpp() {
+        table = $('#qryspec1').DataTable({
+//            "scrollX": false,
+            "processing": true,
+            "serverSide": true,
+            destroy: true,
+            "bFilter": false,
+            "bSort": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            //"bSort":false,
+            "bLengthChange": false,
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            "ajax": {
+                url: "invoice/qryInvDetaSta",
+                type: "POST",
+                data: {
+                    "applicantOrg":$("#applicantOrg").val()=="CQ.CQ"?"":$("#applicantOrg").val(),
+                    "managerName":$("#managerName").val(),
+                    "isManagerFlag":$("#isManagerFlag").val(),
+                   /* "applicantId":$("#applicantId").val(),*/
+                    "accountName":$("#accountName").val(),
+                    "accountId":$("#accountId").val(),
+                    "invoiceType":$("#invoiceType").val(),
+                    "applicationNo":$("#applicationNo").val(),
+                    "invoiceNo":$("#invoiceNo").val(),
+                    "paymentState":$("#paymentState").val(),
+                    "printDateBegin":$("#printDateBegin").val(),
+                    "printDateEnd":$("#printDateEnd").val(),
+                    "redState":$("#redState").val(),
+                    "invoiceTotalMoney":$("#invoiceTotalMoney").val()
+                }
+            },
+            "columns": [
+                {data: "applicationNo"},
+                {data: "accountName"},
+                {data: "accountId"},
+                {data: "taxNo"},
+                {data: "taxAddress"},
+                {data: "taxPhone"},
+                {data: "taxBank"},
+                {data: "taxBankAccount"},
+                {data: "invoiceMode"},
+                { data: "",render: function ( data, type, row, meta ) {
+                    var account_period = row.startAccountPeriod+"-"+row.endAccountPeriod;
+                    return account_period;
+                }
+                },
+                {data: "invoiceNo"},
+                {data: "invoiceCode"},
+                {data: "printDate"},
+                {data: "invoiceTotalMoney"},
+                {data: "redState"},
+                {data: "paymentState"},
+                {data: "paymentLimitDate"},
+                {data: "applicantOrg"},
+                {data: "managerName"},
+                {data: "openerName"}//开票员todo
+            ],
+            select: true
+        });
+    }
+
+    /**
+     * 导出Excel表格
+     */
+    function excelExport() {
+        var type=$("#invoiceType").val();
+        if(type=="1"){
+            var applicantOrg=$("#applicantOrg").val()=="CQ.CQ"?"":$("#applicantOrg").val();
+            var managerName=$("#managerName").val();
+            /*var applicantId=$("#applicantId").val();*/
+            var accountName=$("#accountName").val();
+            var accountId=$("#accountId").val();
+            var invoiceType=$("#invoiceType").val();
+            var applicationNo=$("#applicationNo").val();
+            var invoiceNo=$("#invoiceNo").val();
+            var paymentState=$("#paymentState").val();
+            var printDateBegin=$("#printDateBegin").val();
+            var printDateEnd=$("#printDateEnd").val();
+            var redState=$("#redState").val();
+            var invoiceTotalMoney=$("#invoiceTotalMoney").val();
+            var f = document.getElementById('exportExcel');
+            var actionUrl ='invoice/exportEInvoiceDetailReport?applicantOrg='+applicantOrg
+                +'&managerName='+managerName
+                /*+'&applicantId='+applicantId*/
+                +'&accountName='+accountName
+                +'&accountId='+accountId
+                +'&invoiceType='+invoiceType
+                +'&applicationNo='+applicationNo
+                +'&invoiceNo='+invoiceNo
+                +'&paymentState='+paymentState
+                +'&printDateBegin='+printDateBegin
+                +'&printDateEnd='+printDateEnd
+                +'&redState='+redState
+                +'&invoiceTotalMoney='+invoiceTotalMoney;
+            f.action = actionUrl;
+            f.submit();
+        }else {
+            var applicantOrg=$("#applicantOrg").val()=="CQ.CQ"?"":$("#applicantOrg").val();
+            var managerName=$("#managerName").val();
+            /*var applicantId=$("#applicantId").val();*/
+            var accountName=$("#accountName").val();
+            var accountId=$("#accountId").val();
+            var invoiceType=$("#invoiceType").val();
+            var applicationNo=$("#applicationNo").val();
+            var invoiceNo=$("#invoiceNo").val();
+            var paymentState=$("#paymentState").val();
+            var printDateBegin=$("#printDateBegin").val();
+            var printDateEnd=$("#printDateEnd").val();
+            var redState=$("#redState").val();
+            var invoiceTotalMoney=$("#invoiceTotalMoney").val();
+            var f = document.getElementById('exportExcel');
+            var actionUrl ='invoice/exportSInvoiceDetailReport?applicantOrg='+applicantOrg
+                +'&managerName='+managerName
+                /*+'&applicantId='+applicantId*/
+                +'&accountName='+accountName
+                +'&accountId='+accountId
+                +'&invoiceType='+invoiceType
+                +'&applicationNo='+applicationNo
+                +'&invoiceNo='+invoiceNo
+                +'&paymentState='+paymentState
+                +'&printDateBegin='+printDateBegin
+                +'&printDateEnd='+printDateEnd
+                +'&redState='+redState
+                +'&invoiceTotalMoney='+invoiceTotalMoney;
+            f.action = actionUrl;
+            f.submit();
+        }
+
+    }
+</script>
+</html>

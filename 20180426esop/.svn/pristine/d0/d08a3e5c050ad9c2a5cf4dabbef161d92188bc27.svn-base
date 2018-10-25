@@ -1,0 +1,79 @@
+package com.esop.workbench.dto;
+
+/**
+ * Created by liuxiao on 2017/5/31.
+ */
+public class ArrearWarnDto {
+    String region_code = "";//  地市代码                                 varchar2(20)
+    String region_name = "";// 地市名称                                 varchar2(20)
+    int arrear_this;//当月陈欠                                  number(20,2)
+    int arrear_last;//上月陈欠                                   number(20,2)
+    int attear_new;//当月新增欠费                             number(20,2)
+    int income_this;//当月信息化收入                          number(20,2)
+    String prc_type = "";//产品分类（专线、智慧城管、IDC、MAS、其他） varchar2(20)
+    String eff_date = "";//日期
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public int getArrear_this() {
+        return arrear_this;
+    }
+
+    public void setArrear_this(int arrear_this) {
+        this.arrear_this = arrear_this;
+    }
+
+    public int getArrear_last() {
+        return arrear_last;
+    }
+
+    public void setArrear_last(int arrear_last) {
+        this.arrear_last = arrear_last;
+    }
+
+    public int getAttear_new() {
+        return attear_new;
+    }
+
+    public void setAttear_new(int attear_new) {
+        this.attear_new = attear_new;
+    }
+
+    public int getIncome_this() {
+        return income_this;
+    }
+
+    public void setIncome_this(int income_this) {
+        this.income_this = income_this;
+    }
+
+    public String getPrc_type() {
+        return prc_type;
+    }
+
+    public void setPrc_type(String prc_type) {
+        this.prc_type = prc_type;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

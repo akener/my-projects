@@ -1,0 +1,68 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/11/15.
+ */
+
+@Repository
+public class SeProductMgrRelService {
+    @Autowired
+    SqlE sqlE;
+
+    private Long productRoleId = 21409L;//产品经理角色id
+
+    public Result getCatalogProductListPage(BsProductInfoDto parameter){//分页查找一级产品
+       Result result = sqlE.selectPage("getProductListCatalog",parameter);//根据条件查找产品
+   //   List productList = sqlE.selectM("getProductList",parameter);
+        return result;
+    }
+
+    public List<BsProductInfoDto> getProduct(BsProductInfoDto parameter){//根据条件查找一级产品,常用于查找详情
+         List productList = sqlE.selectM("getProductListCatalog",parameter);//根据条件查找产品
+        return productList;
+    }
+
+    public List<BsSystemuserInfoDto> getProductManagerList(){
+        BsRoleDictDto roleDictDto = new BsRoleDictDto();
+        roleDictDto.setRole_id(productRoleId);//查找产品经理
+        List productManageList = sqlE.selectM("getProductManagerList",roleDictDto);
+        return productManageList;
+    }
+
+    public List<SeProductMgrRelDto> getSeProductMgrRelDtoList(){
+        List seProductMgrRelDtoList = sqlE.selectM("getSeProductMgrRelDtoList");//查找产品经理和产品关系
+        return seProductMgrRelDtoList;
+    }
+
+    public Integer updateOrInsertProductMgrRel(SeProductMgrRelDto seProductMgrRelDto){
+        Integer count = 0;
+        count = sqlE.updateM("updateSeProductMgrRelDto",seProductMgrRelDto);
+        if(count <= 0 ){//如果没有找到需要修改的目标，则插入新的关系表
+           count = sqlE.insertM("insertSeProductMgrRelDto",seProductMgrRelDto);
+        }
+
+        return count;
+    }
+
+    public Result getProductListCharge(SeProductChargeInfoDto productCharge){//分页查找所有产品 和其资费信息
+        Result result = sqlE.selectPage("getProductChargeList",productCharge);
+       return result;
+    }
+
+    public Integer updateOrSaveProductCharge(SeProductChargeInfoDto chargeInfo){
+        Integer count = 0;
+        count = sqlE.updateM("updateProductCharge",chargeInfo);
+        if(count <= 0){
+            count = sqlE.insertM("insertProductCharge",chargeInfo);
+        }
+        return count;
+    }
+}

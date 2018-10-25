@@ -1,0 +1,25 @@
+package com.esop.base.dto;
+
+/**
+ * Created by wangbl on 16/9/4.
+ */
+public class ResourceTreeDto {
+    String id="";
+    String region_code="";
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+}

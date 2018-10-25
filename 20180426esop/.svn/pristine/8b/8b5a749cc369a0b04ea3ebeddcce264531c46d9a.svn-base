@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.dto.orderDto.OrderFlowTranceDto">
+
+       <select id="getWorkFlowTrance" parameterType="String" resultType="com.esop.workflow.dto.orderDto.OrderFlowTranceDto">
+		SELECT '' taskInstId,'发起' stepName,
+		T2.LOGIN_NAME as dealName, date_format(T1.START_TIME,'%Y-%m-%d %k:%i') dealDateTime,'' dealOpinion,'' dealRemarks
+		FROM CT_PROC_INST_INFO T1, BS_SYSTEMUSER_INFO T2
+		WHERE T1.START_LOGIN_NO = T2.STAFF_CODE AND T1.PROC_INST_ID =  #{procInstId}
+        union all
+		SELECT t1.TASK_INST_ID as
+		taskInstId,t1.STEP_NAME as
+		stepName,	t2.login_name as
+		dealName,date_format(t1.end_time,'%Y-%m-%d %k:%i') as
+		dealDateTime,
+		ifnull(t1.deal_opinion, '') as dealOpinion, ifnull(t1.remarks, '') as dealRemarks
+		FROM
+		CT_TASK_INST_INFO_HIS t1,bs_systemuser_info t2
+		WHERE t1.DEAL_LOGIN_NO =
+		t2.staff_code and t1.STATUS = '2' and
+		t1.PROC_INST_ID = #{procInstId}
+        union all
+		SELECT t1.TASK_INST_ID as taskInstId,t1.STEP_NAME as stepName,	t2.login_name as dealName, '' as dealDateTime,
+		ifnull(t1.deal_opinion,'') as dealOpinion, ifnull(t1.remarks,'') as dealRemarks
+		FROM
+		CT_TASK_INST_INFO t1,bs_systemuser_info t2
+		WHERE t1.DEAL_LOGIN_NO = t2.staff_code and t1.STATUS = '0'
+		and t1.PROC_INST_ID = #{procInstId}
+    </select>
+
+
+</mapper>

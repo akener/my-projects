@@ -1,0 +1,29 @@
+package com.esop.workflow.api.impl;
+
+import com.esop.workflow.api.IAssigneeFilter;
+import com.esop.workflow.mapper.CtElecWoBaseInfoMapper;
+import com.esop.workflow.model.CtElecWoBaseInfo;
+import com.esop.workflow.vo.Assignee;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+/**
+ * 被指定人为接单人
+ *
+ * @author daish 2017/10/31
+ */
+@Service(value = "assigneeWoReceiveSvc")
+public class AssigneeFilterAsReceiver implements IAssigneeFilter {
+    @Autowired
+    private CtElecWoBaseInfoMapper ctElecWoBaseInfoMapper;
+
+    public Assignee[] getAssignee(Assignee iAssignee) {
+        CtElecWoBaseInfo ctElecWoBaseInfo = ctElecWoBaseInfoMapper.selectByPrimaryKey(iAssignee.getBizRecordId());
+        Assignee[] arr = new Assignee[1];
+        Assignee assignee = new Assignee();
+        assignee.setAssignee(ctElecWoBaseInfo.getReceiveLoginNo());
+        assignee.setAssigneeName(ctElecWoBaseInfo.getReceiveLoginName());
+        arr[0] = assignee;
+        return arr;
+    }
+}

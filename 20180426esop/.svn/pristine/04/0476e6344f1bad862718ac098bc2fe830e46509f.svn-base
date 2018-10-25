@@ -1,0 +1,173 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no,minimum-scale=1.0, maximum-scale=1.0">
+    <title>
+        集团领导首页
+    </title>
+</head>
+
+<body class="">
+<div>
+    <div>
+        <div class="mgt-10">
+            <th>日期：</th>
+            <td>
+                <input type=text id="eff_date" class="input-sty04 form-ipt"
+                       maxlength="11" readonly="true" onchange="GetseriesValue()">
+                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                     style="width: 25px;" width="25" height="21"
+                     onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM'})"
+                     title="选择时间" />
+            </td>
+            <td>
+                <select name="region_code" id="region_code" onchange="GetseriesValue()">
+                    <option value="">
+                        全省
+                    </option>
+                    <option value="10031">哈尔滨</option>
+                    <option value="10032">齐齐哈尔</option>
+                    <option value="10033">牡丹江</option>
+                    <option value="10034">佳木斯</option>
+                    <option value="10035">双鸭山</option>
+                    <option value="10036">七台河</option>
+                    <option value="10037">鸡西</option>
+                    <option value="10038">鹤岗</option>
+                    <option value="10039">伊春</option>
+                    <option value="10040">黑河</option>
+                    <option value="10041">绥化</option>
+                    <option value="10042">大兴安岭</option>
+                    <option value="10043">大庆</option>
+                </select>
+            </td>
+        </div>
+        <div class="mgt-10">
+            <div id="container" style="min-width:400px;height:400px"></div>
+        </div>
+    </div>
+</div>
+<script>
+    var dataTmp = "";
+    $(function () {
+        GetseriesValue();  //获取数据源信息
+    });
+
+    //获取数据源信息
+    //////////////////////////////////////////////////////////////////////
+    function GetseriesValue() {
+
+        var data_type = "1";
+        var eff_date = $("#eff_date").val();
+        var region_code = $("#region_code").val();
+
+        if(region_code != '' && region_code != 'undefined' && region_code != null){
+            data_type = "2";
+        }
+
+        $.ajax({
+            type: "get",
+            url: "thisInformationIncome",
+            data:{
+                ///eff_date:$("#eff_date").val(),
+                //region_code:$("#region_code").val(),
+                region_code:region_code,
+                eff_date:eff_date,
+                //data_type:$("#data_type").val()
+                data_type:data_type
+            },
+            cache: false,
+            success: function (result) {
+                options_type = "options3d";
+                data_xAxis = "";
+                data_series = "{name: '信息化收入情况',colorByPoint: true,data: [";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    data_series += "{y:" + field.income + ",url:'incl?region_code="+field.region_code+"&town_code="+field.town_code+"'},";
+                    if(data_type == "1"){
+                        data_xAxis += "'"+field.region_name+"',";
+                    }else{
+                        data_xAxis += "'"+field.town_name+"',";
+                    }
+
+                });
+                //去除最后一个字符
+                data_series=data_series.substring(0, data_series.length - 1);
+                data_series += "]}";
+                data_xAxis=data_xAxis.substring(0, data_xAxis.length - 1);
+                GetData(data_xAxis,data_series);
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    };
+
+    //绑定获取数据信息操作
+    //////////////////////////////////////////////////////////////////////
+    function GetData(data_xAxis,data_series) {
+        $('#container').highcharts({
+            chart: {
+                type: 'column',
+                renderTo: 'container',
+                options: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    depth: 50,
+                    viewDistance: 25
+                }
+            },
+            title: {
+                text: '信息化收入'
+            },
+            xAxis: {
+                categories: eval("[" + data_xAxis + "]"),
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '信息化收入 (元)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                //在当前页面跳转
+                                window.open(this.options.url);
+                            }
+                        }
+                    }
+                }
+            },
+            series: eval("[" + data_series + "]")  //获取数据源操作信息
+        });
+    }
+</script>
+</body>
+
+</html>

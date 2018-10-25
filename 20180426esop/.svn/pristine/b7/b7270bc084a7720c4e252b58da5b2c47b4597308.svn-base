@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="HallRepository">
+
+    <select id="getPageElectContractPage" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto">
+      select contract.* from se_contract_info contract
+     INNER join se_contract_product_rel rel on contract.contract_id = rel.contract_id
+     INNER join bs_product_info product on rel.product_code = product.prod_id
+     where 1=1
+        <if test="contract_id !=''">
+           and contract.contract_id = #{contract_id}
+        </if>
+        <if test="oper_name != '' ">
+            and contract.oper_name like CONCAT('%',#{oper_name},'%')
+        </if>
+        <if test="oper_start_date != null">
+            and contract.oper_date &gt; #{oper_start_date}
+        </if>
+        <if test="oper_end_date != null">
+            and contract.oper_date &lt; #{oper_end_date}
+        </if>
+        <if test="contract_name != ''">
+            and contract.contract_name = like CONCAT('%',#{contract_name},'%')
+        </if>
+        <if test="catalog_id != '' ">
+            AND product.catalog_id = #{catalog_id}
+        </if>
+        <if test="firstway_code !=''">
+            and contract.firstway_code = #{firstway_code}
+        </if>
+
+    </select>
+
+    <select id="getCtUnionList" parameterType="com.esop.cqDevelopment.elecPack.dto.CtUnionInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.CtUnionInfoDto">
+        select *
+        from ct_union_info
+        where 1=1
+        <if test="union_code != ''">
+            and union_code like '%${union_code}%'
+        </if>
+        <if test="service_no != ''">
+            and service_no = #{service_no}
+        </if>
+        <if test="union_name != ''">
+            and union_name like '%${union_name}%'
+        </if>
+        <if test="letter_phone != ''">
+            and letter_phone like concat('%',#{letter_phone},'%')
+        </if>
+    </select>
+
+    <insert id="addNewContract" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        insert INTO
+        se_new_contract_info(second_invoice_phone,second_invoice_address,contract_desc,contract_id,first_party,first_party_charge,first_party_address,first_party_post_code,first_party_phone,discount
+        ,total_amount,first_party_username,first_party_band,first_party_account_number,second_party_username,second_party_band,second_party_account_number
+        ,first_contacts_name,first_contacts_id_card,first_contacts_phone,first_contacts_email,first_contacts_address,product_id,product_name,contract_name
+        ,first_party_code,second_party_code,first_invoice_name,first_taxpayer_code,first_invoice_band,first_invoice_username,first_invoice_number
+        ,first_invoice_address,first_invoice_phone,second_invoice_name,second_taxpayer_code,second_invoice_band,second_invoice_username,second_invoice_number,pay_cycle,elecpack_id
+        ,contract_pdf_name,safe_client,safe_address,safe_contacts,safe_phone,second_party,second_party_charge,second_party_address,second_party_post_code
+        ,second_party_phone,bond)
+        VALUES
+        (#{second_invoice_phone},#{second_invoice_address},#{contract_desc},#{contract_id},#{first_party},#{first_party_charge},#{first_party_address},#{first_party_post_code},#{first_party_phone},#{discount}
+        ,#{total_amount},#{first_party_username},#{first_party_band},#{first_party_account_number},#{second_party_username},#{second_party_band},#{second_party_account_number}
+        ,#{first_contacts_name},#{first_contacts_id_card},#{first_contacts_phone},#{first_contacts_email},#{first_contacts_address},#{product_id},#{product_name},#{contract_name}
+        ,#{first_party_code},#{second_party_code},#{first_invoice_name},#{first_taxpayer_code},#{first_invoice_band},#{first_invoice_username},#{first_invoice_number}
+        ,#{first_invoice_address},#{first_invoice_phone},#{second_invoice_name},#{second_taxpayer_code},#{second_invoice_band},#{second_invoice_username},#{second_invoice_number},#{pay_cycle}
+        ,#{elecpack_id},#{contract_pdf_name},#{safe_client},#{safe_address},#{safe_contacts},#{safe_phone},#{second_party},#{second_party_charge},#{second_party_address},#{second_party_post_code}
+        ,#{second_party_phone},#{bond})
+    </insert>
+
+    <select id="getContractId" resultType="Long">
+        select nextval_safe('SEQ_CONTRACT_ID') FROM DUAL
+    </select>
+    <insert id="addContractCharges" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo">
+        insert into se_contract_charges(product_charge_id,product_code,contract_id,price,content,number,remark)
+        SELECT id,#{product_code},#{contract_id},price,content,#{number},charge_desc
+        from se_product_charge_info
+        where id = ${product_charge_id}
+    </insert>
+
+    <insert id="addContract">
+        insert into
+        se_contract_info(bak3,bak1,contract_status,contract_type_detail,oper_date,contract_id,contract_name,contract_desc,firstway_code,firstway_name,firstway_contactor,firstway_contactor_phone
+        ,contract_money,oper_no,oper_name,region_code,group_id,group_name)
+        VALUES
+        (#{bak3},#{bak1},#{contract_status},#{contract_type_detail},#{oper_date},#{contract_id},#{contract_name},#{contract_desc},#{firstway_code},#{firstway_name},#{firstway_contactor},#{firstway_contactor_phone}
+        ,#{contract_money},#{oper_no},#{oper_name},#{region_code},#{group_id},#{group_name})
+    </insert>
+
+    <insert id="addContractProductRel" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        INSERT into se_contract_product_rel(contract_id,product_code)
+        VALUES (#{contract_id},#{product_id})
+    </insert>
+
+    <select id="getContractCharges" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto">
+        SELECT * FROM se_product_charge_info t1, se_contract_charges t2
+        WHERE t1.id = t2.product_charge_id
+        and t1.id in (${chargeIds})
+        <if test="contract_id != ''">
+            and contract_id = #{contract_id}
+        </if>
+    </select>
+    <select id="getContractChargesByContractId" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo">
+        SELECT * FROM se_contract_charges t1
+        LEFT JOIN bs_product_info t2 on t1.product_code = t2.prod_id
+        WHERE `delete` = '1'
+        <if test="contract_id !=''">
+            and contract_id = #{contract_id}
+        </if>
+    </select>
+
+    <select id="getContractInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        SELECT *
+        from se_new_contract_info t1
+        LEFT join se_contract_info t2 on t1.contract_id = t2.contract_id
+        left join se_elec_pack_info t3 on t1.elecpack_id = t3.id
+        LEFT join bs_product_info t4 on t4.prod_id = t3.prod_code
+        WHERE 1=1
+        <if test="contract_id !=''">
+            AND t1.contract_id = #{contract_id}
+        </if>
+    </select>
+
+    <select id="getContractInfoReject" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto">
+        SELECT *
+        from se_new_contract_info t1
+        LEFT join se_contract_info t2 on t1.contract_id = t2.contract_id
+        left join se_elec_pack_info t3 on t1.elecpack_id = t3.id
+        LEFT join bs_product_info t4 on t4.prod_id = t3.prod_code
+        WHERE 1=1
+        <if test="contract_id !=''">
+            AND t1.contract_id = #{contract_id}
+        </if>
+    </select>
+
+    <select id="getOpenGrpProd" parameterType = "String" resultType="int">
+        select count(1)
+        from se_contract_account_info where contract_id = #{contract_id}
+    </select>
+
+
+    <select id="selectContractPages" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        SELECT *
+        from se_new_contract_info t1
+        INNER join se_contract_info t2 on t1.contract_id = t2.contract_id
+        LEFT join bs_product_info t4 on t4.prod_id = t1.product_id
+        WHERE 1=1
+        <if test="contract_id !=''">
+            and t1.contract_id = #{contract_id}
+        </if>
+        <if test="oper_name != '' ">
+            and t2.oper_name like CONCAT('%',#{oper_name},'%')
+        </if>
+        <if test="oper_start_date_string != ''">
+            and date_format(t2.oper_date,'%Y-%m-%d') &gt; #{oper_start_date_string}
+        </if>
+        <if test="oper_end_date_string != ''">
+            and date_format(t2.oper_date,'%Y-%m-%d') &lt; #{oper_end_date_string}
+        </if>
+        <if test="contract_name != ''">
+            and t1.contract_name like CONCAT('%',#{contract_name},'%')
+        </if>
+        <if test="catalog_id != '' ">
+            AND t4.catalog_id = #{catalog_id}
+        </if>
+        <if test="contract_status !=''">
+            and t2.contract_status = ${contract_status}
+        </if>
+        <if test="firstway_code !=''">
+            and t2.firstway_code = #{firstway_code}
+        </if>
+        <if test="region_code !=''">
+            and t2.region_code  like CONCAT('%',#{region_code},'%')
+        </if>
+        <if test="bak1 !=''">
+            and t2.bak1 like CONCAT('%',#{bak1},'%')
+        </if>
+        <if test="firstway_name !=''">
+            and t2.firstway_name  like CONCAT('%',#{firstway_name},'%')
+        </if>
+        <if test="firstway_contactor !=''">
+            and t2.firstway_contactor  like CONCAT('%',#{firstway_contactor},'%')
+        </if>
+        ORDER BY open_time desc , oper_date DESC
+    </select>
+
+    <update id="updateSeNewContract" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        UPDATE se_new_contract_info
+        <set>
+            <if test="contract_name!=''">
+                contract_name = #{contract_name},
+            </if>
+            <if test="contract_desc != ''">
+                contract_desc = #{contract_desc},
+            </if>
+            <if test="first_party_code !=''">
+                first_party_code = #{first_party_code},
+            </if>
+            <if test="first_party != ''">
+                first_party = #{first_party},
+            </if>
+            <if test="first_party_charge !=''">
+                first_party_charge = #{first_party_charge},
+            </if>
+            <if test="first_party_address !=''">
+                first_party_address = #{first_party_address},
+            </if>
+            <if test="first_party_post_code !=''">
+                first_party_post_code = #{first_party_post_code},
+            </if>
+            <if test="first_party_phone !=''">
+                first_party_phone = #{first_party_phone},
+            </if>
+            <if test="total_amount !=''">
+                total_amount = #{total_amount},
+            </if>
+            <if test="first_invoice_name !=''">
+                first_invoice_name =#{first_invoice_name},
+            </if>
+            <if test="first_taxpayer_code !=''">
+                first_taxpayer_code = #{first_taxpayer_code},
+            </if>
+            <if test="first_invoice_band !=''">
+                first_invoice_band = #{first_invoice_band},
+            </if>
+            <if test="first_invoice_username !=''">
+                first_invoice_username = #{first_invoice_username},
+            </if>
+            <if test="first_invoice_username !=''">
+                first_invoice_username =#{first_invoice_username},
+            </if>
+            <if test="first_invoice_number != ''">
+                first_invoice_number = #{first_invoice_number},
+            </if>
+            <if test="first_invoice_address !=''">
+                first_invoice_address = #{first_invoice_address},
+            </if>
+            <if test="first_invoice_phone !=''">
+                first_invoice_phone = #{first_invoice_phone},
+            </if>
+            <if test="second_invoice_name !=''">
+                second_invoice_name = #{second_invoice_name},
+            </if>
+            <if test="second_taxpayer_code !=''">
+                second_taxpayer_code = #{second_taxpayer_code},
+            </if>
+            <if test="second_invoice_band !=''">
+                second_invoice_band = #{second_invoice_band},
+            </if>
+            <if test="second_invoice_username !=''">
+                second_invoice_username = #{second_invoice_username},
+            </if>
+            <if test="second_invoice_number !=''">
+                second_invoice_number = #{second_invoice_number},
+            </if>
+            <if test="first_party_username != ''">
+                first_party_username = #{first_party_username},
+            </if>
+            <if test="first_party_band !=''">
+                first_party_band = #{first_party_band},
+            </if>
+            <if test="first_party_account_number !=''">
+                first_party_account_number = #{first_party_account_number},
+            </if>
+            <if test="second_party_username != ''">
+                second_party_username = #{second_party_username},
+            </if>
+            <if test="second_party_band !=''">
+                second_party_band = #{second_party_band},
+            </if>
+            <if test="second_party_account_number !=''">
+                second_party_account_number = #{second_party_account_number},
+            </if>
+            <if test="first_contacts_name !=''">
+                first_contacts_name = #{first_contacts_name},
+            </if>
+            <if test="first_contacts_id_card !=''">
+                first_contacts_id_card =#{first_contacts_id_card},
+            </if>
+            <if test="first_contacts_phone !=''">
+                first_contacts_phone = #{first_contacts_phone},
+            </if>
+            <if test="first_contacts_email !=''">
+                first_contacts_email = #{first_contacts_email},
+            </if>
+            <if test="first_contacts_address !=''">
+                first_contacts_address = #{first_contacts_address},
+            </if>
+            <if test="pay_cycle !=''">
+                pay_cycle = #{pay_cycle},
+            </if>
+
+            <if test="safe_client !=''">
+                safe_client = #{safe_client},
+            </if>
+            <if test="safe_address !=''">
+                safe_address =#{safe_address},
+            </if>
+            <if test="safe_contacts !=''">
+                safe_contacts =#{safe_contacts},
+            </if>
+            <if test="safe_phone !=''">
+                safe_phone =#{safe_phone},
+            </if>
+            <if test="pay_cycle !=''">
+                pay_cycle = #{pay_cycle},
+            </if>
+
+            <if test="second_party !=''">
+                second_party =#{second_party},
+            </if>
+            <if test="second_party_code !=''">
+                second_party_code =#{second_party_code},
+            </if>
+            <if test="second_party_charge !=''">
+                second_party_charge =#{second_party_charge},
+            </if>
+            <if test="second_party_address !=''">
+                second_party_address =#{second_party_address},
+            </if>
+            <if test="second_party_post_code !=''">
+                second_party_post_code =#{second_party_post_code},
+            </if>
+            <if test="second_party_phone !=''">
+                second_party_phone =#{second_party_phone},
+            </if>
+            <if test="bond !=''">
+                bond = #{bond}
+            </if>
+        </set>
+        where contract_id = #{contract_id};
+    </update>
+
+
+
+    <update id="updateSeContract" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto">
+        UPDATE se_contract_info
+        <trim prefix="set" suffixOverrides=",">
+
+            <if test="contract_name != ''">
+               contract_name = #{contract_name},
+            </if>
+            <if test="contract_desc !=''">
+                contract_desc = #{contract_desc},
+            </if>
+            <if test="firstway_code !=''">
+                firstway_code =#{firstway_code},
+            </if>
+            <if test="firstway_name !=''">
+                firstway_name = #{firstway_name},
+            </if>
+            <if test="firstway_contactor !=''">
+                firstway_contactor = #{firstway_contactor},
+            </if>
+            <if test="firstway_contactor_phone !=''">
+                firstway_contactor_phone =#{firstway_contactor_phone},
+            </if>
+            <if test="contract_money !=''">
+                contract_money = #{contract_money},
+            </if>
+            <if test="bak1 !=''">
+                bak1 = #{bak1},
+            </if>
+
+            <if test="start_date !=null">
+                start_date = #{start_date},
+            </if>
+            <if test="end_date !=null">
+                end_date = #{end_date},
+            </if>
+            <if test="update_no !=''">
+                update_no = #{update_no},
+            </if>
+            <if test="update_name !=null">
+                update_name = #{update_name},
+            </if>
+        </trim>
+        where contract_id = #{contract_id}
+    </update>
+
+    <select id="getProductChargesByContractId" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeProductChargeInfoDto">
+        SELECT t1.*,t2.discount from se_product_charge_info  t1
+        left join se_contract_charges t2 on t1.id = t2.product_charge_id
+        where t2.contract_id = #{contract_id}
+        and t2.`delete` = '1'
+    </select>
+
+    <update id="updateContractCharges" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo">
+        update se_contract_charges t1
+        <set>
+            <if test="delete != null">
+                t1.delete = #{delete},
+            </if>
+        </set>
+        where contract_id = #{contract_id}
+    </update>
+
+    <select id="getContractDetailInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.ContractDetailInfoDto">
+        SELECT attr_code,attr_value FROM se_contract_detail_info
+        where contract_id = #{contract_id}
+    </select>
+
+    <select id="getOpporIdByContract" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="String">
+        SELECT oppor_id FROM `se_oppor_contract_ship_info`
+        where 1=1
+        <if test="contract_id !=''">
+            and contract_id =#{contract_id}
+        </if>
+    </select>
+
+    <insert id="insertSeOpporContractShipInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        insert into se_oppor_contract_ship_info(source_code,contract_id,oppor_id,form_status)
+        VALUES('100',#{contract_id},#{oppor_id},'2')
+    </insert>
+
+    <update id="updateSeOpporContractShipInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        UPDATE se_oppor_contract_ship_info
+        set oppor_id = #{oppor_id}
+        where contract_id = #{contract_id}
+    </update>
+
+    <select id="bak1IsRepeat" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto" resultType="Integer">
+        select count(*) from se_contract_info
+        where bak1 = #{bak1}
+    </select>
+
+    <select id="getSeContract" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractInfoDto">
+        select * from se_contract_info
+        where firstway_code = #{firstway_code}
+    </select>
+
+    <update id="updateContractAttachRel" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        UPDATE se_contract_attach_rel
+        <set>
+            <if test="attach_file_id != ''">
+                attach_id = #{attach_file_id}
+            </if>
+        </set>
+        where contract_id = #{contract_id}
+              and attach_type_code = #{attach_type_code}
+    </update>
+
+    <insert id="insertContractAttachRel" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        insert into se_contract_attach_rel(contract_id,attach_id,attach_type_code)
+        VALUES(#{contract_id},#{attach_file_id},#{attach_type_code})
+    </insert>
+
+    <select id="getPdfId" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="String">
+        SELECT attach_id
+        from se_contract_attach_rel
+        where attach_type_code = #{attach_type_code} and contract_id = #{contract_id}
+    </select>
+
+
+    <select id="getElecPackPath" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultType="String">
+        SELECT bak1 FROM `se_elec_pack_info`
+        where id = ${elecpack_id}
+    </select>
+</mapper>

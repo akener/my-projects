@@ -1,0 +1,42 @@
+package com.esop.hello;
+
+
+import com.esop.hello.FileInfoDto;
+
+
+
+public class Greeting {
+
+
+    private  long id=0;
+    private  String content="";
+    private  String fileInfoDtos="";
+    public Greeting(){}
+    public Greeting(long id,String content){
+        this.id=id;
+        this.content=content;
+    }
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getFileInfoDtos() {
+        return fileInfoDtos;
+    }
+
+    public void setFileInfoDtos(String fileInfoDtos) {
+        this.fileInfoDtos = fileInfoDtos;
+    }
+}

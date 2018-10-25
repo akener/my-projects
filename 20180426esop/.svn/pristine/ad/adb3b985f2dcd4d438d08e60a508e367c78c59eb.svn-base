@@ -1,0 +1,218 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by tangxin on 18/1/5.
+ */
+public class GroupMoneyCheckDto extends BaseDto {
+    String id="";
+    String shenqing_riqi="";
+    String fen_gongs="";
+    String fen_gongs_name="";
+    String hangye_zhongxin="";
+    String business_center="";
+    String shenqing_danhao="";
+    String shenqing_leixin="";
+    String group_pay_name="";
+    String shenqingdan_leixin="";
+    String crm_zhuangtai="";
+    String esop_zhuangtai="";
+    String jine="";
+    String jine_yuan="";
+
+    String is_deal="";
+    String deal_no="";
+    String deal_name="";
+    String deal_time="";
+    String deal_declare="";
+    String is_chayi="";
+    String chaxun_riqi="";
+    String chaxun_riqi2="";
+    String shenqing_leixin_bianhao="";
+
+
+    public String getGroup_pay_name() {
+        return group_pay_name;
+    }
+
+    public void setGroup_pay_name(String group_pay_name) {
+        this.group_pay_name = group_pay_name;
+    }
+
+    public String getShenqing_leixin() {
+        return shenqing_leixin;
+    }
+
+    public void setShenqing_leixin(String shenqing_leixin) {
+        this.shenqing_leixin = shenqing_leixin;
+    }
+
+    public String getShenqing_leixin_bianhao() {
+        return shenqing_leixin_bianhao;
+    }
+
+    public void setShenqing_leixin_bianhao(String shenqing_leixin_bianhao) {
+        this.shenqing_leixin_bianhao = shenqing_leixin_bianhao;
+    }
+
+    public String getShenqing_danhao() {
+        return shenqing_danhao;
+    }
+
+    public void setShenqing_danhao(String shenqing_danhao) {
+        this.shenqing_danhao = shenqing_danhao;
+    }
+
+    public String getChaxun_riqi() {
+        return chaxun_riqi;
+    }
+
+    public void setChaxun_riqi(String chaxun_riqi) {
+        this.chaxun_riqi = chaxun_riqi;
+    }
+
+    public String getChaxun_riqi2() {
+        return chaxun_riqi2;
+    }
+
+    public void setChaxun_riqi2(String chaxun_riqi2) {
+        this.chaxun_riqi2 = chaxun_riqi2;
+    }
+
+    public String getJine_yuan() {
+        return jine_yuan;
+    }
+
+    public void setJine_yuan(String jine_yuan) {
+        this.jine_yuan = jine_yuan;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getShenqing_riqi() {
+        return shenqing_riqi;
+    }
+
+    public void setShenqing_riqi(String shenqing_riqi) {
+        this.shenqing_riqi = shenqing_riqi;
+    }
+
+    public String getFen_gongs() {
+        return fen_gongs;
+    }
+
+    public void setFen_gongs(String fen_gongs) {
+        this.fen_gongs = fen_gongs;
+    }
+
+    public String getFen_gongs_name() {
+        return fen_gongs_name;
+    }
+
+    public void setFen_gongs_name(String fen_gongs_name) {
+        this.fen_gongs_name = fen_gongs_name;
+    }
+
+    public String getHangye_zhongxin() {
+        return hangye_zhongxin;
+    }
+
+    public void setHangye_zhongxin(String hangye_zhongxin) {
+        this.hangye_zhongxin = hangye_zhongxin;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getShenqingdan_leixin() {
+        return shenqingdan_leixin;
+    }
+
+    public void setShenqingdan_leixin(String shenqingdan_leixin) {
+        this.shenqingdan_leixin = shenqingdan_leixin;
+    }
+
+    public String getCrm_zhuangtai() {
+        return crm_zhuangtai;
+    }
+
+    public void setCrm_zhuangtai(String crm_zhuangtai) {
+        this.crm_zhuangtai = crm_zhuangtai;
+    }
+
+    public String getEsop_zhuangtai() {
+        return esop_zhuangtai;
+    }
+
+    public void setEsop_zhuangtai(String esop_zhuangtai) {
+        this.esop_zhuangtai = esop_zhuangtai;
+    }
+
+    public String getJine() {
+        return jine;
+    }
+
+    public void setJine(String jine) {
+        this.jine = jine;
+    }
+
+    public String getIs_deal() {
+        return is_deal;
+    }
+
+    public void setIs_deal(String is_deal) {
+        this.is_deal = is_deal;
+    }
+
+    public String getDeal_no() {
+        return deal_no;
+    }
+
+    public void setDeal_no(String deal_no) {
+        this.deal_no = deal_no;
+    }
+
+    public String getDeal_name() {
+        return deal_name;
+    }
+
+    public void setDeal_name(String deal_name) {
+        this.deal_name = deal_name;
+    }
+
+    public String getDeal_time() {
+        return deal_time;
+    }
+
+    public void setDeal_time(String deal_time) {
+        this.deal_time = deal_time;
+    }
+
+    public String getDeal_declare() {
+        return deal_declare;
+    }
+
+    public void setDeal_declare(String deal_declare) {
+        this.deal_declare = deal_declare;
+    }
+
+    public String getIs_chayi() {
+        return is_chayi;
+    }
+
+    public void setIs_chayi(String is_chayi) {
+        this.is_chayi = is_chayi;
+    }
+}

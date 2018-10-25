@@ -1,0 +1,33 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/1.
+ */
+public class UserAmoutStatisDto {
+    String manager_no  = "";     //客户经理工号
+    String manager_name = "";  //客户经理名称
+    String user_amout = "";        //4G用户数
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getUser_amout() {
+        return user_amout;
+    }
+
+    public void setUser_amout(String user_amout) {
+        this.user_amout = user_amout;
+    }
+}

@@ -1,0 +1,347 @@
+package com.esop.productInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.productInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * Created by wangbl on 2017/5/18.
+ * 产品一体化
+ */
+@Repository
+public class ProductInterfaceService {
+    private static Logger logger = Logger.getLogger(ProductInterfaceService.class);
+    @Autowired
+    SqlE sqlE;
+
+    //查询产品名称和环节信息
+    public List<ProductAndLinkDto> getProductionAndLink(InterfaceParameterDto param) {
+        return sqlE.selectM("getProductAndLink", param);
+    }
+
+    /*验证产品编码、流程编码、系统编码。外系统通过接口提交流程数据时，首先验证提交的系统是否可以提交此产品的当前环节数据，
+      验证当前环节是否允许此系统操作，此产品是否流转到当前环节
+     */
+    public String verifyProductLinkSyscode(InterfaceParameterDto param) {
+        String batchId = "0";
+        List list = sqlE.selectM("verifyProductLinkSyscode", param);
+        if (list.size() == 0) {
+            logger.info("verifyProductLinkSyscode:返回结果为空！");
+        } else {
+            batchId = list.get(0).toString();
+        }
+        return batchId;
+    }
+
+    /*验证当前产品环节审批数据是否已提交，如果数据此前已提交，此次接口调用会更新当前数据，如果没有，则新增一条数据*/
+    public List<ProgramReviewInfoDto> verifyLinkInfo(InterfaceParameterDto param) {
+        return sqlE.selectM("verifyLinkInfo", param);
+    }
+
+    //增加产品一体化审批环节信息
+    @Transactional(propagation = Propagation.REQUIRED)
+    public boolean insertProgramReviewInfo(InterfaceParameterDto param) {
+        UploadFileInfoDto uploadFileInfoDto = new UploadFileInfoDto();
+        //OA传递文件存储路径
+        uploadFileInfoDto.setPath("OA");
+        int link_id_int = 0;
+        //获得环节编码
+        link_id_int = Integer.parseInt(param.getLink_id());
+        //存储产品方案附件信息
+        int[] prod_plannum = {0, 3};
+        if (Arrays.binarySearch(prod_plannum, link_id_int) > 0) {
+            //获得产品方案附件存储关联ID
+            param.setProd_plan(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getProd_plan_file());
+            uploadFileInfoDto.setName(param.getProd_plan_save());
+            uploadFileInfoDto.setRelated_id(param.getProd_plan());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //存储审批单上传附件信息
+        int[] review_filenum = {0, 3, 4, 5, 6, 11, 16, 19, 27};
+        if (Arrays.binarySearch(review_filenum, link_id_int) > 0) {
+            param.setReview_file_id(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getReview_file());
+            uploadFileInfoDto.setName(param.getReview_file_save());
+            uploadFileInfoDto.setRelated_id(param.getReview_file_id());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //附件上传（后加的）accessory
+        int[] accessorynum = {0, 3, 4, 5, 6, 11, 16, 19, 27};
+        if (Arrays.binarySearch(accessorynum, link_id_int) > 0) {
+            param.setAccessory(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getAccessory_file());
+            uploadFileInfoDto.setName(param.getAccessory_save());
+            uploadFileInfoDto.setRelated_id(param.getAccessory());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //SI申请材料
+        int[] si_materialnum = {0, 4};
+        if (Arrays.binarySearch(si_materialnum, link_id_int) > 0) {
+            param.setSi_material(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getSi_material_file());
+            uploadFileInfoDto.setName(param.getSi_material_save());
+            uploadFileInfoDto.setRelated_id(param.getSi_material());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //立项依据
+        int[] project_basisnum = {0, 6};
+        if (Arrays.binarySearch(project_basisnum, link_id_int) > 0) {
+            param.setProject_basis(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getProject_basis_file());
+            uploadFileInfoDto.setName(param.getProject_basis_save());
+            uploadFileInfoDto.setRelated_id(param.getProject_basis());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //业务平台建设情况附件
+        int[] cons_situationnum = {0, 8};
+        if (Arrays.binarySearch(cons_situationnum, link_id_int) > 0) {
+            param.setCons_situation(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getCons_situation_file());
+            uploadFileInfoDto.setName(param.getCons_situation_save());
+            uploadFileInfoDto.setRelated_id(param.getCons_situation());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //运营支撑附件
+        int[] operation_supportnum = {0, 9};
+        if (Arrays.binarySearch(operation_supportnum, link_id_int) > 0) {
+            param.setOperation_support(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getOperation_support_file());
+            uploadFileInfoDto.setName(param.getOperation_support_save());
+            uploadFileInfoDto.setRelated_id(param.getOperation_support());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //验收报告 accept_report
+        int[] accept_reportnum = {0, 11};
+        if (Arrays.binarySearch(accept_reportnum, link_id_int) > 0) {
+            param.setAccept_report(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getAccept_report_file());
+            uploadFileInfoDto.setName(param.getAccept_report_save());
+            uploadFileInfoDto.setRelated_id(param.getAccept_report());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //补充说明 file_added
+        int[] file_addednum = {0, 11};
+        if (Arrays.binarySearch(file_addednum, link_id_int) > 0) {
+            param.setFile_added(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getFile_added_file());
+            uploadFileInfoDto.setName(param.getFile_added_save());
+            uploadFileInfoDto.setRelated_id(param.getFile_added());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //产品上线发文 online_document
+        int[] online_documentnum = {0, 14};
+        if (Arrays.binarySearch(online_documentnum, link_id_int) > 0) {
+            param.setOnline_document(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getOnline_document_file());
+            uploadFileInfoDto.setName(param.getOnline_document_save());
+            uploadFileInfoDto.setRelated_id(param.getOnline_document());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //工作日志附件 work_log
+        int[] work_lognum = {0, 16, 19};
+        if (Arrays.binarySearch(work_lognum, link_id_int) > 0) {
+            param.setWork_log(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getWork_log_file());
+            uploadFileInfoDto.setName(param.getWork_log_save());
+            uploadFileInfoDto.setRelated_id(param.getWork_log());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //产品评估数据 prod_ass
+        int[] prod_assnum = {0, 27};
+        if (Arrays.binarySearch(prod_assnum, link_id_int) > 0) {
+            param.setProd_ass(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getProd_ass_file());
+            uploadFileInfoDto.setName(param.getProd_ass_save());
+            uploadFileInfoDto.setRelated_id(param.getProd_ass());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //会议纪要 summary_meeting
+        int[] summary_meetingnum = {0, 29};
+        if (Arrays.binarySearch(summary_meetingnum, link_id_int) > 0) {
+            param.setSummary_meeting(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getSummary_meeting_file());
+            uploadFileInfoDto.setName(param.getSummary_meeting_save());
+            uploadFileInfoDto.setRelated_id(param.getSummary_meeting());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //产品下线发文 offline_document
+        int[] offline_documentnum = {0, 30};
+        if (Arrays.binarySearch(offline_documentnum, link_id_int) > 0) {
+            param.setOffline_document(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getOffline_document_file());
+            uploadFileInfoDto.setName(param.getOffline_document_save());
+            uploadFileInfoDto.setRelated_id(param.getOffline_document());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //合同正文+附件 contract_rel
+        int[] contract_relnum = {0, 7, 17, 18, 21};
+        if (Arrays.binarySearch(contract_relnum, link_id_int) > 0) {
+            param.setContract_rel(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+            uploadFileInfoDto.setOa_file(param.getContract_file());
+            uploadFileInfoDto.setName(param.getContract_save());
+            uploadFileInfoDto.setRelated_id(param.getContract_rel());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        if (((Integer) sqlE.selectM("selectStateInfoLinkId", param).get(0)) < Integer.parseInt(param.getLink_id())) {
+            sqlE.insertM("updateStateInfo", param);
+        }
+        param.setOp_code("insert");
+        sqlE.insertM("insertProgramReviewLog", param);
+        if (sqlE.insertM("insertProgramReviewInfo", param) > 0) {
+            logger.info("新增产品一体化审批环节信息完成");
+            return true;
+        }
+        logger.info("新增产品一体化审批环节信息失败");
+        return false;
+    }
+
+    //更新产品一体化审批环节信息
+    @Transactional(propagation = Propagation.REQUIRED)
+    public boolean updateProgramReviewInfo(InterfaceParameterDto param) {
+        UploadFileInfoDto uploadFileInfoDto = new UploadFileInfoDto();
+        //OA传递文件存储路径
+        uploadFileInfoDto.setPath("OA");
+        int link_id_int = 0;
+        //获得环节编码
+        link_id_int = Integer.parseInt(param.getLink_id());
+        logger.info("更新产品一体化审批环节信息,参数信息param=" + param.getReview_file_id());
+        //存储产品方案附件信息
+        int[] prod_plannum = {0, 3};
+        if (Arrays.binarySearch(prod_plannum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getProd_plan_file());
+            uploadFileInfoDto.setName(param.getProd_plan_save());
+            uploadFileInfoDto.setRelated_id(param.getProd_plan());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //存储审批单上传附件信息
+        int[] review_filenum = {0, 3, 4, 5, 6, 11, 16, 19, 27};
+        if (Arrays.binarySearch(review_filenum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getReview_file());
+            uploadFileInfoDto.setName(param.getReview_file_save());
+            uploadFileInfoDto.setRelated_id(param.getReview_file_id());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //附件上传（后加的）accessory
+        int[] accessorynum = {0, 3, 4, 5, 6, 11, 16, 19, 27};
+        if (Arrays.binarySearch(accessorynum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getAccessory_file());
+            uploadFileInfoDto.setName(param.getAccessory_save());
+            uploadFileInfoDto.setRelated_id(param.getAccessory());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //SI申请材料
+        int[] si_materialnum = {0, 4};
+        if (Arrays.binarySearch(si_materialnum, link_id_int) > 0) {
+            //存储SI申请材料附件信息
+            uploadFileInfoDto.setOa_file(param.getSi_material_file());
+            uploadFileInfoDto.setName(param.getSi_material_save());
+            uploadFileInfoDto.setRelated_id(param.getSi_material());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //立项依据
+        int[] project_basisnum = {0, 6};
+        if (Arrays.binarySearch(project_basisnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getProject_basis_file());
+            uploadFileInfoDto.setName(param.getProject_basis_save());
+            uploadFileInfoDto.setRelated_id(param.getProject_basis());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //业务平台建设情况附件
+        int[] cons_situationnum = {0, 8};
+        if (Arrays.binarySearch(cons_situationnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getCons_situation_file());
+            uploadFileInfoDto.setName(param.getCons_situation_save());
+            uploadFileInfoDto.setRelated_id(param.getCons_situation());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //运营支撑附件
+        int[] operation_supportnum = {0, 9};
+        if (Arrays.binarySearch(operation_supportnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getOperation_support_file());
+            uploadFileInfoDto.setName(param.getOperation_support_save());
+            uploadFileInfoDto.setRelated_id(param.getOperation_support());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //验收报告 accept_report
+        int[] accept_reportnum = {0, 11};
+        if (Arrays.binarySearch(accept_reportnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getAccept_report_file());
+            uploadFileInfoDto.setName(param.getAccept_report_save());
+            uploadFileInfoDto.setRelated_id(param.getAccept_report());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //补充说明 file_added
+        int[] file_addednum = {0, 11};
+        if (Arrays.binarySearch(file_addednum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getFile_added_file());
+            uploadFileInfoDto.setName(param.getFile_added_save());
+            uploadFileInfoDto.setRelated_id(param.getFile_added());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //产品上线发文 online_document
+        int[] online_documentnum = {0, 14};
+        if (Arrays.binarySearch(online_documentnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getOnline_document_file());
+            uploadFileInfoDto.setName(param.getOnline_document_save());
+            uploadFileInfoDto.setRelated_id(param.getOnline_document());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //工作日志附件 work_log
+        int[] work_lognum = {0, 16, 19};
+        if (Arrays.binarySearch(work_lognum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getWork_log_file());
+            uploadFileInfoDto.setName(param.getWork_log_save());
+            uploadFileInfoDto.setRelated_id(param.getWork_log());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //产品评估数据 prod_ass
+        int[] prod_assnum = {0, 27};
+        if (Arrays.binarySearch(prod_assnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getProd_ass_file());
+            uploadFileInfoDto.setName(param.getProd_ass_save());
+            uploadFileInfoDto.setRelated_id(param.getProd_ass());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //会议纪要 summary_meeting
+        int[] summary_meetingnum = {0, 29};
+        if (Arrays.binarySearch(summary_meetingnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getSummary_meeting_file());
+            uploadFileInfoDto.setName(param.getSummary_meeting_save());
+            uploadFileInfoDto.setRelated_id(param.getSummary_meeting());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //产品下线发文 offline_document
+        int[] offline_documentnum = {0, 30};
+        if (Arrays.binarySearch(offline_documentnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getOffline_document_file());
+            uploadFileInfoDto.setName(param.getOffline_document_save());
+            uploadFileInfoDto.setRelated_id(param.getOffline_document());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        //合同正文+附件 contract_rel
+        int[] contract_relnum = {0, 7, 17, 18, 21};
+        if (Arrays.binarySearch(contract_relnum, link_id_int) > 0) {
+            uploadFileInfoDto.setOa_file(param.getContract_file());
+            uploadFileInfoDto.setName(param.getContract_save());
+            uploadFileInfoDto.setRelated_id(param.getContract_rel());
+            sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        }
+        param.setOp_code("update");
+        sqlE.insertM("insertProgramReviewLog", param);
+        if (sqlE.updateM("updateProgramReviewInfo", param) > 0) {
+            logger.info("更新产品一体化审批环节信息完成");
+            return true;
+        }
+        logger.info("更新产品一体化审批环节信息失败");
+        return false;
+    }
+}

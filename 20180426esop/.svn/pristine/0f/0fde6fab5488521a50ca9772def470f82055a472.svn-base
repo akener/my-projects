@@ -1,0 +1,508 @@
+package com.esop.invoice.model;
+
+import com.esop.common.page.BaseDto;
+
+public class EpInvSpeBossInfo extends BaseDto{
+    private Integer recSerialNo;
+
+    private String applicationNo="";
+
+    private String managerId="";
+
+    private String paymentState="";
+
+    private String paymentStateDate="";
+
+    private String paymentLimitDate="";
+
+    private String startAccountPeriod="";
+
+    private String endAccountPeriod="";
+
+    private String invoiceType="";
+
+    private String invoiceMode="";
+
+    private String openType="";
+
+    private String applicantId="";
+
+    private String applicantOrg="";
+
+    private String custId="";
+
+    private String groupId="";
+
+    private String accountName="";
+
+    private String accountId="";
+
+    private String invoiceTotalMoney="";
+
+    private Short invoiceSheetNum;
+
+    private String workState="";
+
+    private String redState="";
+
+    private String invalidState="";
+
+    private String invalidRange="";
+
+    private String isReprint="";
+
+    private String redReason="";
+
+    private String redAppNo="";
+
+    private String entName="";
+
+    private String taxNo="";
+
+    private String taxBank="";
+
+    private String taxBankAccount="";
+
+    private String taxAddress="";
+
+    private String taxPhone="";
+
+    private String isSum="";
+
+    private String openerId="";
+
+    private String invoiceNo="";
+
+    private String invoiceCode="";
+
+    private String printDate="";
+
+    private String moneyAmountTax="";
+
+    private String taxRate="";
+
+    private String moneyAmountNotax="";
+
+    private String invoiceState="";
+
+    private String stateDate="";
+    private String printDateBegin="";
+    private String printDateEnd="";
+    private String managerName="";
+    private String openerName="";
+
+    private String paymentLimitDateStart="";//用于查询回款期限
+    private String paymentLimitDateEnd="";//用于查询回款期限
+
+    private String newDatetime="";//新增账期
+    private String newAddMoney="";//新增价税合计
+    private String isManagerFlag="";//新增客户经理权限判断
+
+    public String getIsManagerFlag() {
+        return isManagerFlag;
+    }
+
+    public void setIsManagerFlag(String isManagerFlag) {
+        this.isManagerFlag = isManagerFlag;
+    }
+
+    public void setNewAddMoney(String newAddMoney) {
+        this.newAddMoney = newAddMoney;
+    }
+
+    public String getNewAddMoney() {
+        return newAddMoney;
+    }
+
+    public void setNewDatetime(String newDatetime) {
+        this.newDatetime = newDatetime;
+    }
+
+    public String getNewDatetime() {
+        return newDatetime;
+    }
+
+    public String getPaymentLimitDateStart() {
+        return paymentLimitDateStart;
+    }
+
+    public void setPaymentLimitDateStart(String paymentLimitDateStart) {
+        this.paymentLimitDateStart = paymentLimitDateStart;
+    }
+
+    public String getPaymentLimitDateEnd() {
+        return paymentLimitDateEnd;
+    }
+
+    public void setPaymentLimitDateEnd(String paymentLimitDateEnd) {
+        this.paymentLimitDateEnd = paymentLimitDateEnd;
+    }
+
+    public String getManagerName() {
+        return managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+
+    public String getOpenerName() {
+        return openerName;
+    }
+
+    public void setOpenerName(String openerName) {
+        this.openerName = openerName;
+    }
+
+    public String getPrintDateBegin() {
+        return printDateBegin;
+    }
+
+    public void setPrintDateBegin(String printDateBegin) {
+        this.printDateBegin = printDateBegin;
+    }
+
+    public String getPrintDateEnd() {
+        return printDateEnd;
+    }
+
+    public void setPrintDateEnd(String printDateEnd) {
+        this.printDateEnd = printDateEnd;
+    }
+
+    public Integer getRecSerialNo() {
+        return recSerialNo;
+    }
+
+    public void setRecSerialNo(Integer recSerialNo) {
+        this.recSerialNo = recSerialNo;
+    }
+
+    public String getApplicationNo() {
+        return applicationNo;
+    }
+
+    public void setApplicationNo(String applicationNo) {
+        this.applicationNo = applicationNo;
+    }
+
+    public String getManagerId() {
+        return managerId;
+    }
+
+    public void setManagerId(String managerId) {
+        this.managerId = managerId;
+    }
+
+    public String getPaymentState() {
+        return paymentState;
+    }
+
+    public void setPaymentState(String paymentState) {
+        this.paymentState = paymentState;
+    }
+
+    public String getPaymentStateDate() {
+        return paymentStateDate;
+    }
+
+    public void setPaymentStateDate(String paymentStateDate) {
+        this.paymentStateDate = paymentStateDate;
+    }
+
+    public String getPaymentLimitDate() {
+        return paymentLimitDate;
+    }
+
+    public void setPaymentLimitDate(String paymentLimitDate) {
+        this.paymentLimitDate = paymentLimitDate;
+    }
+
+    public String getStartAccountPeriod() {
+        return startAccountPeriod;
+    }
+
+    public void setStartAccountPeriod(String startAccountPeriod) {
+        this.startAccountPeriod = startAccountPeriod;
+    }
+
+    public String getEndAccountPeriod() {
+        return endAccountPeriod;
+    }
+
+    public void setEndAccountPeriod(String endAccountPeriod) {
+        this.endAccountPeriod = endAccountPeriod;
+    }
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceMode() {
+        return invoiceMode;
+    }
+
+    public void setInvoiceMode(String invoiceMode) {
+        this.invoiceMode = invoiceMode;
+    }
+
+    public String getOpenType() {
+        return openType;
+    }
+
+    public void setOpenType(String openType) {
+        this.openType = openType;
+    }
+
+    public String getApplicantId() {
+        return applicantId;
+    }
+
+    public void setApplicantId(String applicantId) {
+        this.applicantId = applicantId;
+    }
+
+    public String getApplicantOrg() {
+        return applicantOrg;
+    }
+
+    public void setApplicantOrg(String applicantOrg) {
+        this.applicantOrg = applicantOrg;
+    }
+
+    public String getCustId() {
+        return custId;
+    }
+
+    public void setCustId(String custId) {
+        this.custId = custId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getInvoiceTotalMoney() {
+        return invoiceTotalMoney;
+    }
+
+    public void setInvoiceTotalMoney(String invoiceTotalMoney) {
+        this.invoiceTotalMoney = invoiceTotalMoney;
+    }
+
+    public Short getInvoiceSheetNum() {
+        return invoiceSheetNum;
+    }
+
+    public void setInvoiceSheetNum(Short invoiceSheetNum) {
+        this.invoiceSheetNum = invoiceSheetNum;
+    }
+
+    public String getWorkState() {
+        return workState;
+    }
+
+    public void setWorkState(String workState) {
+        this.workState = workState;
+    }
+
+    public String getRedState() {
+        return redState;
+    }
+
+    public void setRedState(String redState) {
+        this.redState = redState;
+    }
+
+    public String getInvalidState() {
+        return invalidState;
+    }
+
+    public void setInvalidState(String invalidState) {
+        this.invalidState = invalidState;
+    }
+
+    public String getInvalidRange() {
+        return invalidRange;
+    }
+
+    public void setInvalidRange(String invalidRange) {
+        this.invalidRange = invalidRange;
+    }
+
+    public String getIsReprint() {
+        return isReprint;
+    }
+
+    public void setIsReprint(String isReprint) {
+        this.isReprint = isReprint;
+    }
+
+    public String getRedReason() {
+        return redReason;
+    }
+
+    public void setRedReason(String redReason) {
+        this.redReason = redReason;
+    }
+
+    public String getRedAppNo() {
+        return redAppNo;
+    }
+
+    public void setRedAppNo(String redAppNo) {
+        this.redAppNo = redAppNo;
+    }
+
+    public String getEntName() {
+        return entName;
+    }
+
+    public void setEntName(String entName) {
+        this.entName = entName;
+    }
+
+    public String getTaxNo() {
+        return taxNo;
+    }
+
+    public void setTaxNo(String taxNo) {
+        this.taxNo = taxNo;
+    }
+
+    public String getTaxBank() {
+        return taxBank;
+    }
+
+    public void setTaxBank(String taxBank) {
+        this.taxBank = taxBank;
+    }
+
+    public String getTaxBankAccount() {
+        return taxBankAccount;
+    }
+
+    public void setTaxBankAccount(String taxBankAccount) {
+        this.taxBankAccount = taxBankAccount;
+    }
+
+    public String getTaxAddress() {
+        return taxAddress;
+    }
+
+    public void setTaxAddress(String taxAddress) {
+        this.taxAddress = taxAddress;
+    }
+
+    public String getTaxPhone() {
+        return taxPhone;
+    }
+
+    public void setTaxPhone(String taxPhone) {
+        this.taxPhone = taxPhone;
+    }
+
+    public String getIsSum() {
+        return isSum;
+    }
+
+    public void setIsSum(String isSum) {
+        this.isSum = isSum;
+    }
+
+    public String getOpenerId() {
+        return openerId;
+    }
+
+    public void setOpenerId(String openerId) {
+        this.openerId = openerId;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo;
+    }
+
+    public String getInvoiceCode() {
+        return invoiceCode;
+    }
+
+    public void setInvoiceCode(String invoiceCode) {
+        this.invoiceCode = invoiceCode;
+    }
+
+    public String getPrintDate() {
+        return printDate;
+    }
+
+    public void setPrintDate(String printDate) {
+        this.printDate = printDate;
+    }
+
+    public String getMoneyAmountTax() {
+        return moneyAmountTax;
+    }
+
+    public void setMoneyAmountTax(String moneyAmountTax) {
+        this.moneyAmountTax = moneyAmountTax;
+    }
+
+    public String getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(String taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public String getMoneyAmountNotax() {
+        return moneyAmountNotax;
+    }
+
+    public void setMoneyAmountNotax(String moneyAmountNotax) {
+        this.moneyAmountNotax = moneyAmountNotax;
+    }
+
+    public String getInvoiceState() {
+        return invoiceState;
+    }
+
+    public void setInvoiceState(String invoiceState) {
+        this.invoiceState = invoiceState;
+    }
+
+    public String getStateDate() {
+        return stateDate;
+    }
+
+    public void setStateDate(String stateDate) {
+        this.stateDate = stateDate;
+    }
+}

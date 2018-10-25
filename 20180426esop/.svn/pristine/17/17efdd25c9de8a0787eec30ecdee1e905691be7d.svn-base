@@ -1,0 +1,74 @@
+package com.esop.common.security;
+
+import com.esop.base.service.Invoke4AService;
+import com.esop.pub.ServiceUrlBean;
+import okhttp3.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Repository;
+
+/**
+ * Created by wangbl on 16/8/23.
+ */
+/*在湖北项目没用,正常这里应该调用服务获取用户密码,然后与前台登录密码进行匹配验证*/
+@Repository
+public class UserService {
+    @Autowired
+    Invoke4AService invoke4AService;
+    @Autowired
+    SHAEncrypt shaEncrypt;
+    @Autowired
+    ServiceUrlBean serviceUrlBean ;
+    private static Logger logger = Logger.getLogger(UserService.class);
+    public UserDto getUserInfo(String username) {
+
+        String login_no = "";
+        UserDto userDto = new UserDto();
+        userDto.setUsername(username);
+        try {
+            String[] tokenInfo = username.split("@");
+            System.out.println("tokenInfo.length="+tokenInfo.length);
+            //通过tokenInfo数组的长度判断是4A验证还是密码验证
+            if (tokenInfo.length<2) {
+                DESPlus desPlus = new DESPlus();
+                //userDto.setPassword(shaEncrypt.SHA256(desPlus.decrypt(getPassword(username))));
+                userDto.setPassword(shaEncrypt.SHA1(desPlus.decrypt(getPassword(username))));
+            } else {
+                String result = invoke4AService.invoke4A(tokenInfo[4], tokenInfo[0], tokenInfo[1], tokenInfo[2]);
+                logger.info("4a_result="+result);
+                if (result.substring(result.indexOf("<RESULT>") + 8, result.indexOf("</RESULT>")).equals("1")) {
+                    userDto.setPassword(shaEncrypt.SHA1(result.substring(result.indexOf("<ACCOUNT>") + 9, result.indexOf("</ACCOUNT>"))));
+                }else{
+                    userDto.setPassword(shaEncrypt.SHA1("密码错误"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        userDto.setRole("ROLE_USER");
+        return userDto;
+    }
+
+    private String getPassword(String login_no) {
+        OkHttpClient client = new OkHttpClient();
+        String password = "";
+        try {
+            RequestBody body = new FormBody.Builder()
+                    .add("login_no", login_no)
+                    .build();
+            Request okrequest = new Request.Builder()
+                    .url("http://"+serviceUrlBean.getServiceUrl() + "/selectLoginNoPassword")
+                    //.url("http://localhost:8082/esop/selectPassword")
+                    .post(body)
+                    .build();
+            Response okresponse = client.newCall(okrequest).execute();
+            password = okresponse.body().string();
+            System.out.println("返回密码信息=" + password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return password;
+    }
+}

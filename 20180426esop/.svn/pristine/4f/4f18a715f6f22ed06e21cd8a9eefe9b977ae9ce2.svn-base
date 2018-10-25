@@ -1,0 +1,61 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+/**
+ * Created by admin on 2017/12/7.
+ */
+public class SystemUserInfoDto {
+    private  String staff_code;
+    private  String login_name;
+    private  String role_id;
+    private  String hangye_zhongxin;
+    private  String union_code;
+    private  String org_id;
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getStaff_code() {
+        return staff_code;
+    }
+
+    public void setStaff_code(String staff_code) {
+        this.staff_code = staff_code;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(String role_id) {
+        this.role_id = role_id;
+    }
+
+    public String getHangye_zhongxin() {
+        return hangye_zhongxin;
+    }
+
+    public void setHangye_zhongxin(String hangye_zhongxin) {
+        this.hangye_zhongxin = hangye_zhongxin;
+    }
+
+    public String getUnion_code() {
+        return union_code;
+    }
+
+    public void setUnion_code(String union_code) {
+        this.union_code = union_code;
+    }
+}

@@ -1,0 +1,500 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/12/15.
+ */
+public class EpAdjustInfoDto extends BaseDto{
+    //申请信息
+    String work_order_flowNo = "";//工单流水号
+    String applicant = "";//调账申请人
+    String applicantName = "";//调账申请人
+    String role_codes = "";//角色id
+    String apply_date = "";//申请日期
+    String applyNo = "";//申请人工号(用于接收审批进度查询申请人)
+
+    //出账集团资金账户信息
+    String grp_fund_acct_id = "";//集团资金账户号
+    String grp_cust_id = "";//集团客户编号
+    String grp_cust_name = "";//集团客户名称
+    String bank_acct_id = "";//绑定银行账号
+    String blank_name = "";//开户行
+    String owner_org_id = "";//归属分公司
+    String businessCenter = "";//行业中心
+    String login_no2 = "";//临时字段
+
+    String status = "";//账号状态
+    String adjust_money = "";//调账金额(分)
+    String balance = "";//资金账户余额（分）
+    String now_balance = "";//资金账户可用余额（分）
+    String hold_balance = "";//占用资金（分）
+    String freeze_fee = "";//冻结资金（分）
+
+    //用于页面展示
+    String newBalance = "";//账户余额（元）
+    String newNowbalance = "";//可用余额（元）
+    String newHoldbalance = "";//占用资金（元）
+    String newFreezefee = "";//冻结资金（元）
+    String adjust_money_yuan = "";//调账金额(元),用于页面展示
+
+
+    String out_group = "";//出账集团
+    String out_grp_no = "";//集团编号
+    String out_linkman = "";//资金联系人
+    String out_link_phone = "";//联系人电话
+    String out_link_type = "";//联系人类型
+    //入账集团调账信息
+    String into_group = "";//入账集团
+    String into_grp_no = "";//集团编号
+    String into_linkman = "";//资金联系人
+    String into_link_phone = "";//联系人电话
+    String into_link_type = "";//联系人类型
+    String adjust_reason = "";//调账原因
+
+    String adjust_explain = "";//调账说明
+    //附件
+    String xFile = "";//附件ID
+    String fileName = "";//附件名称
+    //其他
+    String order_status = "";//工单状态
+    String start_date = "";//开始时间
+    String end_date = "";//开始时间
+    String runningWarterNo="";//交易流水号
+
+    //审批信息
+    String login_name = "";
+    String dealTime = "";
+    String nextDealPerson = "";
+    String link_name = "";
+    String nodeId = "";
+    String taskOrderId = "";
+    String applicantNo = "";
+    String approveOpinion = "";
+    String memo ="";
+
+    public String getApplicantName() {
+        return applicantName;
+    }
+
+    public void setApplicantName(String applicantName) {
+        this.applicantName = applicantName;
+    }
+
+    public String getLogin_no2() {
+        return login_no2;
+    }
+
+    public void setLogin_no2(String login_no2) {
+        this.login_no2 = login_no2;
+    }
+
+    public String getBusinessCenter() {
+        return businessCenter;
+    }
+
+    public void setBusinessCenter(String businessCenter) {
+        this.businessCenter = businessCenter;
+    }
+
+    public String getApplyNo() {
+        return applyNo;
+    }
+
+    public void setApplyNo(String applyNo) {
+        this.applyNo = applyNo;
+    }
+
+    public String getRole_codes() {
+        return role_codes;
+    }
+
+    public void setRole_codes(String role_codes) {
+        this.role_codes = role_codes;
+    }
+
+    public String getAdjust_money_yuan() {
+        return adjust_money_yuan;
+    }
+
+    public void setAdjust_money_yuan(String adjust_money_yuan) {
+        this.adjust_money_yuan = adjust_money_yuan;
+    }
+    public String getNewBalance() {
+        return newBalance;
+    }
+
+    public void setNewBalance(String newBalance) {
+        this.newBalance = newBalance;
+    }
+
+    public String getNewNowbalance() {
+        return newNowbalance;
+    }
+
+    public void setNewNowbalance(String newNowbalance) {
+        this.newNowbalance = newNowbalance;
+    }
+
+    public String getNewHoldbalance() {
+        return newHoldbalance;
+    }
+
+    public void setNewHoldbalance(String newHoldbalance) {
+        this.newHoldbalance = newHoldbalance;
+    }
+
+    public String getNewFreezefee() {
+        return newFreezefee;
+    }
+
+    public void setNewFreezefee(String newFreezefee) {
+        this.newFreezefee = newFreezefee;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getRunningWarterNo() {
+        return runningWarterNo;
+    }
+
+    public void setRunningWarterNo(String runningWarterNo) {
+        this.runningWarterNo = runningWarterNo;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getDealTime() {
+        return dealTime;
+    }
+
+    public void setDealTime(String dealTime) {
+        this.dealTime = dealTime;
+    }
+
+    public String getNextDealPerson() {
+        return nextDealPerson;
+    }
+
+    public void setNextDealPerson(String nextDealPerson) {
+        this.nextDealPerson = nextDealPerson;
+    }
+
+    public String getLink_name() {
+        return link_name;
+    }
+
+    public void setLink_name(String link_name) {
+        this.link_name = link_name;
+    }
+
+    public String getNodeId() {
+        return nodeId;
+    }
+
+    public void setNodeId(String nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getApplicantNo() {
+        return applicantNo;
+    }
+
+    public void setApplicantNo(String applicantNo) {
+        this.applicantNo = applicantNo;
+    }
+
+    public String getApproveOpinion() {
+        return approveOpinion;
+    }
+
+    public void setApproveOpinion(String approveOpinion) {
+        this.approveOpinion = approveOpinion;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getStart_date() {
+        return start_date;
+    }
+
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
+    }
+
+    public String getEnd_date() {
+        return end_date;
+    }
+
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
+    }
+
+    public String getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
+    }
+
+    public String getWork_order_flowNo() {
+        return work_order_flowNo;
+    }
+
+    public void setWork_order_flowNo(String work_order_flowNo) {
+        this.work_order_flowNo = work_order_flowNo;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getGrp_fund_acct_id() {
+        return grp_fund_acct_id;
+    }
+
+    public void setGrp_fund_acct_id(String grp_fund_acct_id) {
+        this.grp_fund_acct_id = grp_fund_acct_id;
+    }
+
+    public String getGrp_cust_id() {
+        return grp_cust_id;
+    }
+
+    public void setGrp_cust_id(String grp_cust_id) {
+        this.grp_cust_id = grp_cust_id;
+    }
+
+    public String getGrp_cust_name() {
+        return grp_cust_name;
+    }
+
+    public void setGrp_cust_name(String grp_cust_name) {
+        this.grp_cust_name = grp_cust_name;
+    }
+
+    public String getBank_acct_id() {
+        return bank_acct_id;
+    }
+
+    public void setBank_acct_id(String bank_acct_id) {
+        this.bank_acct_id = bank_acct_id;
+    }
+
+    public String getBlank_name() {
+        return blank_name;
+    }
+
+    public void setBlank_name(String blank_name) {
+        this.blank_name = blank_name;
+    }
+
+    public String getOwner_org_id() {
+        return owner_org_id;
+    }
+
+    public void setOwner_org_id(String owner_org_id) {
+        this.owner_org_id = owner_org_id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getNow_balance() {
+        return now_balance;
+    }
+
+    public void setNow_balance(String now_balance) {
+        this.now_balance = now_balance;
+    }
+
+    public String getHold_balance() {
+        return hold_balance;
+    }
+
+    public void setHold_balance(String hold_balance) {
+        this.hold_balance = hold_balance;
+    }
+
+    public String getFreeze_fee() {
+        return freeze_fee;
+    }
+
+    public void setFreeze_fee(String freeze_fee) {
+        this.freeze_fee = freeze_fee;
+    }
+
+    public String getOut_group() {
+        return out_group;
+    }
+
+    public void setOut_group(String out_group) {
+        this.out_group = out_group;
+    }
+
+    public String getOut_grp_no() {
+        return out_grp_no;
+    }
+
+    public void setOut_grp_no(String out_grp_no) {
+        this.out_grp_no = out_grp_no;
+    }
+
+    public String getOut_linkman() {
+        return out_linkman;
+    }
+
+    public void setOut_linkman(String out_linkman) {
+        this.out_linkman = out_linkman;
+    }
+
+    public String getOut_link_phone() {
+        return out_link_phone;
+    }
+
+    public void setOut_link_phone(String out_link_phone) {
+        this.out_link_phone = out_link_phone;
+    }
+
+    public String getOut_link_type() {
+        return out_link_type;
+    }
+
+    public void setOut_link_type(String out_link_type) {
+        this.out_link_type = out_link_type;
+    }
+
+    public String getInto_group() {
+        return into_group;
+    }
+
+    public void setInto_group(String into_group) {
+        this.into_group = into_group;
+    }
+
+    public String getInto_grp_no() {
+        return into_grp_no;
+    }
+
+    public void setInto_grp_no(String into_grp_no) {
+        this.into_grp_no = into_grp_no;
+    }
+
+    public String getInto_linkman() {
+        return into_linkman;
+    }
+
+    public void setInto_linkman(String into_linkman) {
+        this.into_linkman = into_linkman;
+    }
+
+    public String getInto_link_phone() {
+        return into_link_phone;
+    }
+
+    public void setInto_link_phone(String into_link_phone) {
+        this.into_link_phone = into_link_phone;
+    }
+
+    public String getInto_link_type() {
+        return into_link_type;
+    }
+
+    public void setInto_link_type(String into_link_type) {
+        this.into_link_type = into_link_type;
+    }
+
+    public String getAdjust_reason() {
+        return adjust_reason;
+    }
+
+    public void setAdjust_reason(String adjust_reason) {
+        this.adjust_reason = adjust_reason;
+    }
+
+    public String getAdjust_money() {
+        return adjust_money;
+    }
+
+    public void setAdjust_money(String adjust_money) {
+        this.adjust_money = adjust_money;
+    }
+
+    public String getAdjust_explain() {
+        return adjust_explain;
+    }
+
+    public void setAdjust_explain(String adjust_explain) {
+        this.adjust_explain = adjust_explain;
+    }
+
+    public String getxFile() {
+        return xFile;
+    }
+
+    public void setxFile(String xFile) {
+        this.xFile = xFile;
+    }
+
+    String link_msg = "";
+
+    public String getLink_msg() {
+        return link_msg;
+    }
+
+    public void setLink_msg(String link_msg) {
+        this.link_msg = link_msg;
+    }
+}

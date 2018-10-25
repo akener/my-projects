@@ -1,0 +1,36 @@
+package com.esop.busiAnalysis.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.esop.busiAnalysis.dto.ManagerAmountTOP50Dto;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/6.
+ */
+@Repository
+public class managerAmountTop50Service {
+    @Autowired
+    SqlE sqlE;
+    //重点集团发展量top50
+    public Result getRegionTop50list(ManagerAmountTOP50Dto parameter){
+        System.out.println("成功");
+        Result result = sqlE.selectPage("selectRegionTop50",parameter);
+        System.out.println("result="+result);
+        return result;
+    }
+
+    //查询区县
+    public List getTownName(ManagerAmountTOP50Dto parameter){
+        System.out.println("成功");
+        List list = sqlE.selectM("selectTownName2",parameter);
+        System.out.println(list.size());
+        System.out.println("查询城市区县"+list);
+        return list;
+    }
+}

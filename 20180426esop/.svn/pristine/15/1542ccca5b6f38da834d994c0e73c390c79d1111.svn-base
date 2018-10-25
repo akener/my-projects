@@ -1,0 +1,45 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.GroupLevelDto;
+import com.esop.workbench.service.GroupLevelService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by liuxiao on 2017/7/2.
+ */
+@RestController
+public class GroupLevelController {
+    @Autowired
+    GroupLevelService groupLevelService;
+    @RequestMapping(value = "/selectGroupLevel")
+    /*public String selectGroupLevel(GroupLevelDto parameter){
+        Map map = new HashMap();
+        map.put("GROUP_ID",parameter.getGroup_id());
+        return groupLevelService.getGroupLevel(map);
+    }*/
+    public List selectGroupLevel(GroupLevelDto parameter){
+        Map map = new HashMap();
+        map.put("GROUP_ID",parameter.getGroup_id());
+        String level = groupLevelService.getGroupLevel(map);
+        GroupLevelDto groupLevelDto = new GroupLevelDto();
+        List<GroupLevelDto> respls = new ArrayList();
+        groupLevelDto.setDenorm_level(level);
+        System.out.println("--------------"+level);
+        if(level.equals("2")){
+            List<GroupLevelDto> ls = groupLevelService.getParentGroupId(parameter);
+            for (GroupLevelDto gld:ls) {
+                System.out.println("--------------"+gld.getParent_group_id());
+                groupLevelDto.setParent_group_id(gld.getParent_group_id());
+            }
+        }
+        respls.add(groupLevelDto);
+        return respls;
+    }
+}

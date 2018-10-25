@@ -1,0 +1,62 @@
+package com.esop.basicManagement.service;
+
+
+import com.esop.basicManagement.dto.BasicManageDoBusiDto;
+import com.esop.common.dataBase.SqlE;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@Repository
+public class BasicManageDoBusiService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    //
+    public List doBusiRegionSV(BasicManageDoBusiDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectdoBusiRegionXml";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //
+    public List doBusiTownSV(BasicManageDoBusiDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectdoBusiTownXml";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //
+    public List doBusiOfficeSV(BasicManageDoBusiDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectdoBusiOfficeXml";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    //
+    public List doBusiRightSV(BasicManageDoBusiDto parameter){
+
+        String selectTion = "";
+        selectTion = "selectdoBusiRightXml";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+    public List doBusiOfficeLoginSV(BasicManageDoBusiDto parameter){
+
+        String selectTion = "";
+        List list;
+        selectTion = "selectdoBusiLogin_41Xml";
+        list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+}

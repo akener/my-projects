@@ -1,0 +1,190 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2018/1/9.
+ */
+public class GroupBusApplyCountDto extends BaseDto{
+    private  String  branch_company ;//分公司
+    private  String  name ;//分公司名称
+    private  String  business_center ;//行业中心
+    private  String  groupNo ;//集团编号
+    private  String  groupName ;//集团名称
+    private  String  manager;//客户经理工号
+    private  String  managerName;//客户经理名称
+    private  String  type_name;//申请单类型
+    private  String  taskOrderId;//申请单号
+    private  String  order_status;//申请单状态
+    private  String  clerk;//账务员
+    private  String  applyDate;//申请日期
+    private  String  isFormAcceptOrder;//是否生成业务受理工单
+    private  String  busAcceptOrderId;//申请单生成的业务受理单编号
+    private  String  acceptStatus;//业务受理单状态
+    private  String  start_time;//开始时间
+    private  String  end_time;//结束时间
+    private  String  over_time;//
+    //临时字段
+    private String org_id;
+    private String center_code;
+
+    public String getBranch_company() {
+        return branch_company;
+    }
+
+    public void setBranch_company(String branch_company) {
+        this.branch_company = branch_company;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getGroupNo() {
+        return groupNo;
+    }
+
+    public void setGroupNo(String groupNo) {
+        this.groupNo = groupNo;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getManager() {
+        return manager;
+    }
+
+    public void setManager(String manager) {
+        this.manager = manager;
+    }
+
+    public String getManagerName() {
+        return managerName;
+    }
+
+    public void setManagerName(String managerName) {
+        this.managerName = managerName;
+    }
+
+    public String getType_name() {
+        return type_name;
+    }
+
+    public void setType_name(String type_name) {
+        this.type_name = type_name;
+    }
+
+    public String getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(String taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public String getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(String order_status) {
+        this.order_status = order_status;
+    }
+
+    public String getClerk() {
+        return clerk;
+    }
+
+    public void setClerk(String clerk) {
+        this.clerk = clerk;
+    }
+
+    public String getApplyDate() {
+        return applyDate;
+    }
+
+    public void setApplyDate(String applyDate) {
+        this.applyDate = applyDate;
+    }
+
+    public String getIsFormAcceptOrder() {
+        return isFormAcceptOrder;
+    }
+
+    public void setIsFormAcceptOrder(String isFormAcceptOrder) {
+        this.isFormAcceptOrder = isFormAcceptOrder;
+    }
+
+    public String getBusAcceptOrderId() {
+        return busAcceptOrderId;
+    }
+
+    public void setBusAcceptOrderId(String busAcceptOrderId) {
+        this.busAcceptOrderId = busAcceptOrderId;
+    }
+
+    public String getAcceptStatus() {
+        return acceptStatus;
+    }
+
+    public void setAcceptStatus(String acceptStatus) {
+        this.acceptStatus = acceptStatus;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
+    }
+
+    public String getOver_time() {
+        return over_time;
+    }
+
+    public void setOver_time(String over_time) {
+        this.over_time = over_time;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+}

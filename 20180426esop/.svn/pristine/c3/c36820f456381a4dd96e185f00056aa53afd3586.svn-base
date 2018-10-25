@@ -1,0 +1,91 @@
+package com.esop.cqDevelopment.refund.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowInfoDto;
+import com.esop.cqDevelopment.refund.dto.EpCapAnnulInfo;
+import org.apache.log4j.Logger;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by user on 2017/11/29.
+ */
+//入账反撤流程
+@Repository
+public class AnnulService {
+    private static Logger logger = Logger.getLogger(AnnulService.class);
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    //新增反撤申请单基本信息
+    public int insertAnnulInfo(EpCapAnnulInfo param){
+        int result = sqlE.insertM("insertAnnulInfo",param);
+        return result;
+    }
+    //保存反撤申请单流程发起信息
+//    @Transactional(propagation= Propagation.REQUIRED)
+    public int insertWorkFlowInfos(WorkFlowInfoDto param){
+        int result = sqlE.insertM("insertWorkFlowInfos",param);
+        return result;
+    }
+    //审批信息查询
+    public Result getAnnulApproveQuery(EpCapAnnulInfo parameter){
+        Result result = sqlE.selectPage("getAnnulApproveQuery",parameter);
+        return result;
+    }
+
+
+
+    //反撤申请列表(包括待办、已办)
+    public Result getAnnulListInfo(EpCapAnnulInfo parameter){
+        Result result = sqlE.selectPage("selectAnnulListInfo",parameter);
+        return result;
+    }
+    //根据工单流水号查单条数据明细
+    public EpCapAnnulInfo getAnnulInfoByTaskOrderId(EpCapAnnulInfo epCapAnnulInfo){
+        logger.info("根据工单流水号查单条数据明细:"+ epCapAnnulInfo.toString());
+        return (EpCapAnnulInfo)sqlE.selectM("getAnnulInfoByTaskOrderId",epCapAnnulInfo).get(0);
+    }
+    //查询当前环节nodeId
+    public List getWorkFlowNodeIdByTaskOrderId(WorkFlowInfoDto parameter) {
+        List list = sqlE.selectM("getWorkFlowNodeIdByTaskOrderId", parameter);
+        return list;
+    }
+    //更改申请单状态
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateAnnulOrderStatus(EpCapAnnulInfo param){
+        if (sqlE.updateM("updateAnnulOrderStatus",param)>0){
+            logger.info("更改申请单状态成功");
+            return true;
+        }
+        logger.info("更改失败");
+        return false;
+    }
+
+    //保存审批信息
+    public int insertAnnulDoApproveInfo(WorkFlowFirstDto parameter){
+        int result = sqlE.insertM("insertWorkFlowInfos",parameter);
+        return result;
+    }
+    //过滤正在审批中的入账反撤信息
+    public EpCapAnnulInfo filterOnApproveAnnulOffsetInfo(){
+        logger.info("过滤正在审批中的入账反撤信息--->>>>>>>>>>>>");
+        return sqlSessionTemplate.selectOne("filterOnApproveAnnulInfo");
+    }
+    //待审批列表信息查询
+    public Result getAnnulDoApproveQuery(EpCapAnnulInfo parameter){
+        Result result = sqlE.selectPage("getAnnulDoApproveQuery",parameter);
+        return result;
+    }
+
+
+
+}

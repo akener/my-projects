@@ -1,0 +1,125 @@
+package com.esop.cust.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Shinelon on 2017/6/26.
+ */
+public class BUSI_INFO extends BaseDto{
+    String login_no = "";//客户经理工号
+    String phone_no = "";//用户手机号码
+    String message = "";//留言信息
+    String unit_id = "";//归属集团编码
+    String unit_name = "";//集团名称
+    String login_name = "";//客户名
+    String man_type = "";//成员类型
+    String create_time = "";//创建时间
+    String name = "";//客户名
+    String id_no = "";//
+    String isServ_no = "";//用于判断是否是客户经理发送的消息  为Y 时是客户经理发送的消息
+    String is_read = "";//是否已读，接口做的是客户经理侧，所以客户经理侧是已读信息，客户侧新发送的消息是未读
+    String count = "";//未读的留言数量
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getPhone_no() {
+        return phone_no;
+    }
+
+    public void setPhone_no(String phone_no) {
+        this.phone_no = phone_no;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getMan_type() {
+        return man_type;
+    }
+
+    public void setMan_type(String man_type) {
+        this.man_type = man_type;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getId_no() {
+        return id_no;
+    }
+
+    public void setId_no(String id_no) {
+        this.id_no = id_no;
+    }
+
+    public String getIsServ_no() {
+        return isServ_no;
+    }
+
+    public void setIsServ_no(String isServ_no) {
+        this.isServ_no = isServ_no;
+    }
+
+    public String getIs_read() {
+        return is_read;
+    }
+
+    public void setIs_read(String is_read) {
+        this.is_read = is_read;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+}

@@ -1,0 +1,135 @@
+$(document).ready(function() {
+    loadDealLogin();
+
+    //加载合同资费和合同基本信息
+    getContractModel();
+
+    //获取流程处理轨迹
+    selOrderTrances();
+} );
+
+
+function loadDealLogin() {
+    $.ajax({
+        url: "orderflow/assist",
+        type: "post",
+        "data": {
+            "regionId": $("#regionId").val(),
+            "procId": $("#procId").val(),
+            "stepId": $("#stepId").val()
+        },
+        success: function (result) {
+            $.each(result, function (i, field) {
+                $("#dealLoginNo").append('<option  value="'+field.assignee+'">'+field.assigneeName+'</option>')
+            })
+        }
+    });
+};
+
+
+
+function dealTask() {
+    var dealLoginNo = $("#dealLoginNo").val();
+    var remark = $("#remark").val();
+    if(dealLoginNo==null||$.trim(dealLoginNo)==''){
+        alert('请选择处理人');
+        $("#dealLoginNo").focus();
+        return;
+    }
+    if(remark==null||$.trim(remark)==''){
+        alert('请输入备注');
+        $("#remark").focus();
+        return;
+    }
+    $("#dealTaskId").text('提交中..')
+    $("#dealTaskId").attr("disabled",true);
+
+    $.ajax({
+        url: "orderflow/submitAssist",
+        type: "post",
+        "data": {
+            "taskInstId": $("#taskInstId").val(),
+            "dealLoginNo": dealLoginNo,
+            "remarks": remark
+        },
+        success: function (result) {
+            if(result==0){
+                alert("转派成功");
+                window.close();
+            }else{
+                alert("转派失败");
+            }
+
+            $("#dealTaskId").text('提交')
+            $("#dealTaskId").removeAttr("disabled");
+        }
+    });
+};
+
+//加载合同信息、产品信息模块
+function getContractModel() {
+
+    //资费信息
+    $.ajax({
+        type: 'POST',
+        url: 'toContractChargeInfo',
+        data: {
+            "contract_id": $("#contract_id").val(),
+            "elecpack_id": $("#elecpack_id").val()
+        },
+        dataType: 'text',
+        success: function (data) {
+            $("#chargesInfo").html(data);
+            $(".display_line").css('display', 'none');
+            $(".disabled_number").attr('disabled', true);
+
+        },
+        error: function (data) {
+            alert("加载资费信息失败！");
+        }
+    });
+
+    $.ajax({
+        type: 'POST',
+        url: 'toContractDetailInfo',
+        data: {
+            "contract_id": $("#contract_id").val(),
+            "elecpack_id": $("#elecpack_id").val()
+        },
+        dataType: 'text',
+        success: function (data) {
+            $("#tbody_contract").html(data);
+            $(".disabled_cloum").attr("disabled", true);
+            $(".display_line").css('display', 'none');
+            $(".disabled_cloum").css('color', 'gray');
+        },
+        error: function (data) {
+            alert("加载合同信息模板失败！");
+        }
+    });
+}
+
+function selOrderTrances(procInstId) {
+    $.ajax({
+        url: "orderflow/getTrance",
+        type: "post",
+        "data": {
+            "procInstId": $("#procInstId").val()
+        },
+        success: function (result) {
+            $.each(result, function (i, field) {
+                var dealOpinion = "";
+                var dealRemarks = "";
+                if (field.dealOpinion != null && field.dealOpinion != "") {
+                    dealOpinion = field.dealOpinion;
+                }
+                if (field.dealRemarks != null && field.dealRemarks != "") {
+                    dealRemarks = field.dealRemarks;
+                }
+                var trStr = "<tr class='tr-data-cc'><td>" + field.taskInstId + "</td><td>" + field.stepName + "</td><td>" + field.dealName + "</td><td>" + field.dealDateTime + "</td><td>" + dealOpinion
+                    + "</td><td>" + dealRemarks + "</td></tr>";
+                $("#trancesTb").append(trStr);
+            })
+        }
+    });
+}

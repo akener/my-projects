@@ -1,0 +1,24 @@
+package com.esop.cqDevelopment.capitalManage.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class CapitalUseFundQueryService {
+    @Autowired
+    private static Logger logger = Logger.getLogger(CapitalUseFundQueryService.class);
+
+    @Autowired
+    SqlE sqlE;
+
+    public Result getCapitalUseFundQuery(CapitalUseApproveQueryDto parameter){
+        logger.info("getCapitalUseFundQuery--查询CRM处理失败的工单开始");
+        Result result = sqlE.selectPage("getCapitalUseFundQuery",parameter);
+        logger.info("getCapitalUseFundQuery--查询CRM处理失败的工单结束");
+        return result;
+    }
+}

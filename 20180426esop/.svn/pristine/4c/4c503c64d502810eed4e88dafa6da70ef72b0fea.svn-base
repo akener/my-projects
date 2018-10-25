@@ -1,0 +1,88 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * @Description: 客户经理参考信息数据层
+ * @Date: Created by yuansp on 2017/6/8.
+ */
+public class ManagerRefInfoDto extends BaseDto{
+
+    private String manager_no = "";//客户经理工号
+    private String manager_name = "";//客户经理姓名
+    private String unit_amount = "";//负责集团个数
+    private String unit_member = "";//集团成员个数
+    private String net_radio = "";//4G上网客户占比
+    private String integration_radio = "";//一体化套餐占比
+    private String terminal_radio = "";//4G终端占比
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getUnit_amount() {
+        return unit_amount;
+    }
+
+    public void setUnit_amount(String unit_amount) {
+        this.unit_amount = unit_amount;
+    }
+
+    public String getUnit_member() {
+        return unit_member;
+    }
+
+    public void setUnit_member(String unit_member) {
+        this.unit_member = unit_member;
+    }
+
+    public String getNet_radio() {
+        return net_radio;
+    }
+
+    public void setNet_radio(String net_radio) {
+        this.net_radio = net_radio;
+    }
+
+    public String getIntegration_radio() {
+        return integration_radio;
+    }
+
+    public void setIntegration_radio(String integration_radio) {
+        this.integration_radio = integration_radio;
+    }
+
+    public String getTerminal_radio() {
+        return terminal_radio;
+    }
+
+    public void setTerminal_radio(String terminal_radio) {
+        this.terminal_radio = terminal_radio;
+    }
+
+
+    @Override
+    public String toString() {
+        return "ManagerRefInfoDto{" +
+                "manager_no='" + manager_no + '\'' +
+                ", manager_name='" + manager_name + '\'' +
+                ", unit_amount='" + unit_amount + '\'' +
+                ", unit_member='" + unit_member + '\'' +
+                ", net_radio='" + net_radio + '\'' +
+                ", integration_radio='" + integration_radio + '\'' +
+                ", terminal_radio='" + terminal_radio + '\'' +
+                '}';
+    }
+}

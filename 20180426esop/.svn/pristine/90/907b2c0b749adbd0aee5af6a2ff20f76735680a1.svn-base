@@ -1,0 +1,28 @@
+package com.esop.workbench.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.workbench.dto.AllPayIncomeDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by liuxiao on 2017/6/13.
+ */
+@Repository
+public class MajorBusinessService {
+    @Autowired
+    SqlE sqlE;
+    private static Logger logger = Logger.getLogger(MajorBusinessService.class);
+    //查询操作
+    public List getMajorBusinessList(AllPayIncomeDto allPayIncomeDto){
+        List list = sqlE.selectM("selectMajorBusinessList",allPayIncomeDto);
+        return list;
+    }
+    public List getTown(AllPayIncomeDto allPayIncomeDto){
+        List list = sqlE.selectM("selectTown",allPayIncomeDto);
+        return list;
+    }
+}

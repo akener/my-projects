@@ -1,0 +1,16 @@
+/**
+ * OrderCreateSvc.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
+package com.esop.cqDevelopment.elecPack.service;
+
+public interface OrderCreateSvc extends java.rmi.Remote {
+    public String doCreateOrderCq(String arg0) throws java.rmi.RemoteException, com.esop.cqDevelopment.elecPack.service.BusinessException;
+    public String doCreateOrderComm(String arg0) throws java.rmi.RemoteException, com.esop.cqDevelopment.elecPack.service.BusinessException;
+    public String doQueryOpCodeList(String arg0) throws java.rmi.RemoteException, com.esop.cqDevelopment.elecPack.service.BusinessException;
+    public String doCreateOrder(String arg0) throws java.rmi.RemoteException, com.esop.cqDevelopment.elecPack.service.BusinessException;
+    public String doQueryOrderCount(String arg0) throws java.rmi.RemoteException, com.esop.cqDevelopment.elecPack.service.BusinessException;
+}

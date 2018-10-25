@@ -1,0 +1,84 @@
+package com.esop.vip.controller;
+
+import com.esop.basicManagement.dto.ProductListDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.jaxb.CallCrmService;
+import com.esop.common.jaxb.JsonToXml;
+import com.esop.vip.service.ProductListService;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by lubinghan on 2017/7/24.
+ */
+@RestController
+public class ProductListController {
+    @Autowired
+    CallCrmService callCrmService;
+    @Autowired
+    ProductListService productListService;
+    @RequestMapping(value="/selectProducts")
+    //与营业同步的服务sGroupProductList_XML
+    public Map<String, Object> selectProducts(ProductListDto parameter){
+        try {
+            /*String xmlOLEsopParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT>";
+            xmlOLEsopParamter +="<LOGIN_ACCEPT>"+0+"</LOGIN_ACCEPT>";
+            xmlOLEsopParamter +="<CHN_SOURCE>"+01+"</CHN_SOURCE>";
+            xmlOLEsopParamter +="<UNIT_ID>"+"4510232744"+"</UNIT_ID>";
+            xmlOLEsopParamter += "</ROOT>";*/
+            String xmlOLEsopParamter = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root>";
+            xmlOLEsopParamter += "<LOGIN_ACCEPT>0</LOGIN_ACCEPT>";//操作工号
+            xmlOLEsopParamter += "<CHN_SOURCE>01</CHN_SOURCE>";//操作工号密码(营业密码)
+            xmlOLEsopParamter += "<OP_CODE></OP_CODE>";
+            xmlOLEsopParamter += "<LOGIN_NO></LOGIN_NO>";
+            xmlOLEsopParamter += "<LOGIN_PWD></LOGIN_PWD>";
+            xmlOLEsopParamter += "<PHONE_NO></PHONE_NO>";
+            xmlOLEsopParamter += "<USER_PWD></USER_PWD>";
+            xmlOLEsopParamter += "<UNIT_ID>"+parameter.getUnit_id()+"</UNIT_ID>";
+//            xmlOLEsopParamter += "<UNIT_ID>4510232744</UNIT_ID>";
+//            xmlOLEsopParamter += "<UNIT_ID>"+unit_id+"</UNIT_ID>";
+            xmlOLEsopParamter += "</root>";
+            String resultXml = callCrmService.CrmWebserviceCall("sGroupProductList_XML",xmlOLEsopParamter);
+            System.out.println("+++++++++++++++++++++++++ xmlParamter = "+resultXml);
+            String resulJson = "";
+            resultXml=resultXml.replaceAll(" type=\"string\"","");
+            JsonToXml jsonToXml = new JsonToXml();
+            resulJson = jsonToXml.xml2json(resultXml).replaceAll("","");
+            JSONObject json1 = new JSONObject( jsonToXml.xml2json(resultXml));
+            System.out.println(resulJson);
+            return json1.toMap();
+        }catch (Exception e){
+            return null;
+        }
+
+    }
+
+    //获取sm_code
+    @RequestMapping(value = "getSmCOde")
+    public String getSmCOde(String id_no){
+        Map map = new HashMap();
+        map.put("ID_NO",id_no);
+
+        String sm_code = productListService.getSmCOde(map);
+        //System.out.println("sm_code--------------"+sm_code);
+        return "{\"sm_code\":\""+sm_code+"\"}";
+    }
+    @RequestMapping(value = "/getCount")
+    public String getCount(String id_no){
+        Map map = new HashMap();
+        map.put("ID_NO",id_no);
+        String count = productListService.getCount(map);
+        return "{\"count\":\""+count+"\"}";
+    }
+
+}

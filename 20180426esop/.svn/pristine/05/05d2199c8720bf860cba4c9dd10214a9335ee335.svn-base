@@ -1,0 +1,253 @@
+$(document).ready(function() {
+    qryRefundListInfo();
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });
+} );
+//重置
+function pageReset(){
+    $("input").val("");
+    $("textarea").val("");
+}
+var login_no=$("#login_no").val();//获取当前登录的员工
+
+//待审批资金回退操作列表
+function qryRefundListInfo(){
+    table = $('#epRefundListInfo').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "scrollX": true,
+        destroy:true,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url:"/refundApproveQuery",
+            type:"POST",
+            data:{
+                refund_id:$("#qry_group_num").val(),
+                refund_applicant:$("#applicant").val(),
+                startTime:$("#startTime").val(),
+                endTime:$("#endTime").val(),
+                nextDealPerson: login_no
+            }
+        },
+        columns: [
+            {
+                "width": "10%",
+                render: function ( data, type, row, meta ) {
+                    if(row.nodeId == 1){
+                        return data= "<input style='width: 60px'  value='已审批'/>";
+                    }else{
+                        return data= "<button type='button' style='width: 60px' class='ui-btn mgr-10' onclick=refundApprove('"+row.refund_id+"')>审批</button>";
+                    }
+                }
+            },
+            { data: "refund_id"},
+            { data: "login_name"},
+            { data: "apply_date"},
+            { data:"expenditure_presentation_group"},
+            { data:"group_num"},
+            { data: "capital_contact" },
+            { data: "contact_number"},
+            { data: "contact_type"},
+            { data: "book_balance_yuan"},
+            { data: "available_balance_yuan" },
+            { data: "refund_account" },
+            { data: "refund_account_name" },
+            { data: "refund_opening_bank" },
+            { data: "refund_amount_yuan" }
+        ],
+        select: true,
+        buttons: [
+        ]
+    } );
+}
+//查看资金回退详情
+function showRefundMsg(refund_id) {
+    $("#refundDetailInfo").modal('show');
+    $.ajax({
+        type:"GET",
+        url:"/getRefundDetailInfo",
+        data:{"codeId":refund_id}
+    }).then(function(data){
+        //alert(data.refund_applicant)
+        $("#refund_applicant1").val(data.refund_applicant);
+        $("#apply_date1").val(data.apply_date);
+        $("#expenditure_presentation_group1").val(data.expenditure_presentation_group);
+        $("#group_num1").val(data.group_num);
+        $("#capital_contact1").val(data.capital_contact);
+        $("#telphone1").val(data.contact_number);
+        $("#contact_type1").val(data.contact_type);
+        $("#book_balance1").val(data.book_balance);
+        $("#available_balance1").val(data.available_balance);
+        $("#xFile").val(data.xFile);
+        $("#bill1").val(data.bill);
+        $("#account1").val(data.account);
+        $("#userid1").val(data.userid);
+        $("#arrive_account1").val(data.arrive_account);
+        $("#arrive_account_name1").val(data.arrive_account_name);
+        $("#arrive_date1").val(data.arrive_date);
+        $("#arrival_amount1").val(data.arrival_amount);
+        $("#billing_date1").val(data.billing_date);
+        $("#account_clerk1").val(data.account_clerk);
+        $("#abstracts1").val(data.abstracts);
+        $("#refund_account1").val(data.refund_account);
+        $("#refund_account_name1").val(data.refund_account_name);
+        $("#refund_opening_bank1").val(data.refund_opening_bank);
+        $("#refund_amount1").val(data.refund_amount);
+        //$("#auditor1").val(data.auditor);
+        //$("#order_status1").val(data.order_status);
+    });
+}
+//审批页面
+function refundApprove(refund_id){
+
+    $("#doRefundApplyApprove").modal('show');
+    $.ajax({
+        type:"POST",
+        url:"/getRefundDetailInfo",
+        data:{refund_id:refund_id}
+    }).then(function(data){
+        $("#refund_id").val(data.refund_id);
+        $("#refund_applicant").val(data.refund_applicant);
+        $("#refund_applicant_name").val(data.login_name);
+
+        $("#apply_date").val(data.apply_date);
+        $("#expenditure_presentation_group").val(data.expenditure_presentation_group);
+        $("#group_num").val(data.group_num);
+        $("#capital_contact").val(data.capital_contact);
+        $("#telphone").val(data.contact_number);
+        $("#contact_type").val(data.contact_type);
+        $("#book_balance").val(data.book_balance);
+        $("#available_balance").val(data.available_balance);
+        $("#book_balance_yuan").val(data.book_balance_yuan);
+        $("#available_balance_yuan").val(data.available_balance_yuan);
+
+        $("#doloadFile a").remove();//模态框每次打开之前,清空之前的文件
+        if(data.fileName!=null&&$.trim(data.fileName)!=''){
+            $("#fileName").val(data.fileName);
+            $("#attach_file_id").val(data.file);
+            $("#doloadFile").append("<a href='javascript:downloadFile()' title='"+data.fileName+"'>"+data.fileName+"</a>")
+
+        }
+        $("#refund_account").val(data.refund_account);
+        $("#refund_account_name").val(data.refund_account_name);
+        $("#refund_opening_bank").val(data.refund_opening_bank);
+        $("#refund_amount").val(data.refund_amount);
+        $("#refund_amount_yuan").val(data.refund_amount_yuan);
+        $("#auditor").val(data.auditor);
+        $("#order_status").val(data.order_status);
+        var refund_id = data.refund_id;
+        qryWFNodeId(refund_id);
+    })
+}
+
+//查询流程info表的NodeId
+function qryWFNodeId(param){
+    $.ajax({
+        type: "post",
+        url: "/getWorkFlowNodeIdByRefundId",
+        dataType: 'json',
+        data: {
+            "taskOrderId": param
+        },
+        success: function (result) {
+            //获取响应的json数据
+            var  filed  =result.info;
+            $("#node_id").val(filed[0].nodeId);
+            getNextLink("7",$("#node_id").val());
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+        }
+    })
+
+}
+//提交审批信息
+function saveDoApproveRefundInfo(){
+    $("#qu_reset").attr('disabled',true);
+    //审批信息
+    var nextStepDealPerson = $("#nextStepDealPerson").val();//下一步处理人
+    var nodeId = $("#first_node_id").val();//下一环节ID
+    // var dealTime = getNowFormatTime();//处理时间
+    var refund_id = $("#refund_id").val();
+    var group_num = $("#group_num").val();//集团编码
+    var refund_amount = $("#refund_amount").val();//退款金额
+    var approveOpinion = $("#shifou_tongguo").val();//审批意见
+    var memo = $("#shenpi_yijian").val();//备注
+    var applyoperId = $("#refund_applicant").val();
+    $.ajax({
+        type: "post",
+        url: "getDoRefundApproveInfo",
+        data: {
+            "taskOrderId" : refund_id,
+            "nextDealPerson"   : nextStepDealPerson,
+            "nodeId"   : nodeId,
+            approveOpinion   : approveOpinion,
+            memo   : memo,
+            applicantNo:login_no,
+            // applicant:applyoperId,
+            "group_num":group_num,
+            "refund_amount":refund_amount
+        },
+        success: function (result) {
+            var  return_code  =result.info.split(",")[0];
+            var  return_msg  =result.info.split(",")[1];
+            if(return_code ==1 ){
+                alert(return_msg);
+                $("#doRefundApplyApprove").modal('hide');
+                location.href="refund";//跳转到操作列表
+            }else{
+                alert(return_msg);
+                $("#qu_reset").attr('disabled',false);
+            }
+        },
+        error: function () {
+            alert("请求超时，请重试！");
+            $("#qu_reset").attr('disabled',false);
+        }
+    });
+}
+function getNowFormatTime() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        + " " + date.getHours() + seperator2 + date.getMinutes()
+        + seperator2 + date.getSeconds();
+    return currentdate;
+
+}
+function downloadFile() {
+    var attach_file_id = $("#attach_file_id").val();
+    if(attach_file_id==null||$.trim(attach_file_id)==''){
+        alert("下载失败");
+        return;
+    }
+    window.location.href = "downloadFile?attach_file_id="+attach_file_id;
+}
+

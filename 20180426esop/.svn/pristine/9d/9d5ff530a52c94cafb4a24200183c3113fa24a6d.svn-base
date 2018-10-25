@@ -1,0 +1,211 @@
+package com.esop.visitInfo.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.visitInfo.dto.*;
+import com.esop.visitInfo.service.DevelopmentService;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by subt on 2017/7/7 0007.
+ */
+@RestController
+public class DevelopmentController {
+    private static Logger logger = Logger.getLogger(DevelopmentController.class);
+    @Autowired
+    DevelopmentService developmentService;
+    @Autowired
+    DataConversion dataConversion;
+    Result result = new Result();
+    //行业拓展信息
+    @RequestMapping(value = "/getDevelopmentInfo")
+    public String getDevelopmentInfo(DevelopmentDto param,HttpServletRequest request){
+        Map<String,Object> map = new HashMap<>();
+        String string = "";
+        String strss[] = request.getParameter("str").split(",");
+        String strBuf =  developmentService.getpdmandNextval();
+        boolean flag =false;
+        for (int i=0;i<strss.length;i++){
+            param.setInf_demand_id(strBuf);
+            param.setAppdm_code(strss[i]);
+            //developmentService.insertInfdemandRel(param);
+            if (developmentService.insertInfdemandRel(param)){
+                string = "操作成功！";
+            }else {
+                string = "操作失败，请联系接口开发人员！";
+            }
+        }
+
+        //developmentService.insertDevelopmentinfo(param);
+        if(developmentService.insertDevelopmentinfo(param)){
+            string = "操作成功！";
+
+            }else{
+            string = "操作失败，请联系接口开发人员！";
+
+            }
+
+        map.put("info",string);
+        String json = JSONObject.toJSONString(map);
+        return json;
+    }
+
+    //查看地市
+    @RequestMapping(value = "/getCity")
+    public List getCity(DevelopmentDto param){
+        return developmentService.getCity(param);
+    }
+    //查看所属行业
+    @RequestMapping(value = "/getProfession")
+    public List getProfession(DevelopmentDto param){
+        return developmentService.getProfession(param);
+    }
+    //查看应用需求
+    @RequestMapping(value = "/getDemandApp")
+    public List getDemandApp(DevelopmentDto param){
+        return developmentService.getDemandApp(param);
+    }
+    //获取主键ID
+    @RequestMapping(value = "/getpdmandNextval")
+    public String getpdmandNextval(){
+        String strBuf =  developmentService.getpdmandNextval();
+        return strBuf;
+    }
+    //查询行业拓展摸底统计
+    @RequestMapping(value = "/getDiagnStatistics")
+    public Result getDiagnStatistics(DiagnStatisticsDto param, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = developmentService.getDiagnStatistics(param);
+        return result;
+    }
+    //根据条件查询行业拓展摸底统计
+    @RequestMapping(value = "/getDiagnStatist")
+    public Result getDiagnStatist(DiagnStatisticsDto param, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = developmentService.getDiagnStatist(param);
+        return result;
+    }
+
+    //修改密码
+    @RequestMapping(value = "/updatePasswordInfo")
+    public int updatePasswordInfo(SuperviseDto param){
+        int result=0;
+        int res=developmentService.updatePasswordInfo(param);
+           if (res!=-1) {
+               result=1;//成功
+           } else{
+               result=2;//失败
+           }
+           return result;
+    }
+
+    //新增管理办法
+    @RequestMapping(value = "/insertSuperviInfo")
+    public int insertSuperviseInfo(SuperviseDto param){
+        int result=0;
+        int re=developmentService.insertSuperviseInfo(param);
+        if (re!=-1){
+            result=1;//成功
+        }else{
+            result=2;//失败
+        }
+        return result;
+    }
+
+    //查看归属系统
+    @RequestMapping(value = "/getOutsystemDuf")
+    public List getOutsystemDuf(LogManagementDto param){
+        return developmentService.getOutsystemDuf(param);
+    }
+    //查看操作人员
+    @RequestMapping(value = "/getloginmsg")
+    public List getloginmsg(LogManagementDto param){
+        return developmentService.getloginmsg(param);
+    }
+    //日志管理
+    @RequestMapping(value = "/getlogManageInff")
+    public Result getlogManageInff(LogManagementDto param, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = developmentService.getlogManageInff(param);
+        return result;
+    }
+
+    //查询合同审批管理信息
+    @RequestMapping(value = "/getControBusin")
+    public Result getControBusin(ControactBusDto param, HttpServletRequest request){
+        //分页必须设置
+        logger.info(param.getGoods_no());
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = developmentService.getControBusin(param);
+        return result;
+    }
+
+    //根据条件查询合同审批管理信息
+    @RequestMapping(value = "/getControactdinfo")
+    public Result getControactdinfo(ControactBusDto param, HttpServletRequest request){
+        //分页必须设置
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        param.setPage(page);
+
+        Result result = developmentService.getControactdinfo(param);
+        return result;
+    }
+
+    //根据合同序列查询
+    @RequestMapping(value = "/getControbusnet")
+    public List getControbusnet(ControactBusDto param){
+        return developmentService.getControbusman(param);
+    }
+
+    //提交
+    @RequestMapping(value = "/getControbusman")
+    public String getControbusman(ControactBusDto param){
+        Map<String,Object> map = new HashMap<>();
+        String str = "";
+        List contro = developmentService.getControbusman(param);
+        if (contro.size()>0) {
+            if (developmentService.updateControbus(param)){
+                str = "提交成功！";
+            }else{
+                str = "提交失败！请联系开发人员";
+            }
+        }else{
+            if (developmentService.insertControbus(param)){
+                str = "提交成功！";
+            }else{
+                str = "提交失败！请联系开发人员";
+            }
+        }
+        map.put("info",str);
+        String json = JSONObject.toJSONString(map);
+
+        return json;
+    }
+
+}

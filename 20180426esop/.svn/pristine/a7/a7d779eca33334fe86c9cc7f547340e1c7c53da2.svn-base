@@ -1,0 +1,361 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>资金使用汇总报表</title>
+    <meta charset="utf-8">
+    <%@ include file="../../pub/cqDevelopment.jsp"%>
+    <link rel="stylesheet" type="text/css" href="/esop/static/jquery-showloading/jquery-showloading.css">
+    <script type="text/javascript" language="JavaScript" src="/esop/static/jquery-showloading/jquery-showloading.js"></script>
+    <%--<%@ include file="../pub/base.jsp"%>--%>
+    <%--<%@ include file="../pub/dataTables.jsp"%>--%>
+    <%--<%@ include file="../pub/tableList.jsp"%>--%>
+
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>集团资金使用汇总报表</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>分公司：</th>
+                            <td>
+                                <%--<input type="text" id="org_id" value="" class="input-sty04 form-ipt">--%>
+                                <select id="org_id" class="input-sty04 form-ipt" onchange="getBusinessCenter(this.value)">
+                                    <%--<option value="">请选择</option>--%>
+                                </select>
+                            </td>
+                            <th>行业中心：</th>
+                            <td>
+                                <%--<input type="text" id="center_code" value="" class="input-sty04 form-ipt">--%>
+                                <select id="center_code" class="input-sty04 form-ipt">
+                                    <%--<option value="">请选择</option>--%>
+                                </select>
+                            </td>
+                            <th>开始时间：</th>
+                            <td>
+                                <input type=text id="process_date_start" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'process_date_start',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                            <th>结束时间：</th>
+                            <td>
+                                <input type=text id="process_date_end" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'process_date_end',dateFmt:'yyyy-MM-dd'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="fundUseDetailList()">查询</button>
+                            <button class="ui-btn mgr-10" id="excelExport"  onclick="excelExport()">导出</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="display: none">
+            <form action="" name="exportExcel" id="exportExcel" target="export"
+                  method="post" accept-charset="utf-8"></form>
+            <iframe name="export" id="export"></iframe>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" id="fundUseDetailList" width="100%;">
+                        <thead>
+                        <tr>
+                            <th class="text-center">报表详细查询</th>
+                            <th class="text-center">报表日期</th>
+                            <th class="text-center">分公司</th>
+                            <th class="text-center">行业中心</th>
+                            <th class="text-center">实际使用金额(元)</th>
+                            <th class="text-center">日报稽核状态</th>
+                            <th class="text-center">稽核人员</th>
+                            <th class="text-center">稽核时间</th>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var roleCode = '<%=role_codes %>';
+    var rootOrgId = '<%=root_org_id%>';
+    $(document).ready(function() {
+        $("#process_date_start").val(getFormatDate(-1));
+        $("#process_date_end").val(getFormatDate(-1));
+
+        /*if(roleCode.indexOf('23064') > -1){
+            $.ajax({
+                url:"/getOrgAndCenterByLoginNo",
+                type:"POST",
+                data:{group_pay_code:'<%=login_no%>'},
+                success:function (data) {
+                    $("#org_id").empty();
+                    $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+                    $("#center_code").empty();
+//                    $("#center_code").append("<option value='"+data.center_code+"'>"+data.business_center+"</option>");
+                    var centerStr = "";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").append(centerStr);
+                }
+            });
+        }else{*/
+            if(rootOrgId == 'CQ.CQ.C4' || rootOrgId == 'CQ.CQ' || rootOrgId == 'CQ.CQ.0B'){
+                $.ajax({
+                    url:"/getOrgInfos",
+                    type:"POST",
+                    success:function (data) {
+                        //console.log(data);
+                        var orgStr = "<option value=''>重庆市</option>";
+                        for(var i=0;i<data.length;i++){
+                            orgStr += "<option value='"+data[i].group_pay_code+"'>"+data[i].group_pay_name+"</option>";
+                        }
+                        $("#org_id").empty();
+                        $("#org_id").append(orgStr);
+                    }
+                });
+            }else{
+                $.ajax({
+                    url:"/getOrgAndCenterByLoginNo",
+                    type:"POST",
+                    data:{group_pay_code:'<%=login_no%>'},
+                    success:function (data) {
+//                        console.log(data.center_code+":"+data.business_center+":"+data.group_pay_code+":"+data.group_pay_name);
+                        $("#org_id").empty();
+                        $("#org_id").append("<option value='"+data[0].group_pay_code+"'>"+data[0].group_pay_name+"</option>");
+
+                        var centerStr = "";
+                        for(var i=0;i<data.length;i++){
+                            centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                        }
+                        $("#center_code").empty();
+                        $("#center_code").append(centerStr);
+//                        getBusinessCenter($("#org_id").val());
+                        if($("#center_code option").length==1&&$("#center_code option").eq(0).val()==""){
+                            getBusinessCenter($("#org_id option").eq(0).val());
+                        }
+                    }
+                });
+            }
+        /*}*/
+
+    } );
+    //根据分公司查询行业中心
+    function getBusinessCenter(code) {
+        if(code != ""){
+            $.ajax({
+                url:"/getBusinessCenterInfos",
+                type:"POST",
+                data:{group_pay_code:code},
+                success:function (data) {
+                    //console.log(data);
+                    var centerStr = "<option value=''>请选择</option>";
+                    for(var i=0;i<data.length;i++){
+                        centerStr += "<option value='"+data[i].center_code+"'>"+data[i].business_center+"</option>";
+                    }
+                    $("#center_code").empty();
+                    $("#center_code").append(centerStr);
+                }
+            })
+        }else{
+            $("#center_code").empty();
+            $("#center_code").append("<option value=''>请选择</option>");
+        }
+
+    }
+    //重置
+    function pageReset(){
+        $("input").val("");
+        $("textarea").val("");
+    };
+
+    var checkedData = "";
+    function fundUseDetailList() {
+//        table = $('#fundUseDetailList').DataTable( {
+//            dom: "Bfrtip",
+//            bLengthChange:true,
+//            "bFilter": false,
+//            "pageLength": 5,//设置每页显示多少条记录
+//            "language": {
+//                "url": "/esop/static/data/Chinese.json"
+//            }, //多语言配置
+//            processing: true,
+//            serverSide: true,
+//            destroy: true,
+//            ajax: {
+//                url:"/groupFundAccountUseDetailReport",
+//                type:"POST",
+//                "data": {
+//                    org_id: $("#org_id").val(),
+//                    center_code: $("#center_code").val(),
+//                    process_date_start: $("#process_date_start").val(),
+//                    process_date_end: $("#process_date_end").val()
+//                }
+//            },
+//            columns: [
+//                {
+//                    data: "order_id",
+//                    render:function (data, type, row, meta) {
+//                        if(row.check_status == '0'){
+//                            return data = "<input type='checkbox' class='regulation_apply_no' value='"+row.order_id+"'>";
+//                        }else if(row.check_status == '1'){
+//                            return data = "<input type='checkbox' class='regulation_apply_no' disabled='disabled'>";
+//                        }
+//                    }
+//                },
+//                { data: "process_date_start"},
+//                { data: "org_name" },
+//                { data: "business_center" },
+//                { data: "business_admissible" },
+//                { data: "process_date" },
+//                { data: "business_type" },
+//                { data: "actual_use_amount" },
+//                { data: "deal_status" },
+//                { data: "group_code" },
+//                { data: "group_name" },
+//                { data: "order_id" },
+//                { data: "applicant" },
+//                { data: "apply_time" },
+//                { data: "apply_amount" },
+//                {
+//                    data: "check_status",
+//                    render:function (data, type, row, meta) {
+//                        if(row.check_status == '0'){
+//                            return data = "未稽核";
+//                        }else if(row.check_status == '1'){
+//                            return data = "已稽核";
+//                        }
+//                    }
+//                },
+//                { data: "check_code" },
+//                { data: "check_date" }
+//            ],
+//            select: true,
+//            buttons: [
+//            ]
+//        } );
+        checkedData = "";
+        var process_date_start = $("#process_date_start").val();
+        var process_date_end = $("#process_date_end").val();
+
+        $("html").showLoading();
+        $.ajax({
+            type: "get",
+            url: "/selectAllGroupFundUseDetailInfoList",
+            data: {
+                org_id: $("#org_id").val(),
+                center_code: $("#center_code").val(),
+                process_date_start: $("#process_date_start").val(),
+                process_date_end: $("#process_date_end").val()
+
+            },
+            cache: false,
+            success: function (result) {
+                $("html").hideLoading();
+                var report_data = "";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    report_data += "<tr>";
+                    report_data += "<td nowrap='nowrap'>" + "<button class='ui-btn mgr-10' style='width: 80px' onclick=selectgroupFundUseDetailedReport('/esop/jtzjsybb?process_date="+field.process_date+"&org_id="+field.org_id+"&center_code="+field.center_code+"&org_name="+field.org_name+"&business_center="+field.business_center+"')>查看</button>" + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.process_date + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.org_name + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.business_center + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.actual_use_amount + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.check_status + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.check_code + "</td>";
+                    report_data += "<td nowrap='nowrap'>" + field.check_date + "</td>";
+                    report_data += "</tr>";
+                });
+                $("#list_info").empty();
+                $("#list_info").append(report_data);
+            },
+            error: function () {
+                $("html").hideLoading();
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+
+    function selectgroupFundUseDetailedReport(url) {
+        window.open(url);
+    }
+
+    function excelExport() {
+        var process_date_start = $("#process_date_start").val();
+        var process_date_end = $("#process_date_end").val();
+
+        var business_center=$("#center_code").find("option:selected").text();
+        if(business_center=="请选择"){
+            business_center='';
+        }
+        var f = document.getElementById('exportExcel');
+        var actionUrl ='exportGroupFundAllAccountUseDetailReport?org_id='+$("#org_id").val()
+            +'&org_name='+$("#org_id").find("option:selected").text()
+            +'&center_code='+$("#center_code").val()
+            +'&business_center='+business_center
+            +'&process_date_end='+process_date_end
+            +'&process_date_start='+process_date_start;
+        f.action = actionUrl;
+        f.submit();
+    }
+
+
+
+    function getFormatDate(index) {
+        var date = new Date();
+        date.setTime(date.getTime() + 24*60*60*1000*index);
+        var year = date.getFullYear();
+        var month = date.getMonth()+1;
+        var day = date.getDate();
+        if(month >= 1 && month <= 9){
+            month = "0"+month;
+        }
+        if(day >= 0 && day <= 9){
+            day = "0"+day;
+        }
+        var dateStr = year+"-"+month+"-"+day;
+        return dateStr;
+    }
+</script>
+</html>

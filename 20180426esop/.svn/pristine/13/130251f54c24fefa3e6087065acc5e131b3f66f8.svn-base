@@ -1,0 +1,35 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by wangbl on 2017/5/30.
+ */
+//智能终端查询接口返回参数
+public class GrpStatisticsInfoDto {
+    String grpnums       ="";//集团数量
+    String membernums    ="";//成员数
+    String impMembernums ="";//重要成员数量
+
+    public String getGrpnums() {
+        return grpnums;
+    }
+
+    public void setGrpnums(String grpnums) {
+        this.grpnums = grpnums;
+    }
+
+    public String getMembernums() {
+        return membernums;
+    }
+
+    public void setMembernums(String membernums) {
+        this.membernums = membernums;
+    }
+
+    public String getImpMembernums() {
+        return impMembernums;
+    }
+
+    public void setImpMembernums(String impMembernums) {
+        this.impMembernums = impMembernums;
+    }
+}

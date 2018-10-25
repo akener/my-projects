@@ -1,0 +1,32 @@
+package test;
+
+import org.springframework.web.client.RestTemplate;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+
+/**
+ * Created by wangbl on 2017/2/17.
+ */
+public class TestRestful {
+    public static void main(String args[]){
+        String str="[{\"id\":123,\"content\":\"test\",\"fileInfoDtos\":\"\"}]";
+        if(str.substring(0,1).equals("["))
+            str.substring(1,str.length()-1);
+       System.out.println(str) ;
+        int num=0;
+        int begin=Integer.parseInt(new SimpleDateFormat("mmssSSS").format(new Date() ));
+        System.out.println(new SimpleDateFormat("mmssSSS").format(new Date() ));
+        RestTemplate restTemplate =new RestTemplate();
+
+        for(int i=0;i<101;i++) {
+            num = (Integer) restTemplate.getForObject("http://171.0.0.22:8081/sum?num1=2&num2={num1}", Integer.class, 6+num);
+        }
+        int end=Integer.parseInt(new SimpleDateFormat("mmssSSS").format(new Date() ));
+
+        System.out.println(end-begin);
+        System.out.println((end-begin)/10);
+        System.out.println(num);
+    }
+}

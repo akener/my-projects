@@ -1,0 +1,53 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+public class OrRequestTemplateProcDto {
+    private Integer id;
+
+    private String op_code;
+
+    private String step_id;
+
+    private String path;
+
+    private String op_name;
+
+    public String getOp_name() {
+        return op_name;
+    }
+
+    public void setOp_name(String op_name) {
+        this.op_name = op_name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getOp_code() {
+        return op_code;
+    }
+
+    public void setOp_code(String op_code) {
+        this.op_code = op_code == null ? null : op_code.trim();
+    }
+
+    public String getStep_id() {
+        return step_id;
+    }
+
+    public void setStep_id(String step_id) {
+        this.step_id = step_id;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path == null ? null : path.trim();
+    }
+}

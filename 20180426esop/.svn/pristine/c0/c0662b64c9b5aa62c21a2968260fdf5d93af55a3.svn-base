@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="getAttachInfo">
+    <select id="getGroupAttachFileInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupAttachFileDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupAttachFileDto">
+        select gongdan_bianhao,kaishi_zhangqi,jieshu_zhangqi,fujian
+        from ep_cap_capuseCustmempay_info
+        where gongdan_bianhao = #{gongdan_bianhao}
+    </select>
+
+    <select id="getBigGroupAttachFileInfo" parameterType="com.esop.cqDevelopment.capitalManage.dto.GroupAttachFileDto" resultType="com.esop.cqDevelopment.capitalManage.dto.GroupAttachFileDto">
+        select gongdan_bianhao,kaishi_zhangqi,jieshu_zhangqi,fujian
+        from ep_cap_capuseBigCustmempay_info
+        where gongdan_bianhao = #{gongdan_bianhao}
+    </select>
+</mapper>

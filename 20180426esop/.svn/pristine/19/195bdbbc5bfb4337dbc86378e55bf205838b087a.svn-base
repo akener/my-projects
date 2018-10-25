@@ -1,0 +1,109 @@
+package com.esop.cqDevelopment.refund.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/11/7.
+ */
+public class CapCapitalInfoDto extends BaseDto{
+    //资金账户查询表
+     private String grpFundAcctid;//集团资金账户号
+     private String grpCustId;//集团客户编号
+     private String grpCustName;//集团客户名称
+     private String bankAcctId;//绑定银行账号
+     private String bankName;//开户行
+     private String ownerOrgId;//归属分公司
+     private String status;//账号状态
+     private String balance;//资金账户余额（分）
+     private String nowBalance;//资金账户可用余额（分）
+     private String holdBalance;//占用资金（分）
+     private String freezeFee;//冻结资金（分）
+
+    public String getGrpFundAcctid() {
+        return grpFundAcctid;
+    }
+
+    public void setGrpFundAcctid(String grpFundAcctid) {
+        this.grpFundAcctid = grpFundAcctid;
+    }
+
+    public String getGrpCustId() {
+        return grpCustId;
+    }
+
+    public void setGrpCustId(String grpCustId) {
+        this.grpCustId = grpCustId;
+    }
+
+    public String getGrpCustName() {
+        return grpCustName;
+    }
+
+    public void setGrpCustName(String grpCustName) {
+        this.grpCustName = grpCustName;
+    }
+
+    public String getBankAcctId() {
+        return bankAcctId;
+    }
+
+    public void setBankAcctId(String bankAcctId) {
+        this.bankAcctId = bankAcctId;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getOwnerOrgId() {
+        return ownerOrgId;
+    }
+
+    public void setOwnerOrgId(String ownerOrgId) {
+        this.ownerOrgId = ownerOrgId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
+
+    public String getNowBalance() {
+        return nowBalance;
+    }
+
+    public void setNowBalance(String nowBalance) {
+        this.nowBalance = nowBalance;
+    }
+
+    public String getHoldBalance() {
+        return holdBalance;
+    }
+
+    public void setHoldBalance(String holdBalance) {
+        this.holdBalance = holdBalance;
+    }
+
+    public String getFreezeFee() {
+        return freezeFee;
+    }
+
+    public void setFreezeFee(String freezeFee) {
+        this.freezeFee = freezeFee;
+    }
+}

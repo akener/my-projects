@@ -1,0 +1,88 @@
+package com.esop.capAdjustApply.dto;
+
+/**
+ * Created by user on 2017/10/21.
+ */
+    //模拟接口，出账集团信息表映射类
+public class EpCapIntoGrpInfo {
+    private String  into_id ; //
+    private String  into_grp_name ;//出账集团名称
+    private String  into_grp_no ;//编号
+    private String into_linkman ;//资金联系人
+    private String  into_link_phone;//联系人电话
+    private String  into_link_type ;//联系人类型
+
+    @Override
+    public String toString() {
+        return "EpCapintoGrpInfo{" +
+                "into_id='" + into_id + '\'' +
+                ", into_grp_name='" + into_grp_name + '\'' +
+                ", into_grp_no='" + into_grp_no + '\'' +
+                ", into_linkman='" + into_linkman + '\'' +
+                ", into_link_phone='" + into_link_phone + '\'' +
+                ", into_link_type='" + into_link_type + '\'' +
+                 +
+                '}';
+    }
+
+    public EpCapIntoGrpInfo() {
+    }
+
+    public EpCapIntoGrpInfo(String into_id, String into_grp_name, String into_grp_no, String into_linkman, String into_link_phone, String into_link_type, String into_balance, String into_usable_balance) {
+        this.into_id = into_id;
+        this.into_grp_name = into_grp_name;
+        this.into_grp_no = into_grp_no;
+        this.into_linkman = into_linkman;
+        this.into_link_phone = into_link_phone;
+        this.into_link_type = into_link_type;
+
+    }
+
+    public String getInto_id() {
+        return into_id;
+    }
+
+    public void setInto_id(String into_id) {
+        this.into_id = into_id;
+    }
+
+    public String getInto_grp_name() {
+        return into_grp_name;
+    }
+
+    public void setInto_grp_name(String into_grp_name) {
+        this.into_grp_name = into_grp_name;
+    }
+
+    public String getInto_grp_no() {
+        return into_grp_no;
+    }
+
+    public void setInto_grp_no(String into_grp_no) {
+        this.into_grp_no = into_grp_no;
+    }
+
+    public String getInto_linkman() {
+        return into_linkman;
+    }
+
+    public void setInto_linkman(String into_linkman) {
+        this.into_linkman = into_linkman;
+    }
+
+    public String getInto_link_phone() {
+        return into_link_phone;
+    }
+
+    public void setInto_link_phone(String into_link_phone) {
+        this.into_link_phone = into_link_phone;
+    }
+
+    public String getInto_link_type() {
+        return into_link_type;
+    }
+
+    public void setInto_link_type(String into_link_type) {
+        this.into_link_type = into_link_type;
+    }
+}

@@ -1,0 +1,77 @@
+
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <%@ include file="../../pub/public_include.jsp"%>
+    <title>集团成员添加</title>
+    <script>
+        $(document).ready(function() {
+            var union_name = "<%=request.getParameter("union_name")%>";
+            var union_code = "<%=request.getParameter("union_code")%>";
+            var product_name = "<%=request.getParameter("product_name")%>";
+            var product_code = "<%=request.getParameter("product_code")%>";
+            $("#union_name").val(union_name);
+            $("#union_code").val(union_code);
+            $("#product_name").val(product_name);
+            $("#product_code").val(product_code);
+        });
+
+    </script>
+</head>
+
+<body class="bg-ff">
+<div class="work-order-box over">
+    <div class="row col-12">
+        <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+            <div class="row">
+                <table class="table-infor-7 width-th-1" width="100%">
+                    <tbody>
+                    <tr style="background-color:#ededed;">
+                        <th>集团名称:</th>
+                        <td style="color:#1792CD;"><input type="text" placeholder="输入要搜索类型的关键字" id="union_name" value="" class="input-sty04 form-ipt"/></td>
+                        <th>集团编码:</th>
+                        <td style="color:#1792CD;"><input type="text" id="union_code" value="" class="input-sty04 form-ipt"/></td>
+                    </tr>
+                    <tr style="background-color:#ededed;">
+                        <th>产品名称:</th>
+                        <td >
+                           <!-- <input type="text" id="product_name" value=""/>-->
+                            <select class="select-style-1" id="product_name" onchange="changeProdCode()">
+                                <option selected="selected" value="">请选择</option>
+                            </select>
+                        </td>
+
+                        <th>产品编码:</th>
+                        <td style="color:#1792CD;"><input type="text" id="product_code" value="" class="input-sty04 form-ipt"/></td>
+                    </tr>
+                    <tr>
+                        <th>成员姓名</th>`
+                        <td>
+                            <input type="text" id="mem_name" class="input-sty04 form-ipt">
+                        </td>
+                        <th>号码</th>
+                        <td>
+                            <input type="text" id="mem_telno" class="input-sty04 form-ipt">
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <div class="row mgt-20">
+                    <div class="btn-box">
+                        <button onclick="add_member();" id="add_member" class="ui-btn mgr-10">添加</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" language="javascript" src="/esop/view/cqDevelopment/elecPack/memberAdd.js"></script>
+</html>
+

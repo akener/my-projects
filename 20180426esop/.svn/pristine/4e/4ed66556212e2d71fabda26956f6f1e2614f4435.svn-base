@@ -1,0 +1,164 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%
+    /*
+     * 功能: 资金管理申请信息查询
+     * 版本: 1.0
+     * 日期: 2014/5/7
+     * 作者: daish
+     * 版权: si-tech
+     * 修改历史
+     * 修改日期      修改人      修改目的
+     */
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ include file="/npage/include/public_title_name.jsp"%>
+<%
+    String login_no = (String) session.getAttribute("login_code");
+    String rootOrgId = (String) session.getAttribute("root_org_id");
+    // 取 分公司名称
+    String root_org_name = (String)session.getAttribute("root_org_name");
+    String roleCodeStr = (String)session.getAttribute("roleCodeStr");//角色字符串
+    String orgId = (String) session.getAttribute("org_id");
+%>
+
+<html>
+<body>
+<div id="operation">
+    <div id="operation_table">
+        <div class="title">
+            <div class="text">
+                折扣折让申请查询
+            </div>
+        </div>
+        <form action="" method="post" name="dealform" id="dealform">
+            <%
+                if(roleCodeStr.indexOf(Constants.LEADER_ROLE_TYPE_SGS)!=-1){//市级查询
+
+                } else if(roleCodeStr.indexOf(Constants.LEADER_ROLE_TYPE_FGS)!=-1){//分公司级查询
+            %>
+            <input type="hidden" name="orgId1" value="<%=rootOrgId %>" />
+            <%
+            } else if(roleCodeStr.indexOf(Constants.LEADER_ROLE_TYPE_BM)!=-1){//部门级查询
+            %>
+            <input type="hidden" name="orgId2" value="<%=orgId %>" />
+            <%
+            } else {//普通查询
+            %>
+            <input type="hidden" name="login_no" value="<%=login_no %>" />
+            <%
+                }
+            %>
+            <div class="input">
+                <table>
+                    <tr>
+                        <th>分公司</th>
+                        <td>
+                            <select name="rootOrgId">
+                                <%
+                                    if(roleCodeStr.indexOf(Constants.LEADER_ROLE_TYPE_SGS)!=-1){//市公司领导
+                                %>
+                                <option value="">全市</option>
+                                <si:codeoption key="SE_CONTRACT_QDDW"></si:codeoption>
+                                <%} else {
+                                %>
+                                <option value="<%=rootOrgId %>"><%=root_org_name %></option>
+                                <%
+                                    }
+                                %>
+                            </select>
+                        </td>
+                        <th>申请编号</th>
+                        <td>
+                            <input type="text" name="discount_id"></input>
+                        </td>
+                        <th>名称</th>
+                        <td>
+                            <input type="text" name="discount_topic"/>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th>
+                            折扣类型
+                        </th>
+                        <td >
+                            <select name="discount_class" >
+                                <option value="">--全部--</option>
+                                <si:codeoption key="se_discountClass_dict"></si:codeoption>
+                            </select>
+                        </td>
+                        <th>产品</th>
+                        <td>
+                            <select name="discount_prod">
+                                <option value=''>
+                                    --全部--
+                                </option>
+                                <si:codeoption key="se_descount_dict_v" textId="2" valueId="1"></si:codeoption>
+                            </select>
+                        </td>
+                        <th>申请类别</th>
+                        <td>
+                            <select name="shenqing_class">
+                                <option value="">--全部--</option>
+                                <option value="1">充值</option>
+                                <option value="2">调账</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>任务状态</th>
+                        <td>
+                            <select name="status" id="status" >
+                                <option value="">--全部--</option>
+                                <si:codeoption key="SE_DISCOUNTSTATUS_DICT"></si:codeoption>
+                            </select>
+                        </td>
+                        <th>申请人</th>
+                        <td>
+                            <input type="text" name="operName"/>
+                        </td>
+                        <th>申请时间</th>
+                        <td>
+                            <input type="text" name="startDateStart" id="startDateStart"
+                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',autoPickDate:true})"
+                                   readonly size="10" />
+                            至
+                            <input type="text" name="startDateEnd" id="startDateEnd"
+                                   onfocus="WdatePicker({dateFmt:'yyyy-MM-dd',autoPickDate:true})"
+                                   readonly size="10" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div id="operation_button">
+                <input class="b_foot" type="button" id="qry" value="查询" onclick="qryDo()" />
+                <input class="b_foot" type="reset"  value="重置"/>
+            </div>
+        </form>
+    </div>
+</div>
+<iframe src="" name="list_frame" id="list_frame" width="100%"  frameborder="0" scrolling="auto">
+</iframe>
+</body>
+<%@ include file="/npage/include/footer.jsp"%>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#startDateStart").val(show());
+        $("#startDateEnd").val(show());
+        qryDo();
+    });
+    function show(){
+        var date = new Date();
+        var year = date.getFullYear();
+        var month = (date.getMonth()+1)<10?"0"+(date.getMonth()+1):(date.getMonth()+1);
+        var day = (date.getDate())<10?"0"+(date.getDate()):(date.getDate());
+        return year+"-"+month+"-"+day;
+    }
+    //查询
+    function qryDo(){
+        loading();
+        $("#dealform").postForm("disApply_list.jsp");
+    }
+</script>
+</html>

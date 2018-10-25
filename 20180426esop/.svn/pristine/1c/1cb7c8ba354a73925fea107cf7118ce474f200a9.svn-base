@@ -1,0 +1,183 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<head>
+    <title>资金使用(超大集团成员缴费)申请</title>
+</head>
+<body class="bg-ff">
+<!--操作提示窗口-->
+<div class="modal fade" id="operationAlertInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="alertLabelInfo"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="goback()" data-dismiss="modal">关闭并刷新</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>资金使用</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>工单业务类型</th><td><input style="width:200px;text-align:left" value="超大成员缴费" id="yewu_leixing_3" type="text" class="input-sty04 form-ipt" disabled="disabled"/></td>
+                            <th>申请时间</th><td><input style="width:200px;text-align:left" value="" id="shenqing_shijian_3" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>分公司名称</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="fengongsiname_3" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="fengongsi_3">
+                            </td>
+                            <th>行业中心</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="hangye_zhongxin_3" type="hidden" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input style="width:200px;text-align:left" value="" id="hangye_zhongxin_name_3" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>集团编码</th><td><input style="width:200px;text-align:left" value="" id="jituan_bianhao_3" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                            <th>集团名称</th><td><input style="width:200px;text-align:left" value="" id="jituan_mingcheng_3" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                        </tr>
+                        <tr id="zhanghao_xinxi">
+                            <th>集团账号</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="jituan_zhanghao_3" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                            </td>
+                            <th>集团账号名称</th><td><input style="width:200px;text-align:left" value="" id="zhanghao_mingcheng_3" type="text" class="input-sty04 form-ipt" readonly disabled="disabled"/></td>
+                        </tr>
+                        <tr>
+                            <th>申请人</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="shenqingrenname_3" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="shenqingren_3">
+                            </td>
+                            <th>申请使用金额（元）</th>
+                            <td>
+                                <input style="width:200px;text-align:left" value="" id="shiyong_jine_yuan_3" type="text" class="input-sty04 form-ipt" disabled="disabled"/>
+                                <input type="hidden" id="shiyong_jine_3">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注信息</th><td colspan="3"><textarea rows="3" id="beizhu_xinxi_3" class="ui-text form-ctrl" style="width:60%;" disabled="disabled"></textarea></td>
+                        </tr>
+                        <tr>
+                            <th>附件：</th>
+                            <td colspan="3" id="doloadFile_3">
+                            </td>
+                        <tr>
+                        </tr>
+                        </tr>
+                        </tbody>
+                        <input type="hidden" id="dongjie_jine_3">
+                        <input type="hidden" id="kaishi_zhangqi_3">
+                        <input type="hidden" id="jieshu_zhangqi_3">
+                        <input type="hidden" id="chengyuan_xinxi_daoru_3">
+                    </table>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" id="gongdan_bianhao_3" value="">
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <%@ include file="approveProcessQuery3.jsp"%>
+            </div>
+        </div>
+    </div>
+</div>
+<input id="fileName_3" name="" type="hidden" value="">
+<input id="attach_file_id_3" name="" type="hidden" value="">
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    var login_no= "<%=login_no%>";
+
+    function showInfo3(gongdan_bianhao) {
+        //带入银行交易明细信息
+//        $("#gongdan_bianhao_3").val(gongdan_bianhao);
+
+        $.ajax({
+            type: "POST",
+            url: "capitalUseApproveQuery",
+            data:{
+                chanpin_leixing:"3",
+                gongdan_bianhao:gongdan_bianhao
+            },
+            cache: false,
+            success: function (result) {
+                var result=result.data;
+                if(result.length > 0) {
+                    $("#fengongsi_3").val(result[0].fengongsi);
+                    $("#shenqingren_3").val(result[0].shenqingren);
+                    $("#hangye_zhongxin_3").val(result[0].hangye_zhongxin);
+                    $("#hangye_zhongxin_name_3").val(result[0].hangye_zhongxin_name);
+                    $("#jituan_bianhao_3").val(result[0].jituan_bianhao);
+                    $("#jituan_mingcheng_3").val(result[0].jituan_mingcheng);
+                    $("#jituan_zhanghao_3").val(result[0].jituan_zhanghao);
+                    $("#zhanghao_mingcheng_3").val(result[0].zhanghao_mingcheng);
+                    $("#shiyong_jine_3").val(result[0].shiyong_jine);
+                    $("#shenqing_shijian_3").val(result[0].shenqing_shijian);
+                    $("#beizhu_xinxi_3").val(result[0].beizhu_xinxi);
+                    $("#doloadFile_3").remove();
+                    if(result[0].fileName!=null&&$.trim(result[0].fileName)!=''){
+
+                        $("#fileName_3").val(result[0].fileName);
+                        $("#attach_file_id_3").val(result[0].fujian);
+                        var file_name = result[0].fileName;
+                        var i = file_name.indexOf("\\");
+                        if(i>=0){
+                            var tpst = file_name.split("\\");
+                            file_name = tpst[tpst.length-1];
+                            //alert(file_name);
+                        }
+                        $("#doloadFile_3").append("<a href='javascript:downloadFile_3()' title='"+result[0].fileName+"'>"+file_name+"</a>");
+                    }
+                    //$("#fujian").val(result[0].fujian);
+
+                    $("#dongjie_jine_3").val(result[0].dongjie_jine);
+                    $("#kaishi_zhangqi_3").val(result[0].kaishi_zhangqi);
+                    $("#jieshu_zhangqi_3").val(result[0].jieshu_zhangqi);
+                    $("#chengyuan_xinxi_daoru_3").val(result[0].chengyuan_xinxi_daoru);
+
+                    $("#shiyong_jine_yuan_3").val(result[0].shiyong_jine_yuan);
+
+                    $("#fengongsiname_3").val(result[0].fengongsiname);
+                    $("#shenqingrenname_3").val(result[0].shenqingrenname);
+
+                    init3(gongdan_bianhao);
+                }else{
+                    alert('信息不存在！');
+                }
+            },
+            error: function () {
+                alert('请求超时，请重试！');
+            }
+        });
+    }
+
+    function downloadFile_3() {
+        var attach_file_id = $("#attach_file_id_3").val();
+        if(attach_file_id==null||$.trim(attach_file_id)==''){
+            alert("下载失败");
+            return;
+        }
+        window.location.href = "downloadFile?attach_file_id="+attach_file_id;
+    }
+</script>
+</html>

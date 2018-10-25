@@ -1,0 +1,112 @@
+package com.esop.cqDevelopment.capitalManage.controller;
+
+import com.esop.common.page.DataConversion;
+import com.esop.common.page.PageParameter;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.capitalManage.dto.CapitalUseApproveQueryDto;
+import com.esop.cqDevelopment.capitalManage.dto.WorkFlowFirstDto;
+import com.esop.cqDevelopment.capitalManage.service.CapitalClaimQueryService;
+import com.esop.cqDevelopment.capitalManage.service.CapitalUseFundQueryService;
+import com.esop.cqDevelopment.refund.controller.CallBossServiceUtils.CallBossServiceUtils;
+import org.apache.log4j.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.NoTransactionException;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+@EnableTransactionManagement
+@RestController
+public class CapitalUseFundQueryController {
+    @Autowired
+    private static Logger logger = Logger.getLogger(CapitalUseFundQueryController.class);
+    @Autowired
+    private CapitalUseFundQueryService capitalUseFundQueryService;
+    @Autowired
+    CallBossServiceUtils callBossServiceUtils;
+    @Autowired
+    CapitalClaimQueryService capitalClaimQueryService;
+    @Autowired
+    DataConversion dataConversion;
+
+    @RequestMapping("/getCapitalUseFundQueryList")
+    public Result getCapitalUseFundQueryList(CapitalUseApproveQueryDto parameter, HttpServletRequest request, HttpServletResponse response){
+        Result result = new Result();
+        PageParameter page = dataConversion.setPageValues(request);
+        page.setRecordsTotal(result.getRecordsTotal());
+        parameter.setPage(page);
+
+        result = capitalUseFundQueryService.getCapitalUseFundQuery(parameter);
+
+        BigDecimal zhuanyuan = new BigDecimal(100);
+        List<CapitalUseApproveQueryDto> list = result.getData();
+        for(CapitalUseApproveQueryDto dto:list){
+            if(!dto.getShiyong_jine().equals("")){
+                BigDecimal shiyong_jine_yuan = new BigDecimal(dto.getShiyong_jine());
+                dto.setShiyong_jine_yuan(shiyong_jine_yuan.divide(zhuanyuan).toString());
+            }else {
+                dto.setShiyong_jine_yuan("");
+            }
+        }
+        return result;
+    }
+    @Transactional
+    @RequestMapping("/updateCapitalUseFund")
+    public String updateCapitalUseFund(CapitalUseApproveQueryDto parameter,HttpServletResponse response){
+        int result = 999;
+        JSONObject result_str = new JSONObject();
+        WorkFlowFirstDto workFlowFirstDto = new WorkFlowFirstDto();
+        workFlowFirstDto.setTaskOrderId(parameter.getGongdan_bianhao());
+        workFlowFirstDto.setApplicantNo(parameter.getShenqingren());
+        workFlowFirstDto.setNextDealPerson("");
+        workFlowFirstDto.setDealTime(new Date().toString());
+        workFlowFirstDto.setApproveOpinion("1");
+        workFlowFirstDto.setMemo("CRM业务办理失败（资金已解冻）");
+        workFlowFirstDto.setNodeId("7");
+        try {
+            result =  capitalClaimQueryService.putWorkFlowFirstSvc(workFlowFirstDto);
+            if(result == 1){
+                Map map = new HashMap();
+                map.put("ORDERID",parameter.getGongdan_bianhao());
+                map.put("GROUPID",parameter.getJituan_bianhao());
+                map.put("OPERTYPE","3");
+                map.put("OPERFEE",parameter.getShiyong_jine());
+                map.put("APPLYOPERID",parameter.getShenqingren());
+                String reqResult = callBossServiceUtils.changeGroupFundAccountStatus(map);
+
+                JSONObject object = new JSONObject(reqResult);
+                String res_code = object.getString("res_code");
+                if(res_code != null && res_code.equals("0")){
+                    result = 1;
+                    result_str.put("res_code","1");
+                    result_str.put("ret_msg","解冻成功");
+                }else{
+                    result = 999;
+                    result_str.put("res_code","999");
+                    result_str.put("ret_msg","解冻失败!"+object.getString("res_desc"));
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                }
+            }else{
+                result_str.put("res_code","998");
+                result_str.put("ret_msg","操作失败!插入流程信息错误，请联系管理员！");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            result_str.put("res_code","998");
+            result_str.put("ret_msg","操作失败!请联系管理员！");
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        }
+        return result_str.toString();
+    }
+}

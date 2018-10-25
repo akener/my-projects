@@ -1,0 +1,137 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp" %>
+<%@ include file="../pub/dataTables.jsp" %>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no,minimum-scale=1.0, maximum-scale=1.0">
+    <title>
+        集团领导首页
+    </title>
+</head>
+
+<body class="">
+<div>
+    <div>
+        <div class="mgt-10">
+            <div id="container" style="min-width:400px;height:400px"></div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        $('#container').highcharts({
+            chart: {
+                type: 'column',
+                options: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    depth: 50,
+                    viewDistance: 25
+                }
+            },
+            title: {
+                text: '信息化收入'
+            },
+            xAxis: {
+                categories: [
+                    '一月',
+                    '二月',
+                    '三月',
+                    '四月',
+                    '五月',
+                    '六月',
+                    '七月',
+                    '八月',
+                    '九月',
+                    '十月',
+                    '十一月',
+                    '十二月'
+                ],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: '信息化收入 (万元)'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} 万元</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                },
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function () {
+                                //在当前页面跳转
+                                window.open(this.options.url);
+                            }
+                        }
+                    }
+                }
+            },
+            series: [{
+                data: [{
+                    y: 100.8,
+                    url: 'actalert?param1=111111'
+                }, {
+
+                    y: 50.8,
+                    url: 'demo1.aspx?param3=333333&param4=444444'
+
+
+                }, {
+
+                    y: 145.8,
+                    url: 'demo2.aspx?param1=111111&param2=222222'
+
+
+                }, {
+
+                    y: 46.8,
+                    url: 'demo3.aspx?param1=111111&param2=222222'
+
+
+                }, {
+
+                    y: 125.2,
+                    url: 'demo4.aspx?param1=111111&param2=222222'
+
+
+                }, {
+
+                    y: 135.6,
+                    url: 'demo5.aspx?param1=111111&param2=222222'
+
+
+                }, {
+
+                    y: 124.8,
+                    url: 'demo6.aspx?param1=111111&param2=222222'
+
+
+                }]
+            }]
+        });
+    });
+</script>
+</body>
+
+</html>

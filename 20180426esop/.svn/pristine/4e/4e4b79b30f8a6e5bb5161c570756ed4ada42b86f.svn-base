@@ -1,0 +1,495 @@
+package com.esop.visitInfo.dto;
+
+/**
+ * Created by subt on 2017/6/16 0016.
+ */
+public class VisitDatacenterDto {
+    String visit_unit            ="";//参观单位
+    String grop_id               ="";//集团编码
+    String visit_address         ="";//参观地址
+    String visit_number          ="";//参观人数
+    String visit_date            ="";//参观时间
+    String grop_escort_people   ="";//集团客户部陪同人员
+    String interface_man         ="";//接口人
+    String connection_phone      ="";//联系电话
+    String undertake_unit        ="";//承接单位
+    String undertake_address     ="";//承接地点
+    String undertake_man          ="";//接口人（承接方）
+    String undertake_phone       ="";//联系电话（承接方）
+    String grop_audit               ="";//集团客户部审核
+    String undertake_audit          ="";//承接方审核
+    String create_date              ="";//创建时间
+    String update_date              ="";//修改时间
+    //参观内容
+    String hv_distribution_room     ="";//高压配电室
+    String lv_distribution_room     ="";//低压变配电室
+    String engine_room              ="";//油机室
+    String htdc_pb_room              ="";//高压直流电力电池室
+    String oddc_pb_room              ="";//普通直流电力电池室
+    String ogac_pb_room              ="";//普通交流电力电池室
+    String ipdt_refrigerat_room      ="";//独立制冷室
+    String columns_air_room          ="";//列间空调机房
+    String water_door_room          ="";//水冷前门机房
+    String heat_backplane_room       ="";//热管背板机房
+    String storage_room             ="";//库房
+    String focus_monitor_hall       ="";//集中监控大厅
+    String station                  ="";//工位
+    String get_accommodation        ="";//住宿
+    String canteen                  ="";//食堂
+    String conference_room          ="";//会议室
+    String special_needs            ="";//特殊需求
+    //接待要求
+    String large_screen_greeting    ="";//大屏幕欢迎辞
+    String boardroom_number         ="";//数量(会议室)
+    String capacity                 ="";//容量（会议室）
+    String projector_curtain        ="";//投影仪及幕布
+    String famous_brand             ="";//名牌
+    String rostrum                  ="";//主席台
+    String microphone               ="";//麦克风
+    String mineral_water            ="";//矿泉水
+    String tea_water                ="";//茶水
+    String paper_pen                ="";//纸笔
+    String car_number               ="";//数量（车辆）
+    String models_colour            ="";//车型及颜色
+    String plate_num                ="";//车牌号码
+    String table_number             ="";//桌餐
+    String canteen_number           ="";//食堂（餐饮）
+
+    public String getHv_distribution_room() {
+        return hv_distribution_room;
+    }
+
+    public void setHv_distribution_room(String hv_distribution_room) {
+        this.hv_distribution_room = hv_distribution_room;
+    }
+
+    public String getLv_distribution_room() {
+        return lv_distribution_room;
+    }
+
+    public void setLv_distribution_room(String lv_distribution_room) {
+        this.lv_distribution_room = lv_distribution_room;
+    }
+
+    public String getEngine_room() {
+        return engine_room;
+    }
+
+    public void setEngine_room(String engine_room) {
+        this.engine_room = engine_room;
+    }
+
+    public String getHtdc_pb_room() {
+        return htdc_pb_room;
+    }
+
+    public void setHtdc_pb_room(String htdc_pb_room) {
+        this.htdc_pb_room = htdc_pb_room;
+    }
+
+    public String getOddc_pb_room() {
+        return oddc_pb_room;
+    }
+
+    public void setOddc_pb_room(String oddc_pb_room) {
+        this.oddc_pb_room = oddc_pb_room;
+    }
+
+    public String getOgac_pb_room() {
+        return ogac_pb_room;
+    }
+
+    public void setOgac_pb_room(String ogac_pb_room) {
+        this.ogac_pb_room = ogac_pb_room;
+    }
+
+    public String getIpdt_refrigerat_room() {
+        return ipdt_refrigerat_room;
+    }
+
+    public void setIpdt_refrigerat_room(String ipdt_refrigerat_room) {
+        this.ipdt_refrigerat_room = ipdt_refrigerat_room;
+    }
+
+    public String getColumns_air_room() {
+        return columns_air_room;
+    }
+
+    public void setColumns_air_room(String columns_air_room) {
+        this.columns_air_room = columns_air_room;
+    }
+
+    public String getWater_door_room() {
+        return water_door_room;
+    }
+
+    public void setWater_door_room(String water_door_room) {
+        this.water_door_room = water_door_room;
+    }
+
+    public String getHeat_backplane_room() {
+        return heat_backplane_room;
+    }
+
+    public void setHeat_backplane_room(String heat_backplane_room) {
+        this.heat_backplane_room = heat_backplane_room;
+    }
+
+    public String getStorage_room() {
+        return storage_room;
+    }
+
+    public void setStorage_room(String storage_room) {
+        this.storage_room = storage_room;
+    }
+
+    public String getFocus_monitor_hall() {
+        return focus_monitor_hall;
+    }
+
+    public void setFocus_monitor_hall(String focus_monitor_hall) {
+        this.focus_monitor_hall = focus_monitor_hall;
+    }
+
+    public String getStation() {
+        return station;
+    }
+
+    public void setStation(String station) {
+        this.station = station;
+    }
+
+    public String getGet_accommodation() {
+        return get_accommodation;
+    }
+
+    public void setGet_accommodation(String get_accommodation) {
+        this.get_accommodation = get_accommodation;
+    }
+
+    public String getCanteen() {
+        return canteen;
+    }
+
+    public void setCanteen(String canteen) {
+        this.canteen = canteen;
+    }
+
+    public String getConference_room() {
+        return conference_room;
+    }
+
+    public void setConference_room(String conference_room) {
+        this.conference_room = conference_room;
+    }
+
+    public String getSpecial_needs() {
+        return special_needs;
+    }
+
+    public void setSpecial_needs(String special_needs) {
+        this.special_needs = special_needs;
+    }
+
+    public String getLarge_screen_greeting() {
+        return large_screen_greeting;
+    }
+
+    public void setLarge_screen_greeting(String large_screen_greeting) {
+        this.large_screen_greeting = large_screen_greeting;
+    }
+
+    public String getBoardroom_number() {
+        return boardroom_number;
+    }
+
+    public void setBoardroom_number(String boardroom_number) {
+        this.boardroom_number = boardroom_number;
+    }
+
+    public String getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(String capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getProjector_curtain() {
+        return projector_curtain;
+    }
+
+    public void setProjector_curtain(String projector_curtain) {
+        this.projector_curtain = projector_curtain;
+    }
+
+    public String getFamous_brand() {
+        return famous_brand;
+    }
+
+    public void setFamous_brand(String famous_brand) {
+        this.famous_brand = famous_brand;
+    }
+
+    public String getRostrum() {
+        return rostrum;
+    }
+
+    public void setRostrum(String rostrum) {
+        this.rostrum = rostrum;
+    }
+
+    public String getMicrophone() {
+        return microphone;
+    }
+
+    public void setMicrophone(String microphone) {
+        this.microphone = microphone;
+    }
+
+    public String getMineral_water() {
+        return mineral_water;
+    }
+
+    public void setMineral_water(String mineral_water) {
+        this.mineral_water = mineral_water;
+    }
+
+    public String getTea_water() {
+        return tea_water;
+    }
+
+    public void setTea_water(String tea_water) {
+        this.tea_water = tea_water;
+    }
+
+    public String getPaper_pen() {
+        return paper_pen;
+    }
+
+    public void setPaper_pen(String paper_pen) {
+        this.paper_pen = paper_pen;
+    }
+
+    public String getCar_number() {
+        return car_number;
+    }
+
+    public void setCar_number(String car_number) {
+        this.car_number = car_number;
+    }
+
+    public String getModels_colour() {
+        return models_colour;
+    }
+
+    public void setModels_colour(String models_colour) {
+        this.models_colour = models_colour;
+    }
+
+    public String getPlate_num() {
+        return plate_num;
+    }
+
+    public void setPlate_num(String plate_num) {
+        this.plate_num = plate_num;
+    }
+
+    public String getTable_number() {
+        return table_number;
+    }
+
+    public void setTable_number(String table_number) {
+        this.table_number = table_number;
+    }
+
+    public String getCanteen_number() {
+        return canteen_number;
+    }
+
+    public void setCanteen_number(String canteen_number) {
+        this.canteen_number = canteen_number;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(String update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getVisit_unit() {
+        return visit_unit;
+    }
+
+    public void setVisit_unit(String visit_unit) {
+        this.visit_unit = visit_unit;
+    }
+
+    public String getGrop_id() {
+        return grop_id;
+    }
+
+    public void setGrop_id(String grop_id) {
+        this.grop_id = grop_id;
+    }
+
+    public String getVisit_address() {
+        return visit_address;
+    }
+
+    public void setVisit_address(String visit_address) {
+        this.visit_address = visit_address;
+    }
+
+    public String getVisit_number() {
+        return visit_number;
+    }
+
+    public void setVisit_number(String visit_number) {
+        this.visit_number = visit_number;
+    }
+
+    public String getVisit_date() {
+        return visit_date;
+    }
+
+    public void setVisit_date(String visit_date) {
+        this.visit_date = visit_date;
+    }
+
+    public String getGrop_escort_people() {
+        return grop_escort_people;
+    }
+
+    public void setGrop_escort_people(String grop_escort_people) {
+        this.grop_escort_people = grop_escort_people;
+    }
+
+    public String getInterface_man() {
+        return interface_man;
+    }
+
+    public void setInterface_man(String interface_man) {
+        this.interface_man = interface_man;
+    }
+
+    public String getConnection_phone() {
+        return connection_phone;
+    }
+
+    public void setConnection_phone(String connection_phone) {
+        this.connection_phone = connection_phone;
+    }
+
+    public String getUndertake_unit() {
+        return undertake_unit;
+    }
+
+    public void setUndertake_unit(String undertake_unit) {
+        this.undertake_unit = undertake_unit;
+    }
+
+    public String getUndertake_address() {
+        return undertake_address;
+    }
+
+    public void setUndertake_address(String undertake_address) {
+        this.undertake_address = undertake_address;
+    }
+
+    public String getUndertake_man() {
+        return undertake_man;
+    }
+
+    public void setUndertake_man(String undertake_man) {
+        this.undertake_man = undertake_man;
+    }
+
+    public String getUndertake_phone() {
+        return undertake_phone;
+    }
+
+    public void setUndertake_phone(String undertake_phone) {
+        this.undertake_phone = undertake_phone;
+    }
+
+    public String getGrop_audit() {
+        return grop_audit;
+    }
+
+    public void setGrop_audit(String grop_audit) {
+        this.grop_audit = grop_audit;
+    }
+
+    public String getUndertake_audit() {
+        return undertake_audit;
+    }
+
+    public void setUndertake_audit(String undertake_audit) {
+        this.undertake_audit = undertake_audit;
+    }
+
+    @Override
+    public String toString() {
+        return "VisitDatacenterDto{" +
+                "visit_unit='" + visit_unit + '\'' +
+                ", grop_id='" + grop_id + '\'' +
+                ", visit_address='" + visit_address + '\'' +
+                ", visit_number='" + visit_number + '\'' +
+                ", visit_date='" + visit_date + '\'' +
+                ", grop_escort_people='" + grop_escort_people + '\'' +
+                ", interface_man='" + interface_man + '\'' +
+                ", connection_phone='" + connection_phone + '\'' +
+                ", undertake_unit='" + undertake_unit + '\'' +
+                ", undertake_address='" + undertake_address + '\'' +
+                ", undertake_man='" + undertake_man + '\'' +
+                ", undertake_phone='" + undertake_phone + '\'' +
+                ", grop_audit='" + grop_audit + '\'' +
+                ", undertake_audit='" + undertake_audit + '\'' +
+                ", create_date='" + create_date + '\'' +
+                ", update_date='" + update_date + '\'' +
+                ", hv_distribution_room='" + hv_distribution_room + '\'' +
+                ", lv_distribution_room='" + lv_distribution_room + '\'' +
+                ", engine_room='" + engine_room + '\'' +
+                ", htdc_pb_room='" + htdc_pb_room + '\'' +
+                ", oddc_pb_room='" + oddc_pb_room + '\'' +
+                ", ogac_pb_room='" + ogac_pb_room + '\'' +
+                ", ipdt_refrigerat_room='" + ipdt_refrigerat_room + '\'' +
+                ", columns_air_room='" + columns_air_room + '\'' +
+                ", water_door_room='" + water_door_room + '\'' +
+                ", heat_backplane_room='" + heat_backplane_room + '\'' +
+                ", storage_room='" + storage_room + '\'' +
+                ", focus_monitor_hall='" + focus_monitor_hall + '\'' +
+                ", station='" + station + '\'' +
+                ", get_accommodation='" + get_accommodation + '\'' +
+                ", canteen='" + canteen + '\'' +
+                ", conference_room='" + conference_room + '\'' +
+                ", special_needs='" + special_needs + '\'' +
+                ", large_screen_greeting='" + large_screen_greeting + '\'' +
+                ", boardroom_number='" + boardroom_number + '\'' +
+                ", capacity='" + capacity + '\'' +
+                ", projector_curtain='" + projector_curtain + '\'' +
+                ", famous_brand='" + famous_brand + '\'' +
+                ", rostrum='" + rostrum + '\'' +
+                ", microphone='" + microphone + '\'' +
+                ", mineral_water='" + mineral_water + '\'' +
+                ", tea_water='" + tea_water + '\'' +
+                ", paper_pen='" + paper_pen + '\'' +
+                ", car_number='" + car_number + '\'' +
+                ", models_colour='" + models_colour + '\'' +
+                ", plate_num='" + plate_num + '\'' +
+                ", table_number='" + table_number + '\'' +
+                ", canteen_number='" + canteen_number + '\'' +
+                '}';
+    }
+}

@@ -1,0 +1,30 @@
+package com.esop.vip.service;
+
+import com.esop.common.dataBase.SqlE;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Created by Qiao on 2017/7/27.
+ */
+@Repository
+public class ProductListService {
+    @Autowired
+    SqlE sqlE;
+
+    public String getSmCOde(Map map){
+        String sm_code = "";
+        List list = sqlE.selectM("getSmCOde",map);
+        if(list.size()>0){
+            sm_code = (String)list.get(0);
+        }
+        return sm_code;
+    }
+
+    public String getCount(Map map){
+        return (String)sqlE.selectM("getCount",map).get(0);
+    }
+}

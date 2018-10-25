@@ -1,0 +1,70 @@
+package com.esop.cqDevelopment.elecPack.dto;
+
+/**
+ * Created by wangxy on 2017/12/12.
+ */
+public class MemberInfoSelectDto {
+    private String id;
+    private String memberName;
+    private String memberTel;
+    private String unionName;
+    private String unionCode;
+    private String prodName;
+    private String prodCode;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public String getMemberTel() {
+        return memberTel;
+    }
+
+    public void setMemberTel(String memberTel) {
+        this.memberTel = memberTel;
+    }
+
+    public String getUnionName() {
+        return unionName;
+    }
+
+    public void setUnionName(String unionName) {
+        this.unionName = unionName;
+    }
+
+    public String getUnionCode() {
+        return unionCode;
+    }
+
+    public void setUnionCode(String unionCode) {
+        this.unionCode = unionCode;
+    }
+
+    public String getProdName() {
+        return prodName;
+    }
+
+    public void setProdName(String prodName) {
+        this.prodName = prodName;
+    }
+
+    public String getProdCode() {
+        return prodCode;
+    }
+
+    public void setProdCode(String prodCode) {
+        this.prodCode = prodCode;
+    }
+}

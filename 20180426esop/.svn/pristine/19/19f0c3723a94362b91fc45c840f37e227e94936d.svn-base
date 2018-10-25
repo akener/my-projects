@@ -1,0 +1,310 @@
+package com.esop.workflow.service;
+
+
+import com.esop.workflow.dto.GetFirstStepsOutDTO;
+import com.esop.workflow.dto.orderDto.OrderStartDto;
+import com.esop.workflow.model.CtProcInstInfo;
+import com.esop.workflow.model.CtProcMatchCfg;
+import com.esop.workflow.model.CtProcPropertyCfg;
+import com.esop.workflow.model.CtTaskInstInfo;
+import com.esop.workflow.util.ExportExcelUtil;
+import com.esop.workflow.vo.Assignee;
+import com.esop.workflow.vo.Param;
+import com.esop.workflow.vo.Step;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+
+/**
+ * 电子订单流程接口类
+ * @author  liwj 2017/12/07
+ */
+@Service
+public class OrderWorkFlowService {
+
+
+    @Autowired
+    WorkFlowService workFlowService;
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+
+    /**
+     * 电子订单流程发起接口
+     * @param inDTO
+     * @return
+     */
+    public String createOrderFlowService(OrderStartDto inDTO,HttpServletRequest httpServletRequest) {
+        String flag = "0";
+
+        try {
+            //匹配电子订单流程类
+            CtProcMatchCfg retrievalCondition = new CtProcMatchCfg();
+            retrievalCondition.setProcTypeCode(inDTO.getProcTypeCode());
+            retrievalCondition.setDeptId(inDTO.getBranchCode());
+            retrievalCondition.setKeyValue(inDTO.getKeyValue());
+            CtProcMatchCfg ctProcMatchCfg = workFlowService.qryProcessMatch(retrievalCondition);
+
+
+            CtProcInstInfo ctProcInstInfo = new CtProcInstInfo();
+
+
+            ctProcInstInfo.setBizRecordId(inDTO.getBizRecordId());//业务主键
+            ctProcInstInfo.setStartDept(inDTO.getStartDept());//登录人部门
+            ctProcInstInfo.setStartLoginNo(inDTO.getStartLoginNo());//登录人工号
+            ctProcInstInfo.setStartRegion(inDTO.getStartRegion());//登录人分公司
+            ctProcInstInfo.setProcTypeCode(ctProcMatchCfg.getProcTypeCode());
+            ctProcInstInfo.setProcId(ctProcMatchCfg.getProcId());
+            ctProcInstInfo.setProcNameEn(ctProcMatchCfg.getProcNameEn());
+            ctProcInstInfo.setProcNameCh(ctProcMatchCfg.getProcNameCh());
+            ctProcInstInfo.setFlag("A");
+
+
+
+            List<CtProcPropertyCfg> list=workFlowService.qryProcProperties(ctProcInstInfo.getProcId());
+            Param[] p = workFlowService.qryParamsFromRequest(list,httpServletRequest);
+
+            String actionId = inDTO.getActionId();
+            workFlowService.startProcInst(ctProcInstInfo, p, actionId);
+
+
+        } catch (Exception e) {
+            flag = "1";
+            System.out.println(e.getMessage());
+            return flag;
+
+        }
+
+        return flag;
+
+    }
+
+
+    /**
+     * 电子订单流程加载下一步接口
+     * @param inDTO
+     * @return
+     */
+
+    public GetFirstStepsOutDTO getNextStepService(CtTaskInstInfo inDTO, HttpServletRequest httpServletRequest) {
+        GetFirstStepsOutDTO outDTO = new GetFirstStepsOutDTO();
+        try {
+
+            Assignee assignee = new Assignee();
+            assignee.setProcId(inDTO.getProcId());
+            assignee.setProcNameEn(inDTO.getProcNameEn());
+            assignee.setStepId(inDTO.getStepId());
+            assignee.setBizRecordId(inDTO.getBizRecordId());
+            assignee.setProcInstId(inDTO.getProcInstId());
+            assignee.setRegionId(inDTO.getRegionId());
+
+
+            List<CtProcPropertyCfg> list=workFlowService.qryProcProperties(inDTO.getProcId());
+            Param[] p = workFlowService.qryParamsFromRequest(list,httpServletRequest);
+
+
+            List<Step> stepList = workFlowService.getNextSteps(assignee, p);
+            outDTO.setStepList(stepList);
+        } catch (Exception e) {
+            outDTO.setReturnCode("1");
+            outDTO.setErrorMessage(e.getMessage());
+        }
+        return outDTO;
+    }
+
+
+
+
+
+    /**
+     * 电子订单提交 测试
+     *
+     * @param inDTO 入参
+     * @return 流程环节信息
+     */
+    public String submitTaskService(CtTaskInstInfo inDTO,HttpServletRequest httpServletRequest) {
+        String flag = "0";
+        try {
+
+            List<CtProcPropertyCfg> list=workFlowService.qryProcProperties(inDTO.getProcId());
+            Param[] p = workFlowService.qryParamsFromRequest(list,httpServletRequest);
+
+
+            workFlowService.submitTask(inDTO,p);
+
+
+        } catch (Exception e) {
+            flag = "1";
+            System.out.println(e.getMessage());
+            return flag;
+
+        }
+
+        return flag;
+
+    }
+
+
+
+
+    /**
+     * 电子订单流程轨迹查询
+     *
+     * @param procInstId 入参
+     * @return 流程环节信息
+     */
+    public List getWorkFlowTrance(String procInstId) {
+        String selectTion = "";
+        selectTion = "getWorkFlowTrance";
+        List list=sqlSessionTemplate.selectList(selectTion,procInstId);
+        return list;
+
+    }
+    /**
+     * 电子订单流程轨迹查询
+     * 根据业务编号BizRecordId查询
+     *
+     * @param bizRecordId 入参
+     * @return 流程环节信息
+     */
+    public List getWorkFlowTranceByBizRecordId(String bizRecordId) {
+        String selectTion = "selectByBizRecordId";
+        CtProcInstInfo procInstInfo = sqlSessionTemplate.selectOne(selectTion, bizRecordId);
+        String procInstId = procInstInfo.getProcInstId();
+
+        selectTion = "getWorkFlowTrance";
+        List list=sqlSessionTemplate.selectList(selectTion,procInstId);
+        return list;
+
+    }
+
+
+    /**
+     * EXCEL 导出功能
+     *
+     * @param  tableHeader 入参
+     * @return 流程环节信息
+     */
+
+
+    public void  getExport(String[] tableHeader,String[] methods, List list,HttpServletResponse response) {
+        HSSFWorkbook workBook = ExportExcelUtil.exportExcel(tableHeader, methods, list);
+
+
+        //下载机器码文件
+        response.setHeader("conent-type", "application/octet-stream");
+        response.setContentType("application/octet-stream");
+        response.addHeader("Content-Disposition", "attachment;filename=Excel"+new SimpleDateFormat("yyyyMMdd").format(new Date())+".xls");
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            workBook.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+
+    /**
+     * 协审分派获取下一步处理人
+     *
+     * @param dto
+     * @return 流程环节信息
+     */
+
+    public List getAssistPerson(Assignee dto) {
+
+        String selectTion = "";
+        selectTion = "selectByRole";
+        List list=sqlSessionTemplate.selectList(selectTion,dto);
+        return list;
+
+    }
+
+
+    /**
+     * 协审分派提交
+     *
+     * @param taskInst
+     * @return 流程环节信息
+     */
+    @Transactional(rollbackFor=Exception.class)
+    public String taskHelp(CtTaskInstInfo taskInst) {
+        String flag = "0";
+
+        try {
+            String selectTion = "";
+            selectTion = "insertTaskInstHisResend";
+            taskInst.setStatus("2");
+            taskInst.setDealOpinion("协办");
+            sqlSessionTemplate.insert(selectTion, taskInst);
+
+            selectTion = "insertTaskInstInfo";
+            sqlSessionTemplate.insert(selectTion, taskInst);
+
+            selectTion = "deleteTaskInstByTaskInstId";
+            sqlSessionTemplate.delete(selectTion,taskInst.getTaskInstId());
+
+
+        } catch (Exception e) {
+
+            flag="1";
+            return flag;
+        }
+        return flag;
+    }
+
+
+
+    /**
+     * EXCEL 导出功能增加表头表尾
+     *
+     * @param  tableHeader 入参
+     * @return 流程环节信息
+     */
+
+    public void  getExportAddTitle(String Title,String[]searchStr,String[] footer,String[] tableHeader,String[] methods, List list,HttpServletResponse response) {
+        HSSFWorkbook workBook = ExportExcelUtil.exportExcelAddTitle(Title,searchStr,footer,tableHeader, methods, list);
+
+        //下载机器码文件
+        response.setHeader("conent-type", "application/octet-stream");
+        response.setContentType("application/octet-stream");
+        response.addHeader("Content-Disposition", "attachment;filename=Excel"+new SimpleDateFormat("yyyyMMdd").format(new Date())+".xls");
+        OutputStream os = null;
+        try {
+            os = response.getOutputStream();
+            workBook.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+
+
+}

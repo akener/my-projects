@@ -1,0 +1,41 @@
+package com.esop.busiAnalysis.service;
+
+import com.esop.busiAnalysis.dto.EpProductHallDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * Created by Administrator on 2017/7/7.
+ */
+@Repository
+public class EpProductHallService {
+    @Autowired
+    SqlE sqlE;
+    public Result getProductInfo(EpProductHallDto param){
+        System.out.println("成功");
+        Result result = sqlE.selectPage("selectProductInfo",param);
+        return result;
+    }
+    public int insProductInfo(EpProductHallDto param){
+        EpProductHallDto idDto = (EpProductHallDto) sqlE.selectM("getProductId").get(0);
+        param.setProduct_id(idDto.getProduct_id());
+        return sqlE.insertM("insProductInfo",param);
+    }
+    public int delete(EpProductHallDto param){
+        return sqlE.deleteM("delProductInfo",param);
+    }
+    public int updProductInfo(EpProductHallDto param){
+        return sqlE.updateM("updProductInfo",param);
+    }
+    public List<EpProductHallDto> getProductInfoById(EpProductHallDto param){
+        return sqlE.selectM("getProductInfoById",param);
+    }
+    /*app端产品大厅信息查询*/
+    public List<EpProductHallDto> qryProductHallInfo(EpProductHallDto param){
+        return sqlE.selectM("qryProductHallInfo",param);
+    }
+}

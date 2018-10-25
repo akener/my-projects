@@ -1,0 +1,15 @@
+package com.esop.workflow.mapper;
+
+import com.esop.workflow.vo.Assignee;
+
+import java.util.List;
+
+public interface AssigneeMapper {
+    Assignee selectProcStarter(String procInstId);
+
+    List<Assignee> selectByRole(Assignee iAssignee);
+
+    List<Assignee> selectByDeptAndRole(Assignee iAssignee);
+
+    List<Assignee> selectForNetOpt(Assignee iAssignee);
+}

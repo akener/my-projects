@@ -1,0 +1,957 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+
+<head>
+
+    <script type="text/javascript" language="javascript" class="init">
+        $(document).ready(function () {
+           // VisitInformationQuery();
+            chengjiequery();
+            xingqingqry();
+            //时间控件
+            $('.form_datetime').datetimepicker({
+                language:  'zh-CN',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0,
+                showMeridian: 1,
+                pickerPosition: "bottom-left"
+            });
+        });
+        //查询基本数据
+        function VisitInformationQuery(){
+            $.ajax({
+                type: "post",
+                url: "/getTestApply",
+                cache: false,
+                data:{
+                    //"relevant_licenses":"4"
+                    "relevant_licenses"	:$("#licence").val()
+                },
+                success: function (result) {
+
+                  $.each(result.info,function(i,filed){
+                      getbaseinfo(filed);
+                  });
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        //展示基本信息
+        function getbaseinfo(result){
+            $("#custer_name").val(result.customer_name);
+            $("#custer_address").val(result.customer_address);
+            $("#business").val(result.business_attribute);
+            $("#licence").val(result.relevant_licenses);
+            $("#idc_base").val(result.idc_basics);
+            $("#contact_person").val(result.customer_people);
+            $("#contact_phone").val(result.customer_phone);
+            $("#contact_email").val(result.customer_mail);
+            $("#custom_manager").val(result.account_manager);
+            $("#custom_phone").val(result.manager_phone);
+            $("#custom_email").val(result.manager_mail);
+            $("#cpu1").val(result.cpu_hanan);
+            $("#storage").val(result.memory_hanan);
+            $("#memery").val(result.storage_hanan);
+            $("#dry_bandwidth_hanan").val(result.dry_bandwidth_hanan);
+            $("#province_bandwidth_hanan").val(result.province_bandwidth_hanan);
+            $("#operating_system").val(result.operating_system_hanan);
+            $("#network_ip_hanan").val(result.network_ip_hanan);
+            $("#port_hanan").val(result.port_hanan);
+            $("#cpu4").val(result.cpu_village);
+            $("#storage3").val(result.memory_village);
+            $("#storage_village").val(result.storage_village);
+            $("#bandwidth_village").val(result.bandwidth_village);
+            $("#operatingsystem").val(result.operating_system_village);
+            $("#network_ip").val(result.network_ip_village);
+            $("#port").val(result.port_village);
+            $("#cpu_vm_ha").val(result.cpu_vm_ha);
+            $("#memory_vm_ha").val(result.memory_vm_ha);
+            $("#storage_vm_ha").val(result.storage_vm_ha);
+            $("#dry_bandwidth_vm_ha").val(result.dry_bandwidth_vm_ha);
+            $("#province_bandwidth_vm_ha").val(result.province_bandwidth_vm_ha);
+            $("#operating_system_vm_ha").val(result.operating_system_vm_ha);
+            $("#ip_vm_ha").val(result.ip_vm_ha);
+            $("#port_vm_ha").val(result.port_vm_ha);
+            $("#cpu_vm_jin").val(result.cpu_vm_jin);
+            $("#memory_vm_jin").val(result.memory_vm_jin);
+            $("#storage_vm_jin").val(result.storage_vm_jin);
+            $("#bandwidth_vm_jin").val(result.bandwidth_vm_jin);
+            $("#operating_system_vm_jin").val(result.operating_system_vm_jin);
+            $("#ip_vm_jin").val(result.ip_vm_jin);
+            $("#port_vm_jin").val(result.port_vm_jin);
+            $("#other").val(result.other);
+            $("#test_time").val(result.test_start_time);
+            $("#testend_time").val(result.test_end_time);
+            $("#delay_time").val(result.this_whether_delay_test);
+            $("#lastdelay_time").val(result.last_delay_end_time);
+            $("#distribution_time").val(result.distribution_time);
+            $("#recovery_time").val(result.recovery_time);
+            $("#delay_recovery_time").val(result.delay_recovery_time);
+        }
+        //查找承接方
+        function chengjiequery(){
+            $.ajax({
+                type: "post",
+                url: "/getTestUndertake",
+                cache: false,
+                data:{
+                    //"relevant_licenses":"111"
+                    "relevant_licenses"	:$("#licence").val()
+                },
+                success: function (result) {
+                    $.each(result.info,function(i,filed){
+                        chengjiefang(filed);
+                    });
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+
+        }
+        function chengjiefang(result){
+            $("#cpu2").val(result.cpu_hanan);
+            $("#storage1").val(result.memory_hanan);
+            $("#memery1").val(result.storage_hanan);
+            $("#dry_bandwidth_hanan1").val(result.dry_bandwidth_hanan);
+            $("#province_bandwidth_hanan1").val(result.province_bandwidth_hanan);
+            $("#operating_system1").val(result.operating_system_hanan);
+            $("#network_ip_hanan1").val(result.network_ip_hanan);
+            $("#port_hanan1").val(result.port_hanan);
+            $("#cpu5").val(result.cpu_village);
+            $("#storage4").val(result.memory_village);
+            $("#storage_village1").val(result.storage_village);
+            $("#bandwidth_village1").val(result.bandwidth_village);
+            $("#operatingsystem1").val(result.operating_system_village);
+            $("#network_ip1").val(result.network_ip_village);
+            $("#port1").val(result.port_village);
+            $("#cpu_vm_ha1").val(result.cpu_vm_ha);
+            $("#memory_vm_ha1").val(result.memory_vm_ha);
+            $("#storage_vm_ha1").val(result.storage_vm_ha);
+            $("#dry_bandwidth_vm_ha1").val(result.dry_bandwidth_vm_ha);
+            $("#province_bandwidth_vm_ha1").val(result.province_bandwidth_vm_ha);
+            $("#operating_system_vm_ha1").val(result.operating_system_vm_ha);
+            $("#ip_vm_ha1").val(result.ip_vm_ha);
+            $("#port_vm_ha1").val(result.port_vm_ha);
+            $("#cpu_vm_jin1").val(result.cpu_vm_jin);
+            $("#memory_vm_jin1").val(result.memory_vm_jin);
+            $("#storage_vm_jin1").val(result.storage_vm_jin);
+            $("#bandwidth_vm_jin1").val(result.bandwidth_vm_jin);
+            $("#operating_system_vm_jin1").val(result.operating_system_vm_jin);
+            $("#ip_vm_jin1").val(result.ip_vm_jin);
+            $("#port_vm_jin1").val(result.port_vm_jin);
+            $("#other1").val(result.other);
+            $("#undertake").val(result.undertake_unit);
+            $("#undertake_place").val(result.undertake_address);
+            $("#inter_person").val(result.undertake_man);
+            $("#inter_phone").val(result.undertake_phone);
+            $("#distribution_time").val(result.distribution_time);
+            $("#recovery_time").val(result.recovery_time);
+            $("#delay_recovery_time").val(result.delay_recovery_time)
+        }
+        //查询详情
+        function xingqingqry(){
+            $.ajax({
+                type: "post",
+                url: "/getTestForDetail",
+                cache: false,
+                data:{
+                    //"relevant_licenses":"111111"
+                    "relevant_licenses"	:$("#licence").val()
+                },
+                success: function (result) {
+
+                    $.each(result.info,function(i,filed){
+                        xiangqing(filed);
+                    });
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        function xiangqing(result){
+            $("#cpu3").val(result.cpu_hanan);
+            $("#storage2").val(result.memory_hanan);
+            $("#memery2").val(result.storage_hanan);
+            $("#dry_bandwidth_hanan2").val(result.dry_bandwidth_hanan);
+            $("#province_bandwidth_hanan2").val(result.province_bandwidth_hanan);
+            $("#operating_system2").val(result.operating_system_hanan);
+            $("#network_ip_hanan2").val(result.network_ip_hanan);
+            $("#port_hanan2").val(result.port_hanan);
+            $("#cpu6").val(result.cpu_village);
+            $("#storage5").val(result.memory_village);
+            $("#storage_village2").val(result.storage_village);
+            $("#bandwidth_village2").val(result.bandwidth_village);
+            $("#operatingsystem2").val(result.operating_system_village);
+            $("#network_ip2").val(result.network_ip_village);
+            $("#port2").val(result.port_village);
+            $("#cpu_vm_ha2").val(result.cpu_vm_ha);
+            $("#memory_vm_ha2").val(result.memory_vm_ha);
+            $("#storage_vm_ha2").val(result.storage_vm_ha);
+            $("#dry_bandwidth_vm_ha2").val(result.dry_bandwidth_vm_ha);
+            $("#province_bandwidth_vm_ha2").val(result.province_bandwidth_vm_ha);
+            $("#operating_system_vm_ha2").val(result.operating_system_vm_ha);
+            $("#ip_vm_ha2").val(result.ip_vm_ha);
+            $("#port_vm_ha2").val(result.port_vm_ha);
+            $("#cpu_vm_jin2").val(result.cpu_vm_jin);
+            $("#cpu_vm_jin2").val(result.cpu_vm_jin);
+            $("#storage_vm_jin2").val(result.storage_vm_jin);
+            $("#bandwidth_vm_jin2").val(result.bandwidth_vm_jin);
+            $("#operating_system_vm_jin2").val(result.operating_system_vm_jin);
+            $("#ip_vm_jin2").val(result.ip_vm_jin);
+            $("#port_vm_jin2").val(result.port_vm_jin);
+            $("#other2").val(result.other);
+        }
+
+   //查询基本信息
+   function getresult(result){
+            $("#custer_name").val();
+            $("#custer_address").val();
+            $("#business").val();
+            $("#licence").val();
+            $("#inferface_person").val();
+            $("#contact_person").val();
+            $("#contact_phone").val();
+            $("#contact_email").val();
+            $("#custom_manager").val();
+            $("#custom_phone").val();
+            $("#custom_email").val();
+            $("#undertake").val();
+            $("#undertake_place").val();
+            $("#inter_person").val();
+            $("#inter_phone").val();
+            $("#test_time").val();
+            $("#testend_time").val();
+            $("#delay_time").val();
+            $("#lastdelay_time").val();
+            $("#distribution_time").val();
+            $("#recovery_time").val();
+            $("#delay_recovery_time").val();
+     }
+//提交测试需求基本信息
+        function Gettestinfo(){
+            yanzheng();
+            $.ajax({
+                type: "post",
+                url: "/getTestInfo",
+                cache: false,
+                data:{
+                    "customer_name"	:$("#custer_name").val(),
+                    "customer_address"	: $("#custer_address").val(),
+                    "business_attribute"	: $("#business").val(),
+                    "relevant_licenses"	:$("#licence").val(),
+                    "idc_basics"	: $("#idc_base").val(),
+                    "customer_people"	:$("#contact_person").val(),
+                    "customer_phone"	: $("#contact_phone").val(),
+                    "customer_mail"	: $("#contact_email").val(),
+                    "account_manager"	: $("#custom_manager").val(),
+                    "manager_phone"	:  $("#custom_phone").val(),
+                    "manager_mail"	:$("#custom_email").val(),
+                    "cpu_hanan"	: $("#cpu1").val(),
+                    "memory_hanan"	:$("#storage").val(),
+                    "storage_hanan"	:$("#memery").val(),
+                    "dry_bandwidth_hanan"	:$("#dry_bandwidth_hanan").val(),
+                    "province_bandwidth_hanan"	: $("#province_bandwidth_hanan").val(),
+                    "operating_system_hanan"	:$("#operating_system").val(),
+                    "network_ip_hanan"	: $("#network_ip_hanan").val(),
+                    "port_hanan"	:  $("#port_hanan").val(),
+                    "cpu_village"	:  $("#cpu4").val(),
+                    "memory_village"	: $("#storage3").val(),
+                    "storage_village"	:$("#storage_village").val(),
+                    "bandwidth_village"	:$("#bandwidth_village").val(),
+                    "operating_system_village"	: $("#operatingsystem").val(),
+                    "network_ip_village"	: $("#network_ip").val(),
+                    "port_village"	:$("#port").val(),
+                    "cpu_vm_ha"	: $("#cpu_vm_ha").val(),
+                    "memory_vm_ha"	:$("#memory_vm_ha").val(),
+                    "storage_vm_ha"	: $("#storage_vm_ha").val(),
+                    "dry_bandwidth_vm_ha"	:$("#dry_bandwidth_vm_ha").val(),
+                    "province_bandwidth_vm_ha"	: $("#province_bandwidth_vm_ha").val(),
+                    "operating_system_vm_ha"	:$("#operating_system_vm_ha").val(),
+                    "ip_vm_ha"	:  $("#ip_vm_ha").val(),
+                    "port_vm_ha"	:$("#port_vm_ha").val(),
+                    "cpu_vm_jin"	:$("#cpu_vm_jin").val(),
+                    "memory_vm_jin"	:  $("#memory_vm_jin").val(),
+                    "storage_vm_jin"	:$("#storage_vm_jin").val(),
+                    "bandwidth_vm_jin"	:   $("#bandwidth_vm_jin").val(),
+                    "operating_system_vm_jin"	:$("#operating_system_vm_jin").val(),
+                    "ip_vm_jin"	: $("#ip_vm_jin").val(),
+                    "port_vm_jin"	:$("#port_vm_jin").val(),
+                    "other"	: $("#other").val(),
+                    "test_start_time"	: $("#test_time").val(),
+                    "test_end_time"	: $("#testend_time").val(),
+                    "this_whether_delay_test"	:$("#delay_time").val(),
+                    "last_delay_end_time"	:$("#lastdelay_time").val()
+
+                },
+                success: function (result) {
+                    city_data = "";
+                    //拼接json数据集字符串
+                    if(result.info=="操作成功！"){
+                        getoa();
+                    }else{
+                        alert(result.info);
+                    }
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+
+        }
+        //修改测试数据信息
+        function settestinfo(){
+            location.reload();
+        }
+   //查看测试数据信息
+     function   sqrytestinfo(){
+         VisitInformationQuery();
+         chengjiequery();
+          xingqingqry();
+         $("#example").find("input,textarea,select").attr("disabled", "disabled");
+     }
+        //存入oa
+        function getoa(){
+            $.ajax({
+                type: "post",
+                url: "/testFormInfoOa",
+                data:{
+                    //"relevant_licenses":"4"
+                    "relevant_licenses"	:$("#licence").val()
+                },
+                success: function (result) {
+                    city_data = "";
+                    //拼接json数据集字符串
+                    alert(result.info);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }
+        //数据效验
+        function yanzheng() {
+            //alert("1111111");
+            //客户侧联系人
+            var phone = document.getElementById("contact_phone").value;
+            if(!(/^1[34578]\d{9}$/.test(phone))){
+                alert("手机号码有误，请重填");
+                return false;
+            }
+            var temp = document.getElementById("contact_email");
+            //对电子邮件的验证
+            var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+            if(!myreg.test(temp.value)) {
+                alert("请输入有效的E_mail！");
+                myreg.focus();
+                return false;
+            }
+            //客户经理
+            var phoneCust = document.getElementById("custom_phone").value;
+            if(!(/^1[34578]\d{9}$/.test(phoneCust))){
+                alert("手机号码有误，请重填");
+                return false;
+            }
+            var tempCust = document.getElementById("custom_email");
+            //对电子邮件的验证
+            var reg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+            if(!reg.test(tempCust.value)) {
+                alert("请输入有效的E_mail！");
+                reg.focus();
+                return false;
+            }
+
+        }
+
+
+    </script>
+
+</head>
+
+<!--<hr />-->
+<body style="padding:0 100px;">
+<table id="example" class="cost-table" style="border-collapse:separate;empty-cells:show"
+       border="1px" cellspacing="0px" align="center" bgcolor="white">
+    <thead>
+    <tr>
+        <th class="text-center" colspan="8">
+            测试流程表单
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center">客户名称</th>
+        <th class="text-center" >
+            <input type="text"  id="custer_name" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">业务属性</th>
+        <th class="text-center" >
+            <input type="text"  id="business" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center" >客户地址</th>
+        <th class="text-center" colspan="3">
+            <input type="text"  id="custer_address" value="" style="width:100%; height:100%;"/>
+        </th>
+
+    </tr>
+    <tr>
+        <th class="text-center" >客户侧联系人</th>
+        <th class="text-center">
+                <input type="text"  id="contact_person" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center" > 联系电话 </th>
+        <th class="text-center">
+                <input type="text"  id="contact_phone" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">联系邮箱</th>
+        <th class="text-center" colspan="3">
+                <input type="text"  id="contact_email" value="" style="width:100%; height:100%;"/>
+        </th>
+
+    </tr>
+    <tr>
+        <th class="text-center" >客户经理</th>
+        <th class="text-center">
+            <input type="text"  id="custom_manager" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center"> 联系电话</th>
+        <th class="text-center">
+            <input type="text"  id="custom_phone" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">联系邮箱</th>
+        <th class="text-center" colspan="3">
+            <input type="text"  id="custom_email" value="" style="width:100%; height:100%;"/>
+        </th>
+
+    </tr>
+    <tr>
+        <th class="text-center">相关证照</th>
+        <th class="text-center" colspan="2">
+            <input type="text"  id="licence" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center">IDC基础数据表</th>
+        <th class="text-center" colspan="4">
+            <input type="text"  id="idc_base" value="" style="width:100%; height:100%;"/>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center" rowspan="3">承接方填写</th>
+        <tr>
+            <th class="text-center"> 承接单位</th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="undertake" value="" style="width:100%; height:100%;"/>
+            </th>
+        <th class="text-center"> 接口人</th>
+        <th class="text-center" colspan="4">
+            <input type="text" disabled="disabled" id="inter_person" value="" style="width:100%; height:100%;"/>
+        </th>
+        </tr>
+        <tr>
+            <th class="text-center"> 承接地点</th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="undertake_place" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center">联系电话</th>
+            <th class="text-center" colspan="4">
+                <input type="text" disabled="disabled" id="inter_phone" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+
+    </tr>
+    <tr>
+        <th class="text-center"></th>
+        <th class="text-center"></th>
+        <th class="text-center"></th>
+        <th class="text-center" colspan="2">申请方填写</th>
+        <th class="text-center">承接方填写</th>
+        <th class="text-center" colspan="2" >详情</th>
+
+    </tr>
+    <tr>
+        <th class="text-center" rowspan="35">
+            测试需求（可以增加数量）【信息系统部承接】
+        </th>
+        <th class="text-center" rowspan="9">物理机（哈南）</th>
+        <tr >
+            <th class="text-center">CPU</th>
+            <th class="text-center" colspan="2" >
+                <input type="text"  id="cpu1"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="cpu2" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="cpu3" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">内存</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="storage"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="storage1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="storage2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">存储</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="memery"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="memery1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="memery2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">国干带宽</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="dry_bandwidth_hanan"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="dry_bandwidth_hanan1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="dry_bandwidth_hanan2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">省干带宽</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="province_bandwidth_hanan"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="province_bandwidth_hanan1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="province_bandwidth_hanan2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">操作系统</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="operating_system"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="operating_system1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="operating_system2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">公网IP</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="network_ip_hanan"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="network_ip_hanan1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="network_ip_hanan2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">端口</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="port_hanan"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="port_hanan1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="port_hanan2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+    <th class="text-center" rowspan="8" >物理机（进乡）</th>
+        <tr >
+            <th class="text-center">CPU</th>
+            <th class="text-center" colspan="2" >
+                <input type="text"  id="cpu4"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="cpu5" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="cpu6" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">内存</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="storage3"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="storage4" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="storage5" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">存储</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="storage_village"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="storage_village1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="storage_village2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">带宽</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="bandwidth_village"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="bandwidth_village1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="bandwidth_village2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">操作系统</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="operatingsystem"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="operatingsystem1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="operatingsystem2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">公网IP</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="network_ip"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="network_ip1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="network_ip2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">端口</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="port"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="port1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="port2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+    <th class="text-center" rowspan="9" >虚拟机（哈南）</th>
+        <tr >
+            <th class="text-center">CPU</th>
+            <th class="text-center" colspan="2" >
+                <input type="text"  id="cpu_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="cpu_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="cpu_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">内存</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="memory_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="memory_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="memory_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">存储</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="storage_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="storage_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="storage_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">国干带宽</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="dry_bandwidth_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="dry_bandwidth_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="dry_bandwidth_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">省干带宽</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="province_bandwidth_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="province_bandwidth_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="province_bandwidth_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">操作系统</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="operating_system_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="operating_system_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="operating_system_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">公网IP</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="ip_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="ip_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="ip_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">端口</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="port_vm_ha"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="port_vm_ha1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="port_vm_ha2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+    <th class="text-center" rowspan="8" >虚拟机（进乡）</th>
+        <tr >
+            <th class="text-center">CPU</th>
+            <th class="text-center" colspan="2" >
+                <input type="text"  id="cpu_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="cpu_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="cpu_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">内存</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="memory_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="memory_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="memory_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">存储</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="storage_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="storage_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="storage_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">带宽</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="bandwidth_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="bandwidth_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="bandwidth_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">操作系统</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="operating_system_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="operating_system_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="operating_system_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">IP</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="ip_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="ip_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="ip_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <tr >
+            <th class="text-center">端口</th>
+            <th class="text-center" colspan="2">
+                <input type="text"  id="port_vm_jin"  value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" >
+                <input type="text" disabled="disabled" id="port_vm_jin1" value="" style="width:100%; height:100%;"/>
+            </th>
+            <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="port_vm_jin2" value="" style="width:100%; height:100%;"/>
+            </th>
+        </tr>
+        <th class="text-center" colspan="2">其他</th>
+        <th class="text-center" colspan="2">
+                <input type="text"  id="other"  value="" style="width:100%; height:100%;"/>
+        </th>
+       <th class="text-center" >
+                <input type="text" disabled="disabled" id="other1" value="" style="width:100%; height:100%;"/>
+       </th>
+       <th class="text-center" colspan="2">
+                <input type="text" disabled="disabled" id="other2" value="" style="width:100%; height:100%;"/>
+       </th>
+       <tr>
+           <th class="text-center"  >测试开始时间</th>
+
+           <th class="text-center" colspan="2" >
+               <div class="col-sm-2">
+                   <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                       <input readonly class="form-control" style="width:120px"  id="test_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                       <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                   </div>
+               </div>
+           </th>
+           <th class="text-center"  >测试结束时间（距离测试开始时间不超过15天）</th>
+           <th class="text-center" colspan="4" >
+               <div class="col-sm-2">
+                   <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                       <input readonly class="form-control" style="width:120px"  id="testend_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                       <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                   </div>
+               </div>
+           </th>
+
+       </tr>
+        <tr>
+            <th class="text-center"  >本次是否是延期测试</th>
+            <th class="text-center" colspan="2" >
+                <div class="col-sm-2">
+                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                        <input readonly class="form-control" style="width:120px"  id="delay_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                    </div>
+                </div>
+            </th>
+            <th class="text-center"  >上次延期结束时间</th>
+            <th class="text-center" colspan="4" >
+                <div class="col-sm-2">
+                    <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                        <input readonly class="form-control" style="width:120px"  id="lastdelay_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                    </div>
+                </div>
+            </th>
+
+        </tr>
+    <tr>
+        <th class="text-center"  >分配时间</th>
+        <th class="text-center" colspan="2" >
+
+            <%--<div class="col-sm-2">--%>
+                <%--&lt;%&ndash;<div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<input readonly class="form-control" style="width:120px"  id="distribution_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">&ndash;%&gt;--%>
+                    <%--&lt;%&ndash;<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>&ndash;%&gt;--%>
+                <%--&lt;%&ndash;</div>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</div>&ndash;%&gt;--%>
+                    <input type="text" disabled="disabled" id="distribution_time" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center" >回收时间</th>
+        <th class="text-center" colspan="1" >
+            <%--<div class="col-sm-2">--%>
+                <%--<div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">--%>
+                    <%--<input readonly class="form-control" style="width:120px"  id="recovery_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">--%>
+                    <%--<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>--%>
+                <%--</div>--%>
+            <%--</div>--%>
+            <input type="text" disabled="disabled" id="recovery_time" value="" style="width:100%; height:100%;"/>
+        </th>
+        <th class="text-center" >延期回收时间</th>
+        <th class="text-center" colspan="2" >
+            <%--<div class="col-sm-2">--%>
+            <%--&lt;%&ndash;<div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">&ndash;%&gt;--%>
+            <%--&lt;%&ndash;<input readonly class="form-control" style="width:120px"  id="delay_recovery_time" name="record_end_date" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">&ndash;%&gt;--%>
+            <%--&lt;%&ndash;<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>&ndash;%&gt;--%>
+            <%--&lt;%&ndash;</div>&ndash;%&gt;--%>
+            <%----%>
+            <%--</div>--%>
+            <input type="text" disabled="disabled" id="delay_recovery_time" value="" style="width:100%; height:100%;"/>
+        </th>
+    </tr>
+
+    <tr>
+        <th  class="text-center"  colspan="8" >
+            <button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="Gettestinfo()">
+                提交
+            </button>
+            <%--<button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="settestinfo()">--%>
+            <%--修改--%>
+            <%--</button>--%>
+            <%--<button type="button" class="ui-btn mgr-10" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="sqrytestinfo()">--%>
+                <%--查看--%>
+            <%--</button>--%>
+        </th>
+    </tr>
+    </thead>
+    <tfoot>
+
+    </tfoot>
+</table>
+</body>
+</html>

@@ -1,0 +1,53 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Shinelon on 2017/7/13.
+ */
+//查询成员集团和职位
+public class CallPhoneDto {
+    String unit_id = "";//集团id
+    String name = "";//姓名
+    String duty = "";//职务
+    String unit_name = "";//集团名
+    String member_type = "";//成员类型
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDuty() {
+        return duty;
+    }
+
+    public void setDuty(String duty) {
+        this.duty = duty;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getMember_type() {
+        return member_type;
+    }
+
+    public void setMember_type(String member_type) {
+        this.member_type = member_type;
+    }
+}

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+
+    <resultMap id="UnionInfoDtoResultMap" type="com.esop.cqDevelopment.elecPack.dto.UnionInfoDto">
+        <result column="id" jdbcType="VARCHAR" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="levelid" jdbcType="VARCHAR" property="levelId" />
+        <result column="suoxie" jdbcType="VARCHAR" property="suoxie" />
+        <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+        <result column="area_code" jdbcType="VARCHAR" property="areaCode" />
+        <result column="valid" jdbcType="VARCHAR" property="valid" />
+    </resultMap>
+
+    <resultMap id="SeNewContractInfoDtoResultMap" type="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        <result column="id" jdbcType="VARCHAR" property="id" />
+        <result column="contract_id" jdbcType="VARCHAR" property="contract_id" />
+        <result column="product_id" jdbcType="VARCHAR" property="product_id" />
+        <result column="product_name" jdbcType="VARCHAR" property="product_name" />
+        <result column="contract_name" jdbcType="VARCHAR" property="contract_name" />
+        <result column="contract_desc" jdbcType="VARCHAR" property="contract_desc" />
+        <result column="first_party" jdbcType="VARCHAR" property="first_party" />
+        <result column="first_party_code" jdbcType="VARCHAR" property="first_party_code" />
+        <result column="first_party_charge" jdbcType="VARCHAR" property="first_party_charge" />
+        <result column="first_party_address" jdbcType="VARCHAR" property="first_party_address" />
+        <result column="first_party_post_code" jdbcType="VARCHAR" property="first_party_post_code" />
+        <result column="first_party_phone" jdbcType="VARCHAR" property="first_party_phone" />
+        <result column="second_party" jdbcType="VARCHAR" property="second_party" />
+        <result column="second_party_code" jdbcType="VARCHAR" property="second_party_code" />
+        <result column="second_party_charge" jdbcType="VARCHAR" property="second_party_charge" />
+        <result column="second_party_address" jdbcType="VARCHAR" property="second_party_address" />
+        <result column="second_party_post_code" jdbcType="VARCHAR" property="second_party_post_code" />
+        <result column="second_party_phone" jdbcType="VARCHAR" property="second_party_phone" />
+        <result column="discount" jdbcType="VARCHAR" property="discount" />
+        <result column="total_amount" jdbcType="VARCHAR" property="total_amount" />
+        <result column="bond" jdbcType="VARCHAR" property="bond" />
+        <result column="invoice_type" jdbcType="VARCHAR" property="invoice_type" />
+        <result column="first_party_username" jdbcType="VARCHAR" property="first_party_username" />
+        <result column="first_party_band" jdbcType="VARCHAR" property="first_party_band" />
+        <result column="first_party_account_number" jdbcType="VARCHAR" property="first_party_account_number" />
+        <result column="second_party_username" jdbcType="VARCHAR" property="second_party_username" />
+        <result column="second_party_band" jdbcType="VARCHAR" property="second_party_band" />
+        <result column="second_party_account_number" jdbcType="VARCHAR" property="second_party_account_number" />
+        <result column="first_contacts_name" jdbcType="VARCHAR" property="first_contacts_name" />
+        <result column="first_contacts_id_card" jdbcType="VARCHAR" property="first_contacts_id_card" />
+        <result column="first_contacts_phone" jdbcType="VARCHAR" property="first_contacts_phone" />
+        <result column="first_contacts_email" jdbcType="VARCHAR" property="first_contacts_email" />
+        <result column="first_contacts_address" jdbcType="VARCHAR" property="first_contacts_address" />
+        <result column="used_in" jdbcType="VARCHAR" property="used_in" />
+        <result column="safe_client" jdbcType="VARCHAR" property="safe_client" />
+        <result column="safe_address" jdbcType="VARCHAR" property="safe_address" />
+        <result column="safe_contacts" jdbcType="VARCHAR" property="safe_contacts" />
+        <result column="safe_phone" jdbcType="VARCHAR" property="safe_phone" />
+        <result column="pay_cycle" jdbcType="VARCHAR" property="pay_cycle" />
+        <result column="open_time" jdbcType="VARCHAR" property="open_time" />
+        <result column="use_area" jdbcType="VARCHAR" property="use_area" />
+    </resultMap>
+
+    <resultMap id="SeContractChargesInfoResultMap" type="com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo">
+        <result column="id" jdbcType="VARCHAR" property="id" />
+        <result column="product_code" jdbcType="VARCHAR" property="product_code" />
+        <result column="contract_id" jdbcType="VARCHAR" property="contract_id" />
+        <result column="price" jdbcType="VARCHAR" property="price" />
+        <result column="content" jdbcType="VARCHAR" property="content" />
+        <result column="number" jdbcType="VARCHAR" property="number" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+    </resultMap>
+
+    <select id="getUnionInfo" parameterType="String" resultType="java.util.Map">
+        SELECT * from ct_union_info where service_no = #{operNo}
+    </select>
+
+    <select id="getSeNewContractList" parameterType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto" resultMap="SeNewContractInfoDtoResultMap">
+        select contract_id,contract_name from se_new_contract_info
+        where first_party_code = #{first_party_code} and second_party_code = #{second_party_code}
+    </select>
+
+    <select id="getSeNewContractInfo" parameterType="String" resultMap="SeNewContractInfoDtoResultMap">
+        select * from se_new_contract_info where contract_id = #{contract_id}
+    </select>
+
+    <select id="getSeContractChargesInfos" parameterType="String" resultMap="SeContractChargesInfoResultMap">
+        select * from se_contract_charges where contract_id = #{contract_id}
+    </select>
+
+    <select id="getRegionInfo" resultType="java.util.Map" parameterType="String">
+        select t1.staff_code,t2.org_id,(select a1.name from se_contract_qddw a1 where a1.id = t2.org_id) org_name
+        from bs_systemuser_info t1, bs_staff_info t2
+        where t1.staff_id = t2.staff_id and t1.staff_code = #{operNo}
+    </select>
+
+    <select id="getOneSeNewContractInfo" parameterType="String" resultType="com.esop.cqDevelopment.elecPack.dto.SeNewContractInfoDto">
+        select * from se_new_contract_info where contract_id = #{contract_id}
+    </select>
+    <insert id="insertOneContractAccountInfo" parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto" >
+        insert into se_contract_account_info (id, contract_id, pack_no,
+        account_code, account_name, grp_subsid,
+        pay_cycle, state, bak1,
+        bak2,grp_subsname,attrList)
+        values (#{id,jdbcType=INTEGER}, #{contract_id,jdbcType=VARCHAR}, #{pack_no,jdbcType=VARCHAR},
+        #{account_code,jdbcType=VARCHAR}, #{account_name,jdbcType=VARCHAR}, #{grp_subsid,jdbcType=VARCHAR},
+        #{pay_cycle,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR}, #{bak1,jdbcType=VARCHAR},
+        #{bak2,jdbcType=VARCHAR},#{grp_subsname,jdbcType=VARCHAR},#{attrList,jdbcType=VARCHAR})
+    </insert>
+
+    <select parameterType="String" id="selectSeContractAccountInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto">
+        select * from se_contract_account_info where contract_id=#{contract_id} AND state='1'
+    </select>
+    <select  id="selectSeContractAccountInfoDtos"  parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractAccountInfoDto">
+        select * from se_contract_account_info where contract_id=#{contract_id} AND state='1'
+    </select>
+
+
+    <!--根据合同查询产品列表-->
+    <select id="selectprodlist"  parameterType="com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo" resultType="com.esop.cqDevelopment.elecPack.dto.SeContractChargesInfo" >
+        SELECT c.add_prod_name AS prod_name,c.add_prod_code AS product_code
+        FROM se_contract_charges a,se_contract_info b,se_product_charge_info c
+        WHERE a.contract_id = b.contract_id AND a.product_charge_id=c.id and a.contract_id=#{contract_id} and a.delete = '1'
+    </select>
+
+</mapper>

@@ -1,0 +1,207 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by zuoyue on 2017/6/2.
+ */
+public class ComplaintsDto extends BaseDto {
+    String dt_RowId = "";
+    String region_code = "";//地市编码
+    String region_name = "";
+    String town_code ="";//区县编码
+    String town_name = "";
+    String order_no = "";//工单编号
+    String comp_phone = "";//受理号码
+    String comp_name ="";//客户姓名
+    String order_type = "";//工单类型，0-活动工单，1-历史工单
+    String group_type = "";//集团类型
+    String grp_meb_type = "";//集团成员类型
+    String group_id = "";//集团ID
+    String group_name = "";//集团名称
+    String accept_time = "";//受理时间
+    String buss_type = "";//业务类型
+    String buss_content = "";//受理类容
+    String deal_opinion = "";//处理意见
+    int total_complain = 0;//重要成员投诉总数
+    int count_product = 0;//重点产品投诉数
+    String product_name ="";//产品类型
+    String end_time="";//结案时间
+    String manager_no = "";//集团对应的客户经理编号
+    String manager_name = "";
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
+    }
+
+    public String getDt_RowId() {
+        return dt_RowId;
+    }
+
+    public void setDt_RowId(String dt_RowId) {
+        this.dt_RowId = dt_RowId;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getOrder_no() {
+        return order_no;
+    }
+
+    public void setOrder_no(String order_no) {
+        this.order_no = order_no;
+    }
+
+    public String getComp_phone() {
+        return comp_phone;
+    }
+
+    public void setComp_phone(String comp_phone) {
+        this.comp_phone = comp_phone;
+    }
+
+    public String getComp_name() {
+        return comp_name;
+    }
+
+    public void setComp_name(String comp_name) {
+        this.comp_name = comp_name;
+    }
+
+    public String getOrder_type() {
+        return order_type;
+    }
+
+    public void setOrder_type(String order_type) {
+        this.order_type = order_type;
+    }
+
+    public String getGroup_type() {
+        return group_type;
+    }
+
+    public void setGroup_type(String group_type) {
+        this.group_type = group_type;
+    }
+
+    public String getGrp_meb_type() {
+        return grp_meb_type;
+    }
+
+    public void setGrp_meb_type(String grp_meb_type) {
+        this.grp_meb_type = grp_meb_type;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getAccept_time() {
+        return accept_time;
+    }
+
+    public void setAccept_time(String accept_time) {
+        this.accept_time = accept_time;
+    }
+
+    public String getBuss_type() {
+        return buss_type;
+    }
+
+    public void setBuss_type(String buss_type) {
+        this.buss_type = buss_type;
+    }
+
+    public String getBuss_content() {
+        return buss_content;
+    }
+
+    public void setBuss_content(String buss_content) {
+        this.buss_content = buss_content;
+    }
+
+    public String getDeal_opinion() {
+        return deal_opinion;
+    }
+
+    public void setDeal_opinion(String deal_opinion) {
+        this.deal_opinion = deal_opinion;
+    }
+
+    public int getTotal_complain() {
+        return total_complain;
+    }
+
+    public void setTotal_complain(int total_complain) {
+        this.total_complain = total_complain;
+    }
+
+    public int getCount_product() {
+        return count_product;
+    }
+
+    public void setCount_product(int count_product) {
+        this.count_product = count_product;
+    }
+
+    public String getProduct_name() {
+        return product_name;
+    }
+
+    public void setProduct_name(String product_name) {
+        this.product_name = product_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+}

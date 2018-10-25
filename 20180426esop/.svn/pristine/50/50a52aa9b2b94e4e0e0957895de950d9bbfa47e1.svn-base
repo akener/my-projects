@@ -1,0 +1,664 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>预打发票>>预打发票流程审批</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <!--标题-->
+        <%--<div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>预打发票流程审批</h3>
+                </div>
+            </div>
+        </div>--%>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>预打发票申请信息</span>
+            </div>
+        </div>
+        <!--预打发票申请信息详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7 width-th-1" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>发票类型：</th>
+                            <td id="invoiceType" style="color:#1792CD;"></td>
+                            <th>发票模式：</th>
+                            <td id="invoiceMode" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <th>打印方式：</th>
+                            <td id="printMode" style="color:#1792CD;"></td>
+                            <th>是否冲红：</th>
+                            <td id="isRed" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <th>组织机构：</th>
+                            <td id="branchName" style="color:#1792CD;"></td>
+                            <th>行业中心：</th>
+                            <td id="industryCenterName" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <th>集团单位名称：</th>
+                            <td id="groupName" style="color:#1792CD;"></td>
+                            <th>集团编码：</th>
+                            <td id="groupId" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="active-cost-box tc" style="padding-bottom:0;">
+                                    <div class="row-tab" style="width:80%;">
+                                        <table id="table-account" class="cost-table rev-tabs" width="100%;">
+                                            <tbody>
+                                            <%--<tr>
+                                                <th>集团账户名称</th>
+                                                <th>集团账户编号</th>
+                                                <th>税号</th>
+                                                <th>单位地址</th>
+                                                <th>电话号码</th>
+                                                <th>开户银行</th>
+                                                <th>银行账户</th>
+                                                <th>是否一般纳税人</th>
+                                                <th>预打金额（元）</th>
+                                                <th>历史开票</th>
+                                            </tr>--%>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <%--<td colspan="4">
+                            <div class="active-cost-box tc" style="padding-bottom:0;">
+                                <div class="row-tab" style="width:80%;">
+                                    <div class="tr pdr-10">
+                                        <ul class="in-page pagination mgt-0 mgb-5">
+                                            <li class="disabled"><a href="#" class="mgl-5">首页</a></li>
+                                            <li class="disabled"><a href="#" class="mgl-5">上一页</a></li>
+                                            <li class="active"><a href="#" class="mgl-5">1</a></li>
+                                            <li><a href="#" class="mgl-5">2</a></li>
+                                            <li><a href="#" class="mgl-5">3</a></li>
+                                            <li><a href="#" class="mgl-5">下一页</a></li>
+                                            <li><a href="#" class="mgl-5">末页</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>--%>
+                        </tr>
+                        <tr id="referTr">
+                            <th>预打合计金额（元）：</th>
+                            <td id="invoiceSumValue" style="color:red;"></td>
+                            <th>规格型号：</th>
+                            <td id="invoiceSpeModel" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr id="itemTr0">
+                            <th>单位：</th>
+                            <td id="invoiceUnit" style="color:#1792CD;"></td>
+                            <th>数量：</th>
+                            <td id="invoiceNumber" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr id="itemTr1" style="display: none;">
+                            <th><i style="color:red;">*</i>预打合计金额（元）：</th>
+                            <td id="invoiceSumValue0" style="color:#1792CD;"/>
+                            </td>
+                            <th>规格型号（6%）：</th>
+                            <td id="invoiceSpeModel0" style="color:#1792CD;"/>
+                            </td>
+                        </tr>
+                        <tr id="itemTr2" style="display: none;">
+                            <th><i style="color:red;">*</i>单位（6%）：</th>
+                            <td id="invoiceUnit0" style="color:#1792CD;"/>
+                            </td>
+                            <th><i style="color:red;">*</i>数量（6%）：</th>
+                            <td id="invoiceNumber0" style="color:#1792CD;"/>
+                            </td>
+                        </tr>
+                        <tr id="itemTr3" style="display: none;">
+                            <th>规格型号（11%）：</th>
+                            <td id="invoiceSpeModel1" style="color:#1792CD;"/>
+                            </td>
+                            <th><i style="color:red;">*</i>单位（11%）：</th>
+                            <td id="invoiceUnit1" style="color:#1792CD;"/>
+                            </td>
+                        </tr>
+                        <tr id="itemTr4" style="display: none;">
+                            <th><i style="color:red;">*</i>数量（11%）：</th>
+                            <td id="invoiceNumber1" style="color:#1792CD;"/>
+                            </td>
+                            <th>规格型号（17%）：</th>
+                            <td id="invoiceSpeModel2" style="color:#1792CD;"/>
+                            </td>
+
+                        </tr>
+                        <tr id="itemTr5" style="display: none;">
+                            <th><i style="color:red;">*</i>单位（17%）：</th>
+                            <td id="invoiceUnit2" style="color:#1792CD;"/>
+                            </td>
+                            <th><i style="color:red;">*</i>数量（17%）：</th>
+                            <td id="invoiceNumber2" style="color:#1792CD;"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th>银行回款子账号：</th>
+                            <td id="bankSubAccount" style="color:#1792CD;"></td>
+                            <th>银行回款子账号开户行：</th>
+                            <td id="bankSubAccountBank" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <th>发票备注：</th>
+                            <td id="remarks" colspan="3" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <th>操作备注：</th>
+                            <td id="operRemarks" colspan="3" style="color:#1792CD;"></td>
+                        </tr>
+                        <tr>
+                            <th style="width:200px;">附件：</th>
+                            <td colspan="3" style="border:none">
+                                <ul id="attach-list"></ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>申请人：</th>
+                            <td id="applicantName" style="color:#1792CD;"></td>
+                            <th>申请时间：</th>
+                            <td id="applicationTime" style="color:#1792CD;"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- 流程处理轨迹 -->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>流程处理轨迹</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="cost-table" width="100%;">
+                        <tbody id="trancesTb">
+                        <tr>
+                            <th>任务编号</th>
+                            <th>任务名称</th>
+                            <th>处理人</th>
+                            <th>处理时间</th>
+                            <th>处理意见</th>
+                            <th>处理备注</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!--审批意见-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>审批意见</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table id="" class="table-infor-7" width="100%">
+                        <tbody id="tb-approval">
+                        <tr>
+                            <th>审批意见：</th>
+                            <td colspan="3">
+                                <input id="procInstId" type="hidden">
+                                <input id="procId" type="hidden">
+                                <input id="procNameEn" type="hidden">
+                                <input id="taskInstId" type="hidden">
+                                <input id="taskId" type="hidden">
+                                <input id="stepId" type="hidden">
+                                <input id="bizRecordId" type="hidden">
+                                <input id="regionId" type="hidden">
+                                <input id="assignee" type="hidden">
+                                <input id="assigneeName" type="hidden">
+                                <select id="isPass" class="select-style-1">
+                                    <option value="1">同意</option>
+                                    <option value="0">不同意</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>备注：</th>
+                            <td colspan="3">
+                                <textarea id="dealRemarks" rows="3" class="ui-text form-ctrl" style="width:60%;"></textarea>
+                            </td>
+                        </tr>
+                        <%--<tr style="background-color:#ededed;">
+                            <th>下一环节：</th>
+                            <td>
+                                <input type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>下一环节处理人：</th>
+                            <td>
+                                <input type="text" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>--%>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <%--<button class="ui-btn mgr-10">提交</button>--%>
+                            <input id="btnSumit" type="button" class="ui-btn mgr-10" value="提交"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#procInstId').val(getQueryString("procInstId"));
+        $('#procId').val(getQueryString("procId"));
+        $('#procNameEn').val(getQueryString("procNameEn"));
+        $('#taskInstId').val(getQueryString("taskInstId"));
+        $('#taskId').val(getQueryString("taskId"));
+        $('#stepId').val(getQueryString("stepId"));
+        $('#bizRecordId').val(getQueryString("bizRecordId"));
+        $('#regionId').val("<%=root_org_id %>");
+        $('#assignee').val("<%=login_no %>");//工号
+        $('#assigneeName').val("<%=login_name %>");
+
+        qryInvAppr();
+        qryInvAttachs();
+        loadProcTrance();
+    });
+
+    /**
+     * 查询预打发票审批详情
+     */
+    function qryInvAppr() {
+        var reqParam = {};
+        var  applicationNo = $('#bizRecordId').val();
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/invoice/orderpParticulars',
+            data: {"applicationNo":applicationNo},
+            success: qryInvApprHandler,
+            error: function (data) {
+                // console.log(data);
+            }
+        });
+    }
+
+    function qryInvApprHandler(data){
+        // $("#table-account tr:not(:first)").remove();
+        // console.log(JSON.stringify(data));
+        var returnCode = data.returnCode;
+        if(returnCode=="0"){
+            var appInfo = data.appInfo;
+            $('#branchName').html(appInfo.branchName);
+            $('#industryCenterName').html(appInfo.industryCenterName);
+            $('#groupName').html(appInfo.groupName);
+            $('#groupId').html(appInfo.groupId);
+            $('#invoiceSumValue').html(appInfo.invoiceSumValue);
+            $('#invoiceSpeModel').html(appInfo.invoiceSpeModel);
+            $('#invoiceUnit').html(appInfo.invoiceUnit);
+            $('#invoiceNumber').html(appInfo.invoiceNumber);
+            $('#bankSubAccount').html(appInfo.bankSubAccount);
+            $('#bankSubAccountBank').html(appInfo.bankSubAccountBank);
+            $('#remarks').html(appInfo.remarks);
+            $('#operRemarks').html(appInfo.operRemarks);
+            $('#applicantName').html(appInfo.applicantName);
+            $('#applicationTime').html(appInfo.applicationTime);
+            $('#invoiceType').html(appInfo.invoiceType=="1"?"增值税电子发票":"增值税专用发票");
+            $('#invoiceMode').html(appInfo.invoiceMode=="1"?"实收":"月结");
+            $('#printMode').html(appInfo.printMode=="1"?"一般":(appInfo.printMode=="2"?"合打":"分打"));
+            $('#isRed').html(appInfo.isRed == "1" ? "发票冲红" : (appInfo.isRed == "2" ? "发票开具": "发票作废"));
+
+            if (appInfo.invoiceType == "2") {
+                //专票新增发票属性显示-税率、规格、单位、数量
+                $('#referTr').hide();
+                $('#itemTr0').hide();
+                $('#itemTr1').show();
+                $('#itemTr2').show();
+                $('#itemTr3').show();
+                $('#itemTr4').show();
+                $('#itemTr5').show();
+                $('#invoiceSumValue0').html(appInfo.invoiceSumValue);
+                if(isNotNull(appInfo.itemProperty)){
+                    var items=appInfo.itemProperty.split("|");
+                    var item1=items[0].split(";");
+                    var item2=items[1].split(";")
+                    var item3=items[2].split(";")
+                    $('#invoiceSpeModel0').html(item1[1]);
+                    $('#invoiceUnit0').html(item1[2]);
+                    $('#invoiceNumber0').html(item1[3]);
+                    $('#invoiceSpeModel1').html(item2[1]);
+                    $('#invoiceUnit1').html(item2[2]);
+                    $('#invoiceNumber1').html(item2[3]);
+                    $('#invoiceSpeModel2').html(item3[1]);
+                    $('#invoiceUnit2').html(item3[2]);
+                    $('#invoiceNumber2').html(item3[3]);
+                }
+            }
+
+            if(appInfo.invoiceMode=="2"){//月结
+                var acctPerHtml = "<tr>\n" +
+                    "                   <th>开始账期：</th>\n" +
+                    "                   <td id=\"startAccountPeriod\" style=\"color:#1792CD;\">" + appInfo.startAccountPeriod + "</td>\n" +
+                    "                   <th>结束账期：</th>\n" +
+                    "                   <td id=\"endAccountPeriod\" style=\"color:#1792CD;\">" + appInfo.endAccountPeriod + "</td>\n" +
+                    "              </tr>";
+                $('#referTr').before(acctPerHtml);
+            }
+            if(appInfo.invoiceType=="1"){//增值税电子发票
+                var pushInfoHtml = "<tr>\n" +
+                    "                   <th>推送电子邮箱：</th>\n" +
+                    "                   <td id=\"pushEmail\" style=\"color:#1792CD;\">" + appInfo.pushEmail + "</td>\n" +
+                    "                   <th>推送电话号码：</th>\n" +
+                    "                   <td id=\"pushPhone\" style=\"color:#1792CD;\">" + appInfo.pushPhone + "</td>\n" +
+                    "              </tr>";
+                $('#referTr').before(pushInfoHtml);
+            }
+
+            var actInfoTitleHtml = "<tr>\n" +
+                "                        <th>集团账户名称</th>\n" +
+                "                        <th>集团账户编号</th>\n" +
+                "                        <th>税号</th>\n" +
+                "                        <th>单位地址</th>\n" +
+                "                        <th>电话号码</th>\n" +
+                "                        <th>开户银行</th>\n" +
+                "                        <th>银行账户</th>\n" +
+                "                        <th>是否一般纳税人</th>\n";
+
+            if((appInfo.printMode=="2"&&appInfo.isRed!="2")||(appInfo.printMode=="1"&&appInfo.isRed=="0")){
+                if (appInfo.invoiceMode == "1") {//实收
+                    actInfoTitleHtml += "<th>历史开票</th>\n";
+                } else {//月结
+                    actInfoTitleHtml += "    <th>欠费账期</th>\n" +
+                        "                    <th>历史开票及回款</th>\n";
+                }
+            }else {
+                if (appInfo.invoiceMode == "1") {//实收
+                    actInfoTitleHtml += "    <th>预打金额（元）</th>\n" +
+                        "                    <th>历史开票</th>\n";
+                } else {//月结
+                    actInfoTitleHtml += "    <th>欠费账期</th>\n" +
+                        "                    <th>欠费金额（元）</th>\n" +
+                        "                    <th>历史开票及回款</th>\n";
+                }
+            }
+
+            actInfoTitleHtml += "     </tr>";
+            $("#table-account").append(actInfoTitleHtml);
+            var actInfoList = data.actInfos;
+            for (var i = 0; i < actInfoList.length; i++) {
+                var actInfo = actInfoList[i];
+                var actInfoHtml = "<tr>\n" +
+                    "    <td>" + actInfo.groupAccountName + "</td>\n" +
+                    "    <td>" + actInfo.groupAccountId + "</td>\n" +
+                    "    <td>" + actInfo.taxNo + "</td>\n" +
+                    "    <td>" + actInfo.taxAddress + "</td>\n" +
+                    "    <td>" + actInfo.taxPhone + "</td>\n" +
+                    "    <td>" + actInfo.taxBank + "</td>\n" +
+                    "    <td>" + actInfo.taxBankAccount + "</td>\n" +
+                    "    <td>" + actInfo.isGeneralTaxpayer + "</td>\n";
+                if((appInfo.printMode=="2"&&appInfo.isRed!="2")||(appInfo.printMode=="1"&&appInfo.isRed=="0")){
+
+                    if (appInfo.invoiceMode == "1") {//实收
+                        actInfoHtml += "    <td>" +
+                            "        <a class=\"btn-icon icon-derive mgl-10 replace-derive\"  onclick=\"hisfinds(" + actInfo.groupAccountId + ")\"></a>" +
+                            "    </td>\n";
+                    } else {//月结
+                        actInfoHtml += "    <td>" + actInfo.arrearsAccountPeriod + "</td>\n" +
+                            "    <td>" +
+                            "        <a class=\"btn-icon icon-derive mgl-10 replace-derive\"  onclick=\"hisfinds(" + actInfo.groupAccountId + ")\"></a>" +
+                            "    </td>\n";
+                    }
+                }else{
+                    if (appInfo.invoiceMode == "1") {//实收
+                        actInfoHtml += "    <td>" + actInfo.invoiceValue + "</td>\n" +
+                            "    <td>" +
+                            "        <a class=\"btn-icon icon-derive mgl-10 replace-derive\" onclick=\"hisfinds(" + actInfo.groupAccountId + ")\" ></a>" +
+                            "    </td>\n";
+                    } else {//月结
+                        actInfoHtml += "    <td>" + actInfo.arrearsAccountPeriod + "</td>\n" +
+                            "    <td>" + actInfo.arrearsAmount + "</td>\n" +
+                            "    <td>" +
+                            "        <a class=\"btn-icon icon-derive mgl-10 replace-derive\"  onclick=\"hisfinds(" + actInfo.groupAccountId + ")\"></a>" +
+                            "    </td>\n";
+                    }
+                }
+                actInfoHtml += "     </tr>";
+                $("#table-account").append(actInfoHtml);
+            }
+
+            $('#isPass').bind('change', qryNextSteps);
+            $('#btnSumit').bind('click', invPrtAppr);
+        } else {
+            var errorMessage = data.errorMessage;
+            // console.log(res_desc);
+        }
+    }
+    //历史开票查询
+    function hisfinds(params) {
+        var grpacctid = params;
+        var groupId = $("#groupId").html();
+        var url = "<%=request.getContextPath()%>/inv_torical_invoice" + "?" + "grpacctid=" + grpacctid + "&groupId=" + groupId;
+        openDialogView("历史开票", url, "700px", "500px");
+    }
+
+    /**
+     * 加载下一环节信息
+     */
+    function qryNextSteps() {
+        $('#tb-approval tr:gt(1)').remove();
+        /*if($("select[id^='isPass_']").eq(0).val()==""){
+            return false;
+        }*/
+        if($("#isPass").val()==""){
+            return false;
+        }
+        $('#dealRemarks').text($("#isPass").find("option:selected").text());
+
+        var reqParam = {};
+        var assignee = {};
+        assignee['procInstId'] = $('#procInstId').val();
+        assignee['procId'] = $('#procId').val();
+        assignee['procNameEn'] = $('#procNameEn').val();
+        assignee['bizRecordId'] = $('#bizRecordId').val();
+        assignee['stepId'] = $('#stepId').val();
+        assignee['regionId'] = $('#regionId').val();
+        assignee['assignee'] = $('#assignee').val();
+        assignee['assigneeName'] = $('#assigneeName').val();
+        reqParam['assignee'] = assignee;
+
+        var params = [];
+        /*$("select[id^='isPass_']").each(function () {
+            var param = {};
+            param['key'] = $(this).attr("id");
+            param['value'] = $(this).val();
+            param['type'] = "String";
+            params.push(param);
+        });*/
+        // var isPassSel = $("select[id^='isPass_']").eq(0);
+        var isPass = {};
+        // isPass['key'] = isPassSel.attr("id");
+        isPass['key'] = "isPass_" + $("#stepId").val();
+        isPass['value'] = $("#isPass").val();
+        isPass['type'] = "String";
+        params.push(isPass);
+
+        reqParam['params'] = params;
+        // console.log(JSON.stringify(reqParam));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/workflow/getNextSteps',
+            contentType: 'application/json;charset=utf-8',
+            data: JSON.stringify(reqParam),
+            success: qryNextStepsHandler
+        });
+    }
+
+    function qryNextStepsHandler(data){
+        // console.log(JSON.stringify(data));
+        var returnCode = data.returnCode;
+        if(returnCode=='0'){
+            var stepList = data.stepList;
+            for(var i=0; i<stepList.length; i++){
+                var step = stepList[i].ctProcStepRel;
+                var assignees = stepList[i].assignees;
+                var stepHtml = "<tr style=\"background-color:#ededed;\">\n" +
+                    "    <th>下一环节：</th>\n" +
+                    "    <td>" + step.stepName + "</td>\n" +
+                    "    <th>下一环节处理人：</th>\n" +
+                    "    <td>\n" +
+                    "        <select name=\"ASSIGNEE_" + step.stepId + "\" class=\"select-style-1\">\n";
+                for(var j=0; j<assignees.length; j++){
+                    var assignee  = assignees[j];
+                    stepHtml += "            <option value=\"" + assignee.assignee + "\">" + assignee.assigneeName + "</option>\n";
+                }
+                stepHtml += "        </select>\n" +
+                    "    </td>\n" +
+                    "</tr>";
+                $("#tb-approval").append(stepHtml);
+            }
+        } else {
+            var errorMessage = data.errorMessage;
+            // console.log(res_desc);
+        }
+    }
+
+    /**
+     *  加载附件信息
+     */
+    function qryInvAttachs() {
+        $.ajax({
+            url: "<%=ctxPath %>/invoice/qryInvAttachs",
+            type: "post",
+            "data": {
+                "applicationNo": $("#bizRecordId").val()
+            },
+            success: function (result) {
+                $.each(result, function (i, field) {
+                    $("#attach-list").append("<li><a href='<%=ctxPath %>/downloadFile?attach_file_id=" + field.attachId + "'>" + field.sourceFileName + "</a></li>");
+                });
+            }
+        });
+    }
+
+    function loadProcTrance(){
+        $.ajax({
+            url: "<%=ctxPath %>/orderflow/getTrance",
+            type: "post",
+            "data": {
+                "procInstId":  $("#procInstId").val()
+            },
+            success: function (result) {
+                $.each(result, function (i, field) {
+                    var trStr = "<tr class='tr-data-cc'><td>" + field.taskInstId +"</td><td>" +field.stepName+"</td><td>" + field.dealName +"</td><td>" + field.dealDateTime +"</td><td>" + field.dealOpinion
+                        +"</td><td>"+field.dealRemarks +"</td></tr>";
+                    $("#trancesTb").append(trStr);
+                })
+            }
+        });
+    }
+
+    /**
+     * 预打发票审批提交
+     */
+    function invPrtAppr() {
+        $("#btnSumit").attr("disabled","disabled");
+        $("#btnSumit").val("提交中...");
+        var reqParam = {};
+
+        var taskInst = {};
+        taskInst['procInstId'] = $('#procInstId').val();
+        taskInst['procId'] = $('#procId').val();
+        taskInst['procNameEn'] = $('#procNameEn').val();
+        taskInst['taskInstId'] = $('#taskInstId').val();
+        taskInst['taskId'] = $('#taskId').val();
+        taskInst['stepId'] = $('#stepId').val();
+        taskInst['bizRecordId'] = $('#bizRecordId').val();
+        taskInst['remarks'] = $('#dealRemarks').text();
+
+
+        if ($("#isPass").val() == 1) {
+            taskInst['dealOpinion']='同意';
+        }
+        else
+        {
+            taskInst['dealOpinion']='不同意';
+        }
+        reqParam['taskInst'] = taskInst;
+
+        /*
+         * 流程实例参数
+         */
+        var params = [];
+        // var isPassSel = $("select[id^='isPass_']").eq(0);
+        var isPass = {};
+        isPass['key'] = "isPass_" + $("#stepId").val();
+        isPass['value'] = $("#isPass").val();
+        isPass['type'] = "String";
+        params.push(isPass);
+        $("select[name^='ASSIGNEE_']").each(function () {
+            var assignee = {};
+            assignee['key'] = $(this).attr("name");
+            assignee['value'] = $(this).val();
+            assignee['type'] = "String";
+            params.push(assignee);
+        });
+        reqParam['params'] = params;
+
+        // console.log(JSON.stringify(reqParam));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/invoice/invAppr',
+            contentType: 'application/json;charset=utf-8',
+            data: JSON.stringify(reqParam),
+            success: invPrtApprHandler,
+            error: function (data) {
+                // console.log(data);
+            }
+        });
+    }
+
+    function invPrtApprHandler(data){
+        var resjson=JSON.parse(data);
+        var returnCode = resjson.returnCode;
+        var returnMsg=resjson.returnMsg;
+        var index = parent.layer.getFrameIndex(window.name);
+        if(returnCode=='0'){
+            layer.alert('操作成功', {
+                    icon: 1,
+                    skin: 'layer-ext-moon',
+                }, function( ){
+                    parent.layer.close(index);
+                }
+            );
+            parent.qryInvApprList();
+        } else {
+            // var errorMessage = data.errorMessage;
+            layer.alert('请求CRM接口失败，错误信息为【'+returnMsg+"】", {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+            $("#btnSumit").removeAttr("disabled");
+            $("#btnSumit").val("提交");
+        }
+    }
+</script>
+</html>

@@ -1,0 +1,56 @@
+package com.esop.workOrderInfo.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**合同查询地市及区县实体
+ * Created by lilei on 2017/7/8
+ */
+public class LoginInfoDto extends BaseDto{
+
+    private String DT_RowId ="";
+    private String login_no="";
+    private String login_name="";
+    private String group_id="";
+
+    public String getDT_RowId() {
+        return DT_RowId;
+    }
+
+    public void setDT_RowId(String DT_RowId) {
+        this.DT_RowId = DT_RowId;
+    }
+
+    public String getLogin_no() {
+        return login_no;
+    }
+
+    public void setLogin_no(String login_no) {
+        this.login_no = login_no;
+    }
+
+    public String getLogin_name() {
+        return login_name;
+    }
+
+    public void setLogin_name(String login_name) {
+        this.login_name = login_name;
+    }
+
+    public String getGroup_id() {
+        return group_id;
+    }
+
+    public void setGroup_id(String group_id) {
+        this.group_id = group_id;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginInfoDto{" +
+                "DT_RowId='" + DT_RowId + '\'' +
+                ", login_no='" + login_no + '\'' +
+                ", login_name='" + login_name + '\'' +
+                ", group_id='" + group_id + '\'' +
+                '}';
+    }
+}

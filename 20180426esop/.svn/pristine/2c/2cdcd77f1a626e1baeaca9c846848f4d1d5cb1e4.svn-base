@@ -1,0 +1,143 @@
+package com.esop.productInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.productInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by wangbl on 2017/6/2.
+ */
+@Repository
+public class ProductService {
+    private static Logger logger = Logger.getLogger(ProductInterfaceService.class);
+    @Autowired
+    SqlE sqlE;
+    //查询产品编码和名称
+    public List<ProductDictDto> getProductDict(ProductDictDto param){
+        return sqlE.selectM("getProductDict",param);
+    }
+    //查询全部产品编码和名称，包括可见和不可见部分
+    public List<ProductDictDto> getProductDictAll(ProductDictDto param){
+        return sqlE.selectM("getProductDictAll",param);
+    }
+    //新增产品编码和名称
+    public int insertProductDict(ProductDictDto param){
+        param.setProd_id(getProdId(param));
+        return sqlE.insertM("insertProductDict",param);
+    }
+    //投诉信息查询
+    public List<ProductComplaintsDto> selectProductComplaints(ProductComplaintsDto param){
+        return sqlE.selectM("selectProductComplaints",param);
+    }
+    //提醒信息查询
+    public List<ProductRemindInfoDto> selectRemindInfo(ProductRemindInfoDto param){
+        //首先判断是不是产品经理，是产品经理才开始查询提醒信息。
+        if((int)sqlE.selectM("isProductManager",param).get(0)==0){
+           return new ArrayList<ProductRemindInfoDto>();
+        }
+        return sqlE.selectM("selectRemindInfo",param);
+    }
+    //提醒信息处理
+    public List<ProductRemindInfoDto> updateRemindInfoById(ProductRemindInfoDto param){
+        System.out.println("处理提醒handle_note------"+param.getHandle_note());
+        System.out.println("处理提醒Remind_id------"+param.getRemind_id());
+        return sqlE.selectM("updateRemindInfoById",param);
+    }
+    //更新产品名称
+    public int updateProductDict(ProductDictDto param){
+        return sqlE.updateM("updateProductDict",param);
+    }
+    //删除产品编码和名称
+    public int deleteProductDict(ProductDictDto param){
+        return sqlE.deleteM("deleteProductDict",param);
+    }
+    //获得新增产品编码
+    public String getProdId(ProductDictDto param){
+        String prod_id=((ProductDictDto)sqlE.selectM("getMaxProdId",param).get(0)).getProd_id();
+        int prod_id_int = Integer.parseInt(prod_id.substring(3));
+        if(prod_id_int<100){
+            prod_id=prod_id.substring(0,4)+String.valueOf(prod_id_int+1);
+        }else{
+            prod_id=prod_id.substring(0,3)+String.valueOf(prod_id_int+1);
+        }
+        return prod_id;
+    }
+    //通过产品编码查询对应的已流转完成的环节
+    public List getLinkIdsByProdId(StateInfoDto param){
+        return sqlE.selectM("getLinkIdsByProdId",param);
+    }
+    //通过产品编码查询当前流转到的环节
+    public String getLinkIdingByProdId(StateInfoDto param){
+        return sqlE.selectM("getLinkIdingByProdId",param).get(0).toString();
+    }
+    //获取最大批次号
+    public String getMaxBatchId(StateInfoDto param){
+        return sqlE.selectM("getMaxBatchId",param).get(0).toString();
+    }
+    //获取附件关联id
+    public String getUploadFileInfoRelatedID() {
+        return sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString();
+    }
+    //新增产品需求情况信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int insertDemandSituationNewStateInfo(InterfaceParameterDto param){
+        sqlE.insertM("insertStateInfo",param);
+        sqlE.insertM("insertProgramReviewInfo",param);
+        sqlE.insertM("insertProgramReviewLog",param);
+        ProductDictDto productDictDto = new ProductDictDto();
+        productDictDto.setProd_id(param.getProd_id());
+        sqlE.insertM("updateProductDictDelFlag",productDictDto);
+        return 1;
+    }
+    //新增产品审批环节信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int insertDemandSituation(InterfaceParameterDto param){
+        if(((Integer)sqlE.selectM("selectStateInfoLinkId",param).get(0))<Integer.parseInt(param.getLink_id())) {
+            sqlE.insertM("updateStateInfo", param);
+        }
+        if(param.getLink_id().equals("23")){
+            ProductRemindInfoDto productRemindInfoDto=new ProductRemindInfoDto();
+            productRemindInfoDto.setProd_id(param.getProd_id());
+            productRemindInfoDto.setRemind_type("2");
+            sqlE.updateM("updateRemindInfo",productRemindInfoDto);
+        }
+        if(param.getLink_id().equals("27")){
+            ProductRemindInfoDto productRemindInfoDto=new ProductRemindInfoDto();
+            productRemindInfoDto.setProd_id(param.getProd_id());
+            productRemindInfoDto.setRemind_type("3");
+            sqlE.updateM("updateRemindInfo",productRemindInfoDto);
+        }
+        sqlE.insertM("insertProgramReviewInfo",param);
+        sqlE.insertM("insertProgramReviewLog",param);
+        return 1;
+    }
+    //更新产品需求情况信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int updateDemandSituation(InterfaceParameterDto param){
+        sqlE.insertM("updateProgramReviewInfo",param);
+        sqlE.insertM("insertProgramReviewLog",param);
+        return 1;
+    }
+    //更新产品审批环节的附件和备注信息，只有外系统通过过来的环节需要附件和备注信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public int updateProgramReviewInfoAnnexAndnote(InterfaceParameterDto param){
+        sqlE.insertM("updateProgramReviewInfoAnnexAndnote",param);
+        sqlE.insertM("insertProgramReviewLog",param);
+        return 1;
+    }
+    //通过产品编码、批次、环节编码查询产品环节信息
+    public InterfaceParameterDto selectProgramReviewInfo(InterfaceParameterDto param){
+        List list = sqlE.selectM("selectProgramReviewInfo",param);
+        if(list.size()==0){
+            return param;
+        }
+        return (InterfaceParameterDto)list.get(0);
+    }
+}

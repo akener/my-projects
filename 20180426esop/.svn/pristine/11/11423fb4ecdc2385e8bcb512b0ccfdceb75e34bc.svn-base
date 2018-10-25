@@ -1,0 +1,917 @@
+package com.esop.productInfo.dto;
+
+/**
+ * Created by wangbl on 2017/5/23.
+ */
+//接口参数DTO
+public class InterfaceParameterDto {
+    String op_code                 ="";//操作类型 insert、update
+    String sys_code                ="";//系统编码
+    String batch_id                ="";//批次编码
+    String prod_id                 ="";//产品ID
+    String prod_name               ="";//产品名称
+    String link_id                 ="";//产品环节ID
+    String main_depart             ="";//主办部门 合同信息中的承办部门
+    String apply_person            ="";//申请人   合同信息承办人或报账单经分人
+    String apply_date              ="";//申请日期 合同信息日期
+    String file_no                 ="";//文件编号
+    String file_title              ="";//文件标题
+    String colusion_opinion        ="";//结论意见，0 表示不同意，1 表示同意,工作日志文档环节，产品收入
+    String review_opinion          ="";//评审意见，需求情况信息，产品方案论证、行业终端引入工单、产品立项审批单、信息化产品验收工单、信息化产品二次开发环节为评审意见和工作量核定工单环节为核定结果
+    String ass_points              ="";//评估分，SI引入工单、SI及支撑方考核工单、信息化产品后评估工单这三个环节为评审分或考核分数或后评估分数
+    String review_file_id          ="";//审批单上传 保存ep_upload_file_info表的related_id值,需求情况附件的related_id值
+    String review_file_save        ="";//审批单保存文件名称，对应ep_upload_file_info表的name字段
+    String review_file             ="";//审批单可见名称，对应ep_upload_file_info表的oa_file字段
+    String create_login            ="";//创建工号
+    String create_date             ="";//创建时间
+    String update_date             ="";//更新时间
+    String prod_plan               ="";//产品方案、产品发展稽核附件、产品后评估决策结果 保存ep_upload_file_info表的related_id值
+    String prod_plan_save          ="";//产品方案保存文件名称，对应ep_upload_file_info表的name字段
+    String prod_plan_file          ="";//产品方案可见名称，对应ep_upload_file_info表的oa_file字段
+    String si_material             ="";//SI申请材料 保存ep_upload_file_info表的related_id值
+    String si_material_save        ="";//SI申请材料保存文件名称，对应ep_upload_file_info表的name字段
+    String si_material_file        ="";//SI申请材料可见名称，对应ep_upload_file_info表的oa_file字段
+    String project_basis           ="";//立项依据 保存ep_upload_file_info表的related_id值
+    String project_basis_save      ="";//立项依据 保存文件名称，对应ep_upload_file_info表的name字段
+    String project_basis_file      ="";//立项依据可见名称，对应ep_upload_file_info表的oa_file字段
+    String accept_report           ="";//验收报告 保存ep_upload_file_info表的related_id值
+    String accept_report_save      ="";//验收报告 保存文件名称，对应ep_upload_file_info表的name字段
+    String accept_report_file      ="";//验收报告 可见名称，对应ep_upload_file_info表的oa_file字段
+    String file_added              ="";//补充说明附件 保存ep_upload_file_info表的related_id值
+    String file_added_save         ="";//补充说明附件 保存文件名称，对应ep_upload_file_info表的name字段
+    String file_added_file         ="";//补充说明附件 可见名称，对应ep_upload_file_info表的oa_file字段
+    String work_log                ="";//工作日志附件 保存ep_upload_file_info表的related_id值
+    String work_log_save           ="";//工作日志附件 保存文件名称，对应ep_upload_file_info表的name字段
+    String work_log_file           ="";//工作日志附件 可见名称，对应ep_upload_file_info表的oa_file字段
+    String work_load               ="";//工作量明细
+    String prod_ass                ="";//产品评估数据 保存ep_upload_file_info表的related_id值
+    String prod_ass_save           ="";//产品评估数据 保存文件名称，对应ep_upload_file_info表的name字段
+    String prod_ass_file           ="";//产品评估数据 可见名称，对应ep_upload_file_info表的oa_file字段
+    String result                  ="";//操作结果
+    String cons_situation          ="";//业务平台建设情况附件 保存ep_upload_file_info表的related_id值,21环节存放结算周期，1、3、6、12月，四个选项
+    String cons_situation_save     ="";//业务平台建设情况附件 保存文件名称，对应ep_upload_file_info表的name字段
+    String cons_situation_file     ="";//业务平台建设情况附件 可见名称，对应ep_upload_file_info表的oa_file字段
+    String operation_support       ="";//运维支撑附件、产品测试附件、产品资源匹配、渠道发展、运维结算的结算单或补充协议 保存ep_upload_file_info表的related_id值
+    String operation_support_save  ="";//运维支撑附件 保存文件名称，对应ep_upload_file_info表的name字段
+    String operation_support_file  ="";//运维支撑附件 可见名称，对应ep_upload_file_info表的oa_file字段
+    String online_document         ="";//产品上线发文 保存ep_upload_file_info表的related_id值
+    String online_document_save    ="";//产品上线发文 保存文件名称，对应ep_upload_file_info表的name字段
+    String online_document_file    ="";//产品上线发文 可见名称，对应ep_upload_file_info表的oa_file字段
+    String approved_results        ="";//工作量核定结果,限制500字
+    String summary_meeting         ="";//会议纪要 保存ep_upload_file_info表的related_id值
+    String summary_meeting_save    ="";//会议纪要 保存文件名称，对应ep_upload_file_info表的name字段
+    String summary_meeting_file    ="";//会议纪要 可见名称，对应ep_upload_file_info表的oa_file字段
+    String offline_document        ="";//产品下线发文,外系统提供数据环节，esop侧提交的附件信息 保存ep_upload_file_info表的related_id值
+    String offline_document_save   ="";//产品下线发文 保存文件名称，对应ep_upload_file_info表的name字段
+    String offline_document_file   ="";//产品下线发文 可见名称，对应ep_upload_file_info表的oa_file字段
+    //合同和报账单相关信息
+    String contract_type           ="";//合同类型
+    String contract_id             ="";//合同编号
+    String contract_name           ="";//合同名称
+    String contract_amount         ="";//合同总金额
+    String contract_term           ="";//合同履行期限
+    String supplier_name           ="";//供应商名称
+    String legal_rep               ="";//法定代表人（负责人）
+    String tax_num                 ="";//税务登记号码
+    String contract_person         ="";//联系人
+    String contract_phone          ="";//电话
+    String account_name            ="";//开户行名称
+    String account_no              ="";//开户行账号
+    String contract_rel            ="";//合同正文+附件 保存ep_upload_file_info表的related_id值
+    String contract_save           ="";//合同正文+附件 保存文件名称，对应ep_upload_file_info表的name字段
+    String contract_file           ="";//合同正文+附件 可见名称，对应ep_upload_file_info表的oa_file字段
+    String frame_no                ="";//框架协议编号
+    String frame_name              ="";//框架协议名称
+    String frame_date              ="";//框架签订日期
+    String upper_amount            ="";//上限金额
+    String sign_amount             ="";//已签订金额
+    String current_amount          ="";//本次金额
+    String fram_contract_term      ="";//框架协议履行期限
+    String purchase_name           ="";//采购人姓名
+    String draft_person            ="";//起草人
+    String draft_part              ="";//起草部门
+    String sign_date               ="";//订单签订日期
+    String commit_term             ="";//交付履行期限
+    String settle_name             ="";//结算单名称
+    String settle_date             ="";//结算单签订日期
+    String settle_cycle            ="";//结算周期
+    String supplier_id             ="";//供应商编号
+    String unit_account            ="";//联行号
+    String price                   ="";//合同价款
+    String tax                     ="";//合同税款
+    String this_price              ="";//本次报账价款
+    String this_tax                ="";//本次报账税款
+    String project_name            ="";//项目名称
+    String annex                   ="";//附件
+    String note                    ="";//备注信息
+    String accessory               ="";//附件上传
+    String accessory_file          ="";//附件上传可见名称
+    String accessory_save          ="";//附件上传保存文件名称
+
+    public String getOp_code() {
+        return op_code;
+    }
+
+    public void setOp_code(String op_code) {
+        this.op_code = op_code;
+    }
+
+    public String getBatch_id() {
+        return batch_id;
+    }
+
+    public void setBatch_id(String batch_id) {
+        this.batch_id = batch_id;
+    }
+
+    public String getSys_code() {
+        return sys_code;
+    }
+
+    public void setSys_code(String sys_code) {
+        this.sys_code = sys_code;
+    }
+
+    public String getProd_id() {
+        return prod_id;
+    }
+
+    public void setProd_id(String prod_id) {
+        this.prod_id = prod_id;
+    }
+
+    public String getProd_name() {
+        return prod_name;
+    }
+
+    public void setProd_name(String prod_name) {
+        this.prod_name = prod_name;
+    }
+
+    public String getLink_id() {
+        return link_id;
+    }
+
+    public void setLink_id(String link_id) {
+        this.link_id = link_id;
+    }
+
+    public String getMain_depart() {
+        return main_depart;
+    }
+
+    public void setMain_depart(String main_depart) {
+        this.main_depart = main_depart;
+    }
+
+    public String getApply_person() {
+        return apply_person;
+    }
+
+    public void setApply_person(String apply_person) {
+        this.apply_person = apply_person;
+    }
+
+    public String getApply_date() {
+        return apply_date;
+    }
+
+    public void setApply_date(String apply_date) {
+        this.apply_date = apply_date;
+    }
+
+    public String getFile_no() {
+        return file_no;
+    }
+
+    public void setFile_no(String file_no) {
+        this.file_no = file_no;
+    }
+
+    public String getFile_title() {
+        return file_title;
+    }
+
+    public void setFile_title(String file_title) {
+        this.file_title = file_title;
+    }
+
+    public String getColusion_opinion() {
+        return colusion_opinion;
+    }
+
+    public void setColusion_opinion(String colusion_opinion) {
+        this.colusion_opinion = colusion_opinion;
+    }
+
+    public String getReview_opinion() {
+        return review_opinion;
+    }
+
+    public void setReview_opinion(String review_opinion) {
+        this.review_opinion = review_opinion;
+    }
+
+    public String getAss_points() {
+        return ass_points;
+    }
+
+    public void setAss_points(String ass_points) {
+        this.ass_points = ass_points;
+    }
+
+    public String getReview_file_id() {
+        return review_file_id;
+    }
+
+    public void setReview_file_id(String review_file_id) {
+        this.review_file_id = review_file_id;
+    }
+
+    public String getReview_file_save() {
+        return review_file_save;
+    }
+
+    public void setReview_file_save(String review_file_save) {
+        this.review_file_save = review_file_save;
+    }
+
+    public String getReview_file() {
+        return review_file;
+    }
+
+    public void setReview_file(String review_file) {
+        this.review_file = review_file;
+    }
+
+    public String getCreate_login() {
+        return create_login;
+    }
+
+    public void setCreate_login(String create_login) {
+        this.create_login = create_login;
+    }
+
+    public String getCreate_date() {
+        return create_date;
+    }
+
+    public void setCreate_date(String create_date) {
+        this.create_date = create_date;
+    }
+
+    public String getUpdate_date() {
+        return update_date;
+    }
+
+    public void setUpdate_date(String update_date) {
+        this.update_date = update_date;
+    }
+
+    public String getProd_plan() {
+        return prod_plan;
+    }
+
+    public void setProd_plan(String prod_plan) {
+        this.prod_plan = prod_plan;
+    }
+
+    public String getProd_plan_save() {
+        return prod_plan_save;
+    }
+
+    public void setProd_plan_save(String prod_plan_save) {
+        this.prod_plan_save = prod_plan_save;
+    }
+
+    public String getProd_plan_file() {
+        return prod_plan_file;
+    }
+
+    public void setProd_plan_file(String prod_plan_file) {
+        this.prod_plan_file = prod_plan_file;
+    }
+
+    public String getSi_material() {
+        return si_material;
+    }
+
+    public void setSi_material(String si_material) {
+        this.si_material = si_material;
+    }
+
+    public String getProject_basis() {
+        return project_basis;
+    }
+
+    public void setProject_basis(String project_basis) {
+        this.project_basis = project_basis;
+    }
+
+    public String getAccept_report() {
+        return accept_report;
+    }
+
+    public void setAccept_report(String accept_report) {
+        this.accept_report = accept_report;
+    }
+
+    public String getFile_added() {
+        return file_added;
+    }
+
+    public void setFile_added(String file_added) {
+        this.file_added = file_added;
+    }
+
+    public String getWork_log() {
+        return work_log;
+    }
+
+    public void setWork_log(String work_log) {
+        this.work_log = work_log;
+    }
+
+    public String getWork_load() {
+        return work_load;
+    }
+
+    public void setWork_load(String work_load) {
+        this.work_load = work_load;
+    }
+
+    public String getProd_ass() {
+        return prod_ass;
+    }
+
+    public void setProd_ass(String prod_ass) {
+        this.prod_ass = prod_ass;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getSi_material_save() {
+        return si_material_save;
+    }
+
+    public void setSi_material_save(String si_material_save) {
+        this.si_material_save = si_material_save;
+    }
+
+    public String getSi_material_file() {
+        return si_material_file;
+    }
+
+    public void setSi_material_file(String si_material_file) {
+        this.si_material_file = si_material_file;
+    }
+
+    public String getProject_basis_save() {
+        return project_basis_save;
+    }
+
+    public void setProject_basis_save(String project_basis_save) {
+        this.project_basis_save = project_basis_save;
+    }
+
+    public String getProject_basis_file() {
+        return project_basis_file;
+    }
+
+    public void setProject_basis_file(String project_basis_file) {
+        this.project_basis_file = project_basis_file;
+    }
+
+    public String getCons_situation() {
+        return cons_situation;
+    }
+
+    public void setCons_situation(String cons_situation) {
+        this.cons_situation = cons_situation;
+    }
+
+    public String getCons_situation_save() {
+        return cons_situation_save;
+    }
+
+    public void setCons_situation_save(String cons_situation_save) {
+        this.cons_situation_save = cons_situation_save;
+    }
+
+    public String getCons_situation_file() {
+        return cons_situation_file;
+    }
+
+    public void setCons_situation_file(String cons_situation_file) {
+        this.cons_situation_file = cons_situation_file;
+    }
+
+    public String getOperation_support() {
+        return operation_support;
+    }
+
+    public void setOperation_support(String operation_support) {
+        this.operation_support = operation_support;
+    }
+
+    public String getOperation_support_save() {
+        return operation_support_save;
+    }
+
+    public void setOperation_support_save(String operation_support_save) {
+        this.operation_support_save = operation_support_save;
+    }
+
+    public String getOperation_support_file() {
+        return operation_support_file;
+    }
+
+    public void setOperation_support_file(String operation_support_file) {
+        this.operation_support_file = operation_support_file;
+    }
+
+    public String getAccept_report_save() {
+        return accept_report_save;
+    }
+
+    public void setAccept_report_save(String accept_report_save) {
+        this.accept_report_save = accept_report_save;
+    }
+
+    public String getAccept_report_file() {
+        return accept_report_file;
+    }
+
+    public void setAccept_report_file(String accept_report_file) {
+        this.accept_report_file = accept_report_file;
+    }
+
+    public String getFile_added_save() {
+        return file_added_save;
+    }
+
+    public void setFile_added_save(String file_added_save) {
+        this.file_added_save = file_added_save;
+    }
+
+    public String getFile_added_file() {
+        return file_added_file;
+    }
+
+    public void setFile_added_file(String file_added_file) {
+        this.file_added_file = file_added_file;
+    }
+
+    public String getOnline_document() {
+        return online_document;
+    }
+
+    public void setOnline_document(String online_document) {
+        this.online_document = online_document;
+    }
+
+    public String getOnline_document_save() {
+        return online_document_save;
+    }
+
+    public void setOnline_document_save(String online_document_save) {
+        this.online_document_save = online_document_save;
+    }
+
+    public String getOnline_document_file() {
+        return online_document_file;
+    }
+
+    public void setOnline_document_file(String online_document_file) {
+        this.online_document_file = online_document_file;
+    }
+
+    public String getWork_log_save() {
+        return work_log_save;
+    }
+
+    public void setWork_log_save(String work_log_save) {
+        this.work_log_save = work_log_save;
+    }
+
+    public String getWork_log_file() {
+        return work_log_file;
+    }
+
+    public void setWork_log_file(String work_log_file) {
+        this.work_log_file = work_log_file;
+    }
+
+    public String getApproved_results() {
+        return approved_results;
+    }
+
+    public void setApproved_results(String approved_results) {
+        this.approved_results = approved_results;
+    }
+
+    public String getProd_ass_save() {
+        return prod_ass_save;
+    }
+
+    public void setProd_ass_save(String prod_ass_save) {
+        this.prod_ass_save = prod_ass_save;
+    }
+
+    public String getProd_ass_file() {
+        return prod_ass_file;
+    }
+
+    public void setProd_ass_file(String prod_ass_file) {
+        this.prod_ass_file = prod_ass_file;
+    }
+
+    public String getSummary_meeting() {
+        return summary_meeting;
+    }
+
+    public void setSummary_meeting(String summary_meeting) {
+        this.summary_meeting = summary_meeting;
+    }
+
+    public String getSummary_meeting_save() {
+        return summary_meeting_save;
+    }
+
+    public void setSummary_meeting_save(String summary_meeting_save) {
+        this.summary_meeting_save = summary_meeting_save;
+    }
+
+    public String getSummary_meeting_file() {
+        return summary_meeting_file;
+    }
+
+    public void setSummary_meeting_file(String summary_meeting_file) {
+        this.summary_meeting_file = summary_meeting_file;
+    }
+
+    public String getOffline_document() {
+        return offline_document;
+    }
+
+    public void setOffline_document(String offline_document) {
+        this.offline_document = offline_document;
+    }
+
+    public String getOffline_document_save() {
+        return offline_document_save;
+    }
+
+    public void setOffline_document_save(String offline_document_save) {
+        this.offline_document_save = offline_document_save;
+    }
+
+    public String getOffline_document_file() {
+        return offline_document_file;
+    }
+
+    public void setOffline_document_file(String offline_document_file) {
+        this.offline_document_file = offline_document_file;
+    }
+
+    public String getContract_type() {
+        return contract_type;
+    }
+
+    public void setContract_type(String contract_type) {
+        this.contract_type = contract_type;
+    }
+
+    public String getContract_id() {
+        return contract_id;
+    }
+
+    public void setContract_id(String contract_id) {
+        this.contract_id = contract_id;
+    }
+
+    public String getContract_name() {
+        return contract_name;
+    }
+
+    public void setContract_name(String contract_name) {
+        this.contract_name = contract_name;
+    }
+
+    public String getContract_amount() {
+        return contract_amount;
+    }
+
+    public void setContract_amount(String contract_amount) {
+        this.contract_amount = contract_amount;
+    }
+
+    public String getContract_term() {
+        return contract_term;
+    }
+
+    public void setContract_term(String contract_term) {
+        this.contract_term = contract_term;
+    }
+
+    public String getSupplier_name() {
+        return supplier_name;
+    }
+
+    public void setSupplier_name(String supplier_name) {
+        this.supplier_name = supplier_name;
+    }
+
+    public String getLegal_rep() {
+        return legal_rep;
+    }
+
+    public void setLegal_rep(String legal_rep) {
+        this.legal_rep = legal_rep;
+    }
+
+    public String getTax_num() {
+        return tax_num;
+    }
+
+    public void setTax_num(String tax_num) {
+        this.tax_num = tax_num;
+    }
+
+    public String getContract_person() {
+        return contract_person;
+    }
+
+    public void setContract_person(String contract_person) {
+        this.contract_person = contract_person;
+    }
+
+    public String getContract_phone() {
+        return contract_phone;
+    }
+
+    public void setContract_phone(String contract_phone) {
+        this.contract_phone = contract_phone;
+    }
+
+    public String getAccount_name() {
+        return account_name;
+    }
+
+    public void setAccount_name(String account_name) {
+        this.account_name = account_name;
+    }
+
+    public String getAccount_no() {
+        return account_no;
+    }
+
+    public void setAccount_no(String account_no) {
+        this.account_no = account_no;
+    }
+
+    public String getFrame_no() {
+        return frame_no;
+    }
+
+    public void setFrame_no(String frame_no) {
+        this.frame_no = frame_no;
+    }
+
+    public String getFrame_name() {
+        return frame_name;
+    }
+
+    public void setFrame_name(String frame_name) {
+        this.frame_name = frame_name;
+    }
+
+    public String getFrame_date() {
+        return frame_date;
+    }
+
+    public void setFrame_date(String frame_date) {
+        this.frame_date = frame_date;
+    }
+
+    public String getUpper_amount() {
+        return upper_amount;
+    }
+
+    public void setUpper_amount(String upper_amount) {
+        this.upper_amount = upper_amount;
+    }
+
+    public String getSign_amount() {
+        return sign_amount;
+    }
+
+    public void setSign_amount(String sign_amount) {
+        this.sign_amount = sign_amount;
+    }
+
+    public String getCurrent_amount() {
+        return current_amount;
+    }
+
+    public void setCurrent_amount(String current_amount) {
+        this.current_amount = current_amount;
+    }
+
+    public String getFram_contract_term() {
+        return fram_contract_term;
+    }
+
+    public void setFram_contract_term(String fram_contract_term) {
+        this.fram_contract_term = fram_contract_term;
+    }
+
+    public String getPurchase_name() {
+        return purchase_name;
+    }
+
+    public void setPurchase_name(String purchase_name) {
+        this.purchase_name = purchase_name;
+    }
+
+    public String getDraft_person() {
+        return draft_person;
+    }
+
+    public void setDraft_person(String draft_person) {
+        this.draft_person = draft_person;
+    }
+
+    public String getDraft_part() {
+        return draft_part;
+    }
+
+    public void setDraft_part(String draft_part) {
+        this.draft_part = draft_part;
+    }
+
+    public String getSign_date() {
+        return sign_date;
+    }
+
+    public void setSign_date(String sign_date) {
+        this.sign_date = sign_date;
+    }
+
+    public String getCommit_term() {
+        return commit_term;
+    }
+
+    public void setCommit_term(String commit_term) {
+        this.commit_term = commit_term;
+    }
+
+    public String getSettle_name() {
+        return settle_name;
+    }
+
+    public void setSettle_name(String settle_name) {
+        this.settle_name = settle_name;
+    }
+
+    public String getSettle_date() {
+        return settle_date;
+    }
+
+    public void setSettle_date(String settle_date) {
+        this.settle_date = settle_date;
+    }
+
+    public String getSettle_cycle() {
+        return settle_cycle;
+    }
+
+    public void setSettle_cycle(String settle_cycle) {
+        this.settle_cycle = settle_cycle;
+    }
+
+    public String getSupplier_id() {
+        return supplier_id;
+    }
+
+    public void setSupplier_id(String supplier_id) {
+        this.supplier_id = supplier_id;
+    }
+
+    public String getUnit_account() {
+        return unit_account;
+    }
+
+    public void setUnit_account(String unit_account) {
+        this.unit_account = unit_account;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getTax() {
+        return tax;
+    }
+
+    public void setTax(String tax) {
+        this.tax = tax;
+    }
+
+    public String getThis_price() {
+        return this_price;
+    }
+
+    public void setThis_price(String this_price) {
+        this.this_price = this_price;
+    }
+
+    public String getThis_tax() {
+        return this_tax;
+    }
+
+    public void setThis_tax(String this_tax) {
+        this.this_tax = this_tax;
+    }
+
+    public String getContract_rel() {
+        return contract_rel;
+    }
+
+    public void setContract_rel(String contract_rel) {
+        this.contract_rel = contract_rel;
+    }
+
+    public String getContract_save() {
+        return contract_save;
+    }
+
+    public void setContract_save(String contract_save) {
+        this.contract_save = contract_save;
+    }
+
+    public String getContract_file() {
+        return contract_file;
+    }
+
+    public void setContract_file(String contract_file) {
+        this.contract_file = contract_file;
+    }
+
+    public String getProject_name() {
+        return project_name;
+    }
+
+    public void setProject_name(String project_name) {
+        this.project_name = project_name;
+    }
+
+    public String getAnnex() {
+        return annex;
+    }
+
+    public void setAnnex(String annex) {
+        this.annex = annex;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+    public String getAccessory() {
+        return accessory;
+    }
+
+    public void setAccessory(String accessory) {
+        this.accessory = accessory;
+    }
+
+    public String getAccessory_file() {
+        return accessory_file;
+    }
+
+    public void setAccessory_file(String accessory_file) {
+        this.accessory_file = accessory_file;
+    }
+
+    public String getAccessory_save() {
+        return accessory_save;
+    }
+
+    public void setAccessory_save(String accessory_save) {
+        this.accessory_save = accessory_save;
+    }
+}

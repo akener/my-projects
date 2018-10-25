@@ -1,0 +1,107 @@
+package com.esop.base.controller;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import com.esop.base.dto.LogInfoDto;
+import com.esop.base.dto.SessionDto;
+import com.esop.base.dto.ResourceTreeDto;
+import com.esop.common.date.DateFunc;
+import com.esop.common.JSTree.JSTreeDto;
+import com.esop.common.JSTree.JSTreeNonOpenDto;
+import com.esop.common.JSTree.State;
+import com.esop.base.service.BasePubService;
+import com.esop.common.security.DESPlus;
+import com.esop.common.util.ParameterConversion;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+/**
+ * Created by wangbl on 16/7/27.
+ */
+
+@RestController
+public class BasePubRC {
+    @Autowired
+    BasePubService basePubService;
+
+    private static Logger logger = Logger.getLogger(BasePubRC.class);
+    //加载组织树,同时展开所有tree节点
+    @RequestMapping(value="/getGroupInfoTree")
+    public List<JSTreeNonOpenDto> getOrgInfoTree(JSTreeDto jstreedto, boolean flag){
+        List list;
+        if(flag){
+            JSTreeNonOpenDto temp=(JSTreeNonOpenDto) basePubService.getParentId(jstreedto).get(0);
+            temp.setState(new State(true));
+            list=new ArrayList();
+            list.add(temp);
+        }else{
+            list= basePubService.getOrgJSTree(jstreedto);
+        }
+        //logger.info("session数据="+list.toString());
+        return list;
+    }
+    //加载资源类型树
+    @RequestMapping(value="/getResourceJSTree")
+    public List<JSTreeNonOpenDto> getResourceJSTree(ResourceTreeDto jstreedto, boolean flag){
+        System.out.println(jstreedto.getRegion_code());
+        System.out.println(jstreedto.getId());
+        List list;
+            list= basePubService.getResourceJSTree(jstreedto);
+        return list;
+    }
+
+    //加载字典表
+    @RequestMapping(value="/getDataDictionary")
+    public List getDataDictionary(String tableName){
+        List list;
+        tableName="   h_login_identity_code where rownum<1 ";
+        tableName.trim().indexOf(" ");
+        list = basePubService.getDataDictionary(tableName.trim().substring(0,tableName.trim().indexOf(" ")));
+        return list;
+    }
+
+    //查询工号归属工作台
+    @RequestMapping(value="/selectWorkAreaUrl")
+    public String selectWorkAreaUrl(SessionDto param){
+        return basePubService.selectWorkAreaUrl(param);
+    }
+    //查询工号密码
+    @RequestMapping(value="/selectLoginNoPassword")
+    public String selectLoginNoPassword(SessionDto param){
+        return basePubService.selectLoginNoPassword(param);
+    }
+    //查询工号信息
+    @RequestMapping(value="/selectLoginNoInfo")
+    public SessionDto selectLoginNoInfo(SessionDto param){
+        return basePubService.selectLoginNoInfo(param);
+    }
+
+    //登录工号密码验证
+    @RequestMapping(value="/passwordVerification")
+    public Map passwordVerification(HttpServletRequest request){
+        Map resultMap=new HashMap<>();
+        try {
+            DESPlus desPlus=new DESPlus();
+            SessionDto param = ParameterConversion.jsonToObject(request, SessionDto.class);
+            if (desPlus.encrypt(param.getPassword()).equals(basePubService.selectLoginNoPassword(param))) {
+                SessionDto result=basePubService.selectLoginNoInfo(param);
+                resultMap.put("busi_boss_no",result.getBusi_boss_no());
+                return resultMap;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return resultMap;
+    }
+    //日志记录
+    @RequestMapping(value="/insertLogInfo")
+    public int selectLoginNoInfo(LogInfoDto param){
+        return basePubService.insertLogInfo(param);
+    }
+}

@@ -1,0 +1,45 @@
+package com.esop.workbench.controller;
+
+import com.esop.workbench.dto.menuListRtnDto;
+import com.esop.workbench.dto.menusListDto;
+import com.esop.workbench.dto.setMenuListRtnDto;
+import com.esop.workbench.service.menusListService;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * Created by dinghl on 2017/6/23.
+ * 查询快捷入口的内容。
+ */
+@RestController
+public class menusListController {
+
+    private static Logger logger = Logger.getLogger(menusListController.class);
+
+    @Autowired
+    menusListService menusListService;
+
+    @RequestMapping(value = "getMenusList")
+    public menuListRtnDto getMenusList(menusListDto params) {
+        menuListRtnDto menuListRtnDto = new menuListRtnDto();
+        List list;
+        list = menusListService.getMenusList(params);
+        menuListRtnDto.setData(list);
+        return menuListRtnDto;
+    }
+
+    @RequestMapping(value = "setMenusList")
+    public setMenuListRtnDto setMenusList(menusListDto menusListDto, String str) {
+        // str = "1000|开户|1993|集团客户开户|1994|集团客户销户|";
+        setMenuListRtnDto setMenuListRtnDto = new setMenuListRtnDto();
+        int num = menusListService.setMenusList(menusListDto, str);
+        setMenuListRtnDto.setData(num);
+        return setMenuListRtnDto;
+    }
+
+}

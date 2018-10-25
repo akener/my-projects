@@ -1,0 +1,70 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/5.
+ */
+public class BusDealInfoDto {
+    String open_card = "";//开卡
+    String terminal = "";//4G终端销售
+    String width = "";//宽带
+    String special_line = "";//专线
+    String wage_change = "";//资费转签
+    String manager_no = "";//客户经理编码
+    String manager_name = "";//客户经理名称
+
+    public String getOpen_card() {
+        return open_card;
+    }
+
+    public void setOpen_card(String open_card) {
+        this.open_card = open_card;
+    }
+
+    public String getTerminal() {
+        return terminal;
+    }
+
+    public void setTerminal(String terminal) {
+        this.terminal = terminal;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public String getSpecial_line() {
+        return special_line;
+    }
+
+    public void setSpecial_line(String special_line) {
+        this.special_line = special_line;
+    }
+
+    public String getWage_change() {
+        return wage_change;
+    }
+
+    public void setWage_change(String wage_change) {
+        this.wage_change = wage_change;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+}

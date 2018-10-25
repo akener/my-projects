@@ -1,0 +1,171 @@
+package com.esop.busiAnalysis.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by Shinelon on 2017/6/12.
+ */
+//收入报表DTO
+public class EpGroupIncomeDto extends BaseDto{
+    String rownum="";//展示查询出来的列数作为名次展示
+    String region_code="";
+    String region_name="";
+    String town_code="";
+    String town_name="";
+    String manager_no="";
+    String manager_name="";
+    String unit_id ="";
+    String unit_name="";
+    String prc_name="";
+    String prc_poleno="";
+    String income="";
+    String extax_unify_fee="";
+    String op_time="";
+    String prc_brand="";
+    String trade_code="";
+    String trade_name="";
+    String eff_date = "";
+    public String getRownum() {
+        return rownum;
+    }
+
+    public void setRownum(String rownum) {
+        this.rownum = rownum;
+    }
+
+    public String getRegion_code() {
+        return region_code;
+    }
+
+    public void setRegion_code(String region_code) {
+        this.region_code = region_code;
+    }
+
+    public String getRegion_name() {
+        return region_name;
+    }
+
+    public void setRegion_name(String region_name) {
+        this.region_name = region_name;
+    }
+
+    public String getTown_code() {
+        return town_code;
+    }
+
+    public void setTown_code(String town_code) {
+        this.town_code = town_code;
+    }
+
+    public String getTown_name() {
+        return town_name;
+    }
+
+    public void setTown_name(String town_name) {
+        this.town_name = town_name;
+    }
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public String getUnit_id() {
+        return unit_id;
+    }
+
+    public void setUnit_id(String unit_id) {
+        this.unit_id = unit_id;
+    }
+
+    public String getUnit_name() {
+        return unit_name;
+    }
+
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
+    }
+
+    public String getPrc_name() {
+        return prc_name;
+    }
+
+    public void setPrc_name(String prc_name) {
+        this.prc_name = prc_name;
+    }
+
+    public String getPrc_poleno() {
+        return prc_poleno;
+    }
+
+    public void setPrc_poleno(String prc_poleno) {
+        this.prc_poleno = prc_poleno;
+    }
+
+    public String getIncome() {
+        return income;
+    }
+
+    public void setIncome(String income) {
+        this.income = income;
+    }
+
+    public String getExtax_unify_fee() {
+        return extax_unify_fee;
+    }
+
+    public void setExtax_unify_fee(String extax_unify_fee) {
+        this.extax_unify_fee = extax_unify_fee;
+    }
+
+    public String getOp_time() {
+        return op_time;
+    }
+
+    public void setOp_time(String op_time) {
+        this.op_time = op_time;
+    }
+
+    public String getPrc_brand() {
+        return prc_brand;
+    }
+
+    public void setPrc_brand(String prc_brand) {
+        this.prc_brand = prc_brand;
+    }
+
+    public String getTrade_code() {
+        return trade_code;
+    }
+
+    public void setTrade_code(String trade_code) {
+        this.trade_code = trade_code;
+    }
+
+    public String getTrade_name() {
+        return trade_name;
+    }
+
+    public void setTrade_name(String trade_name) {
+        this.trade_name = trade_name;
+    }
+
+    public String getEff_date() {
+        return eff_date;
+    }
+
+    public void setEff_date(String eff_date) {
+        this.eff_date = eff_date;
+    }
+}

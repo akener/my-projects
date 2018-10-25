@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="developRepository">
+    <!--查询行业拓展信息-->
+    <select id="getDevelopmentInfo" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="com.esop.visitInfo.dto.DevelopmentDto">
+        select group_id,visit_company,industry_id,address,photo_id,telephone,unit_id,login_no,net_id,boss_no,brdbd_type,
+        brdbd_width,brdbd_postage,brdbd_enddate,tel_type,tel_no,tel_postage,tel_enddate,ddn_type,ddn_width,ddn_postage,
+        ddn_enddate,total_num,yd_num,lt_num,dx_num,month_rate,inf_demand_id,other_demand from ep_ind_indexpand_info
+          where group_id=#{group_id}
+    </select>
+    <!--新增行业拓展信息-->
+    <select id="insertDevelopmentinfo" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="int">
+        insert into ep_ind_indexpand_info(group_id,visit_company,industry_id,address,photo_id,
+        telephone,unit_id,login_no,net_id,boss_no,brdbd_type,brdbd_width,brdbd_postage,brdbd_enddate,
+        tel_type,tel_no,tel_postage,tel_enddate,ddn_type,ddn_width,ddn_postage,ddn_enddate,
+        total_num,yd_num,lt_num,dx_num,month_rate,inf_demand_id,other_demand,create_date) values(
+        #{group_id},#{visit_company},#{industry_id},#{address},#{photo_id},
+        #{telephone},#{unit_id},#{login_no},#{net_id},#{boss_no},#{brdbd_type},#{brdbd_width},#{brdbd_postage},#{brdbd_enddate},
+        #{tel_type},#{tel_no},#{tel_postage},#{tel_enddate},#{ddn_type},#{ddn_width},#{ddn_postage},#{ddn_enddate},
+        #{total_num},#{yd_num},#{lt_num},#{dx_num},#{month_rate},#{inf_demand_id},#{other_demand},sysdate)
+    </select>
+    <!--更新行业拓展信息-->
+    <select id="updateDevelopmentinfo" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="int">
+        update ep_ind_indexpand_info set group_id=#{group_id},visit_company=#{visit_company},industry_id=#{industry_id},
+        address=#{address},photo_id=#{photo_id},telephone=#{telephone},unit_id=#{unit_id},login_no=#{login_no},
+        net_id=#{net_id},boss_no=#{boss_no},brdbd_type=#{brdbd_type},brdbd_width=#{brdbd_width},brdbd_postage=#{brdbd_postage},
+        brdbd_enddate=#{brdbd_enddate},tel_type=#{tel_type},tel_no=#{tel_no},tel_postage=#{tel_postage},
+        tel_enddate=#{tel_enddate},ddn_type=#{ddn_type},ddn_width=#{ddn_width},ddn_postage=#{ddn_postage},
+        ddn_enddate=#{ddn_enddate},total_num=#{total_num},yd_num=#{yd_num},lt_num=#{lt_num},dx_num=#{dx_num},
+        month_rate=#{month_rate},inf_demand_id=#{inf_demand_id},other_demand=#{other_demand},update_date=sysdate
+         where group_id=#{group_id}
+    </select>
+    <!--查询应用化需求信息-->
+    <select id="getInfdemandRel" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="com.esop.visitInfo.dto.DevelopmentDto">
+        select inf_demand_id,appdm_code from EP_IND_INFDEMANDID_REL where inf_demand_id=#{inf_demand_id}
+    </select>
+    <!--新增应用化需求信息-->
+    <select id="insertInfdemandRel" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="int">
+        insert into EP_IND_INFDEMANDID_REL(inf_demand_id,appdm_code) values(#{inf_demand_id},#{appdm_code})
+    </select>
+    <!--更新应用化需求信息-->
+    <select id="updateInfdemandRel" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="int">
+        update EP_IND_INFDEMANDID_REL set inf_demand_id=#{inf_demand_id},appdm_code=#{appdm_code}
+          where inf_demand_id=#{inf_demand_id}
+    </select>
+    <!--所属行业-->
+    <select id="getProfession" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="com.esop.visitInfo.dto.DevelopmentDto">
+        select trade_code,trade_name from sgrpbigtradecode
+    </select>
+    <!--应用需求-->
+    <select id="getDemandApp" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="com.esop.visitInfo.dto.DevelopmentDto">
+        select t.appdm_code, t.appdm_name from ep_ind_expappdemand_code t where t.ind_type = 'IDS_1'
+    </select>
+    <!--地市-->
+    <select id="getCity" parameterType="com.esop.visitInfo.dto.DevelopmentDto" resultType="com.esop.visitInfo.dto.DevelopmentDto">
+        select group_id,trim(name) as name,tree_str,boss_org_code from dGrpGroups
+         where (active_flag='Y' or active_flag is null) and parent_group_id='10031'
+          order by tree_str
+    </select>
+    <!--序列-->
+    <select id="getpdmandNextval" resultType="int">
+        select seq_indexpdmand_id.nextval from dual
+    </select>
+    <!--修改密码-->
+    <select id="updatePasswordInfo" parameterType="com.esop.visitInfo.dto.SuperviseDto" resultType="int">
+        update ep_sys_loginmsg_info set password=#{password} where trim(login_no)=#{login_no} and trim(password)=#{password}
+    </select>
+    <!--新增管理办法-->
+    <select id="insertSuperviseInfo" parameterType="com.esop.visitInfo.dto.SuperviseDto" resultType="int">
+        insert into EP_SYS_MANIDEA_INFO(CODE,TITLE,CONTENT, CONTENT_DETAIL,PUB_DATE,PUB_CREATENO,PUB_TYPE)
+         values (SEQ_MANIDEA_ID.NEXTVAL,#{TITLE},#{CONTENT},#{CONTENT_DETAIL},sysdate,aavg38,#{PUB_TYPE})
+    </select>
+    <!--归属系统-->
+    <select id="getOutsystemDuf" parameterType="com.esop.visitInfo.dto.LogManagementDto" resultType="com.esop.visitInfo.dto.LogManagementDto">
+        select out_sys_id,out_sys_name from ep_sys_outsystem_dict
+    </select>
+    <!--操作人员-->
+    <select id="getloginmsg" parameterType="com.esop.visitInfo.dto.LogManagementDto" resultType="com.esop.visitInfo.dto.LogManagementDto">
+         select login_no,login_name from ep_sys_loginmsg_info where group_id = #{group_id}
+    </select>
+    <!--日志管理-->
+    <select id="getlogManageInff" parameterType="String" resultType="com.esop.visitInfo.dto.LogManagementDto">
+        select a.op_code,
+        b.function_name,
+        c.out_sys_name,
+        a.login_no,
+        e.login_name,
+        d.group_name,
+        a.boss_login_no,
+        a.bass_login_no1,
+        a.op_time,
+        a.ip_addr
+         from EP_SYS_LOG_INFO a,
+        EP_SYS_funccode_info  b,
+        EP_SYS_outsystem_dict c,
+        ep_sys_group_info d,
+        EP_SYS_loginmsg_info e,
+        ep_sys_group_rel f
+         where a.op_code = b.function_code
+         and a.out_sys_id = c.out_sys_id
+         and a.login_no = e.login_no
+         and e.group_id = d.group_id
+         and d.group_id = f.group_id
+         and f.parent_group_id = #{group_id}
+         and a.op_code like '%' || #{op_code} || '%'
+         and a.out_sys_id = #{out_sys_id}
+         and a.login_no like '%' || #{login_no} || '%'
+         and to_char(a.op_time, 'YYYY-MM-DD') between #{open_date} and #{audit_date}
+    </select>
+
+</mapper>

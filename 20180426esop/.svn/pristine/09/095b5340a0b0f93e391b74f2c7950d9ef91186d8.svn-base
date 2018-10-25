@@ -1,0 +1,37 @@
+package com.esop.cqDevelopment.capitalManage.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by wangbl on 16/8/5.
+ */
+public class CustInfoQueryDto extends BaseDto {
+
+    String union_code = "";
+    String union_name = "";
+    String service_no = "";
+
+    public String getUnion_code() {
+        return union_code;
+    }
+
+    public void setUnion_code(String union_code) {
+        this.union_code = union_code;
+    }
+
+    public String getUnion_name() {
+        return union_name;
+    }
+
+    public void setUnion_name(String union_name) {
+        this.union_name = union_name;
+    }
+
+    public String getService_no() {
+        return service_no;
+    }
+
+    public void setService_no(String service_no) {
+        this.service_no = service_no;
+    }
+}

@@ -1,0 +1,29 @@
+package com.esop.workflow.api.impl;
+
+import com.esop.workflow.api.IAssigneeFilter;
+import com.esop.workflow.mapper.AssigneeMapper;
+import com.esop.workflow.vo.Assignee;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+/**
+ * 被指定人为网络优化工单流程首环节处理人员
+ *
+ * @author daish 2017/10/31
+ */
+@Service(value = "assigneeNetOptFirstStepSvc")
+public class AssigneeFilterForNetworkOpt implements IAssigneeFilter {
+    private AssigneeMapper assigneeMapper;
+
+    public Assignee[] getAssignee(Assignee iAssignee) {
+        List<Assignee> assigneeList = assigneeMapper.selectForNetOpt(iAssignee);
+        if(assigneeList!=null&&assigneeList.size()>0){
+            return assigneeList.toArray(new Assignee[assigneeList.size()]);
+        }
+        return null;
+    }
+
+}

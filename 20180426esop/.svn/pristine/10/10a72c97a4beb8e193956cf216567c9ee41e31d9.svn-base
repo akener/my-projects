@@ -1,0 +1,32 @@
+package com.esop.workflow.dto;
+
+import java.io.Serializable;
+
+public class OutDTO implements Serializable {
+    protected String returnCode = "0";//返回码，0-成功，1-失败
+    protected String errorMessage;//错误信息
+
+    public String getReturnCode() {
+        return returnCode;
+    }
+
+    public void setReturnCode(String returnCode) {
+        this.returnCode = returnCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "returnCode='" + returnCode + '\'' +
+                ", errorMessage='" + errorMessage + '\'' +
+                '}';
+    }
+}

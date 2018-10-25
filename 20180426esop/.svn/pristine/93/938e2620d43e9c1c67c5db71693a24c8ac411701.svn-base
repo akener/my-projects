@@ -1,0 +1,154 @@
+package com.esop.visitInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.visitInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by subt on 2017/6/7 0007.
+ */
+
+@Repository
+public class VisitApplyService {
+    private static Logger logger = Logger.getLogger(VisitApplyService.class);
+    @Autowired
+    SqlE sqlE;
+    //查询参观流程表单申请方填写信息
+    public List<VisitProcessDto> getProcessInfo(VisitProcessDto param){
+        return sqlE.selectM("getProcessInfo",param);
+    }
+    //新增参观流程表单申请方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertProcessInfo(VisitProcessDto param){
+        if (sqlE.insertM("insertProcessInfo",param)>0){
+            logger.info("新增参观流程表单申请方填写信息成功");
+            return true;
+        }
+        logger.info("新增参观流程表单申请方填写信息失败");
+        return false;
+    }
+    //更新参观流程表单申请方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateProcessInfo(VisitProcessDto param){
+        if (sqlE.updateM("updateProcessInfo",param)>0){
+            logger.info("更新参观流程表单申请方填写信息成功");
+            return true;
+        }
+        logger.info("更新参观流程表单申请方填写信息失败");
+        return false;
+    }
+    //查询参观流程(数据中心)申请方填写信息
+    public List<VisitDatacenterDto> getDatacenterInfo(VisitDatacenterDto param){
+        return sqlE.selectM("getDatacenterInfo",param);
+    }
+    //新增(数据中心)申请方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertDatacenterInfo(VisitDatacenterDto param){
+        if (sqlE.insertM("insertDatacenterInfo",param)>0){
+            logger.info("新增参观流程表单(数据中心)申请方填写信息成功");
+            return true;
+        }
+        logger.info("新增参观流程表单(数据中心)申请方填写信息失败");
+        return false;
+    }
+    //更新(数据中心)申请方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateDatacenterInfo(VisitDatacenterDto param){
+        if (sqlE.updateM("updateDatacenterInfo",param)>0){
+            logger.info("更新参观流程表单(数据中心)申请方填写信息成功");
+            return true;
+        }
+        logger.info("更新参观流程表单(数据中心)申请方填写信息失败");
+        return false;
+    }
+
+    //查询测试流程表单申请方信息
+    public List<TestFormDto> getTestInfo(TestFormDto param){
+        return sqlE.selectM("getTestInfo",param);
+    }
+    //新增测试流程表单数据申请方信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertTestInfo(TestFormDto param){
+        if (sqlE.insertM("insertTestInfo",param)>0){
+            logger.info("新增测试流程表单数据申请方信息成功");
+            return true;
+        }
+        logger.info("新增测试流程表单数据申请方信息失败");
+        return false;
+    }
+    //更新测试流程表单数据申请方信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateTestInfo(TestFormDto param){
+        if (sqlE.updateM("updateTestInfo",param)>0){
+            logger.info("更新测试流程表单数据申请方信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("更新测试流程表单数据申请方信息失败");
+        return false;
+    }
+    //查询勘查、资费、资源流程表单申请方信息
+    public List<VisitContentDto> getPostageInfo(VisitContentDto param){
+        logger.info("getPostageInfo入参:"+param.toString());
+        List list = sqlE.selectM("getPostageInfo",param);
+        logger.info("getPostageInfo入参:"+list);
+        return list;
+    }
+    //新增勘查、资费、资源流程表单数据申请方信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertPostageInfo(VisitContentDto param){
+        UploadFileInfoDto uploadFileInfoDto=new UploadFileInfoDto();
+        //OA传递文件存储路径
+        uploadFileInfoDto.setPath("OA");
+        //其他勘查需求附件上传信息
+        param.setOther_prospecting_needs(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+        uploadFileInfoDto.setOa_file(param.getOther_prospecting_needs_file());
+        uploadFileInfoDto.setName(param.getOther_prospecting_needs_save());
+        uploadFileInfoDto.setRelated_id(param.getOther_prospecting_needs());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        //需要反馈给客户的调研表格附件上传信息
+        param.setNeed_feedback_form(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+        uploadFileInfoDto.setOa_file(param.getNeed_feedback_form_file());
+        uploadFileInfoDto.setName(param.getNeed_feedback_form_save());
+        uploadFileInfoDto.setRelated_id(param.getNeed_feedback_form());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        if (sqlE.insertM("insertPostageInfo",param)>0){
+            logger.info("新增勘查、资费、资源流程表单数据申请方信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("新增勘查、资费、资源流程表单数据申请方信息失败");
+        return false;
+    }
+    //更新勘查、资费、资源流程表单数据
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updatePostageInfo(VisitContentDto param){
+        UploadFileInfoDto uploadFileInfoDto=new UploadFileInfoDto();
+        //OA传递文件存储路径
+        uploadFileInfoDto.setPath("OA");
+        //其他勘查需求附件上传信息
+        uploadFileInfoDto.setOa_file(param.getOther_prospecting_needs_file());
+        uploadFileInfoDto.setName(param.getOther_prospecting_needs_save());
+        uploadFileInfoDto.setRelated_id(param.getOther_prospecting_needs());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        //需要反馈给客户的调研表格附件上传信息
+        uploadFileInfoDto.setOa_file(param.getNeed_feedback_form_file());
+        uploadFileInfoDto.setName(param.getNeed_feedback_form_save());
+        uploadFileInfoDto.setRelated_id(param.getNeed_feedback_form());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        if (sqlE.updateM("updatePostageInfo",param)>0){
+            logger.info("更新勘查、资费、资源流程表单数据申请方信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("更新勘查、资费、资源流程表单数据申请方信息失败");
+        return false;
+    }
+}

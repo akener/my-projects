@@ -1,0 +1,211 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.cqDevelopment.elecPack.dto.*;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by wangxy on 2017/12/9.
+ */
+@Repository
+public class UnionMemberService {
+    @Autowired
+    protected SqlSessionTemplate sqlSessionTemplate;
+    @Autowired
+    SqlE sqlE;
+    @Autowired
+    OrTemplateAttrService templateService;
+
+    //查询当前选择代办记录
+    public SeContractInfoDto selectOne(SeContractInfoDto seContractInfoDto){
+        SeContractInfoDto seContra= sqlSessionTemplate.selectOne("SeContractInfoDto",seContractInfoDto);
+        return  seContra;
+    }
+
+
+    public Result selSeOpporNo(SeOpporInfo parameter){
+        Result result = sqlE.selectPage("selSeOpporNo",parameter);
+        return result;
+    }
+
+
+    public OrderDto selActivitiesDetail(String reqNum){
+        OrderDto reDto = new OrderDto();
+        reDto = sqlSessionTemplate.selectOne("selActivitiesDetail",reqNum);
+        //循环本地营销获取属性参数
+        List<OrTemplateAttrDto> templates= templateService.SelectTemplateAttrList(10012);
+        for (OrTemplateAttrDto temp:templates) {
+            QueryAttrVo vo = new QueryAttrVo();
+            vo.setReqNum(reqNum);
+            if (temp.getAttr_code().equals("attach_file_id")) {//附件id
+                vo.setAttrId(temp.getAttr_id());
+                vo.setAttrCode(temp.getAttr_code());
+                String attrValue = sqlSessionTemplate.selectOne("selAttrValue",vo);
+                reDto.setAttach_file_id(Integer.parseInt(attrValue));
+                //获取文件名
+                String fileName = sqlSessionTemplate.selectOne("seltfAttachFileName",attrValue);
+                reDto.setFileName(fileName);
+            }else if (temp.getAttr_code().equals("feetype")) {//赠送话费返费周期
+                vo.setAttrId(temp.getAttr_id());
+                vo.setAttrCode(temp.getAttr_code());
+                String attrValue = sqlSessionTemplate.selectOne("selAttrValue",vo);
+                reDto.setFeetype(attrValue);
+            }else if (temp.getAttr_code().equals("paytime")){//赠送话费到账时间类型
+                vo.setAttrId(temp.getAttr_id());
+                vo.setAttrCode(temp.getAttr_code());
+                String attrValue = sqlSessionTemplate.selectOne("selAttrValue",vo);
+                reDto.setPaytime(attrValue);
+            }else if (temp.getAttr_code().equals("effecttime")) {//赠送话费有效期限
+                vo.setAttrId(temp.getAttr_id());
+                vo.setAttrCode(temp.getAttr_code());
+                String attrValue = sqlSessionTemplate.selectOne("selAttrValue",vo);
+                reDto.setEffecttime(attrValue);
+            }else if (temp.getAttr_code().equals("reason")) {//赠送话费原因
+                vo.setAttrId(temp.getAttr_id());
+                vo.setAttrCode(temp.getAttr_code());
+                String attrValue = sqlSessionTemplate.selectOne("selAttrValue",vo);
+                reDto.setReason(attrValue);
+            }
+        }
+        return reDto;
+    }
+
+    public SeNewContractInfoDto getContractCloumByOpporNo(SeOpporUserBusinessInfo param){
+        List<SeOpporUserBusinessInfo> list = new ArrayList<SeOpporUserBusinessInfo>();
+        list = sqlSessionTemplate.selectList("getContractCloumByOpporNo",param);
+        SeNewContractInfoDto dto = new SeNewContractInfoDto();
+        for(int i=0;i<list.size();i++){
+            SeOpporUserBusinessInfo info = list.get(i);
+            if(info.getBusiness_name_en().equals("port_access_address")){//甲方接入点地址
+                dto.setFirst_access_address(info.getBusiness_info());
+            }else if(info.getBusiness_name_en().equals("access_type")){//接口界面
+                dto.setInterface_in(info.getBusiness_info());
+            }else if(info.getBusiness_name_en().equals("business_port_type")){//接口类型
+                dto.setInterface_type(info.getBusiness_info());
+            }
+            if(info.getBusiness_name_en().equals("port_access_address")){//A端接入地址
+                dto.setA_access_address(info.getBusiness_info());
+            }else if(info.getBusiness_name_en().equals("business_port_type")){//A端接口类型
+                dto.setA_interface_type(info.getBusiness_info());
+            }else if(info.getBusiness_name_en().equals("portZ_access_address")){//Z端接入地址
+                dto.setZ_access_address(info.getBusiness_info());
+            }else if(info.getBusiness_name_en().equals("portZ_type")){//Z端接口类型
+                dto.setZ_interface_type(info.getBusiness_info());
+            }else if(info.getBusiness_name_en().equals("access_type")){//甲方连接接口
+                dto.setFirst_connection_interface(info.getBusiness_info());
+            }
+            if(info.getBusiness_name_en().equals("access_type")){//乙方连接接口
+                dto.setSecond_connection_interface(info.getBusiness_info());
+            }
+        }
+        return dto;
+    }
+
+
+    /**
+     * 根据条件查询当前客户经理下的成员列表,
+     * @return成员列表
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public Result getMemberList(GroupInfoDto param){
+        Result result =sqlE.selectPage("getMemberList",param);
+        return result;
+    }
+    /**
+     * 根据人员id查询人员信息
+     * @param id
+     * @return
+     */
+    public OrderDto getMemberInfo(String id) {
+        String selectTion = "";
+        selectTion = "getMemberInfoByIdUpd";
+        OrderDto info = sqlSessionTemplate.selectOne(selectTion,id);
+        return info;
+    }
+
+    /**
+     * 更新集团成员号码
+     * @param param
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateMemberTel(MemberInfoDto param){
+        boolean flag = false;
+        String selectTion = "";
+        selectTion = "updateMemberTel";
+        int temp = sqlSessionTemplate.update(selectTion,param);
+        if(temp>0){
+            flag = true;
+        }
+        return flag;
+    }
+
+    /**
+     * 添加集团成员信息
+     * @param param
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean addMemberInfo(UnionMemberInfo param){
+        boolean flag = false;
+        String selectTion = "";
+        selectTion = "addMemberInfo";
+        int temp = sqlSessionTemplate.insert(selectTion,param);
+        if(temp>0){
+            flag = true;
+        }
+        return flag;
+    }
+
+    /**
+     * 删除集团成员
+     * @param param
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteMemberInfo(UnionMemberInfo param){
+        boolean flag = false;
+        String selectTion = "";
+        selectTion = "deleteMemberInfo";
+        int temp = sqlSessionTemplate.delete(selectTion,param);
+        if(temp>0){
+            flag = true;
+        }
+        return flag;
+    }
+
+    /**
+     * 根据成员id查询成员集团信息
+     * @param id
+     * @return
+     */
+    public MemberInfoSelectDto getMemberUnionInfo(String id) {
+        String selectTion = "";
+        selectTion = "getMemberInfoById";
+        MemberInfoSelectDto info = new MemberInfoSelectDto();
+        info = sqlSessionTemplate.selectOne(selectTion,id);
+        return info;
+    }
+
+    /**
+     * 根据集团编码查询产品信息列表
+     * @param parameter
+     * @return
+     */
+    public List selProdList(GroupInfoDto parameter) {
+
+        String selectTion = "";
+        selectTion = "selProdList";
+        List list=sqlSessionTemplate.selectList(selectTion,parameter);
+        return list;
+    }
+
+
+}

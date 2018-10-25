@@ -1,0 +1,65 @@
+package com.esop.basicManagement.controller;
+
+
+import com.esop.basicManagement.dto.BasicManagementDto;
+import com.esop.basicManagement.dto.GroupTreeDto;
+import com.esop.basicManagement.dto.BasicFunctionDealDto;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by yanhao on 17/6/28.
+ */
+@RestController
+public class BasicFunctionDealRC {
+    @Autowired
+    com.esop.basicManagement.service.BasicFunctionDealService basicFunctionDealService;
+    @Autowired
+    com.esop.basicManagement.service.BasicManagementService basicManagementService;
+    private static Logger logger = Logger.getLogger(BasicFunctionDealRC.class);
+
+    //获取组织树
+    @RequestMapping(value="/groupTreeMsg_function")
+    public List getGroupTreeMsg_function(GroupTreeDto parameter, HttpServletRequest request, boolean flag){
+        List list;
+        list = basicFunctionDealService.getGroupTreeMsgFuncList(parameter);
+        return list;
+    }
+    //插入角色功能
+    @RequestMapping(value="/insertFunctionInfo")
+    public int insertFunctionInfoRc(BasicFunctionDealDto parameter, HttpServletRequest request, boolean flag){
+        int result = 0;
+        String tv = parameter.getTree_value();
+        String tvS[] = tv.split(",");
+        int resultDelete = basicFunctionDealService.deleteFunctionInfoSv(parameter);
+        for(int i=0;i< tvS.length;i++){
+            parameter.setFunction_code(tvS[i]);
+            result = basicFunctionDealService.insertFunctionInfoSv(parameter);
+            if(result==1){
+                continue;
+            }else{
+                result = 999;
+                break;
+            }
+        }
+        BasicManagementDto basicManagementDto = new BasicManagementDto();
+        basicManagementDto.setRole_code(parameter.getRole_code());
+        List<BasicManagementDto> listCrmFuncNum;
+        listCrmFuncNum = basicManagementService.getCrmFuncNum(basicManagementDto);
+        String num = listCrmFuncNum.get(0).getNum();
+        if(result!=999){
+            if(num.equals("0")){
+                return result;
+            }else {
+                return 888;
+            }
+        }else {
+            return result;
+        }
+    }
+}

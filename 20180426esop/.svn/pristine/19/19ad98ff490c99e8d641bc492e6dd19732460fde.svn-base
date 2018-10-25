@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="visitRepository">
+    <!--查询参观流程表单申请方填写信息-->
+    <select id="getProcessApply" parameterType="com.esop.visitInfo.dto.VisitProcessDto" resultType="com.esop.visitInfo.dto.VisitProcessDto">
+        select visit_unit,grop_id,visit_address,visit_number,visit_date,grop_escort_people,
+        interface_man,connection_phone,grop_audit,hv_distribution_room,lv_distribution_room,engine_room,
+        power_battery_room,precision_air,commercial_tworoom,commercial_fiveroom,commercial_sixroom,
+        storage_room,focus_monitor_hall,station,canteen,special_needs,large_screen_greeting,boardroom_number,
+        capacity,projector_curtain,famous_brand,rostrum,microphone,mineral_water,tea_water,paper_pen,
+        car_number,models_colour,plate_num,table_number,canteen_number
+         from ep_prd_jinxiang_info where grop_id=#{grop_id}
+    </select>
+    <!--查询参观流程表单审批方填写信息-->
+    <select id="getProcessUndertake" parameterType="com.esop.visitInfo.dto.VisitProcessDto" resultType="com.esop.visitInfo.dto.VisitProcessDto">
+        select grop_id,undertake_unit,undertake_address,undertake_man,
+        undertake_phone,undertake_audit,hv_distribution_room,lv_distribution_room,engine_room,
+        power_battery_room,precision_air,commercial_tworoom,commercial_fiveroom,commercial_sixroom,
+        storage_room,focus_monitor_hall,station,canteen,special_needs,large_screen_greeting,boardroom_number,
+        capacity,projector_curtain,famous_brand,rostrum,microphone,mineral_water,tea_water,paper_pen,
+        car_number,models_colour,plate_num,table_number,canteen_number
+        from ep_prd_visitprocess_info where grop_id=#{grop_id}
+    </select>
+    <!--查询参观流程表单详情信息-->
+    <select id="getProDetail" parameterType="com.esop.visitInfo.dto.VisitProcessDto" resultType="com.esop.visitInfo.dto.VisitProcessDto">
+        select grop_id,hv_distribution_room,lv_distribution_room,engine_room,
+        power_battery_room,precision_air,commercial_tworoom,commercial_fiveroom,commercial_sixroom,
+        storage_room,focus_monitor_hall,station,canteen,special_needs,large_screen_greeting,boardroom_number,
+        capacity,projector_curtain,famous_brand,rostrum,microphone,mineral_water,tea_water,paper_pen,
+        car_number,models_colour,plate_num,table_number,canteen_number
+        from ep_prd_processdetail_info where grop_id=#{grop_id}
+    </select>
+
+    <!--查询参观流程表单(数据中心)申请方填写信息-->
+    <select id="getDatacenterApply" parameterType="com.esop.visitInfo.dto.VisitDatacenterDto" resultType="com.esop.visitInfo.dto.VisitDatacenterDto">
+        select visit_unit,grop_id,visit_address,visit_number,visit_date,grop_escort_people,
+        interface_man,connection_phone,grop_audit,
+        hv_distribution_room,lv_distribution_room,engine_room,htdc_pb_room,
+        oddc_pb_room,ogac_pb_room,ipdt_refrigerat_room,columns_air_room,water_door_room,heat_backplane_room,
+        storage_room,focus_monitor_hall,station,get_accommodation,canteen,conference_room,special_needs,
+        large_screen_greeting,boardroom_number,capacity,projector_curtain,famous_brand,rostrum,microphone,
+        mineral_water,tea_water,paper_pen,car_number,models_colour,plate_num,table_number,canteen_number
+         from ep_prd_shujuzhongxin_info where grop_id=#{grop_id}
+    </select>
+    <!--查询参观流程表单(数据中心)审批方填写信息-->
+    <select id="getDatacenterUndertake" parameterType="com.esop.visitInfo.dto.VisitDatacenterDto" resultType="com.esop.visitInfo.dto.VisitDatacenterDto">
+        select grop_id,undertake_unit,undertake_address,undertake_man,
+        undertake_phone,undertake_audit,hv_distribution_room,lv_distribution_room,engine_room,htdc_pb_room,
+        oddc_pb_room,ogac_pb_room,ipdt_refrigerat_room,columns_air_room,water_door_room,heat_backplane_room,
+        storage_room,focus_monitor_hall,station,get_accommodation,canteen,conference_room,special_needs,
+        large_screen_greeting,boardroom_number,capacity,projector_curtain,famous_brand,rostrum,microphone,
+        mineral_water,tea_water,paper_pen,car_number,models_colour,plate_num,table_number,canteen_number
+        from ep_prd_visitdatacenter_info where grop_id=#{grop_id}
+    </select>
+    <!--查询参观流程表单(数据中心)详情信息-->
+    <select id="getDataDetail" parameterType="com.esop.visitInfo.dto.VisitDatacenterDto" resultType="com.esop.visitInfo.dto.VisitDatacenterDto">
+        select grop_id,hv_distribution_room,lv_distribution_room,engine_room,htdc_pb_room,
+        oddc_pb_room,ogac_pb_room,ipdt_refrigerat_room,columns_air_room,water_door_room,heat_backplane_room,
+        storage_room,focus_monitor_hall,station,get_accommodation,canteen,conference_room,special_needs,
+        large_screen_greeting,boardroom_number,capacity,projector_curtain,famous_brand,rostrum,microphone,
+        mineral_water,tea_water,paper_pen,car_number,models_colour,plate_num,table_number,canteen_number
+        from ep_prd_datacenterdetail_info where grop_id=#{grop_id}
+    </select>
+
+    <!--查询测试流程表单申请方填写信息-->
+    <select id="getTestApply" parameterType="com.esop.visitInfo.dto.TestFormDto" resultType="com.esop.visitInfo.dto.TestFormDto">
+        select customer_name,customer_address,business_attribute,relevant_licenses,idc_basics,customer_people,
+        customer_phone,customer_mail,account_manager,manager_phone,manager_mail,
+        test_start_time,test_end_time,this_whether_delay_test,last_delay_end_time,
+        cpu_hanan,memory_hanan,storage_hanan,dry_bandwidth_hanan,
+        province_bandwidth_hanan,operating_system_hanan,network_ip_hanan,port_hanan,cpu_village,memory_village,
+        storage_village,bandwidth_village,operating_system_village,network_ip_village,port_village,cpu_vm_ha,
+        memory_vm_ha,storage_vm_ha,dry_bandwidth_vm_ha,province_bandwidth_vm_ha,operating_system_vm_ha,ip_vm_ha,
+        port_vm_ha,cpu_vm_jin,memory_vm_jin,storage_vm_jin,bandwidth_vm_jin,operating_system_vm_jin,ip_vm_jin,
+        port_vm_jin,other from ep_prd_ceshi_info where relevant_licenses=#{relevant_licenses}
+    </select>
+    <!--查询测试流程表单承接方填写信息-->
+    <select id="getTestUndertake" parameterType="com.esop.visitInfo.dto.TestFormDto" resultType="com.esop.visitInfo.dto.TestFormDto">
+        select relevant_licenses,undertake_unit,undertake_address,undertake_man,undertake_phone,
+        distribution_time,recovery_time,delay_recovery_time,cpu_hanan,memory_hanan,storage_hanan,dry_bandwidth_hanan,
+        province_bandwidth_hanan,operating_system_hanan,network_ip_hanan,port_hanan,cpu_village,memory_village,
+        storage_village,bandwidth_village,operating_system_village,network_ip_village,port_village,cpu_vm_ha,
+        memory_vm_ha,storage_vm_ha,dry_bandwidth_vm_ha,province_bandwidth_vm_ha,operating_system_vm_ha,ip_vm_ha,
+        port_vm_ha,cpu_vm_jin,memory_vm_jin,storage_vm_jin,bandwidth_vm_jin,operating_system_vm_jin,ip_vm_jin,
+        port_vm_jin,other from ep_prd_testform_info where relevant_licenses=#{relevant_licenses}
+    </select>
+    <!--查询测试流程表单详情信息-->
+    <select id="getTestForDetail" parameterType="com.esop.visitInfo.dto.TestFormDto" resultType="com.esop.visitInfo.dto.TestFormDto">
+        select relevant_licenses,cpu_hanan,memory_hanan,storage_hanan,dry_bandwidth_hanan,
+        province_bandwidth_hanan,operating_system_hanan,network_ip_hanan,port_hanan,cpu_village,memory_village,
+        storage_village,bandwidth_village,operating_system_village,network_ip_village,port_village,cpu_vm_ha,
+        memory_vm_ha,storage_vm_ha,dry_bandwidth_vm_ha,province_bandwidth_vm_ha,operating_system_vm_ha,ip_vm_ha,
+        port_vm_ha,cpu_vm_jin,memory_vm_jin,storage_vm_jin,bandwidth_vm_jin,operating_system_vm_jin,ip_vm_jin,
+        port_vm_jin,other from ep_prd_testdetail_info where relevant_licenses=#{relevant_licenses}
+    </select>
+
+    <!--查询勘查、资费、资源流程表单申请方填写信息-->
+    <select id="getPostageApply" parameterType="com.esop.visitInfo.dto.VisitContentDto" resultType="com.esop.visitInfo.dto.VisitContentDto">
+        select work_type,customer_name,customer_address,business_attribute,relevant_licenses,grop_id,account_manager,
+        manager_phone,manager_mail,prt_result_start_time,
+        prt_result_end_time,total_amount,payment_type,payment_method,
+        charging_start_time,comprehensive,need_feedback_form,construction_time,customer_time,
+        agreement_amount,payment_type_new,payment_method_new,charging_start_time_new,price_basis,price_basis_result,
+        construction_apply,contract_money_recovery,payment_type_recovery,payment_method_recovery,charging_end_time,
+        grop_audit,
+        water_door_frame_ha,heat_backplane_frame_fiveha,heat_backplane_frame_sevenha,heat_backplane_frame_tenha,
+        precision_air_frame_jin,dry_bandwidth_ha,province_bandwidth_ha,bandwidth_jin,cpu_ha,memory_ha,read_write_storage_ha,
+        data_storage_ha,backups_storage_ha,operating_system_ha,ip_ha,port_ha,cpu_jin,memory_jin,read_write_storage_jin,
+        data_storage_jin,backups_storage_jin,operating_system_jin,ip_jin,port_jin,load_balancing,firewall,network_service,
+        flow_cleaning,system_monitoring,flow_monitoring,domain_name_resolution,multi_line_access,customized_transformation,
+        safety_reinforcement,risk_assessment,system_integration_implement,depth_substitution,service_consulting,
+        vpn_access,office,station,conference_room,other_prospecting_needs,
+        water_door_frame_ha_v,water_door_frame_ha_z,heat_backplane_frame_fiveha_v,heat_backplane_frame_fiveha_z,
+        heat_backplane_frame_sevenha_v,heat_backplane_frame_sevenha_z,heat_backplane_frame_tenha_v,heat_backplane_frame_tenha_z,
+        precision_air_frame_jin_v,precision_air_frame_jin_z,dry_bandwidth_ha_j,dry_bandwidth_ha_z,province_bandwidth_ha_j,
+        province_bandwidth_ha_z,bandwidth_jin_j,bandwidth_jin_z,cpu_ha_z,memory_ha_z,read_write_storage_ha_z,data_storage_ha_z,
+        backups_storage_ha_z,operating_system_ha_z,ip_ha_z,port_ha_z,cpu_jin_z,memory_jin_z,read_write_storage_jin_z,
+        data_storage_jin_z,backups_storage_jin_z,operating_system_jin_z,ip_jin_z,port_jin_z,load_balancing_z,firewall_z,
+        network_service_z,flow_cleaning_z,system_monitoring_z,flow_monitoring_z,domain_name_resolution_z,multi_line_access_z,
+        customized_transformation_z,safety_reinforcement_z,risk_assessment_z,system_integration_implement_z,depth_substitution_z,
+        service_consulting_z,vpn_access_z,office_z,station_z,conference_room_z,other_prospecting_needs_z
+         from ep_prd_kancha_info where grop_id=#{grop_id}
+    </select>
+    <!--查询勘查、资费、资源流程表单承接方填写信息-->
+    <select id="getProspectingUndertake" parameterType="com.esop.visitInfo.dto.ProspectingPostageDto" resultType="com.esop.visitInfo.dto.ProspectingPostageDto">
+        select grop_id,undertake_unit,undertake_address,undertake_man,undertake_phone,
+        ut_result_start_time,ut_result_end_time,approval_result,undertake_audit,
+        water_door_frame_ha,heat_backplane_frame_fiveha,heat_backplane_frame_sevenha,heat_backplane_frame_tenha,
+        precision_air_frame_jin,dry_bandwidth_ha,province_bandwidth_ha,bandwidth_jin,cpu_ha,memory_ha,read_write_storage_ha,
+        data_storage_ha,backups_storage_ha,operating_system_ha,ip_ha,port_ha,cpu_jin,memory_jin,read_write_storage_jin,
+        data_storage_jin,backups_storage_jin,operating_system_jin,ip_jin,port_jin,load_balancing,firewall,network_service,
+        flow_cleaning,system_monitoring,flow_monitoring,domain_name_resolution,multi_line_access,customized_transformation,
+        safety_reinforcement,risk_assessment,system_integration_implement,depth_substitution,service_consulting,
+        vpn_access,office,station,conference_room,other_prospecting_needs
+        from ep_prd_prospectingpostage_info where grop_id=#{grop_id}
+    </select>
+    <!--查询勘查、资费、资源流程表单详情信息-->
+    <select id="getPostageForDetail" parameterType="com.esop.visitInfo.dto.ProspectingPostageDto" resultType="com.esop.visitInfo.dto.ProspectingPostageDto">
+        select grop_id,
+        water_door_frame_ha,heat_backplane_frame_fiveha,heat_backplane_frame_sevenha,heat_backplane_frame_tenha,
+        precision_air_frame_jin,dry_bandwidth_ha,province_bandwidth_ha,bandwidth_jin,cpu_ha,memory_ha,read_write_storage_ha,
+        data_storage_ha,backups_storage_ha,operating_system_ha,ip_ha,port_ha,cpu_jin,memory_jin,read_write_storage_jin,
+        data_storage_jin,backups_storage_jin,operating_system_jin,ip_jin,port_jin,load_balancing,firewall,network_service,
+        flow_cleaning,system_monitoring,flow_monitoring,domain_name_resolution,multi_line_access,customized_transformation,
+        safety_reinforcement,risk_assessment,system_integration_implement,depth_substitution,service_consulting,
+        vpn_access,office,station,conference_room,other_prospecting_needs
+        from ep_prd_postagedetail_info where grop_id=#{grop_id}
+    </select>
+</mapper>

@@ -1,0 +1,23 @@
+package com.esop.invoice.dto;
+
+
+import com.esop.workflow.dto.InDTO;
+
+import java.util.List;
+
+/**
+ * Created by zhouhui on 2018/4/9.
+ */
+public class CheckedReviewerInfo extends InDTO {
+
+
+    private List<Reviewer> checkedInfo;
+
+    public List<Reviewer> getCheckedInfo() {
+        return checkedInfo;
+    }
+
+    public void setCheckedInfo(List<Reviewer> checkedInfo) {
+        this.checkedInfo = checkedInfo;
+    }
+}

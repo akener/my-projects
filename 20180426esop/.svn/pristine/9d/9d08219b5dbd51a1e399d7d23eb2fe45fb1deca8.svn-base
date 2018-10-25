@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+<!--投诉明细查询-->
+<select id="selectMemberComplaintsInfo" parameterType="String" resultType="com.esop.busiAnalysis.dto.ComplaintsDto">
+    select b.region_name,b.town_name,order_no,comp_phone,comp_name,decode(order_type,'0','活动工单','历史工单') order_type,decode(c.owner_code,'','',c.owner_code||'类集团') group_type,grp_meb_type,group_id,c.unit_name group_name,to_char(accept_time,'yyyy-MM-dd') accept_time
+        ,buss_type,buss_content,deal_opinion,a.end_time from ep_complaint a,(select distinct region_code,region_name, town_code,town_name,unit_id from ep_group_income) b,dgrpcustmsg c
+    where a.grp_meb_type='重要成员'
+    and 'g'||a.group_id = b.unit_id
+    and a.group_id = c.unit_id(+)
+        <if test="region_name != ''">
+            and b.region_name like '%'||#{region_name}||'%'
+        </if>
+        <if test="town_name != ''">
+            and b.town_name like '%'||#{town_name}||'%'
+        </if>
+        <if test="region_code != ''">
+            and b.region_code = #{region_code}
+        </if>
+        <if test="town_code != ''">
+            and b.town_code = #{town_code}
+        </if>
+</select>
+    <!--产品投诉明细查询-->
+    <select id="selectProductComplaintsInfo" parameterType="com.esop.busiAnalysis.dto.ComplaintsDto" resultType="com.esop.busiAnalysis.dto.ComplaintsDto">
+        select a.order_no,a.comp_phone,a.comp_name,decode(a.order_type,'0','活动工单','历史工单') order_type,decode(c.owner_code,'','',c.owner_code||'类集团') group_type,a.grp_meb_type,a.group_id,c.unit_name group_name,to_char(a.accept_time,'yyyy-MM-dd') accept_time
+        ,a.buss_type,a.buss_content,a.deal_opinion, b.product_name, a.end_time from ep_complaint a,ep_complaint_name b,dgrpcustmsg c
+        where a.buss_type = b.biz_type
+            and a.group_id = c.unit_id
+        <if test="product_name != ''">
+            and product_name like '%'||#{product_name}||'%'
+        </if>
+    </select>
+    <!--重点产品投诉情况-->
+    <select id="qryProductComplaints" parameterType="String" resultType="com.esop.busiAnalysis.dto.ComplaintsDto">
+        select count(buss_type) as count_product, product_name from ep_complaint a,ep_complaint_name b where a.buss_type = b.biz_type group by product_name
+    </select>
+    <!--重点成员投诉情况-->
+    <select id="selectImpMemberComplaints" parameterType="String" resultType="com.esop.busiAnalysis.dto.ComplaintsDto">
+        /*select count(*) as total_complain from ep_complaint where grp_meb_type='重要成员'*/
+        select count(*) as total_complain, b.region_name
+        <if test="region_code != ''">
+            ,b.town_name
+        </if>
+        from ep_complaint a,
+        (select distinct region_code,region_name, town_code,town_name,unit_id from ep_group_income) b
+        where 'g'||a.group_id = b.unit_id
+        and a.grp_meb_type='重要成员'
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        <if test="town_code != ''">
+            and town_code = #{town_code}
+        </if>
+        group by region_name
+        <if test="region_code != ''">
+            ,town_name
+        </if>
+    </select>
+    <!--业务类型产品对应关系查询-->
+    <select id="getProductName" resultType="com.esop.busiAnalysis.dto.EpWfSbizTypeDto">
+        select biz_type, biz_fullname as biz_name from ep_wf_sbiztype
+    </select>
+    <!--app端重要成员投诉信息查询-->
+    <select id="qryMemberComplaint" parameterType="com.esop.busiAnalysis.dto.ComplaintsDto" resultType="com.esop.busiAnalysis.dto.ComplaintsDto">
+        select b.region_name,b.town_name,order_no,comp_phone,comp_name,decode(order_type,'0','活动工单','历史工单') order_type,decode(c.owner_code,'','',c.owner_code||'类集团') group_type,grp_meb_type,group_id,c.unit_name group_name,to_char(accept_time,'yyyy-MM-dd') accept_time
+        ,buss_type,buss_content,deal_opinion,a.end_time from ep_complaint a,(select distinct region_code,region_name, town_code,town_name,unit_id ,manager_no,manager_name from ep_group_income) b, dgrpcustmsg c
+        where a.grp_meb_type='重要成员'
+        and 'g'||a.group_id = b.unit_id and c.unit_id = a.group_id
+        <if test="manager_no != ''">
+            and manager_no=#{manager_no}
+        </if>
+        <if test="region_name != ''">
+            and b.region_name like '%'||#{region_name}||'%'
+        </if>
+        <if test="town_name != ''">
+            and b.town_name like '%'||#{town_name}||'%'
+        </if>
+        <if test="region_code != ''">
+            and b.region_code = #{region_code}
+        </if>
+        <if test="town_code != ''">
+            and b.town_code = #{town_code}
+        </if>
+    </select>
+</mapper>

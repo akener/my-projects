@@ -1,0 +1,43 @@
+package com.esop.busiAnalysis.service;
+
+import com.esop.busiAnalysis.dto.EpTotalContributionParamDto;
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.esop.busiAnalysis.dto.epTotalContributionDto;
+
+import java.util.List;
+
+/**
+ * Created by Shinelon on 2017/6/6.
+ */
+@Repository
+public class epTotalContributionService {
+    @Autowired
+    SqlE sqlE;
+    /*查询收入*/
+    public Result getEpTotalContribution(epTotalContributionDto parameter){
+      System.out.println("成功");
+      Result result = sqlE.selectPage("qryContrbiutionInfo",parameter);
+      return result;
+    }
+    public List<epTotalContributionDto> qryTotalContributionInfo(epTotalContributionDto param){
+        return sqlE.selectM("qryEpTotalContribution",param);
+    }
+    public List<epTotalContributionDto> qryEpContributionInfo(epTotalContributionDto param){
+        return sqlE.selectM("getContrbiutionInfo", param);
+    }
+    /*录入收入*/
+    public int insertEpTotalContribution(epTotalContributionDto parameter){
+        System.out.println("成功");
+        return sqlE.insertM("insertEpTotalContribution",parameter);
+    }
+    //市场份额录入
+    public int insContribution(epTotalContributionDto param){
+        return sqlE.insertM("insContribution",param);
+    }
+    public int updContribution(epTotalContributionDto param){
+        return  sqlE.updateM("updContribution",param);
+    }
+}

@@ -1,0 +1,52 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/5.
+ */
+public class GrpWebMemberDto {
+    String manager_no = "";//客户经理工号
+    String manager_name = "";//客户经理名称
+    int meb_4g_cnt = 0;//4G成员数
+    String meb_4g_dou = "";//4G成员平均dou
+    String meb_4g_arpu = "";//4G成员平均arpu
+
+    public String getManager_no() {
+        return manager_no;
+    }
+
+    public void setManager_no(String manager_no) {
+        this.manager_no = manager_no;
+    }
+
+    public String getManager_name() {
+        return manager_name;
+    }
+
+    public void setManager_name(String manager_name) {
+        this.manager_name = manager_name;
+    }
+
+    public int getMeb_4g_cnt() {
+        return meb_4g_cnt;
+    }
+
+    public void setMeb_4g_cnt(int meb_4g_cnt) {
+        this.meb_4g_cnt = meb_4g_cnt;
+    }
+
+    public String getMeb_4g_dou() {
+        return meb_4g_dou;
+    }
+
+    public void setMeb_4g_dou(String meb_4g_dou) {
+        this.meb_4g_dou = meb_4g_dou;
+    }
+
+    public String getMeb_4g_arpu() {
+        return meb_4g_arpu;
+    }
+
+    public void setMeb_4g_arpu(String meb_4g_arpu) {
+        this.meb_4g_arpu = meb_4g_arpu;
+    }
+}

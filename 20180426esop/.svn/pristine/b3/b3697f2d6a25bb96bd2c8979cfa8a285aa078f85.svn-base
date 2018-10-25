@@ -1,0 +1,261 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>集团AB类保有报表</title>
+    <script type="text/javascript" language="javascript" class="init">
+        var editor; // use a global for the submit and return data rendering in the examples
+        var table;
+        var region_code = "";
+        var town_code = "";
+        var unit_id = "";
+        var group_id = "";
+        var group_level = "";
+        var parent_group_id = "";
+        $(document).ready(function () {
+            group_id = $("#org_code").val();
+            $.ajax({
+                url: '/selectGroupLevel',
+                type: 'POST',     // 请求类型，常用的有 GET 和 POST
+                data: {
+                    'group_id': $("#org_code").val(),
+                },
+                success: function (data) { // 接口调用成功回调函数
+                    group_level = data[0].denorm_level;
+                    if(group_level=="0"){
+                        /*$("#region_code").find("option[value='']").attr("selected", true);
+                        $("#town_code").attr("disabled","disabled");*/
+                        getTable();
+                    }else if(group_level=="1"){
+                        $("#region_code").find("option[value='" +group_id+ "']").attr("selected", true);
+                        $("#region_code").attr("disabled","disabled");
+                        getTown();
+                    }else if(group_level=="2"){
+                        parent_group_id = data[0].parent_group_id;
+                        $("#region_code").find("option[value='" +parent_group_id+ "']").attr("selected", true);
+                        $("#region_code").attr("disabled","disabled");
+                        getTown();
+                    }
+                }
+            });
+        });
+        function getTable(){
+            region_code = $("#region_code").val();
+            town_code = $("#town_code").val();
+            unit_id = $("#unit_id").val();
+            if(town_code==null){
+                town_code = "";
+            }
+            table = $('#retentionRate').DataTable( {
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                destroy: true,
+                //"iDisplayLength": 10,
+                //"aLengthMenu": [10, 50, 100 ],
+                "pageLength": 10,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url:"/retentionRate",
+                    type:"POST",
+                    data : {
+                        "region_code":region_code,
+                        "town_code" : town_code,
+                        "unit_id" : unit_id,
+                        "eff_date" : $("#eff_date").val()
+                    }
+                },
+                columns: [
+                    { data: "region_name" },
+                    { data: "town_name" },
+                    { data: "manager_name" },
+                    { data: "unit_id"},
+                    { data: "unit_name" },
+                    { data: "unit_income"},
+                    { data: "retention_rate" }
+                ],
+                select: true,
+                buttons: [
+                    /*{ extend: "create", editor: editor},
+                     { extend: "edit",   editor: editor},
+                     { extend: "remove", editor: editor}*/
+                ]
+            } );
+            /*editor.on('submitSuccess',function ( e, type ) {
+             alert( 'Editor form displayed - namespace 2'+type.recordsTotal );
+             } );*/
+        }
+
+        function getTown() {
+            if ($("#region_code").val() != "") {
+                $.ajax({
+                    type: "get",
+                    url: "/cityCodeListShow",
+                    data: {
+                        region_code: $("#region_code").val()
+                    },
+                    cache: false,
+                    success: function (result) {
+                        city_data = "<option value=''>全市</option>";
+                        $.each(result, function (i, field) {
+                            //拼接json数据集字符串
+                            city_data += "<option value='" + field.group_id + "' ";
+                            city_data += ">" + field.group_name + "</option>";
+                        });
+                        $("#town_code").empty();
+                        $("#town_code").append(city_data);
+                        //getTable();
+                        if(group_level=="2"){
+                            $("#town_code").find("option[value='" +group_id+ "']").attr("selected", true);
+                            $("#town_code").attr("disabled","disabled");
+                            getTable();
+                        }else if(group_level=="1"){
+                            getTable();
+                        }
+                    },
+                    error: function () {
+                        alert("请求超时，请重试！");
+                    }
+                });
+            } else {
+                $("#town_code").empty();
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-ff">
+<input type="hidden" id="org_code" value="${group_id}">
+<div class="main pd-10 mgr-10 mgl-10">
+    <!-- 工单列表 S -->
+    <div class="work-order-box overh">
+        <!--标题-->
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <!--地市详情-->
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>地市：</th>
+                            <td>
+                                <select id="region_code" class="input-sty04 form-ipt" onchange="getTown()">
+                                    <option value="">全省</option>
+                                    <option value = "10031">哈尔滨</option>
+                                    <option value = "10032">齐齐哈尔</option>
+                                    <option value = "10033">牡丹江</option>
+                                    <option value = "10034">佳木斯</option>
+                                    <option value = "10035">双鸭山</option>
+                                    <option value = "10036">七台河</option>
+                                    <option value = "10037">鸡西</option>
+                                    <option value = "10038">鹤岗</option>
+                                    <option value = "10039">伊春</option>
+                                    <option value = "10040">黑河</option>
+                                    <option value = "10041">绥化</option>
+                                    <option value = "10042">大兴安岭</option>
+                                    <option value = "10043">大庆</option>
+                                </select>
+                            </td>
+                            <th>区县：</th>
+                            <td>
+                                <select name="town_code" id="town_code" class="input-sty04 form-ipt">
+                                </select>
+                            </td>
+                            <th>集团编号：</th>
+                            <td>
+                                <input id="unit_id" type="text" class="input-sty04 form-ipt">
+                            </td>
+                            <th>日期：</th>
+                            <td>
+                                <input type=text id="eff_date" class="input-sty04 form-ipt"
+                                       maxlength="11" readonly="true">
+                                <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                                     style="width: 25px;" width="25" height="21"
+                                     onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM'})"
+                                     title="选择时间" />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="getTable()">查询</button>
+                            <%--<button class="ui-btn" name="button" onclick="reset()">重置</button>--%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="active-cost-box" >
+                    <table id="retentionRate" class="cost-table" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th class="text-center">地市</th>
+                            <th class="text-center">区县</th>
+                            <th class="text-center">客户经理</th>
+                            <th class="text-center">集团编号</th>
+                            <th class="text-center">集团名称</th>
+                            <th class="text-center">集团当月收入</th>
+                            <th class="text-center">成员保有率</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <%--<tr class="text-center">
+                            <th class="text-center">地市</th>
+                            <th class="text-center">区县</th>
+                            <th class="text-center">客户经理</th>
+                            <th class="text-center">集团编号</th>
+                            <th class="text-center">集团名称</th>
+                            <th class="text-center">集团当月收入</th>
+                            <th class="text-center">成员保有率</th>
+                            <th class="text-center">是否保有</th>
+                        </tr>--%>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--提示信息 -->
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo">请选择日期</label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

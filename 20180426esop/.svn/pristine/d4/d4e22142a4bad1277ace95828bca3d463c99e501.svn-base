@@ -1,0 +1,154 @@
+<div class="col-sm-12 col-md-12">
+    <div class="row">
+        <div class="bgcolor-1 mgt-20" style="overflow: hidden; border-radius: 5px;box-shadow: 0 0 5px #d8d8d8;">
+            <div style="height: 42px; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238);" class="clearfix pdr-5">
+                <div class="mgb-0 mgt-0 fl fs-14 p-color-1 fwb" style="line-height:42px;">
+                    <div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+                        <ul id="myTabRemind" class="nav nav-tabs op-order-tab op-in-tab" role="tablist">
+                            <li role="presentation" class="active">
+                                <a href="#remind1" id="remind1-tab" role="tab" data-toggle="tab" aria-controls="remind1" aria-expanded="true">
+                                    重要成员话费提醒
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#remind2" role="tab" id="remind2-tab" data-toggle="tab" aria-controls="remind2" aria-expanded="false">
+                                    欠费提醒
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#remind3" role="tab" id="remind3-tab" data-toggle="tab" aria-controls="remind3" aria-expanded="false">
+                                    流量余额提醒
+                                </a>
+                            </li>
+                            <li role="presentation">
+                                <a href="#remind4" role="tab" id="remind4-tab" data-toggle="tab" aria-controls="remind4" aria-expanded="false">
+                                    ABC类集团走访提醒
+                                </a>
+                            </li>
+                            <li role="presentation" id="remind5-li">
+                                <a href="#remind5" role="tab" id="remind5-tab" data-toggle="tab" aria-controls="remind5" aria-expanded="false">
+                                    产品一体化提醒
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div id="myTabContentRemind" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade active in" id="remind1" aria-labelledby="remind1-tab">
+
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="remind2" aria-labelledby="remind2-tab">
+
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="remind3" aria-labelledby="remind3-tab">
+
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="remind4" aria-labelledby="remind4-tab">
+
+                </div>
+                <div role="tabpanel" class="tab-pane fade" id="remind5" aria-labelledby="remind5-tab">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        //第一个tab
+        require(["commonutil", "./feeRemind1.tpl", "pop"], function(ajaxUtil, remind1, pop) {
+            //ajaxUtil.callrest('/testdemo/dd',function(data){
+            ajaxUtil.callrest('/esop/invokeService?serviceRequestMapping=accountAlertSCalling_hf.json', function(data) {
+
+                if (data.ROOT.InfoList instanceof Array) {
+                    $("#remind1").html(remind1(data.ROOT.InfoList));
+                } else {
+                    if (data.ROOT.InfoList == null) {
+                        $("#remind1").html("<div class='ui-row not-data'><p>数据为空</p></div>");
+                    } else {
+                        var aMap = {};
+                        aMap.InfoList = [];
+                        aMap.InfoList.push(data.ROOT.InfoList);
+                        $("#remind1").html(remind1(aMap.InfoList));
+                    }
+                }
+
+            });
+        });
+    });
+    $(document).on("click", "#remind2-tab", function() {
+        require(["commonutil", "./feeRemind2.tpl", "pop"], function(ajaxUtil, remind2, pop) {
+            //ajaxUtil.callrest('/testdemo/bb', function(data) {
+            ajaxUtil.callrest('/esop/invokeService?serviceRequestMapping=accountAlertSCalling_qf.json&opr_code=03', function(data) {
+                if (data.ROOT.result_LIST.DATA_INFO instanceof Array) {
+                    $("#remind2").html(remind2(data.ROOT.result_LIST.DATA_INFO));
+                } else {
+                    if (data.ROOT.result_LIST.DATA_INFO == null) {
+                        $("#remind2").html("<div class='ui-row not-data'><p>数据为空</p></div>");
+                    } else {
+                        var aMap = {};
+                        aMap.DATA_INFO = [];
+                        aMap.DATA_INFO.push(data.ROOT.result_LIST.DATA_INFO);
+                        $("#remind2").html(remind2(aMap.DATA_INFO));
+                    }
+                }
+            });
+        });
+    });
+    $(document).on("click", "#remind3-tab", function() {
+        require(["commonutil", "./feeRemind3.tpl", "pop"], function(ajaxUtil, remind3, pop) {
+            //ajaxUtil.callrest('/testdemo/bb', function(data) {
+            ajaxUtil.callrest('/esop/invokeService?serviceRequestMapping=accountAlertSCalling_ll.json', function(data) {
+                if (data.ROOT.InfoList instanceof Array) {
+                    $("#remind3").html(remind3(data.ROOT.InfoList));
+                } else {
+                    if(data.ROOT.InfoList==null){
+                        $("#remind3").html("<div class='ui-row not-data'><p>数据为空</p></div>");
+                    }else{
+                        var aMap = {};
+                        aMap.InfoList = [];
+                        aMap.InfoList.push(data.ROOT.InfoList);
+                        $("#remind3").html(remind3(aMap.InfoList));
+                    }
+                }
+            });
+        });
+    });
+    $(document).on("click", "#remind4-tab", function() {
+        require(["commonutil", "./feeRemind4.tpl", "pop"], function(ajaxUtil, remind4, pop) {
+            //ajaxUtil.callrest('/testdemo/bb', function(data) {
+            ajaxUtil.callrest('/esop/invokeService?serviceRequestMapping=returnRemind.json', function(data) {
+                //alert(data.code);
+                if (data.code == 0) {
+                    if (data.data.length == 0) {
+                        $("#remind4").html("<div class='ui-row not-data'><p>数据为空</p></div>");
+                    } else {
+                        $("#remind4").html(remind4(data));
+                    }
+                } else {
+                    //pop.alert(data.message, "error");
+                    console.log("abc类集团走访提醒"+data.message);
+                }
+            });
+        });
+    });
+    ajaxUtil.callrest('/esop/invokeService?serviceRequestMapping=selectRemindInfo.json', function(data) {
+        //alert(data.code);
+        if (data.code == 0) {
+            if (data.data.length == 0) {
+                //$("#remind5").html("<div class='ui-row not-data'><p>数据为空</p></div>");
+            } else {
+                $(document).on("click", "#remind5-tab", function() {
+                    require(["commonutil", "./feeRemind5.tpl", "pop"], function(ajaxUtil, remind5, pop) {
+                        $("#remind5").html(remind5(data));
+                    });
+                });
+            }
+        } else {
+            //pop.alert(data.message, "error");
+            console.log("产品一体化提醒"+data.message);
+        }
+    });
+</script>

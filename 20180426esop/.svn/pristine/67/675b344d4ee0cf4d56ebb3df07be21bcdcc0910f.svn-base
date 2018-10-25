@@ -1,0 +1,101 @@
+/**
+ * 查询电子订单
+ */
+function queryElecOrder() {
+    // var params=$("#queryForm").serializeArray();
+    // console.log(params);
+    $('#orderlist').DataTable( {
+        dom: "Bfrtip",
+        bLengthChange:true,
+        "bFilter": false,
+        "bSort":false,
+        "pageLength": 5,//设置每页显示多少条记录
+        "language": {
+            "url": "/esop/static/data/Chinese.json"
+        }, //多语言配置
+        processing: true,
+        serverSide: true,
+        destroy: true,
+        ajax:{
+            url:"/queryOrderInfotodo",
+            type:"POST",
+            "data":{
+                "request_num":$("#request_num").val(),
+                "order_title":$("#order_title").val(),
+                "union_code":$("#union_code").val(),
+                "create_date":$("#create_date").val(),
+                "state":$("#state").val(),
+
+            }
+        },
+
+        columns: [
+            { data: "request_num",render: function ( data, type, row, meta ) {
+            if(row.state=="2"){
+              var  button="";
+              return button;
+            }else if(row.state=="1"){
+                var button="<button class=\"btn btn-default\" type=\"submit\" onclick=\"editElecOrder('"+row.source_id+"','"+row.request_num+"')\">受理</button>";
+                return button ;
+            }else{
+                var button="<button class=\"btn btn-default\" type=\"submit\" onclick=\"editElecOrder('"+row.source_id+"','"+row.request_num+"')\">审核</button>";
+                return button ;
+            }
+
+            }},
+            { data: "request_num" },
+            { data: "op_name" },
+            { data: "order_title" },
+            { data: "union_code" },
+            { data: "union_name" },
+            { data: "create_date" },
+            { data: "state",render: function ( data, type, row, meta ) {
+                var state=stateChange(row.state);
+                return state ;
+            }}
+        ],
+        buttons: []})
+}
+
+/**
+ * 编辑电子订单
+ * @param request_num 订单号
+ */
+function editElecOrder(source_id,request_num){
+    // var obj = JSON.parse(row); //由JSON字符串转换为JSON对象
+    window.open("/esop/queryOrdertodo?source_id="+source_id+"&request_num="+request_num);
+
+}
+
+
+/**
+ * method 组装查询状态
+ * 0    审批中
+ * 1    拟稿中
+ * 2    启用
+ * 3    作废
+ */
+
+function stateChange(data) {
+    var state="审批中";
+    switch (data){
+        case "0":
+            state="审批中";
+            break;
+        case "1":
+            state="受理中";
+            break;
+        case "2":
+            state="已受理";
+            break;
+        case "3":
+            state="驳回";
+            break;
+        case "4":
+            state="作废";
+            break;
+    }
+    return state;
+}
+
+

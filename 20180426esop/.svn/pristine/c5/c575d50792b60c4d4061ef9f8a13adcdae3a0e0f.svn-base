@@ -1,0 +1,178 @@
+<%@ page contentType="text/html;charset=utf-8" %>
+<!doctype html>
+<html lang="en">
+<%@ include file="../../pub/cqDevelopment.jsp"%>
+<%
+    String jituan_bianhao = request.getParameter("jituan_bianhao");
+%>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <script type="text/javascript" language="javascript" class="init">
+        var jituan_bianhao;
+        $(document).ready(function () {
+            //IncomeListQuery();
+            jituan_bianhao="<%=jituan_bianhao%>";
+            $("#groupid").val(jituan_bianhao);
+            judgeGroupId();
+        });
+        function judgeGroupId() {
+            if($("#groupid").val()==''){
+                alert("请先选择集团！");
+                window.close();
+            }
+        }
+        function capitalApply(huming,zhipiaohao,zhaoyao) {
+            window.returnValue = huming + "#" + zhipiaohao + "#" + zhaoyao;
+            window.close();
+        }
+
+        /*function IncomeListQuery() {
+            var city_data = "";
+            $.ajax({
+                type: "get",
+                url: "getCusConnectInfoBoss",
+                cache: false,
+                data:{
+                    groupid:"230353994799",
+                    region:"230",
+                    SEQRELATIONINFO:"230"
+                },
+                scriptCharset: 'utf-8',
+                success: function (result) {
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        city_data += "<tr>";
+                        //city_data += "<td nowrap='nowrap'><a class='btn-icon icon-derive mgl-10 replace-derive' style='cursor:pointer' onclick='capitalApply(" + field.biaoshima + ")' titile='发起申请'></a></td>";
+                        city_data += "<td nowrap='nowrap'><button class='btn btn-default' onclick='capitalApply('" + field.contactman + "','" + field.important + "','" + field.roletype + "')'>选择</button></td>";
+                        city_data += "<td nowrap='nowrap'>" + field.contactman + "</td>";
+                        city_data += "<td nowrap='nowrap'>" + field.mobileno + "</td>";
+                        city_data += "<td nowrap='nowrap'>" + field.important + "</td>";
+                        city_data += "<td nowrap='nowrap'>" + field.roletype + "</td>";
+                        city_data += "</tr>";
+                    });
+                    $("#list_info").empty();
+                    $("#list_info").append(city_data);
+                },
+                error: function () {
+                    alert("请求超时，请重试！");
+                }
+            });
+        }*/
+        function conncetListQuery() {
+            if($("#grpaccid").val()==''){
+                alert("集团帐户不能为空！");
+                return;
+            }
+            table = $('#examples').DataTable({
+                dom: "Bfrtip",
+                bLengthChange:true,
+                "bFilter": false,
+                //"ordering":true,
+                "pageLength": 20,//设置每页显示多少条记录
+                "language": {
+                    "url": "/esop/static/data/Chinese.json"
+                }, //多语言配置
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                "bSort":false,
+                ajax: {
+                    url:"/getCusConnectInfoBoss",
+                    type:"POST",
+                    data:{
+                        groupid:jituan_bianhao,
+                        region:$("#region").val(),
+                        grpaccid:$("#grpaccid").val()
+
+                    }
+                },
+                columns: [
+                    { data: "contactman",
+                        "width": "15%",
+                        render: function ( data, type, row, meta ) {
+                            return data= "<button type='button' class='ui-btn mgr-10' style='width: 70px' onclick=capitalApply('"+row.contactman+"','"+row.mobileno+"','"+row.roletype+"')>选择</button>";
+                        }
+                    },
+                    { data: "contactman"},
+                    { data: "mobileno"},
+                    {data:  "important_zhongwen"},
+                    {data:  "roletype_zhongwen"}
+                ],
+                select: true,
+                buttons: [
+                ]
+            });
+        }
+    </script>
+
+</head>
+
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团选择</span>
+            </div>
+        </div>
+        <div class="row  col-12">
+            <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                <div class="row">
+                    <table class="table-infor-7" width="100%">
+                        <tbody>
+                        <tr>
+                            <th>集团编码：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="groupid" value="" class="input-sty04 form-ipt" disabled="disabled">
+                            </td>
+                            <th>集团帐户：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="grpaccid" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <th>地市编码：</th>
+                            <td nowrap='nowrap'>
+                                <input type="text" id="region" value="230" class="input-sty04 form-ipt">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input id="num" value="" type="hidden">
+                    <div class="row mgt-20">
+                        <div class="btn-box">
+                            <button class="ui-btn mgr-10" onclick="conncetListQuery()">查询</button>
+                            <button class="ui-btn" type="reset" name="button" id="button">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>集团列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table table-bordered" id="examples" style="white-space: nowrap;">
+                        <thead>
+                        <tr>
+                            <th class="text-center" nowrap='nowrap'>操作</th>
+                            <th class="text-center" nowrap='nowrap'>联系人姓名</th>
+                            <th class="text-center" nowrap='nowrap'>联系人电话</th>
+                            <th class="text-center" nowrap='nowrap'>成员类别编码</th>
+                            <th class="text-center" nowrap='nowrap'>成员角色编码</th>
+                        </tr>
+                        </thead>
+                        <tfoot id="list_info">
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

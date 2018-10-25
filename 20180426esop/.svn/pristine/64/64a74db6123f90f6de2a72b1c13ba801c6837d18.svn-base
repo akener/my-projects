@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto">
+
+  <insert id="insertOrRequestDetailInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto">
+    insert into or_request_detail_info (id, request_num, attr_id, 
+      attr_code, bak1, bak2, 
+      attr_value, other_char, notes
+      )
+    values (#{id,jdbcType=INTEGER}, #{request_num,jdbcType=VARCHAR}, #{attr_id,jdbcType=INTEGER}, 
+      #{attr_code,jdbcType=VARCHAR}, #{bak1,jdbcType=VARCHAR}, #{bak2,jdbcType=VARCHAR}, 
+      #{attr_value,jdbcType=LONGVARCHAR}, #{other_char,jdbcType=LONGVARCHAR}, #{notes,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <select id="selectOrRequestDetailInfoDtos" resultType="com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto">
+    select * from or_request_detail_info
+    where request_num=#{request_num}
+  </select>
+  <update id="upOneOrRequestDetailInfoDto" parameterType="com.esop.cqDevelopment.elecPack.dto.OrRequestDetailInfoDto">
+
+    update or_request_detail_info
+        SET request_num=#{request_num},attr_id=#{attr_id},attr_code=#{attr_code},attr_value=#{attr_value}
+        where request_num=#{request_num} and attr_code=#{attr_code}
+
+  </update>
+
+</mapper>

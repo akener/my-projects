@@ -1,0 +1,354 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<head>
+    <title>ESOP工号角色修改</title>
+</head>
+<body class="bg-ff">
+<form name="form1" method="post">
+<div class="main pd-10">
+    <div class="work-order-box overh">
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table class="table-infor-7" width="100%">
+                        <tr>
+                            <th style="text-align: left;" colspan="6">
+                                全部资源
+                            </th>
+                            <th style="text-align: left;" colspan="2">
+                                全部权限
+                            </th>
+                        </tr>
+                        <tr>
+                            <td>地市：</td>
+                            <td>
+                                <select id="region_code" class="selector_region input-sty04 form-ipt"
+                                        onchange="CityListQuery()">
+                                    <option value="">
+                                        全省
+                                    </option>
+                                    <option value="10031">哈尔滨</option>
+                                    <option value="10032">齐齐哈尔</option>
+                                    <option value="10033">牡丹江</option>
+                                    <option value="10034">佳木斯</option>
+                                    <option value="10035">双鸭山</option>
+                                    <option value="10036">七台河</option>
+                                    <option value="10037">鸡西</option>
+                                    <option value="10038">鹤岗</option>
+                                    <option value="10039">伊春</option>
+                                    <option value="10040">黑河</option>
+                                    <option value="10041">绥化</option>
+                                    <option value="10042">大兴安岭</option>
+                                    <option value="10043">大庆</option>
+                                </select>
+                            </td>
+                            <td>区县：</td>
+                            <td>
+                                <select id="town_code" class="selector_town input-sty04 form-ipt">
+                                </select>
+                            </td>
+                            <td>工号：</td>
+                            <td>
+                                <input type="text" id="login_no" value="" class="input-sty04 form-ipt">
+                            </td>
+                            <td>角色：</td>
+                            <td>
+                                <select id="role_code" class="selector_region input-sty04 form-ipt">
+                                    <option value="01">管理人员</option>
+                                    <option value="02">产品经理</option>
+                                    <option value="03">行业经理</option>
+                                    <option value="04">业务管理</option>
+                                    <option value="05">营销人员</option>
+                                    <option value="06">稽核人员</option>
+                                    <option value="07">客户经理</option>
+                                    <option value="08">系统管理员</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: center;" colspan="6">
+                                <a class="ui-btn mgr-10" style="font-size:10px" onclick="loginNoQuery()">查询</a>
+                                <a class="ui-btn" style="font-size:10px" type="reset" name="button" id="button1" onclick="resetList()">重置</a>
+                            </th>
+                            <th style="text-align: center;" colspan="2">
+                                <a class="ui-btn mgr-10" style="font-size:10px" onclick="roleQuery()">查询</a>
+                                <a class="ui-btn" style="font-size:10px" type="reset" name="button" id="button2" onclick="resetList()">重置</a>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row col-12 bg-white">
+            <div class="market-name-box pdlr-10 clearfix">
+                <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+            </div>
+        </div>
+        <div class="row col-12">
+            <div class="pd-20 pos-rel" style="background-color:#fff;">
+                <div class="active-cost-box" style="padding-bottom:0;">
+                    <table width="100%"  border="0" cellspacing="0"  cellpadding="0" class="table-infor-7 width-th" align="center">
+                        <tr  >
+                            <th style="text-align: left;" >
+                                全部资源
+                            </th>
+                            <th >
+
+                            </th>
+                            <th style="text-align: left;">
+                                已选资源(*)
+                            </th>
+                            <th >
+
+                            </th>
+                            <th style="text-align: left;">
+                                已选权限
+                            </th>
+                            <th >
+
+                            </th>
+                            <th style="text-align: left;">
+                                全部权限
+                            </th>
+                        </tr>
+                        <tr >
+                            <td >
+                                <select id="list_loginno_all" style="width:200px" size=16 multiple="multiple">
+                                </select>
+                            </td>
+                            <td align=center valign=center style="text-align:center;">
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_TYPE2" title="将多个工员加入到[备选的]列表中" value="-&gt;&gt;" onClick=exchangeAllItems(document.form1.list_loginno_all,document.form1.list_loginno_now)>
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_TYPE1" title="将单个工员加入到[备选的]列表中" value=" &gt; "  onclick=exchangeListItems(document.form1.list_loginno_all,document.form1.list_loginno_now)>
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_TYPE3" title="将单个工员从[备选的]列表中删除" value=" &lt; " onclick=exchangeListItems(document.form1.list_loginno_now,document.form1.list_loginno_all)>
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_TYPE4" title="将多个工员从[备选的]列表中删除" value="&lt;&lt;-" onClick=exchangeAllItems(document.form1.list_loginno_now,document.form1.list_loginno_all)>
+                            </td>
+                            <td >
+                                <select id="list_loginno_now" style="width:200px" size=16 multiple="multiple">
+                                    <option value="">............................................................</option>
+                                </select>
+                            </td>
+                            <td align=center valign=center style="text-align:center;">
+                                <a class="ui-btn mgr-10" name="btnquery1" id="submitAction" onclick="sub_func()" >提交</a>
+                            </td>
+                            <td >
+                                <select id="list_roleid_now" style="width:200px" size=16 multiple="multiple">
+                                    <option value="">............................................................</option>
+                                </select>
+                            </td>
+                            <td align=center valign=center style="text-align: center;">
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_Role1" title="将多个角色从[备选的]列表中删除" value="&lt;&lt;-" onClick=exchangeAllItems(document.form1.list_roleid_all,document.form1.list_roleid_now)>
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_Role2" title="将单个角色从[备选的]列表中删除" value=" &lt; " onclick=exchangeListItems(document.form1.list_roleid_all,document.form1.list_roleid_now)>
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_Role3" title="将单个角色加入到[备选的]列表中" value=" &gt; "  onclick=exchangeListItems(document.form1.list_roleid_now,document.form1.list_roleid_all)>
+                                <p>
+                                    <input style="width: auto;" type="button" class="btn-style02" name="OPR_Role4" title="将多个角色加入到[备选的]列表中" value="-&gt;&gt;" onClick=exchangeAllItems(document.form1.list_roleid_now,document.form1.list_roleid_all)>
+                                <p>
+                            </td>
+                            <td >
+                                <select id="list_roleid_all" style="width:200px" size=16 multiple="multiple">
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<script type="text/javascript">
+    function CityListQuery() {
+        if ($("#region_code").val() != "") {
+            $.ajax({
+                type: "get",
+                url: "cityCodeListShow",
+                data: {
+                    region_code: $("#region_code").val()
+                },
+                cache: false,
+                success: function (result) {
+                    city_data = "<option value=''>全市</option>";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        city_data += "<option value='" + field.group_id + "' ";
+                        city_data += ">" + field.group_name + "</option>";
+                    });
+                    $("#town_code").empty();
+                    $("#town_code").append(city_data);
+                }
+            });
+        } else {
+            $("#town_code").empty();
+        }
+    }
+    function loginNoQuery() {
+        $("#list_loginno_all").empty();
+        $("#list_loginno_now").empty();
+        $("#list_loginno_now").append("<option value=''>............................................................</option>");
+        if($("#region_code").val() != "" || $("#login_no").val() != ""){
+            $.ajax({
+                type: "post",
+                url: "basicLoginQuery",
+                data: {
+                    region_code: $("#region_code").val(),
+                    town_code: $("#town_code").val(),
+                    login_no: $("#login_no").val()
+                },
+                cache: false,
+                success: function (result) {
+                    login_data = "<option value=''>............................................................</option>";
+                    $.each(result, function (i, field) {
+                        //拼接json数据集字符串
+                        login_data += "<option value='" + field.login_no + "' ";
+                        login_data += ">" + field.login_no + "(" + field.role_name + ")" + "</option>";
+                    });
+                    $("#list_loginno_all").empty();
+                    $("#list_loginno_all").append(login_data);
+                }
+            });
+        }else{
+            alert("请选择地市或输入客户经理工号再查询！");
+        }
+    }
+    function roleQuery() {
+        $("#list_roleid_now").empty();
+        $("#list_roleid_all").empty();
+        $("#list_roleid_now").append("<option value=''>............................................................</option>");
+        $.ajax({
+            type: "post",
+            url: "basicRoleQuery",
+            data: {
+                role_code: $("#role_code").val()
+            },
+            cache: false,
+            success: function (result) {
+                role_data = "<option value=''>............................................................</option>";
+                $.each(result, function (i, field) {
+                    //拼接json数据集字符串
+                    role_data += "<option value='" + field.role_code + "' ";
+                    role_data += ">" + field.role_name + "</option>";
+                });
+                $("#list_roleid_all").empty();
+                $("#list_roleid_all").append(role_data);
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+    }
+    function resetList() {
+        $("#list_loginno_all").empty();
+        $("#list_loginno_now").empty();
+        $("#list_loginno_now").append("<option value=''>............................................................</option>");
+        $("#list_roleid_now").empty();
+        $("#list_roleid_all").empty();
+        $("#list_roleid_now").append("<option value=''>............................................................</option>");
+    }
+    function sub_func(){
+        with(document.form1){
+            var msg="操作成功！";
+            var n1 = list_loginno_now.length;
+            var n2 = list_roleid_now.length;
+            if(n1==1){
+                alert("工号不能为空！"); return;
+            }
+            if(n2==1){
+                alert("请选择要分配的权限!"); return;
+            }
+            if(n1>50){
+                alert("选择工号数据不能大于50，请重新选择！"); return;
+            }
+
+
+//            var k1=(n1-1)*(n2-1);
+//            var k2=0;
+            for(i=1;i<n1;i++){
+                $.ajax({
+                    type: "post",
+                    url: "deleteLoginRoleRel",
+                    data: {
+                        login_no: list_loginno_now.options[i].value
+                    },
+                    async: false,
+                    cache: false,
+                    success: function (result) {
+                        if(result<0){
+                            msg="删除原先角色信息失败，请联系系统管理员！";
+                            alert(msg);
+                            return;
+                        }
+                    },
+                    error: function () {
+                        alert("请求超时，请重试！");
+                    }
+                });
+            }
+
+            for(i=1;i<n1;i++){
+                for(j=1;j<n2;j++){
+                    $.ajax({
+                        type: "post",
+                        url: "insertLoginRoleRel",
+                        data: {
+                            login_no: list_loginno_now.options[i].value,
+                            role_code: list_roleid_now.options[j].value
+                        },
+                        async: false,
+                        cache: false,
+                        success: function (result) {
+                            if(9999==result){
+                                msg="操作成功！本操作涉及CRM功能赋权，请确认相关工号是否已在CRM系统完成相关赋权！";
+                            }
+                            if(1!=result && 9999!=result){
+                                msg="插入新角色数据失败，请联系系统管理员！";
+                                alert(msg);
+                                return;
+                            }
+                        },
+                        error: function () {
+                            alert("请求超时，请重试！");
+                        }
+                    });
+                }
+            }
+            alert(msg);
+            resetList();
+        }
+    }
+    function exchangeAllItems(from,to){
+        var k = 1;
+        for(var i=from.length -1;i>=k;i--){
+            to.options[to.length++] = new Option(from.options[i].text,from.options[i].value);
+            from.options[i] = null;
+        }
+    }
+    function exchangeListItems(from,to){
+        var k = from.selectedIndex;
+        if(k >= 1){
+            for(var i=from.length -1;i>=k;i--){
+                if(from.options[i].selected){
+                    to.options[to.length++] = new Option(from.options[i].text,from.options[i].value);
+                    from.options[i] = null;
+                }
+            }
+        }
+    }
+</script>
+</body>
+</html>
+

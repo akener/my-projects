@@ -1,0 +1,83 @@
+package com.esop.menus.dto;
+
+
+/**
+ * Created by yanhao on 17/6/11.
+ */
+public class MenusShowDto{
+
+
+    String function_code = "";
+    String parent_code = "";
+    String pop_type = "";
+    String jsp_name = "";
+    String function_name = "";
+    String out_sys_id = "";
+    String out_sys_url = "";
+
+    String landing_no = "";
+
+    public String getFunction_code() {
+        return function_code;
+    }
+
+    public void setFunction_code(String function_code) {
+        this.function_code = function_code;
+    }
+
+    public String getParent_code() {
+        return parent_code;
+    }
+
+    public void setParent_code(String parent_code) {
+        this.parent_code = parent_code;
+    }
+
+    public String getPop_type() {
+        return pop_type;
+    }
+
+    public void setPop_type(String pop_type) {
+        this.pop_type = pop_type;
+    }
+
+    public String getJsp_name() {
+        return jsp_name;
+    }
+
+    public void setJsp_name(String jsp_name) {
+        this.jsp_name = jsp_name;
+    }
+
+    public String getFunction_name() {
+        return function_name;
+    }
+
+    public void setFunction_name(String function_name) {
+        this.function_name = function_name;
+    }
+
+    public String getOut_sys_id() {
+        return out_sys_id;
+    }
+
+    public void setOut_sys_id(String out_sys_id) {
+        this.out_sys_id = out_sys_id;
+    }
+
+    public String getOut_sys_url() {
+        return out_sys_url;
+    }
+
+    public void setOut_sys_url(String out_sys_url) {
+        this.out_sys_url = out_sys_url;
+    }
+
+    public String getLanding_no() {
+        return landing_no;
+    }
+
+    public void setLanding_no(String landing_no) {
+        this.landing_no = landing_no;
+    }
+}

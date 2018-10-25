@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="EsopServiceRepository">
+    <select id="selectUploadFileInfo"  parameterType="com.esop.common.uploadFile.UploadFileInfoDto" resultType="com.esop.common.uploadFile.UploadFileInfoDto" >
+        select id,path,name,oa_file,valid from ep_upload_file_info where related_id = #{related_id} and valid=1
+    </select>
+    <select id="insertUploadFileInfo"  parameterType="com.esop.common.uploadFile.UploadFileInfoDto" resultType="int" >
+        insert into ep_upload_file_info(id,path,name,related_id,oa_file,valid,create_date)
+        values( #{id},#{path},#{name},#{related_id},#{oa_file},1,sysdate)
+    </select>
+    <select id="updateUploadFileInfo"  parameterType="com.esop.common.uploadFile.UploadFileInfoDto" resultType="int" >
+        update ep_upload_file_info set valid=0,update_date=sysdate where id=#{id}
+    </select>
+    <select id="getUploadFileInfoID" resultType="int" >
+        select s_ep_upload_file_info.nextval from dual
+    </select>
+    <select id="getUploadFileInfoRelatedID" resultType="int" >
+        select s_ep_upload_file_info_r.nextval from dual
+    </select>
+    <select id="judgeUploadFileDuplicateRecord" parameterType="com.esop.common.uploadFile.UploadFileInfoDto" resultType="int" >
+        select count(*) from ep_upload_file_info where name=#{name}
+    </select>
+</mapper>

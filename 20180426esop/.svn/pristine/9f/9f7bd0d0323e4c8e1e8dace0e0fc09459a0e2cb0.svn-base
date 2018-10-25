@@ -1,0 +1,303 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/20
+  Time: 21:44
+  To change this template use File | Settings | File Templates.
+--%>
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/6/15
+  Time: 8:39
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<!doctype html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <%@ include file="../pub/base.jsp"%>
+    <%@ include file="../pub/dataTables.jsp"%>
+    <%@ include file="../pub/tableList.jsp"%>
+    <title>集团缴费使用申请查询列表展示</title>
+</head>
+
+<body>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询列表</span>
+    </div>
+</div>
+<!--地市详情-->
+<div class="row col-12" style="min-height:100px;">
+    <div class="pd-20 pos-rel pos-bg1">
+        <div class="row">
+            <table class="table-infor-7" width="100%">
+                <tbody>
+                <tr>
+                   <th>分公司</th>
+                    <td>
+                        <input type=text id="ltd" class="input-sty04 form-ipt"
+                               maxlength="11" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>日期</th>
+                    <td>
+                        <input type=text id="eff_date" class="input-sty04 form-ipt"
+                               maxlength="11" readonly="true">
+                        <img class="dataImg" src="/esop/static/images/workbench/icon-01.png"
+                             style="width: 25px;" width="25" height="21"
+                             onclick="WdatePicker({el:'eff_date',dateFmt:'yyyy-MM-dd'})"
+                             title="选择时间" />
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <div class="row mgt-30">
+                <div class="btn-box pdb-20">
+                    <button class="ui-btn mgr-10" onclick="qryGrpPayFeeApplyList()">查询</button>
+<%--                    <button class="ui-btn" onclick="reset()">重置</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row col-12 bg-white">
+    <div class="market-name-box pdlr-10 clearfix">
+        <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>查询内容</span>
+    </div>
+</div>
+<div class="row col-12">
+    <div class="pd-20 pos-rel" >
+        <div class="active-cost-box" >
+            <div style="overflow:auto;">
+            <table id="epCapGrpPayFeeApply" class="cost-table"  width="100%" >
+                <thead>
+                <tr>
+                    <th colspan="24" class="text-center">集团缴费使用申请查询列表</th>
+                </tr>
+                <tr>
+                    <th  class="text-center">分公司</th>
+                    <th  class="text-center">行业中心</th>
+                    <th  class="text-center">申请人</th>
+                    <th  class="text-center">集团单位名称</th>
+                    <th  class="text-center">集团编码</th>
+                    <th  class="text-center">缴费业务账号</th>
+                    <th  class="text-center">缴费业务 </th>
+                    <th  class="text-center">已开发票信息</th>
+                    <th  class="text-center">可用金额</th>
+                    <th  class="text-center">产品账期</th>
+                    <th  class="text-center">申请使用金额(元)</th>
+                    <th  class="text-center">申请日期</th>
+                    <th  class="text-center">上传文件名</th>
+
+                    <th  class="text-center">ESOP工单号码</th>
+                    <th  class="text-center">申请工单业务类型 </th>
+                    <th  class="text-center">分公司编码</th>
+                    <th  class="text-center">申请人ID</th>
+                    <th  class="text-center">集团账号</th>
+                    <th  class="text-center">集团账号名称</th>
+                    <th  class="text-center">预打发票开始账期</th>
+                    <th  class="text-center">预打发票结束账期</th>
+                    <th  class="text-center">是否冲销预打发票</th>
+                    <th  class="text-center">冻结金额</th>
+                <%--    <th  class="text-center">备注信息</th>--%>
+
+                    <th  class="text-center">操作</th>
+                </tr>
+                </thead>
+            </table>
+            </div>
+        </div></div></div>
+    <%@ include file="grpPayFeeApplyDealInfo.jsp" %>
+</body>
+<script type="text/javascript" language="javascript" class="init">
+    /*$('.form_datetime').datetimepicker({
+        format: "yyyy-mm-dd ",
+        language:  'zh-CN',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: 1,
+        todayHighlight: 1,
+        startView: 2,
+        minView: 2,
+        forceParse: 0,
+        showMeridian: 1,
+        pickerPosition: "bottom-left"
+    });*/
+ /*  $(document).ready(function () {
+        var region_code_tp = "";
+        if (region_code_tp != '' && region_code_tp != null) {
+            init_region();
+        } else {
+            qryGrpPayFeeApplyList();
+        }
+    })*/
+   //小数转百分数并保留两位小数
+    function toPercent(point){
+        var str=Number(point*100).toFixed(1);
+        str+="%";
+        return str;
+    }
+
+    function qryGrpPayFeeApplyList(){
+        table = $('#epCapGrpPayFeeApply').DataTable( {
+            dom: "Bfrtip",
+            destroy:true,
+            bLengthChange:true,
+            "bFilter": false,
+            //"iDisplayLength": 10,
+            //"aLengthMenu": [10, 50, 100 ],
+            "pageLength": 14,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url:"/qryGrpPayFeeApplyList",
+                type:"POST",
+                data: {
+                    "ltd":$("#ltd").val()
+                    /*
+                    暂时不传日期
+                    eff_date: $("#eff_date").val()*/
+                }
+            },
+            columns: [
+                { data: "ltd" },
+                { data: "trade_center_id"},
+                { data: "applicant"},
+                { data: "group_name"},
+                { data: "group_id"},
+                { data: "pay_busi_acct"},
+                { data: "pay_busi_name"},
+                { data: "invoice_info"},
+                { data: "usable_amt"},
+                { data: "product_acct_period"},
+                { data: "apply_amt"},
+                { data: "apply_date"},
+
+                { data: "order_id"},
+                { data: "rec_type"},
+                { data: "area_id"},
+                { data: "apply_op_id"},
+                { data: "group_acct_id"},
+                { data: "group_acct_name"},
+                { data: "pre_print_inv_begin_cycle"},
+                { data: "pre_print_inv_end_cycle"},
+                { data: "iss_settle_pre_inv"},
+                { data: "freeze_fee"},
+
+                { data: "upload_file_name"},
+
+                { data: "applicant",
+                    "width": "10%",
+                    render: function ( data , type , row,meta) {
+                        return data =
+                            "<button type='button' style='width: 60px' " +
+                            "onclick='showGrpPayFeeModal(" + row.applicant + ")'  name='" +  row.applicant + "'>查看详情</button>";
+
+                    }
+                }
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    }
+
+    //查询集团缴费使用申请详细信息(模态框展示)
+    function showGrpPayFeeModal(applicant) {
+        //展示出模态框
+        $("#alertInfo").modal('show');
+        $.ajax({
+            type: "post",
+            url: "/getGrpPayFeeApplyDealInfo",
+            dataType: 'json',
+            data: {
+                "applicant": applicant
+            },
+            success: function (result) {
+              /*  console.log(result.info);*/
+
+                //获取响应的json数据
+                var  filed  =result.info;
+//                    //filed[0].applicant;
+                console.info("filed="+ filed[0]);
+                console.info( result.info);
+                console.log("filed第0索引applicant="+ filed[0].applicant);
+                console.log("filed第10索引ltd="+ filed[0].ltd);
+                    $("#ltd2").val(filed[0].ltd), //不改为ltd2会和qry_deposit_apply_list.jsp即本页面的id重复而发生冲突
+                    $("#trade_center_id").val(filed[0].trade_center_id),
+                    $("#applicant").val(filed[0].applicant),
+                    $("#group_name").val(filed[0].group_name),
+                    $("#group_id").val(filed[0].group_id),
+
+                    $("#pay_busi_acct").val(filed[0].pay_busi_acct),
+                    $("#pay_busi_name").val(filed[0].pay_busi_name),
+                    $("#invoice_info").val(filed[0].invoice_info),
+                    $("#usable_amt").val(filed[0].usable_amt),
+                    $("#product_acct_period").val(filed[0].product_acct_period),
+                    $("#apply_amt").val(filed[0].apply_amt),
+                    $("#apply_date").val(filed[0].apply_date),
+                    $("#upload_file_name").val(filed[0].upload_file_name),
+
+                    $("#order_id").val(filed[0].order_id),
+                    $("#rec_type").val(filed[0].rec_type),
+                    $("#area_id").val(filed[0].area_id),
+                    $("#apply_op_id").val(filed[0].apply_op_id),
+                    $("#group_acct_id").val(filed[0].group_acct_id),
+                    $("#group_acct_name").val(filed[0].group_acct_name),
+                    $("#pre_print_inv_begin_cycle").val(filed[0].pre_print_inv_begin_cycle),
+                    $("#pre_print_inv_end_cycle").val(filed[0].pre_print_inv_end_cycle),
+
+                    $("#iss_settle_pre_inv").val(filed[0].iss_settle_pre_inv),
+                    $("#freeze_fee").val(filed[0].freeze_fee),
+                    $("#note").val(filed[0].note)
+
+
+               /* $.each(result.info, function (i, filed) {
+                    console.log(i+"第0索引"+filed);
+                    console.log("ltd2="+filed[10]);
+
+                    }
+                );*/
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        })
+    }
+
+        //唯一标识码
+       /* var biaoshima='23423424';*/
+
+</script>
+</html>
+
+

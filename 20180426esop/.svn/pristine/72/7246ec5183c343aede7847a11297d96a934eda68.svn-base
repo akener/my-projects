@@ -1,0 +1,460 @@
+<%@ page pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=8">
+<%@ include file="../pub/base.jsp"%>
+<%@ include file="../pub/dataTables.jsp"%>
+<%@ include file="../pub/tableList.jsp"%>
+<head>
+    <link rel="icon" href="./favicon.ico">
+    <title>合同审批管理</title>
+</head>
+<body>
+<!-- 下发工单提示框 -->
+<div class="modal fade" id="fault" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="notice10">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" id="noticeInfo10">您无权使用此功能</label>
+            </div>
+            <div class="modal-footer">
+                <button id="sendCaseFail" type="button" class="btn btn-default" data-dismiss="modal">确定</button>
+                <%--<button type="button" class="btn btn-default" data-dismiss="modal">否</button>--%>
+            </div>
+        </div>
+    </div>
+</div>
+<div align="center" style="padding-top:5px; padding-left:1px;width: 100%;height:200px;background-color:#ffffff ">
+    <div class="title-style04" style="height: 30px;width: 99%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+        <h5 align="left">&nbsp;&nbsp;◆&nbsp;合同审批管理</h5>
+    </div>
+    <div style="background-color:#c0e9ef;border:1px solid #9ce4ef;width: 99%;height: 95px">
+        <table border="1" cellpadding="0" cellspacing="0" width="100%" align="center"
+               style="margin-top: 8px;border:1px solid #2A97DC ">
+            <tr>
+                <th width="150px" class="text-center">
+                    地区
+                </th>
+                <td width="200px">
+                    <select class="input-md" id="groupId" style="width: 180px">
+
+                    </select>
+                </td>
+                <th width="150px" class="text-center">
+                    合同编号
+                </th>
+                <td width="200px">
+                    <input type="text" id="unitId" name="unitId" value="" style="width: 180px"/>
+                </td>
+
+                <th width="150px" class="text-center">
+                    合同开始时间从
+                </th>
+                <td width="300px">
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:150px"  id="beginTime" name="beginTime" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+
+                </td>
+                <th width="150px" class="text-center">
+                    到
+                </th>
+                <td width="300px">
+                    <div class="col-sm-2">
+                        <div class="input-group date form_datetime" data-date-format="yyyy-mm-dd">
+                            <input readonly class="form-control" style="width:150px"  id="endTime" name="beginTime" data-container="body" data-toggle="popover" data-placement="bottom" data-content="请选择起始时间">
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+
+                </td>
+
+            </tr>
+        </table>
+    </div>
+    <div id="operation_button" align="center" style="margin-top: 15px;padding-top:6px;height:40px;width:99%;background-color:#c0e9ef;border:1px solid #2A97DC;">
+        <button type="button" class="btn-style02" name="printsub" id="printsub">查询</button>&nbsp;
+        <button type="button" class="btn-style02" name="reset1" onclick="pageReset()">重置</button>&nbsp;
+    </div>
+</div>
+<div style="height: 30px;width: 100%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+    <h5 align="left" style="margin-top: 4px">&nbsp;&nbsp;◆&nbsp;合同列表</h5>
+</div>
+<div >
+    <table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+        <tr>
+            <th class="text-center">合同编号</th>
+            <th class="text-center">合同名称</th>
+            <th class="text-center">开始时间</th>
+            <th class="text-center">结束时间</th>
+            <th class="text-center">合同附件</th>
+            <th class="text-center">创建时间</th>
+            <th class="text-center">创建工号</th>
+            <th class="text-center">工号组织</th>
+            <th class="text-center">合同金额</th>
+            <th class="text-center">原合同编号</th>
+        </tr>
+        </thead>
+
+    </table>
+</div>
+<!--合同审批弹窗 -->
+<div id="alertInfo" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="height: 30px;width: 100%;background-color:#c0e9ef;border:1px solid #9ce4ef ">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">◆合同审批</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12">
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <table align="center" class="table-infor-7 width-th" width="99%" cellspacing="1" cellpadding="2" border="1">
+                            <tbody>
+                            <tr>
+                                <th>集团ID</th>
+                                <td>
+                                    <input value = "" size=24 id="unit_id" name="unit_id" readonly="readonly" />
+                                </td>
+                                <th>合同编号</th>
+                                <td>
+                                    <input value = "" size=24 id="contract_no" name="contract_no" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>合同名称</th>
+                                <td>
+                                    <input value = "" size=24 id="contract_name" name="contract_name" readonly="readonly" />
+                                </td>
+                                <th>合同金额</th>
+                                <td>
+                                    <input value = "" size=24 id="contract_loan" name="contract_loan" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>开始日期</th>
+                                <td>
+                                    <input value = "" size=24 id="deal_time" name="deal_time" readonly="readonly" />
+                                </td>
+                                <th>结束日期</th>
+                                <td>
+                                    <input value = "" size=24 id="complete_time" name="complete_time" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>创建时间</th>
+                                <td>
+                                    <input value = "" size=24 id="create_date" name="create_date" readonly="readonly" />
+                                </td>
+                                <th>原合同编号</th>
+                                <td>
+                                    <input value = "" size=24 id="renew_sign" name="renew_sign" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>创建工号</th>
+                                <td>
+                                    <input value = "" size=24 id="create_login" name="create_login" readonly="readonly" />
+                                </td>
+                                <th>工号组织</th>
+                                <td>
+                                    <input value = "" size=24 id="org_code" name="org_code" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>合同描述</th>
+                                <td>
+                                    <input value = "" size=24 id="note" name="note" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>合同附件</th>
+                                <td>
+                                    <input value = "" size=24 id="contract_file" name="contract_file" readonly="readonly" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>审核结果</th>
+                                <td>
+                                    <select id="ck_info" name="ck_info" >
+                                        <option value="0">通过</option>
+                                        <option value="1">不通过</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>审核意见</th>
+                                <td>
+                                    <textarea id="pro_des" name="pro_des" rows=5 cols=40></textarea>(限制500字)
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <div id="opbutton" style="margin-top: 10px;padding-top:5px;height:40px;width:100%;background-color:#c0e9ef;border:1px solid #2A97DC;" align="center">
+                <button type="button" data-toggle="modal" data-target=".bs-example-modal-lg" onclick="GetConbus()">
+                    提交
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <input type="hidden" id="login_no" value="${login_no}">
+    <input type="hidden" id="login_name" value="${login_name}">
+    <input type="hidden" id="group_id" value="${group_id}">
+    <input type="hidden" id="group_name" value="${group_name}">
+    <input type="hidden" id="role_code" value="${role_code}">
+    <input type="hidden" id="role_name" value="${role_name}">
+</div>
+
+</body>
+<script type="text/javascript" src="/esop/static/js/jquery.form.js"></script>
+<script type="text/javascript" language="javascript" class="init">
+    var editor; // use a global for the submit and return data rendering in the examples
+    var table;
+    var login_no=$("#login_no").val();
+    var login_name=$("#login_name").val();
+    var group_id=$("#group_id").val();
+    var group_name=$("#group_name").val();
+    var role_code=$("#role_code").val();
+    var role_name=$("#role_name").val();
+
+    $(document).ready(function () {
+        prdCity();
+        //时间控件
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            minView: 2,
+            forceParse: 0,
+            showMeridian: 1,
+            pickerPosition: "bottom-left"
+        });
+
+        editor = new $.fn.DataTable.Editor( {
+        } );
+
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            //"sScrollY":230,"sScrollX":200,
+            bLengthChange:true,//改变每页显示数据数量
+            "bFilter": false,//过滤功能
+            "bInfo": true,//页脚信息
+            "bPaginate": true, //翻页功能
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            bserverSide: true,//服务端进行分页处理(serverSide: false)
+            destroy:true,
+            ajax: {
+                url:"/getControBusin",
+                type:"POST",
+                data:{
+                    "parent_group_id":group_id,
+                    "goods_no":'aavg38'
+                }
+            },
+            columns: [
+
+                { data: "contract_no",
+                    render: function ( data, type, row, meta ) {
+                        return  data='<a herf="javascript:void(0);" onclick="claim('+row.contract_id+')" value="" ><span style="cursor:hand">'+row.contract_no+'</span></a>';
+                    }
+                },
+
+                { data: "contract_name" },
+                { data: "deal_time" },
+                { data: "complete_time" },
+                { data: "contract_file" },
+                { data: "create_date" },
+                { data: "login_name" },
+                { data: "group_name" },
+                { data: "contract_loan" },
+                { data: "renew_sign" }
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+
+     });
+
+    //查询
+    $("#printsub").click(function () {
+        editor = new $.fn.DataTable.Editor( {
+        } );
+        table = $('#example').DataTable( {
+            dom: "Bfrtip",
+            bLengthChange:true,
+            //"sScrollY":230,"sScrollX":200,
+            "bFilter": false,
+            "pageLength": 10,//设置每页显示多少条记录
+            "language": {
+                "url": "/esop/static/data/Chinese.json"
+            }, //多语言配置
+            processing: true,
+            bserverSide: true,//服务端进行分页处理
+            destroy:true,
+            ajax: {
+                url:"/getControactdinfo",
+                type:"POST",
+                data:{
+                    "parent_group_id":$("#groupId").val(),
+                    "goods_no":'aavg38',
+                    "contract_no":$("#unitId").val(),
+                    "deal_time":$("#beginTime").val(),
+                    "complete_time":$("#endTime").val()
+                }
+            },
+            columns: [
+
+                { data: "contract_no",
+                    render: function ( data, type, row, meta ) {
+                        return  data='<a herf="javascript:void(0);" onclick="claim('+row.contract_id+')" value="" >'+row.contract_no+'</a>';
+                    }
+                },
+                { data: "contract_name" },
+                { data: "deal_time" },
+                { data: "complete_time" },
+                { data: "contract_file" },
+                { data: "create_date" },
+                { data: "login_name" },
+                { data: "group_name" },
+                { data: "contract_loan" },
+                { data: "renew_sign" }
+
+            ],
+            select: true,
+            buttons: [
+            ]
+        } );
+    });
+
+    //重置
+    function pageReset(){
+        location.reload();
+    }
+
+    //循环遍历地市
+    function  prdCity() {
+        $.ajax({
+            type:"post",
+            url:"/getCity",
+            data:{
+                "parent_group_id":group_id
+            }
+        }).then(function (data) {
+            $.each(data, function (index, item) {
+                if(index==0){
+                    //alert(item.group_id)
+                    $("#groupId").append("<option value='"+item.group_id+"'>"+'├'+""+item.name+"</option>");
+                }else{
+                    $("#groupId").append("<option value='"+item.group_id+"'>"+'&nbsp;&nbsp;├'+""+item.group_id+""+item.name+"</option>");
+                }
+
+            });
+        });
+    }
+
+    //根据合同序列查询
+    var conbus = "";
+    function claim(id) {
+        conbus = id;
+        $.ajax({
+            type:"post",
+            url:"/getControbusnet",
+            data:{
+                "contract_id":id
+                //"contract_id":$("#contract_id").val()
+            },
+            success: function (result) {
+//                    遍历json
+                $.each(result,function(i,filed){
+                    //alert(filed.group_name);
+                    informationshow(filed);
+                });
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        });
+        $("#alertInfo").modal("show");
+    }
+
+    //信息展示
+    function informationshow(result) {
+        //alert(result.create_date);
+
+        $("#unit_id").val(result.unit_id);
+        $("#contract_no").val(result.contract_no);
+        $("#contract_name").val(result.contract_name);
+        $("#contract_loan").val(result.contract_loan);
+        $("#deal_time").val(result.deal_time);
+        $("#complete_time").val(result.complete_time);
+        $("#create_date").val(result.create_date);
+        $("#renew_sign").val(result.renew_sign);
+        $("#create_login").val(result.login_name);
+        $("#org_code").val(result.group_name);
+        $("#note").val(result.note);
+        $("#contract_file").val(result.contract_file)
+        //$("#charge_flag").val(result.charge_flag)
+    }
+    //提交
+    function GetConbus() {
+        //alert("111111");
+        $.ajax({
+            type:"post",
+            url:"/getControbusman",
+            data:{
+                "contract_id":conbus,
+                "unit_id":$("#unit_id").val(),
+                "contract_no":$("#contract_no").val(),
+                "contract_name":$("#contract_name").val(),
+                "contract_loan":$("#contract_loan").val(),
+                "deal_time":$("#deal_time").val(),
+                "complete_time":$("#complete_time").val(),
+                "create_date":$("#create_date").val(),
+                "renew_sign":$("#renew_sign").val(),
+                "create_login":$("#create_login").val(),
+                "org_code": $("#org_code").val(),
+                "note":$("#note").val(),
+                "contract_file":$("#contract_file").val(),
+                "charge_flag":$("#ck_info").val(),
+                "goods_not":$("#pro_des").val()
+            },
+            success : function (result) {
+                city_data = "";
+                if(result.info == "提交成功！"){
+                    alert(result.info);
+                }
+            },
+            error: function () {
+                alert("请求超时，请重试！");
+            }
+        })
+    }
+
+
+</script>
+</html>

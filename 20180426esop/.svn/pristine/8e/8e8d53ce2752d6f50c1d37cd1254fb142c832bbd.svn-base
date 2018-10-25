@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <select id="selectGroupNum"  parameterType="String" resultType="com.esop.workbench.dto.GroupProfileDto" >
+        <if test="region_code == ''">
+            select a.boss_org_code,a.grp_num all_num, b.name, b.group_id
+            from (select substr(boss_org_code,0,2) boss_org_code,count(*) grp_num
+            from dgrpcustmsg
+            where boss_org_code is not null
+            and boss_org_code != '00'
+            group by substr(boss_org_code,0,2)
+            order by substr(boss_org_code,0,2)) a,dgrpgroups b
+            where trim(a.boss_org_code) = trim(b.boss_org_code)
+            and b.immediate_parent_flag = 'Y'
+            order by all_num DESC
+        </if>
+        <if test="region_code != ''">
+            select a.boss_org_code,a.grp_num all_num, b.name, b.group_id
+            from (select boss_org_code, count(*) grp_num
+            from dgrpcustmsg t
+            where substr(boss_org_code, 0, 2) = #{region_code}
+            and length(trim(boss_org_code)) = 4
+            group by boss_org_code) a,dgrpgroups b
+            where trim(a.boss_org_code) = trim(b.boss_org_code)
+            and b.immediate_parent_flag = 'Y'
+            order by all_num DESC
+        </if>
+    </select>
+    <select id="selectMemNum"  parameterType="String" resultType="com.esop.workbench.dto.GroupProfileDto" >
+            select t.all_num,t.boss_org_code,t.name,t.group_id from ep_group_count t
+            where 1=1
+        <if test="region_code == ''">
+            and length(trim(boss_org_code)) = 2
+        </if>
+        <if test="region_code != ''">
+            and substr(boss_org_code, 0, 2) = #{region_code}
+            and length(trim(boss_org_code)) = 4
+        </if>
+        order by to_number(t.all_num) DESC
+    </select>
+    <select id="selectImpMemNum"  parameterType="String" resultType="com.esop.workbench.dto.GroupProfileDto" >
+        <if test="region_code == ''">
+            select e.imp_num all_num,e.boss_org_code,f.name,f.group_id from (
+            select sum(imp_count) imp_num,substr(boss_org_code,0,2) boss_org_code from(
+            select count(a.imp_id) imp_count,a.unit_id
+            from dGrpCustImpManMsg a,dgrpcustmsg b
+            where a.unit_id = b.unit_id
+            group by a.unit_id) c,dgrpcustmsg d
+            where c.unit_id = d.unit_id
+            and boss_org_code is not null
+            and boss_org_code != '00'
+            group by substr(boss_org_code,0,2) ) e,dgrpgroups f
+            where trim(e.boss_org_code) = trim(f.boss_org_code)
+            and f.immediate_parent_flag = 'Y'
+            order by all_num DESC
+        </if>
+        <if test="region_code != ''">
+            select t6.imp_count all_num,t6.boss_org_code,t7.name,t7.group_id from (
+            select t5.imp_count,t5.boss_org_code from (
+            select sum(t3.imp_count) imp_count,t4.boss_org_code from(
+            select count(t1.imp_id) imp_count,t1.unit_id
+            from dGrpCustImpManMsg t1,dgrpcustmsg t2
+            where t1.unit_id = t2.unit_id
+            group by t1.unit_id) t3,dgrpcustmsg t4
+            where t3.unit_id = t4.unit_id
+            group by t4.boss_org_code) t5
+            where substr(t5.boss_org_code, 0, 2) = #{region_code}
+            and length(trim(t5.boss_org_code)) = 4) t6,dgrpgroups t7
+            where trim(t6.boss_org_code) = trim(t7.boss_org_code)
+            and t7.immediate_parent_flag = 'Y'
+            order by all_num DESC
+        </if>
+    </select>
+    <select id="selectAllIncome"  parameterType="String" resultType="com.esop.workbench.dto.GroupProfileDto" >
+            select round(sum(income),2) all_num,
+        <if test="region_code == ''">
+            region_name as name,region_code as group_id
+        </if>
+        <if test="region_code != ''">
+            town_name as name,town_code as group_id
+        </if>
+            from ep_group_income
+            where 1 = 1
+        <if test="eff_date != ''">
+            and eff_date = #{eff_date}
+        </if>
+        <if test="eff_date == ''">
+            and eff_date = (select eff_date from (select eff_date from ep_group_income group by eff_date order by to_date(eff_date,'yyyy-MM') Desc) where rownum = 1)
+        </if>
+        <if test="region_code == ''">
+            and region_code != '00'
+            and region_code is not null
+            group by region_name,region_code
+        </if>
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+            group by town_name,town_code
+        </if>
+        order by all_num DESC
+    </select>
+
+</mapper>

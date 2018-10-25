@@ -1,0 +1,147 @@
+package com.esop.invoice.dto;
+
+import com.esop.workflow.dto.InDTO;
+
+/**
+ * Created by zhouhui on 2018/3/27.
+ */
+public class NonReturnInDTO extends InDTO {
+    private String invoiceType;//开票类型
+    private String invoiceMode;//发票种类
+    private String appOrg;//组织机构
+
+    private String kpje;//开票金额（元）
+    private Short kpsl;//开票数量
+    private String hkje;//回款金额（元）
+    private Short hksl;//回款发票数量
+    private String whkje;//未回款金额（元）
+    private Short whksl;//未回款发票数量
+
+    private String whkjey;//一个月（含）以内 未回款金额（元）
+    private Short whksly;//一个月（含）以内 未回款发票数量
+    private String whkjeys;//一个月至三个月（含） 未回款金额（元）
+    private Short whkslys;//一个月至三个月（含）以内 未回款发票数量
+    private String whkjes;//三个月以上 未回款金额（元）
+    private Short whksls;//三个月以上 以内 未回款发票数量
+
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType;
+    }
+
+    public String getInvoiceMode() {
+        return invoiceMode;
+    }
+
+    public void setInvoiceMode(String invoiceMode) {
+        this.invoiceMode = invoiceMode;
+    }
+
+    public String getAppOrg() {
+        return appOrg;
+    }
+
+    public void setAppOrg(String appOrg) {
+        this.appOrg = appOrg;
+    }
+
+    public String getWhkjey() {
+        return whkjey;
+    }
+
+    public void setWhkjey(String whkjey) {
+        this.whkjey = whkjey;
+    }
+
+    public Short getWhksly() {
+        return whksly;
+    }
+
+    public void setWhksly(Short whksly) {
+        this.whksly = whksly;
+    }
+
+    public String getWhkjeys() {
+        return whkjeys;
+    }
+
+    public void setWhkjeys(String whkjeys) {
+        this.whkjeys = whkjeys;
+    }
+
+    public Short getWhkslys() {
+        return whkslys;
+    }
+
+    public void setWhkslys(Short whkslys) {
+        this.whkslys = whkslys;
+    }
+
+    public String getWhkjes() {
+        return whkjes;
+    }
+
+    public void setWhkjes(String whkjes) {
+        this.whkjes = whkjes;
+    }
+
+    public Short getWhksls() {
+        return whksls;
+    }
+
+    public void setWhksls(Short whksls) {
+        this.whksls = whksls;
+    }
+
+    public String getKpje() {
+        return kpje;
+    }
+
+    public void setKpje(String kpje) {
+        this.kpje = kpje;
+    }
+
+    public String getHkje() {
+        return hkje;
+    }
+
+    public void setHkje(String hkje) {
+        this.hkje = hkje;
+    }
+
+
+    public String getWhkje() {
+        return whkje;
+    }
+
+    public void setWhkje(String whkje) {
+        this.whkje = whkje;
+    }
+
+    public Short getKpsl() {
+        return kpsl;
+    }
+
+    public void setKpsl(Short kpsl) {
+        this.kpsl = kpsl;
+    }
+
+    public Short getHksl() {
+        return hksl;
+    }
+
+    public void setHksl(Short hksl) {
+        this.hksl = hksl;
+    }
+
+    public Short getWhksl() {
+        return whksl;
+    }
+
+    public void setWhksl(Short whksl) {
+        this.whksl = whksl;
+    }
+}

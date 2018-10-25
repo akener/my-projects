@@ -1,0 +1,196 @@
+package com.esop.visitInfo.service;
+
+import com.esop.common.dataBase.SqlE;
+import com.esop.common.page.Result;
+import com.esop.common.uploadFile.UploadFileInfoDto;
+import com.esop.visitInfo.dto.*;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+/**
+ * Created by subt on 2017/6/7 0007.
+ */
+
+@Repository
+public class VisitProcessService {
+    private static Logger logger = Logger.getLogger(VisitProcessService.class);
+    @Autowired
+    SqlE sqlE;
+    //查询参观流程表单审批方填写信息
+    public List<VisitProcessDto> getVisitProcess(VisitProcessDto param){
+        return sqlE.selectM("getVisitProcess",param);
+    }
+    //新增参观流程表单审批方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertVisitProcess(VisitProcessDto param){
+        if (sqlE.insertM("insertVisitProcess",param)>0){
+            logger.info("新增参观流程表单审批方填写信息成功");
+            return true;
+        }
+        logger.info("新增参观流程表单审批方填写信息失败");
+        return false;
+    }
+    //更新参观流程表单审批方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateVisitProcess(VisitProcessDto param){
+        if (sqlE.updateM("updateVisitProcess",param)>0){
+            logger.info("更新参观流程表单审批方填写信息成功");
+            return true;
+        }
+        logger.info("更新参观流程表单审批方填写信息失败");
+        return false;
+    }
+    //查询参观流程(数据中心)审批方填写信息
+    public List<VisitDatacenterDto> getVisitDatacenter(VisitDatacenterDto param){
+        return sqlE.selectM("getVisitDatacenter",param);
+    }
+    //新增(数据中心)审批方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertVisitDatacenter(VisitDatacenterDto param){
+        if (sqlE.insertM("insertVisitDatacenter",param)>0){
+            logger.info("新增参观流程表单(数据中心)审批方填写信息成功");
+            return true;
+        }
+        logger.info("新增参观流程表单(数据中心)审批方填写信息失败");
+        return false;
+    }
+    //更新(数据中心)审批方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateVisitDatacenter(VisitDatacenterDto param){
+        if (sqlE.updateM("updateVisitDatacenter",param)>0){
+            logger.info("更新参观流程表单(数据中心)审批方填写信息成功");
+            return true;
+        }
+        logger.info("更新参观流程表单(数据中心)审批方填写信息失败");
+        return false;
+    }
+
+    //查询参观内容、接待要求信息
+    /*public List<VisitContentDto> getVisitContent(VisitContentDto param){
+        logger.info("VisitProcessService.getVisitContent入参:"+param.toString());
+        List list = sqlE.selectM("getVisitContent",param);
+        logger.info("VisitProcessService.getVisitContent出参:"+list);
+        return list;
+    }*/
+    /*//更新参观内容、接待要求信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateVisitContent(VisitContentDto param){
+        if (sqlE.updateM("updateVisitContent",param)>0){
+            logger.info("更新参观内容、接待要求信息成功");
+            return true;
+        }
+        logger.info("更新参观内容、接待要求信息失败");
+        return false;
+    }*/
+    //查询审批环节概况
+    /*public List<VisitLinkDto> getVisitLink(VisitLinkDto param){
+        return sqlE.selectM("getVisitLink",param);
+    }
+    //新增审批环节概况
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertVisitLink(VisitLinkDto param){
+        if (sqlE.insertM("insertVisitLink",param)>0){
+            logger.info("新增审批环节概况信息成功");
+            return true;
+        }
+        logger.info("新增审批环节概况信息失败");
+        return false;
+    }
+    //更新审批环节概况
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateVisitLink(VisitLinkDto param){
+        if (sqlE.updateM("updateVisitLink",param)>0){
+            logger.info("更新审批环节概况信息成功");
+            return true;
+        }
+        logger.info("更新审批环节概况信息失败");
+        return false;
+    }*/
+    //查询测试流程表单承接方填写信息
+    public List<TestFormDto> getTestForm(TestFormDto param){
+        return sqlE.selectM("getTestForm",param);
+    }
+    //新增测试流程表单数据
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertTestForm(TestFormDto param){
+        if (sqlE.insertM("insertTestForm",param)>0){
+            logger.info("新增测试流程表单数据承接方填写信息成功");
+            return true;
+        }
+        logger.info("新增测试流程表单数据承接方填写信息失败");
+        return false;
+    }
+    //更新测试流程表单数据承接方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updatTestForm(TestFormDto param){
+        if (sqlE.updateM("updatTestForm",param)>0){
+            logger.info("更新测试流程表单数据承接方填写信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("更新测试流程表单数据承接方填写信息失败");
+        return false;
+    }
+    //查询勘查、资费、资源流程表单承接方填写信息
+    public List<ProspectingPostageDto> getProspectingPostage(ProspectingPostageDto param){
+        logger.info("getProspectingPostage入参:"+param.toString());
+        List list = sqlE.selectM("getProspectingPostage",param);
+        logger.info("getProspectingPostage入参:"+list);
+        return list;
+    }
+    //新增勘查、资费、资源流程表单数据承接方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean insertProspectingPostage(ProspectingPostageDto param){
+        /*UploadFileInfoDto uploadFileInfoDto=new UploadFileInfoDto();
+        //OA传递文件存储路径
+        uploadFileInfoDto.setPath("OA");
+        //其他勘查需求附件上传信息
+        param.setOther_prospecting_needs(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+        uploadFileInfoDto.setOa_file(param.getOther_prospecting_needs_file());
+        uploadFileInfoDto.setName(param.getOther_prospecting_needs_save());
+        uploadFileInfoDto.setRelated_id(param.getOther_prospecting_needs());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        //需要反馈给客户的调研表格附件上传信息
+        param.setNeed_feedback_form(sqlE.selectM("getUploadFileInfoRelatedID").get(0).toString());
+        uploadFileInfoDto.setOa_file(param.getNeed_feedback_form_file());
+        uploadFileInfoDto.setName(param.getNeed_feedback_form_save());
+        uploadFileInfoDto.setRelated_id(param.getNeed_feedback_form());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);*/
+        if (sqlE.insertM("insertProspectingPostage",param)>0){
+            logger.info("新增勘查、资费、资源流程表单数据承接方填写信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("新增勘查、资费、资源流程表单数据承接方填写信息失败");
+        return false;
+    }
+    //更新勘查、资费、资源流程表单数据承接方填写信息
+    @Transactional(propagation= Propagation.REQUIRED)
+    public boolean updateProspectingPostage(ProspectingPostageDto param){
+        /*UploadFileInfoDto uploadFileInfoDto=new UploadFileInfoDto();
+        //OA传递文件存储路径
+        uploadFileInfoDto.setPath("OA");
+        //其他勘查需求附件上传信息
+        uploadFileInfoDto.setOa_file(param.getOther_prospecting_needs_file());
+        uploadFileInfoDto.setName(param.getOther_prospecting_needs_save());
+        uploadFileInfoDto.setRelated_id(param.getOther_prospecting_needs());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);
+        //需要反馈给客户的调研表格附件上传信息
+        uploadFileInfoDto.setOa_file(param.getNeed_feedback_form_file());
+        uploadFileInfoDto.setName(param.getNeed_feedback_form_save());
+        uploadFileInfoDto.setRelated_id(param.getNeed_feedback_form());
+        sqlE.insertM("insertUploadFileInfo", uploadFileInfoDto);*/
+        if (sqlE.updateM("updateProspectingPostage",param)>0){
+            logger.info("更新勘查、资费、资源流程表单数据承接方填写信息成功");
+            logger.info(param);
+            return true;
+        }
+        logger.info("更新勘查、资费、资源流程表单数据承接方填写信息失败");
+        return false;
+    }
+}

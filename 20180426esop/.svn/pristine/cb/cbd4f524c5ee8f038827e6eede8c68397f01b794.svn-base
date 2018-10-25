@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.cqDevelopment.elecPack.dto.SeElecPackRecordTracMapper">
+
+  <insert id="insertSeElecPackRecordTracDto" parameterType="com.esop.cqDevelopment.elecPack.dto.SeElecPackRecordTracDto">
+    insert into se_elec_pack_record_trac (id, op_time, result, 
+      op_type, wo_no, req_xml, 
+      resp_xml)
+    values (#{id,jdbcType=INTEGER}, #{op_time,jdbcType=TIMESTAMP}, #{result,jdbcType=VARCHAR}, 
+      #{op_type,jdbcType=VARCHAR}, #{wo_no,jdbcType=VARCHAR}, #{req_xml,jdbcType=LONGVARCHAR}, 
+      #{resp_xml,jdbcType=LONGVARCHAR})
+  </insert>
+</mapper>

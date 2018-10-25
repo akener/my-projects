@@ -1,0 +1,31 @@
+package com.esop.cust.dto;
+
+/**
+ * Created by Administrator on 2017/6/21.
+ */
+public class PcKpiInfoDto {
+    /*float unit_pay = 0;//集团统付收入
+    float information_income = 0;
+    int new_4Guser_num = 0;
+    int width_num = 0;
+    float ab_retention_rate = 0;
+    int unitsign_num = 0;*/
+    String kpi_target = "";
+    String kpi_value = "";
+
+    public String getKpi_target() {
+        return kpi_target;
+    }
+
+    public void setKpi_target(String kpi_target) {
+        this.kpi_target = kpi_target;
+    }
+
+    public String getKpi_value() {
+        return kpi_value;
+    }
+
+    public void setKpi_value(String kpi_value) {
+        this.kpi_value = kpi_value;
+    }
+}

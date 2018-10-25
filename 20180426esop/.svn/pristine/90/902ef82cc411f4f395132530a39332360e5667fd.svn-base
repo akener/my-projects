@@ -1,0 +1,196 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<div id="modalInfo" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <label id="modal_text" class="control-label"></label>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="adjustDetailInfo" class="modal fade bs-example-modal-lg"  tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> 反撤申请单</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row col-12" >
+                    <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                        <input type="hidden" id="id" value="">
+                        <input type="hidden" id="node_id" value="">
+                        <input type="hidden" id="refund_id" value="">
+                        <input type="hidden" id="first_node_id" value="">
+                        <table class="table-infor-7 width-th" width="100%">
+                            <tbody>
+                            <tr>
+                                <th colspan="4" style="text-align: center;font-size: medium">调账申请信息</th>
+                            </tr>
+                            <tr>
+                                <th>工单流水号</th>
+                                <td>
+                                    <input id="work_order_flowNo6" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>调账申请人</th>
+                                <td>
+                                    <input id="applicant6" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th>申请日期</th>
+                                <td>
+                                    <input id="apply_date1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: center;font-size: medium">出账集团资金账户信息</th>
+                            </tr>
+                            <tr>
+                                <th>集团客户编号</th>
+                                <td>
+                                    <input id="grp_cust_id1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>集团客户名称</th>
+                                <td>
+                                    <input type=text id="grp_cust_name1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>归属分公司</th>
+                                <td>
+                                    <input id="owner_org_id1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>资金账户余额（分）</th>
+                                <td>
+                                    <input id="balance1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>可用余额（分）</th>
+                                <td>
+                                    <input type=text id="now_balance1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>占用资金（分）</th>
+                                <td>
+                                    <input id="hold_balance1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>冻结资金（分）</th>
+                                <td>
+                                    <input type=text id="freeze_fee1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>资金联系人</th>
+                                <td>
+                                    <input id="out_linkman1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                                <th>联系人电话</th>
+                                <td>
+                                    <input type=text id="out_link_phone1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>联系人类型</th>
+                                <td>
+                                    <input id="out_link_type1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: center;font-size: medium">入账集团调账信息</th>
+                            </tr>
+                            <tr>
+                                <th>入账集团</th>
+                                <td>
+                                    <input type=text id="into_group1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>集团编号</th>
+                                <td>
+                                    <input type=text id="into_grp_no1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>资金联系人</th>
+                                <td>
+                                    <input id="into_linkman1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>联系人电话</th>
+                                <td>
+                                    <input type=text id="into_link_phone1" disabled="disabled"class="input-sty04 form-ipt"
+                                           maxlength="11" readonly="true">
+                                </td>
+                                <th>联系人类型</th>
+                                <td>
+                                    <input id="into_link_type1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>调账原因</th>
+                                <td>
+                                    <textarea type=text id="adjust_reason1" disabled="disabled"class="input-sty04 form-ipt"
+                                              maxlength="11" readonly="true"></textarea>
+                                </td>
+                                <th>调账金额</th>
+                                <td>
+                                    <input id="adjust_money1" type="text" disabled="disabled" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>调账说明</th>
+                                <td>
+                                    <textarea type=text id="adjust_explain1" disabled="disabled"class="input-sty04 form-ipt"
+                                              maxlength="11" readonly="true"></textarea>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <th>上传附件</th>
+                                <td colspan="4">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <label class="btn btn-info pull-left" for="xFile" >上传附件(word,ppt,pdf格式)</label>
+                                            <form id="upload-form" method="post" enctype="multipart/form-data">
+                                                <input type="file" id="xFile" name="file" style="position:absolute;clip:rect(0 0 0 0);">
+                                            </form>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="form-group" id="fileList">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mgt-20" style="margin-bottom: 5px;">
+                <div class="btn-box">
+                    <%--<button class="ui-btn mgr-10" id="qu_reset" name="reset1" onclick="saveDoApproveAdjustInfo()">提交</button>--%>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+package com.esop.common.jaxb;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+/**
+ * Created by wangbl on 2017/3/15.
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement
+public class FileInfo {
+    String path;//文件存放地址
+    String name;//文件名称
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

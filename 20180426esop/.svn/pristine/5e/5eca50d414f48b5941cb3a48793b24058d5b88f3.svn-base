@@ -1,0 +1,17 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<!doctype html>
+<tr>
+    <th>是否同意：</th>
+    <td>
+        <select id="shifou_tongguo" class="select-style-1">
+            <option value="1">同意</option>
+            <option value="2">不同意</option>
+        </select>
+    </td>
+</tr>
+<tr>
+    <th>审批意见：</th>
+    <td colspan="3">
+        <textarea rows="3" id="shenpi_yijian" class="ui-text form-ctrl" style="width:60%;"></textarea>
+    </td>
+</tr>

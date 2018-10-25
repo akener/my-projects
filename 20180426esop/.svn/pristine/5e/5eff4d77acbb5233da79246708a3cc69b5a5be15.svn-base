@@ -1,0 +1,219 @@
+package com.esop.cqDevelopment.groupFundReport.dto;
+
+import com.esop.common.page.BaseDto;
+
+/**
+ * Created by admin on 2017/10/30.
+ */
+public class GroupFundsUseDetailedRptDto extends BaseDto{
+
+    private String org_name;//分公司
+    private String business_center;//行业中心
+    private String business_admissible;//业务受理员
+    private String process_date;//受理时间
+    private String business_type;//业务类型（售货\团购终端\集团缴费\集团成员缴费\缴纳保证金\超大集团成员缴费）
+    private String actual_use_amount;//实际使用金额(元)
+    private String deal_status;//业务工单处理状态
+    private String group_code;//集团编号
+    private String group_name;//集团名称
+    private String order_id;//业务工单编号
+    private String applicant;//申请人
+    private String apply_time;//申请日期
+    private String apply_amount;//申请金额(元)
+    private String check_code;//稽核人
+    private String check_date;//稽核日期
+    private String check_status;//稽核状态
+    private String insert_date;//数据入库日期
+
+    //筛选条件
+    private String org_id; //分公司ID
+    private String center_code; //行业中心编码
+    private String process_date_start;//工单办结时间-start
+    private String process_date_end;//工单办结时间-end
+    private String process_date_start2;//工单办结时间-start
+    private String process_date_end2;//工单办结时间-start
+
+    public String getProcess_date_start2() {
+        return process_date_start2;
+    }
+
+    public void setProcess_date_start2(String process_date_start2) {
+        this.process_date_start2 = process_date_start2;
+    }
+
+    public String getProcess_date_end2() {
+        return process_date_end2;
+    }
+
+    public void setProcess_date_end2(String process_date_end2) {
+        this.process_date_end2 = process_date_end2;
+    }
+
+    public String getOrg_name() {
+        return org_name;
+    }
+
+    public void setOrg_name(String org_name) {
+        this.org_name = org_name;
+    }
+
+    public String getBusiness_center() {
+        return business_center;
+    }
+
+    public void setBusiness_center(String business_center) {
+        this.business_center = business_center;
+    }
+
+    public String getBusiness_admissible() {
+        return business_admissible;
+    }
+
+    public void setBusiness_admissible(String business_admissible) {
+        this.business_admissible = business_admissible;
+    }
+
+    public String getProcess_date() {
+        return process_date;
+    }
+
+    public void setProcess_date(String process_date) {
+        this.process_date = process_date;
+    }
+
+    public String getBusiness_type() {
+        return business_type;
+    }
+
+    public void setBusiness_type(String business_type) {
+        this.business_type = business_type;
+    }
+
+    public String getActual_use_amount() {
+        return actual_use_amount;
+    }
+
+    public void setActual_use_amount(String actual_use_amount) {
+        this.actual_use_amount = actual_use_amount;
+    }
+
+    public String getDeal_status() {
+        return deal_status;
+    }
+
+    public void setDeal_status(String deal_status) {
+        this.deal_status = deal_status;
+    }
+
+    public String getGroup_code() {
+        return group_code;
+    }
+
+    public void setGroup_code(String group_code) {
+        this.group_code = group_code;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    public String getApplicant() {
+        return applicant;
+    }
+
+    public void setApplicant(String applicant) {
+        this.applicant = applicant;
+    }
+
+    public String getApply_time() {
+        return apply_time;
+    }
+
+    public void setApply_time(String apply_time) {
+        this.apply_time = apply_time;
+    }
+
+    public String getApply_amount() {
+        return apply_amount;
+    }
+
+    public void setApply_amount(String apply_amount) {
+        this.apply_amount = apply_amount;
+    }
+
+    public String getCheck_code() {
+        return check_code;
+    }
+
+    public void setCheck_code(String check_code) {
+        this.check_code = check_code;
+    }
+
+    public String getCheck_date() {
+        return check_date;
+    }
+
+    public void setCheck_date(String check_date) {
+        this.check_date = check_date;
+    }
+
+    public String getCheck_status() {
+        return check_status;
+    }
+
+    public void setCheck_status(String check_status) {
+        this.check_status = check_status;
+    }
+
+    public String getInsert_date() {
+        return insert_date;
+    }
+
+    public void setInsert_date(String insert_date) {
+        this.insert_date = insert_date;
+    }
+
+    public String getOrg_id() {
+        return org_id;
+    }
+
+    public void setOrg_id(String org_id) {
+        this.org_id = org_id;
+    }
+
+    public String getCenter_code() {
+        return center_code;
+    }
+
+    public void setCenter_code(String center_code) {
+        this.center_code = center_code;
+    }
+
+    public String getProcess_date_start() {
+        return process_date_start;
+    }
+
+    public void setProcess_date_start(String process_date_start) {
+        this.process_date_start = process_date_start;
+    }
+
+    public String getProcess_date_end() {
+        return process_date_end;
+    }
+
+    public void setProcess_date_end(String process_date_end) {
+        this.process_date_end = process_date_end;
+    }
+}

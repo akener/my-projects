@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="HallRepository">
+    <!--行业解决方案信息查询-->
+    <select id="selectBusiSolutionInfo" parameterType="String" resultType="com.esop.busiAnalysis.dto.EpBusiSolutionDto">
+        select region_code,region_name,solution_name,solution_id,solution_desc,solution_type,solution_level,related_id,to_char(create_date,'yyyy-MM-dd') create_date,manager_name,manager_no,
+        '&lt;button type="button" class="btn btn-info pull-left mgr-20" onclick="updFile('''||solution_id||''')" >修改&lt;/button>&lt;button type="button" class="btn btn-info pull-left" onclick="delFile('''||solution_id||''')" >删除&lt;/button>' as operator_str
+        from ep_busi_solution
+        where 1=1
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+        <if test="region_code != ''">
+            and region_code = #{region_code}
+        </if>
+        <if test="solution_name !=''">
+            and solution_name like '%'||#{solution_name}||'%'
+        </if>
+        <if test="solution_id != ''">
+            and solution_id = #{solution_id}
+        </if>
+        <if test="create_date!=''">
+            and to_char(create_date,'yyyy-MM-dd')=#{create_date}
+        </if>
+        <if test="solution_type != ''">
+            and solution_type =#{solution_type}
+        </if>
+        <if test="solution_level !=''">
+            and solution_level = #{solution_level}
+        </if>
+    </select>
+    <!--行业解决方案信息录入-->
+    <select id="insertBusiSolutioneInfo"  parameterType="com.esop.busiAnalysis.dto.EpBusiSolutionDto" resultType="int" >
+        insert into ep_busi_solution(region_name,region_code,solution_name,solution_id,solution_desc,solution_level,solution_type,related_id,create_date,manager_name,manager_no)
+        values(#{region_name},#{region_code},#{solution_name},#{solution_id},#{solution_desc},#{solution_level},#{solution_type},#{related_id},sysdate,#{manager_name},#{manager_no})
+    </select>
+    <!--行业解决方案删除-->
+    <select id="delBusiSolutionInfo" parameterType="com.esop.busiAnalysis.dto.EpBusiSolutionDto" resultType="int">
+        delete from ep_busi_solution where solution_id = #{solution_id}
+    </select>
+    <!--行业解决方案修改-->
+    <select id="updSolutionInfo" parameterType="com.esop.busiAnalysis.dto.EpBusiSolutionDto" resultType="int">
+        update ep_busi_solution set manager_no=#{manager_no}
+        <if test="solution_name != ''">
+            ,solution_name = #{solution_name}
+        </if>
+        <if test="solution_desc != ''">
+            ,solution_desc = #{solution_desc}
+        </if>
+        <if test="solution_level!=''">
+            ,solution_level=#{solution_level}
+        </if>
+        <if test="solution_type !=''">
+            ,solution_type = #{solution_type}
+        </if>
+        <if test="region_name != ''">
+            ,region_name = #{region_name}
+        </if>
+        <if test="region_code != ''">
+            ,region_code = #{region_code}
+        </if>
+        <if test="related_id !=''">
+            ,related_id = #{related_id}
+        </if>
+        where solution_id =#{solution_id}
+    </select>
+    <!--获取方案id-->
+    <select id="getSolutionId" resultType="com.esop.busiAnalysis.dto.EpBusiSolutionDto">
+        select seq_compete_id.Nextval solution_id from dual
+    </select>
+    <!--通过方案id查方案信息-->
+    <select id="getSolutionInfoById" parameterType="com.esop.busiAnalysis.dto.EpBusiSolutionDto" resultType="com.esop.busiAnalysis.dto.EpBusiSolutionDto">
+        select a.region_code,a.region_name,a.solution_name,a.solution_id,a.solution_desc,a.solution_level,a.solution_type,a.related_id,a.create_date,a.manager_name,a.manager_no,b.name relate_name,b.path relate_path,b.id
+        from ep_busi_solution a,ep_upload_file_info b
+        where a.related_id = b.related_id
+        and a.solution_id = #{solution_id}
+    </select>
+    <!--app行业解决方案信息查询-->
+    <select id="qryBusiSolutionInfo" parameterType="com.esop.busiAnalysis.dto.EpBusiSolutionDto" resultType="com.esop.busiAnalysis.dto.EpBusiSolutionDto">
+        select a.region_code,a.region_name,a.solution_name,a.solution_id,a.solution_desc,a.related_id,a.create_date,a.manager_name,a.manager_no,solution_type,solution_level
+        from ep_busi_solution a
+        where 1=1
+        <if test="manager_name != ''">
+            and manager_name like '%'||#{manager_name}||'%'
+        </if>
+        <if test="manager_no != ''">
+            and manager_no = #{manager_no}
+        </if>
+        <if test="region_name != ''">
+            and region_name = #{region_name}
+        </if>
+        <if test="solution_name != ''">
+            and solution_name like '%'||#{solution_name}||'%'
+        </if>
+        <if test="create_date!=''">
+            and to_char(a.create_date,'yyyy-MM-dd') = #{create_date}
+        </if>
+        <if test="solution_id != ''">
+            and solution_id=#{solution_id}
+        </if>
+        <if test="solution_type != ''">
+            and solution_type =#{solution_type}
+        </if>
+        <if test="solution_level != ''">
+            and solution_level=#{solution_level}
+        </if>
+    </select>
+    <select id="qrySolutionType" resultType="com.esop.busiAnalysis.dto.SolutionTradeTypeDto">
+        select big_trade_code trade_code,big_trade_name trade_name from sgrpbigbigtradecode
+    </select>
+</mapper>

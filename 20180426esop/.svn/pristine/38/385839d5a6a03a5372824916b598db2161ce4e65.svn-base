@@ -1,0 +1,92 @@
+package com.esop.basicManagement.controller;
+
+
+import org.apache.axis.client.Service;
+
+import javax.xml.namespace.QName;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * Created by yanhao on 2017/6/30.
+ */
+public class Client4A {
+    public String Webservice4ACall(String method, String clientIP, String login_no, Map param) {
+        try {
+            //String endpoint = "http://10.110.26.23:61000/esbWS/services/bs_GetOweWS_XML/callService";
+            //String serviceUrl = billingService+serviceName+"/callService";
+            String serviceUrl = "http://10.117.70.45:8083/admincenter/service/ApplicationAccountWSService";
+
+            Service service = new Service();
+            org.apache.axis.client.Call call = (org.apache.axis.client.Call) service.createCall();
+            String namespace = "http://service.application.webservice.framework.iam.boco.com";
+            call.setTargetEndpointAddress(serviceUrl);
+
+            //call.setOperationName(new QName(namespace,method));
+            QName opAddEntry = new QName(
+                    "http://service.application.webservice.framework.iam.boco.com", method);
+            call.addParameter("name", org.apache.axis.encoding.XMLType.XSD_DATE, javax.xml.rpc.ParameterMode.IN);
+            call.setReturnType(org.apache.axis.encoding.XMLType.XSD_STRING);
+
+
+            /********************************************************************************************************************/
+            Date current = new Date();
+            SimpleDateFormat sdf = new SimpleDateFormat(
+                    "yyyy-MM-dd HH:mm:ss");
+
+            String xml = "";
+            xml+="<?xml version=\"1.0\" encoding=\"UTF-8\"?><request><head><appId>8aeeef423656f40e01365d38e8940038</appId><appName>ESOP</appName><requestTime>" +
+                    sdf.format(current) +
+                    "</requestTime>" + "<accId>" + login_no + "</accId>" + "<clientIP>" +
+                    clientIP + "</clientIP>" + "<sign>数字签名</sign>" + "</head>" + "<body>" +
+                    "<method>" + method + "</method>" + "<page>" +
+                    "<totalrow>1</totalrow>" + "<pagesize>0</pagesize>" +
+                    "<currentpage>1</currentpage>" + "</page>" + "<values>";
+
+            if (method.equals("userModify"))
+                xml+="<object><key><parameter><appField>userid</appField><fieldValue>" +
+                                param.get("userid") + "</fieldValue>" + "</parameter>" + "</key>";
+            else if (method.equals("roleModify"))
+                xml+="<object><key><parameter><appField>roleid</appField><fieldValue>" +
+                        param.get("roleid") + "</fieldValue>" +
+                        "</parameter>" + "</key>";
+            else if (method.equals("organizationModify"))
+                xml+="<object><key><parameter><appField>orgid</appField><FieldValue>" +
+                        param.get("orgid") + "</FieldValue>" +
+                        "</parameter>" + "</key>";
+
+            xml+="<object>";
+            Iterator iterator = param.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = (String)iterator.next();
+                String value = (String)param.get(key);
+                xml+="<parameter><appField>" + key + "</appField>" +
+                        "<fieldValue>" + value + "</fieldValue>" + "</parameter>";
+            }
+            if ((method.equals("userModify")) || (method.equals("roleModify")) ||
+                    (method.equals("organizationModify")))
+                xml+="</object>";
+
+            xml+="</object></values></body></request>";
+
+            System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++ xml = "+xml);
+
+
+            String result = (String)call.invoke(new Object[]{xml});
+
+            if (result.indexOf("成功") > 0)
+                result = "同步4A成功";
+            else
+                result = "同步4A失败";
+            /********************************************************************************************************************/
+
+            return result;
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            String returnMsgInfo = "service calling failed !!!";
+            return returnMsgInfo;
+        }
+    }
+}

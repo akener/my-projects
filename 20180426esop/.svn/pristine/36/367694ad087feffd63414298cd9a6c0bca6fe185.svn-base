@@ -1,0 +1,19 @@
+package com.esop.invoice.mapper;
+
+import com.esop.invoice.model.EpInvSpeBossInfo;
+import java.util.List;
+
+/**
+ * 发票打印情况mapper
+ */
+public interface EpInvSpeBossInfoMapper {
+    int deleteByPrimaryKey(Integer recSerialNo);
+
+    int insert(EpInvSpeBossInfo record);
+
+    EpInvSpeBossInfo selectByPrimaryKey(Integer recSerialNo);
+
+    List<EpInvSpeBossInfo> selectAll();
+
+    int updateByPrimaryKey(EpInvSpeBossInfo record);
+}

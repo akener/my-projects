@@ -1,0 +1,924 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>预打发票>>电子发票>>月结>>分打申请</title>
+    <%@ include file="../pub/public_include_css.jsp" %>
+    <style>
+        .btn-sm {
+            font-size: 12px;
+            padding: 3px 5px;
+        }
+    </style>
+</head>
+
+<body class="bg-ff">
+<div class="main pd-10">
+    <div class="work-order-box over">
+        <%--<div class="row mgb-10">
+            <div class="col-sm-12 col-md-12">
+                <div class="header-title tc">
+                    <h3>预打发票流程申请</h3>
+                </div>
+            </div>
+        </div>--%>
+        <form id="dealForm">
+            <input id="procTypeCode" name="procTypeCode" type="hidden"/>
+            <input id="branchCode" name="branchCode" type="hidden"/>
+            <input id="keyValue" name="keyValue" type="hidden"/>
+            <input id="loginCode" name="loginCode" type="hidden"/>
+            <input id="loginName" name="loginName" type="hidden"/>
+            <input id="procId" name="procId" type="hidden"/>
+            <input id="procNameEn" name="procNameEn" type="hidden"/>
+            <input id="procNameCh" name="procNameCh" type="hidden"/>
+            <input id="invoiceType" name="invoiceType" type="hidden"/>
+            <input id="invoiceMode" name="invoiceMode" type="hidden"/>
+            <input id="printMode" name="printMode" type="hidden"/>
+            <input id="workState" name="workState" type="hidden"/>
+            <input id="isRed" name="isRed" type="hidden"/>
+            <input id="pushMethod" name="pushMethod" type="hidden"/>
+            <!--标题-->
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b
+                            style="border: 2px solid #eca100;"></b>预打发票>>电子发票>>月结>>分打申请</span>
+                </div>
+            </div>
+            <!--表单填写区域-->
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <table class="table-infor-7" width="100%">
+                            <tbody>
+                            <tr>
+                                <th>组织机构：</th>
+                                <td>
+                                    <input id="branchNo" name="branchNo" type="hidden"/>
+                                    <input id="branchName" name="branchName" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                                <th>行业中心：</th>
+                                <td>
+                                    <input id="industryCenterNo" name="industryCenterNo" type="hidden"/>
+                                    <input id="industryCenterName" name="industryCenterName" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>集团单位名称：</th>
+                                <td>
+                                    <input id="groupName" name="groupName" type="text" class="input-sty04 form-ipt"/>
+                                    <%--<button id="btnQryUnion" type="button" class="ui-btn" onclick="">查询</button>--%>
+                                    <div id="bot_box">
+
+                                    </div>
+                                </td>
+                                <th><i style="color:red;">*</i>集团单位编码：</th>
+                                <td>
+                                    <input id="groupId" name="groupId" type="text" class="input-sty04 form-ipt"/>
+                                    <input id="sherchfor" type="button" class="ui-btn mgr-10" value="查询"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>集团账户名称：</th>
+                                <td>
+                                    <input id="groupAccountName" name="groupAccountName" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                    <input type="button" class="ui-btn mgr-10" value="历史开票及回款" onclick="hisfinds()"/>
+                                </td>
+                                <th><i style="color:red;">*</i>集团账号：</th>
+                                <td>
+                                    <input id="groupAccountId" name="groupAccountId" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>纳税人识别号：</th>
+                                <td>
+                                    <input id="taxNo" name="taxNo" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                                <th>是否一般纳税人：</th>
+                                <td>
+                                    <input id="isGeneralTaxpayer" name="isGeneralTaxpayer" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>单位地址：</th>
+                                <td>
+                                    <input id="taxAddress" name="taxAddress" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                                <th>电话号码：</th>
+                                <td>
+                                    <input id="taxPhone" name="taxPhone" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>开户银行：</th>
+                                <td>
+                                    <input id="taxBank" name="taxBank" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                                <th>银行账户：</th>
+                                <td>
+                                    <input id="taxBankAccount" name="taxBankAccount" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>推送电子邮箱：</th>
+                                <td>
+                                    <input id="pushEmail" name="pushEmail" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                                <th>推送电话号码：</th>
+                                <td>
+                                    <input id="pushPhone" name="pushPhone" type="text" class="input-sty04 form-ipt"
+                                           style="background:#ededed;" readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>开始账期：</th>
+                                <td>
+                                    <input id="startAccountPeriod" name="startAccountPeriod" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                                <th><i style="color:red;">*</i>结束账期：</th>
+                                <td>
+                                    <input id="endAccountPeriod" name="endAccountPeriod" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>预打合计金额（元）：</th>
+                                <td>
+                                    <input id="invoiceSumValue" name="invoiceSumValue" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                                <th>规格型号：</th>
+                                <td>
+                                    <input id="invoiceSpeModel" name="invoiceSpeModel" type="text"
+                                           class="input-sty04 form-ipt" value="无"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>单位：</th>
+                                <td>
+                                    <input id="invoiceUnit" name="invoiceUnit" type="text"
+                                           class="input-sty04 form-ipt" value="项"/>
+                                </td>
+                                <th><i style="color:red;">*</i>数量：</th>
+                                <td>
+                                    <input id="invoiceNumber" name="invoiceNumber" type="text"
+                                           class="input-sty04 form-ipt" value="1"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>银行回款子账号：</th>
+                                <td>
+                                    <input id="bankSubAccount" name="bankSubAccount" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                                <th><i style="color:red;">*</i>银行回款子账号开户行：</th>
+                                <td>
+                                    <input id="bankSubAccountBank" name="bankSubAccountBank" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i style="color:red;">*</i>收款人编号：</th>
+                                <td>
+                                    <input id="payeeId" name="payeeId" type="text" class="input-sty04 form-ipt"/>
+                                </td>
+                                <th><i style="color:red;">*</i>收款人姓名：</th>
+                                <td>
+                                    <input id="payeeName" name="payeeName" type="text" class="input-sty04 form-ipt"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>发票备注：<br/><span style="color:red;">（限制50个汉字）</span></th>
+                                <td colspan="3">
+                                    <textarea id="remarks" name="remarks" rows="3" class="ui-text form-ctrl" maxlength="50" onchange="this.value=this.value.substring(0, 50)" onkeydown="this.value=this.value.substring(0, 50)" onkeyup="this.value=this.value.substring(0, 50)"
+                                              style="width:60%;"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>操作备注：</th>
+                                <td colspan="3">
+                                    <textarea id="operRemarks" name="operRemarks" rows="3" class="ui-text form-ctrl"
+                                              style="width:60%;"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="width:200px;">附件：</th>
+                                <td colspan="3" style="border:none">
+                                    <%--<div class="file fl rel bg-down" style="width:270px;overflow:hidden;padding-left: 24px;">--%>
+                                    <input id="file" name="file" type="file" class="ui-text"/>
+                                    <%--</div>--%>
+                                    <input type="button" class="ui-btn mgr-10" value="上传" onclick="doFileUpload()"/>
+                                    <label style="color:#00CC00;">支持格式xls,xlsx,doc,docx,txt,gif,jpg,rar</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="width:200px;"></th>
+                                <td colspan="3" style="border:none">
+                                    <ul id="attach-list"></ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>申请人：</th>
+                                <td>
+                                    <input id="applicantEsopNo" name="applicantEsopNo" type="hidden"/>
+                                    <input id="applicantBossNo" name="applicantBossNo" type="hidden"/>
+                                    <input id="applicantName" name="applicantName" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                                <th>申请时间：</th>
+                                <td>
+                                    <input id="applicationTime" name="applicationTime" type="text"
+                                           class="input-sty04 form-ipt" style="background:#ededed;"
+                                           readonly="readonly"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!--下一环节-->
+            <div class="row col-12 bg-white">
+                <div class="market-name-box pdlr-10 clearfix">
+                    <span class="fl font-cols"><b style="border: 2px solid #eca100;"></b>下一环节</span>
+                </div>
+            </div>
+            <div class="row col-12">
+                <div class="pd-10 pos-rel pos-bg1" style="background-color:#fff;">
+                    <div class="row">
+                        <table class="table-infor-7" width="100%">
+                            <tbody id="tb-step">
+                            <%--<tr style="background-color:#ededed;">
+                                <th>下一环节：</th>
+                                <td>客户经理主管审批</td>
+                                <th>下一环节处理人：</th>
+                                <td>
+                                    <input type="text" class="input-sty04 form-ipt">
+                                </td>
+                            </tr>--%>
+                            </tbody>
+                        </table>
+                        <div class="row mgt-20">
+                            <div class="btn-box">
+                                <%--<button id="btnSumit" class="ui-btn mgr-10" onclick="invPrtApp(); return false;">提交</button>--%>
+                                <input id="btnSumit" type="button" class="ui-btn mgr-10" value="提交"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+<%@ include file="../pub/public_include_js.jsp" %>
+<script type="text/javascript">
+    var fileArr = new Array();
+    var fileArrInx = 0;
+
+    $(document).ready(function () {
+        <!--流程大类，用于匹配流程；3501-预打发票审批流程-->
+        $('#procTypeCode').val('3501');
+        <!--分公司，用于匹配流程-->
+        $('#branchCode').val('<%=root_org_id %>');
+        <!--关键值，用于匹配流程-->
+        $('#keyValue').val('1');
+        <!--当前操作员工号-->
+        $('#loginCode').val('<%=login_no %>');
+        <!--当前操作员姓名-->
+        $('#loginName').val('<%=login_name %>');
+
+        <!--发票类型：1-增值税电子发票、2-增值税专用发票-->
+        $('#invoiceType').val('1');
+        <!--发票模式：1-实收、2-月结-->
+        $('#invoiceMode').val('2');
+        <!--申请单状态（0-驳回、1-审批中、2-待开票、3-待回款、4-已回款、5-已冲红、6-已作废）-->
+        $('#workState').val('1');
+        <!--是否红票：1-作废或冲红，2-开具-->
+        $('#isRed').val('2');
+        <!--推送方式：1-推送电子邮箱，2-推送电话号码-->
+        $('#pushMethod').val('1');
+
+        <!--组织机构编码（分公司）-->
+        $('#branchNo').val('<%=root_org_id %>');
+        <!--组织机构编码（分公司）-->
+        $('#branchName').val('<%=root_org_name %>');
+        <!--行业中心编码-->
+        $('#industryCenterNo').val('<%=org_id %>');
+        <!--行业中心名称-->
+        $('#industryCenterName').val('<%=org_name %>');
+        <!--申请人工号-->
+        $('#applicantEsopNo').val('<%=login_no %>');
+        $('#applicantBossNo').val('<%=clogin_code %>');
+        <!--申请人姓名-->
+        $('#applicantName').val('<%=login_name %>');
+        <!--收款人编号-->
+        $('#payeeId').val('<%=clogin_code %>');
+        <!--收款人姓名-->
+        $('#payeeName').val('<%=login_name %>');
+        <!--申请时间-->
+        $('#applicationTime').val(curentTime());
+
+        qryFirstSteps();
+
+        // $('#groupName').bind('input', loadGrpByName);
+        /*$('#groupName').bind('keypress', function (event) {
+            if (event.keyCode == 13) {
+                loadGrpByName();
+            }
+        });
+        $('#groupId').bind('keypress', function (event) {
+            if (event.keyCode == 13) {
+                loadGrpById();
+            }
+        });*/
+        $('#sherchfor').bind('click', function () {
+            if ($("#groupId").val().length > 0) {
+                $("#groupName").val("");
+                restAppInfo();
+                loadGrpById();
+            } else if ($("#groupName").val().length > 0) {
+                $("#groupId").val("");
+                restAppInfo();
+                loadGrpByName();
+            } else {
+                layer.alert('请先填写集团单位名称或集团单位编码！', {
+                    icon: 2,
+                    skin: 'layer-ext-moon'
+                });
+            }
+        });
+
+        $('#btnSumit').bind('click', invPrtApp);
+    });
+    //重新查询重置申请表单
+    function restAppInfo() {
+        $("#groupAccountName").val("");
+        $("#groupAccountId").val("");
+        $("#taxNo").val("");
+        $("#isGeneralTaxpayer").val("");
+        $("#taxAddress").val("");
+        $("#taxPhone").val("");
+        $("#taxBank").val("");
+        $("#taxBankAccount").val("");
+        $("#pushEmail").val("");
+        $("#pushPhone").val("");
+        $("#startAccountPeriod").val("");
+        $("#endAccountPeriod").val("");
+
+        //清空预打合计金额
+        $("#invoiceSumValue").val("");
+        //银行回款子账号
+        $("#bankSubAccount").val("");
+        //银行回款子账号开户行
+        $("#bankSubAccountBank").val("");
+    }
+    /**
+     * 加载首环节信息
+     */
+    function qryFirstSteps() {
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/workflow/getFirstSteps',
+            data: $('#dealForm').serialize(),
+            success: qryFirstStepsHandler
+        });
+    }
+
+    function qryFirstStepsHandler(data) {
+        var returnCode = data.returnCode;
+        if (returnCode == '0') {
+            $('#procId').val(data.procId);
+            $('#procNameEn').val(data.procNameEn);
+            $('#procNameCh').val(data.procNameCh);
+
+            var stepList = data.stepList;
+            for (var i = 0; i < stepList.length; i++) {
+                var step = stepList[i].ctProcStepRel;
+                var assignees = stepList[i].assignees;
+                var stepHtml = "<tr style=\"background-color:#ededed;\">\n" +
+                    "    <th>下一环节：</th>\n" +
+                    "    <td>" + step.stepName + "</td>\n" +
+                    "    <th>下一环节处理人：</th>\n" +
+                    "    <td>\n" +
+                    "        <select name=\"ASSIGNEE_" + step.stepId + "\" class=\"select-style-1\">\n";
+                for (var j = 0; j < assignees.length; j++) {
+                    var assignee = assignees[j];
+                    stepHtml += "            <option value=\"" + assignee.assignee + "\">" + assignee.assigneeName + "</option>\n";
+                }
+                stepHtml += "        </select>\n" +
+                    "    </td>\n" +
+                    "</tr>";
+                $("#tb-step").append(stepHtml);
+            }
+        } else {
+            var errorMessage = data.errorMessage;
+            // console.log(res_desc);
+        }
+    }
+
+    /**
+     * 根据集团名称模糊查询集团信息
+     */
+    function loadGrpByName() {
+        var bot = $("#bot_box");
+        bot.html("");
+        bot.css("display", "none");
+
+        <!--集团单位名称-->
+        var groupName = $("#groupName").val();
+        if (groupName == "") {
+            return false;
+        }
+
+        var url = 'UserQryService';
+        var method = "grpQryGroupidByGroupnameESOP";
+        var param = {};
+        param['GROUPNAME'] = groupName;
+        param['ISQRYCOUNT'] = "2";
+        param['PAGES'] = "1";
+        param['PAGERECS'] = "20";
+        param['CUSTMGR'] = "<%=clogin_code %>";
+        // console.log(JSON.stringify(param));
+
+        $.ajax({
+            type: "POST",
+            url: "<%=ctxPath %>/boss/postRest",
+            data: {url: url, method: method, param: JSON.stringify(param), connectTimeout: 10000, readTimeOut: 30000},
+            dataType: "json",
+            success: loadGrpByNameHandler
+        });
+    }
+
+    function loadGrpByNameHandler(data) {
+        // console.log(JSON.stringify(data));
+        var res_code = data.res_code;
+        if (res_code == "0") {
+            var groupList = data.result.BANKDETAILLIST;
+            if (isNotNull(groupList)) {
+                var bot = $("#bot_box");
+                bot.html("");
+                bot.css("display", "block");
+                for (var i = 0; i < groupList.length; i++) {
+                    var group = groupList[i];
+                    var ul = "<ul><li>" + group.GROUPNAME + "</li><li>" + group.GROUPID + "</li></ul>";
+                    bot.append(ul);
+                }
+                $('#bot_box ul').bind('click', function () {
+                    $("#groupName").val($(this).children("li:first-child").html());
+                    $("#groupId").val($(this).children("li:last-child").html());
+                    bot.html("");
+                    bot.css("display", "none");
+                    loadGrpFundAcct();
+                    chooseGroupAccountDialog();
+                });
+            }
+        } else {
+            var res_desc = data.res_desc;
+            // console.log(res_desc);
+        }
+    }
+
+    /**
+     * 根据集团编码查询集团信息
+     */
+    function loadGrpById() {
+        <!--集团编码-->
+        var groupId = $("#groupId").val();
+        if (groupId == "") {
+            return false;
+        }
+        var code=isFindGroupIdAndUserIdByCt_union_info('<%=ctxPath %>/getCustInfo',groupId,$('#loginCode').val());
+        if(code=="1"){//不存在
+            layer.alert('该集团为其他客户经理管辖集团！', {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+            return false
+        }
+        var url = 'UserQryService';
+        var method = "grpQryGrpCustBaseInfoESOP";
+        var param = {};
+        param['GROUPID'] = groupId;
+        // console.log(JSON.stringify(param));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {url: url, method: method, param: JSON.stringify(param), connectTimeout: 10000, readTimeOut: 30000},
+            dataType: 'json',
+            success: loadGrpByIdHandler
+        });
+    }
+
+    function loadGrpByIdHandler(data) {
+        // console.log(JSON.stringify(data));
+        var res_code = data.res_code;
+        if (res_code == "0") {
+            var group = data.result;
+            $('#groupName').val(group.GROUPNAME);
+            loadGrpFundAcct();
+            chooseGroupAccountDialog();
+        } else {
+            var res_desc = data.res_desc;
+            // console.log(res_desc);
+        }
+    }
+
+    /**
+     * 查询集团资金账户
+     */
+    function loadGrpFundAcct() {
+        <!--集团编码-->
+        var groupId = $("#groupId").val();
+        var url = 'UserQryService';
+        var method = "grpGroupFundAccountQryESOP";
+        var param = {};
+        param['GROUPID'] = groupId;
+        // console.log(JSON.stringify(param));
+
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/boss/postRest',
+            data: {url: url, method: method, param: JSON.stringify(param), connectTimeout: 10000, readTimeOut: 30000},
+            dataType: 'json',
+            success: loadGrpFundAcctHandler
+        });
+    }
+
+    function loadGrpFundAcctHandler(data) {
+        // console.log(JSON.stringify(data));
+        var res_code = data.res_code;
+        if (res_code == "0") {
+            var grpFundAcctList = data.result.GRPFUNDLIST;
+            if (isNotNull(grpFundAcctList)) {
+                for (var i = 0; i < grpFundAcctList.length; i++) {
+                    var grpFundAcct = grpFundAcctList[i];
+                    if (grpFundAcct.STATUS == "1") {
+                        <!--银行回款子账号-->
+                        $('#bankSubAccount').val(grpFundAcct.BANKACCTID);
+                        <!--银行回款子账号开户行-->
+                        $('#bankSubAccountBank').val(grpFundAcct.BANKNAME);
+                        break;
+                    }
+                }
+            }
+        } else {
+            var res_desc = data.res_desc;
+            // console.log(res_desc);
+        }
+    }
+
+    /*
+     * 集团账户选择弹出页面
+     */
+    function chooseGroupAccountDialog() {
+        var groupId = $("#groupId").val();
+        var invoiceType = $("#invoiceType").val();
+        var url = "<%=request.getContextPath()%>/yj_grpacct_choose_sepa" + "?" + "groupId=" + groupId + "&invoiceType=" + invoiceType;
+        var perContent = layer.open({
+            type: 2,
+            area: ["800px", "400px"],
+            title: "集团账户选择",
+            anim: 2,
+            maxmin: true, //开启最大化最小化按钮
+            content: url,
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                if (body.find("input[name='acctRadio']:checked").length == 1) {
+                    var acctRadio = body.find("input[name='acctRadio']:checked");
+                    var grpAcctTr = $(acctRadio).parent().parent();
+                    var groupAccountId = grpAcctTr.find("td:eq(2)").html();
+                    var minbillcycle = grpAcctTr.find("td:eq(10)").html();//最小账期
+                    $("#groupAccountName").val(grpAcctTr.find("td:eq(1)").html());
+                    $("#groupAccountId").val(groupAccountId);
+                    $("#taxNo").val(grpAcctTr.find("td:eq(4)").html());
+                    $("#taxAddress").val(grpAcctTr.find("td:eq(5)").html());
+                    $("#taxPhone").val(grpAcctTr.find("td:eq(6)").html());
+                    $("#taxBank").val(grpAcctTr.find("td:eq(7)").html());
+                    $("#taxBankAccount").val(grpAcctTr.find("td:eq(8)").html());
+                    $("#isGeneralTaxpayer").val(grpAcctTr.find("td:eq(9)").html());
+                    // top.layer.close(index);//关闭对话框。
+                    setTimeout(function () {
+                        layer.close(index);
+                        chooseGrpAcctConsDialog(groupAccountId,minbillcycle);
+                    }, 100);//延时0.1秒，对应360 7.1版本bug
+                } else {
+                    layer.alert('请选择一个预打月结发票的集团账户！', {
+                        icon: 2,
+                        skin: 'layer-ext-moon'
+                    });
+                }
+            },
+            cancel: function (index) {
+            }
+        });
+        layer.full(perContent);
+    }
+
+    /*
+     * 集团账户缴费联系人选择弹出页面
+     */
+    function chooseGrpAcctConsDialog(groupAccountId,minbillcycle) {
+        var groupId = $("#groupId").val();
+        var url = "<%=request.getContextPath()%>/e_yj_grpacctcons_choose" + "?" + "groupId=" + groupId + "&groupAccountId=" + groupAccountId;
+        var perContent = layer.open({
+            type: 2,
+            area: ["500px", "400px"],
+            title: "集团账户缴费联系人选择",
+            anim: 2,
+            maxmin: true, //开启最大化最小化按钮
+            content: url,
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                if (body.find("input[name='acctContRadio']:checked").length == 1) {
+                    var acctContRadio = body.find("input[name='acctContRadio']:checked");
+                    var grpAcctContTr = $(acctContRadio).parent().parent();
+                    $("#pushEmail").val(grpAcctContTr.find("td:eq(3)").html());
+                    $("#pushPhone").val(grpAcctContTr.find("td:eq(2)").html());
+                }
+                // top.layer.close(index);//关闭对话框。
+                setTimeout(function () {
+                    layer.close(index);
+                    chooseGrpAcctArrearsDialog(groupAccountId,minbillcycle);
+                }, 100);//延时0.1秒，对应360 7.1版本bug
+            },
+            cancel: function (index) {
+            }
+        });
+    }
+
+    /*
+     * 欠费账期选择弹出页面
+     */
+    function chooseGrpAcctArrearsDialog(groupAccountId,minbillcycle) {
+        var url = "<%=request.getContextPath()%>/yj_debtperiod_choose_sepa" + "?" + "groupAccountId=" + groupAccountId+"&minbillcycle="+minbillcycle;;
+        layer.open({
+            type: 2,
+            area: ["300px", "300px"],
+            title: "账期选择",
+            maxmin: true, //开启最大化最小化按钮
+            content: url,
+            btn: ['确定', '关闭'],
+            yes: function (index, layero) {
+                var body = layer.getChildFrame('body', index);
+                var arr = new Array();
+                var ShouldPayAll = 0;
+                var iframeWin = layero.find('iframe')[0]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+                var fecheck = body.find("input[name='fecheck']:checked").each(function () {
+                    var arrearTr = $(this).parent().parent();
+                    var CYCLE = arrearTr.find("td:eq(1)").html();
+                    var ShouldPay = arrearTr.find("td:eq(2)").html();
+                    arr.push(CYCLE);
+                    ShouldPayAll = sum(ShouldPayAll, ShouldPay);
+                });
+                arr.sort();
+                $("#invoiceSumValue").val(formatMoney("" + ShouldPayAll));
+                if (arr.length > 0) {
+                    $("#startAccountPeriod").val(arr[0].splice(4, 0, "-"));
+                    $("#endAccountPeriod").val(arr[arr.length - 1].splice(4, 0, "-"));
+                    $('#printMode').val('3');
+                } else {
+                    $('#printMode').val('3');
+                }
+                // top.layer.close(index);//关闭对话框。
+                setTimeout(function () {
+                    layer.close(index)
+                }, 100);//延时0.1秒，对应360 7.1版本bug
+            },
+            cancel: function (index) {
+            }
+        });
+    }
+
+    String.prototype.splice = function (idx, rem, str) {
+        return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
+    };
+
+    //历史开票查询
+    function hisfinds() {
+        var grpacctid = $("#groupAccountId").val();
+        var groupId = $("#groupId").val();
+        if (grpacctid != "") {
+            var url = "<%=request.getContextPath()%>/inv_torical_invoice" + "?" + "grpacctid=" + grpacctid + "&groupId=" + groupId;
+            openDialogView("历史开票及回款", url, "700px", "500px");
+        } else {
+            layer.alert('请先选择集团账户！', {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+        }
+    }
+
+    /**
+     * 发起预打发票申请
+     */
+
+    var loads = "";
+
+    function invPrtApp() {
+        if ($("#groupAccountId").val() == "" || $("#invoiceSumValue").val() == "") {
+            layer.alert('表单填写内容不完整，请检查！', {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+            return false;
+        }
+        if ($("#invoiceSumValue").val() == "0.00") {
+            layer.alert('预打发票合计金额不能为0.00！', {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+            return false;
+        }
+        $("#btnSumit").attr("disabled","disabled");
+        $("#btnSumit").val("提交中...");
+        var reqParam = {};
+
+        var appInfo = {};
+        appInfo['invoiceType'] = $('#invoiceType').val();
+        appInfo['invoiceMode'] = $('#invoiceMode').val();
+        appInfo['printMode'] = $('#printMode').val();
+        appInfo['workState'] = $('#workState').val();
+        appInfo['isRed'] = $('#isRed').val();
+        appInfo['pushMethod'] = $('#pushMethod').val();
+        appInfo['branchNo'] = $('#branchNo').val();
+        appInfo['branchName'] = $('#branchName').val();
+        appInfo['industryCenterNo'] = $('#industryCenterNo').val();
+        appInfo['industryCenterName'] = $('#industryCenterName').val();
+        appInfo['groupName'] = $('#groupName').val();
+        appInfo['groupId'] = $('#groupId').val();
+        appInfo['startAccountPeriod'] = $('#startAccountPeriod').val();
+        appInfo['endAccountPeriod'] = $('#endAccountPeriod').val();
+        appInfo['pushEmail'] = $('#pushEmail').val();
+        appInfo['pushPhone'] = $('#pushPhone').val();
+        appInfo['invoiceSumValue'] = $('#invoiceSumValue').val();
+        appInfo['invoiceSpeModel'] = $('#invoiceSpeModel').val();
+        appInfo['invoiceUnit'] = $('#invoiceUnit').val();
+        appInfo['invoiceNumber'] = $('#invoiceNumber').val();
+        appInfo['bankSubAccount'] = $('#bankSubAccount').val();
+        appInfo['bankSubAccountBank'] = $('#bankSubAccountBank').val();
+        appInfo['remarks'] = $('#remarks').val();
+        appInfo['operRemarks'] = $('#operRemarks').val();
+        appInfo['applicantEsopNo'] = $('#applicantEsopNo').val();
+        appInfo['applicantBossNo'] = $('#applicantBossNo').val();
+        appInfo['payeeId'] = $('#payeeId').val();
+        appInfo['payeeName'] = $('#payeeName').val();
+        appInfo['applicantName'] = $('#applicantName').val();
+        appInfo['applicationTime'] = $('#applicationTime').val();
+        reqParam['appInfo'] = appInfo;
+
+        var actInfos = [];
+        var actInfo = {};
+        actInfo['groupAccountName'] = $("#groupAccountName").val();
+        actInfo['groupAccountId'] = $("#groupAccountId").val();
+        actInfo['taxNo'] = $("#taxNo").val();
+        actInfo['taxAddress'] = $("#taxAddress").val();
+        actInfo['taxPhone'] = $("#taxPhone").val();
+        actInfo['taxBank'] = $("#taxBank").val();
+        actInfo['taxBankAccount'] = $("#taxBankAccount").val();
+        actInfo['isGeneralTaxpayer'] = $("#isGeneralTaxpayer").val();
+        actInfo['arrearsAccountPeriod'] = $('#startAccountPeriod').val() + "-" + $('#endAccountPeriod').val();
+        actInfo['arrearsAmount'] = $('#invoiceSumValue').val();
+        actInfos.push(actInfo);
+        reqParam['actInfos'] = actInfos;
+
+        var instInfo = {};
+        instInfo['procTypeCode'] = $('#procTypeCode').val();
+        instInfo['startLoginNo'] = $('#loginCode').val();
+        instInfo['startDept'] = $('#industryCenterNo').val();
+        instInfo['startRegion'] = $('#branchNo').val();
+        instInfo['procId'] = $('#procId').val();
+        instInfo['procNameEn'] = $('#procNameEn').val();
+        instInfo['procNameCh'] = $('#procNameCh').val();
+        instInfo['flag'] = "A";
+        reqParam['instInfo'] = instInfo;
+
+        var params = [];
+        $("select[name^='ASSIGNEE_']").each(function () {
+            var param = {};
+            param['key'] = $(this).attr("name");
+            param['value'] = $(this).val();
+            param['type'] = "String";
+            params.push(param);
+        });
+        reqParam['params'] = params;
+
+        //附件信息
+        reqParam['attachs'] = fileArr;
+
+
+        loads = layer.msg('提交中', {
+            icon: 16,
+            time: 1000,
+            shade: 0.01
+        });
+
+        // console.log(JSON.stringify(reqParam));
+        $.ajax({
+            type: 'POST',
+            url: '<%=ctxPath %>/invoice/invApp',
+            contentType: 'application/json;charset=utf-8',
+            //data: $('#dealForm').serialize(),
+            data: JSON.stringify(reqParam),
+            success: invPrtAppHandler,
+            error: function (data) {
+                // console.log(data);
+            }
+        });
+    }
+
+    function invPrtAppHandler(data) {
+        var returnCode = data.returnCode;
+        layer.close(loads);
+        if (returnCode == '0') {
+            layer.alert('操作成功', {
+                icon: 1,
+                skin: 'layer-ext-moon' //该皮肤由    layer.seaning.com友情扩展。关于皮肤的扩展规则，去这里查阅
+            }, function () {
+                location = location
+            });
+        } else {
+            layer.alert('操作失败！', {
+                icon: 2,
+                skin: 'layer-ext-moon' //该皮肤由    layer.seaning.com友情扩展。关于皮肤的扩展规则，去这里查阅
+            }, function () {
+                location = location
+            });
+        }
+    }
+
+    /**
+     * 只能适配IE-11
+     */
+    function doFileUpload() {
+        if ($("#file").val() == "") {
+            layer.alert('请先选择您要上传的附件！', {
+                icon: 2,
+                skin: 'layer-ext-moon'
+            });
+            return false;
+        }
+        var fidx = $("#file").val().lastIndexOf('\\');
+        var fileName = $("#file").val().substring(fidx + 1);
+        var eload=layer.msg('上传中...', {
+            icon: 16,
+            shade: 0.4,
+            time:false //取消自动关闭
+        });
+        $("#dealForm").ajaxSubmit({
+            type: 'post',
+            url: '<%=ctxPath %>/uploadFile',
+            success: function (data) {
+                // console.log(JSON.stringify(data));
+                layer.close(eload);
+                if (isNotNull(data)) {
+                    var result = JSON.stringify(data);
+                    result = result.substring(1, result.length - 1);
+                    var attachArr = result.split("|");
+                    layer.alert(attachArr[1], {
+                        icon: attachArr[0]=="0"?1:2,
+                        skin: 'layer-ext-moon'
+                    });
+                    if (attachArr[0] == "0") {
+                        $("#attach-list").append("<li><a href='<%=ctxPath %>/downloadFile?attach_file_id=" + attachArr[2] + "'>" + fileName + "</a></li>");
+                        fileArr[fileArrInx] = attachArr[2];
+                        fileArrInx++;
+                    }
+                    $("#file").val("");
+                }
+            },
+            error: function (data) {
+                // console.log(JSON.stringify(data));
+                layer.close(eload);
+
+            }
+        });
+    }
+</script>
+</html>

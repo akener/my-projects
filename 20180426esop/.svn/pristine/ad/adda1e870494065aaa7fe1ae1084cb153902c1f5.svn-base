@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.esop.workflow.mapper.AssistMapper">
+
+    <insert id="insertTaskInstHisResend" parameterType="com.esop.workflow.model.CtTaskInstInfo">
+    insert into ct_task_inst_info_his(task_inst_id,proc_inst_id,task_id,step_id,step_name,deal_login_no,deal_dept,start_time,end_time,status,time_flag,plan_complete_time,deal_opinion,remarks,succ_flag,task_num,task_type)
+    select task_inst_id,proc_inst_id,task_id,step_id,step_name,deal_login_no,deal_dept,start_time,end_time,#{status},time_flag,plan_complete_time,#{dealOpinion},#{remarks},succ_flag,task_num,task_type from ct_task_inst_info where task_inst_id = #{taskInstId}
+   </insert>
+
+
+    <insert id="insertTaskInstInfo" parameterType="com.esop.workflow.model.CtTaskInstInfo">
+       INSERT INTO CT_TASK_INST_INFO (TASK_INST_ID,PROC_INST_ID,TASK_ID,STEP_ID,STEP_NAME,DEAL_LOGIN_NO,DEAL_DEPT,START_TIME,END_TIME,STATUS,TIME_FLAG,PLAN_COMPLETE_TIME,DEAL_OPINION,REMARKS,SUCC_FLAG,TASK_NUM,TASK_TYPE) SELECT NEXTVAL_SAFE('SEQ_TASK_INST_ID'),A.PROC_INST_ID,A.TASK_ID,A.STEP_ID,A.STEP_NAME,#{dealLoginNo},
+       A.DEAL_DEPT,current_timestamp(),current_timestamp(),'0',A.TIME_FLAG,A.PLAN_COMPLETE_TIME,NULL,NULL,NULL,NULL,A.TASK_TYPE FROM CT_TASK_INST_INFO A WHERE A.TASK_INST_ID = #{taskInstId}
+    </insert>
+
+
+
+    <delete id="deleteTaskInstByTaskInstId" parameterType="String">
+        delete from ct_task_inst_info where task_inst_id = #{taskInstId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,19 @@
+package com.esop.cqDevelopment.elecPack.service;
+
+import com.esop.cqDevelopment.elecPack.dto.OrTemplateAttrDto;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public class OrTemplateAttrService {
+    @Autowired
+    private SqlSessionTemplate sqlSessionTemplate;
+
+    public List<OrTemplateAttrDto> SelectTemplateAttrList(Integer template_id) {
+        List<OrTemplateAttrDto> templatelist = sqlSessionTemplate.selectList("selectTemplateAttrById", template_id);
+        return templatelist;
+    }
+}

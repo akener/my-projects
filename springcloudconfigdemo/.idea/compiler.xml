@@ -8,13 +8,15 @@
         <outputRelativeToContentRoot value="true" />
         <module name="config-client" />
         <module name="config-server" />
-        <module name="eureka-server" />
+        <module name="eureka-server01" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="config-client" target="1.8" />
       <module name="config-server" target="1.8" />
       <module name="eureka-server" target="1.8" />
+      <module name="eureka-server01" target="1.8" />
+      <module name="eureka-server1" target="1.8" />
       <module name="springcloudconfigdemo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
